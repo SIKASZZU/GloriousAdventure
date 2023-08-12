@@ -1,0 +1,16 @@
+import pygame # pip install pygame
+import sys
+
+pygame.init()
+screen = pygame.display.set_mode((1024,786))
+pygame.display.set_caption("nimi") # Window nimi
+set_framerate = pygame.time.Clock() # framerate
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit() # Kui seda ei oleks, runniks kood edasi, kuid pygame windowi enam ei ole. Tekib error.
+    
+    pygame.display.update()
+    set_framerate.tick(60)
