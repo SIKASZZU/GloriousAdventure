@@ -1,16 +1,26 @@
-import pygame # pip install pygame
+import pygame
 import sys
 
 pygame.init()
-screen = pygame.display.set_mode((1024,786))
-pygame.display.set_caption("nimi") # Window nimi
-set_framerate = pygame.time.Clock() # framerate
+screen = pygame.display.set_mode((1024, 786))
 
+
+pygame.display.set_caption("nimi")  # Window nimi
+set_framerate = pygame.time.Clock()  # framerate
+
+sky_object = pygame.image.load('images/sky.jpg')
+
+s_object = pygame.Surface((1024, 336))
+s_object.fill("darkgreen")  # v2rvi lisamine
+ 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            exit() # Kui seda ei oleks, runniks kood edasi, kuid pygame windowi enam ei ole. Tekib error.
-    
+            exit()  # Kui seda ei oleks, runniks kood edasi, kuid pygame windowi enam ei ole. Tekib error.
+
+    screen.blit(sky_object, (0, 0))
+    screen.blit(s_object, (0, 450))  # blit t2hdanb asja panemine millegi peale
+
     pygame.display.update()
     set_framerate.tick(60)
