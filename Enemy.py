@@ -1,5 +1,5 @@
 class Enemy:
-    def __init__(self, name, health, animation):
-        self.name = name
+    def __init__(self, type, health, animation):
+        self.type = type
         self.health = health
         self.animation = animation
