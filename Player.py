@@ -1,5 +1,5 @@
 class Player:
-    def __init__(self, type, health, animation):
-        self.type = type
+    def __init__(self, name, health, animation):
+        self.name = name
         self.health = health
         self.animation = animation
