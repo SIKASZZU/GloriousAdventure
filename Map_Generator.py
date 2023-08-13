@@ -1,64 +1,110 @@
-import numpy as np
-terrain_size = (15, 32)  # Size of the terrain grid
-terrain_data = np.zeros(terrain_size, dtype=int)
+import pygame
+import random
+import math
 
+# Define terrain types
+LAND = 0
+WATER = 1
+DEEP_WATER = 2
 
-# Generate Perlin noise
-def perlin(x, y):
-    xi = int(x) & 255
-    yi = int(y) & 255
-    xf = x - int(x)
-    yf = y - int(y)
-    u = fade(xf)
-    v = fade(yf)
+# Pygame setup
+pygame.init()
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
+clock = pygame.time.Clock()
 
-    aa = p[p[xi] + yi]
-    ab = p[p[xi] + yi + 1]
-    ba = p[p[xi + 1] + yi]
-    bb = p[p[xi + 1] + yi + 1]
+def generate_noise(width, height, scale):
+    noise_grid = []
+    for y in range(height):
+        row = []
+        for x in range(width):
+            value = random.uniform(-1, 1)
+            row.append(value)
+        noise_grid.append(row)
+    return noise_grid
 
-    x1 = lerp(grad(aa, xf, yf), grad(ba, xf - 1, yf), u)
-    x2 = lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u)
+def interpolate(a, b, t):
+    return a * (1 - t) + b * t
 
-    return (lerp(x1, x2, v) + 1) / 2
+def smooth_noise(noise_grid, x, y):
+    fraction_x = x - int(x)
+    fraction_y = y - int(y)
 
+    x1 = int(x) % len(noise_grid[0])
+    y1 = int(y) % len(noise_grid)
+    x2 = (x1 + 1) % len(noise_grid[0])
+    y2 = (y1 + 1) % len(noise_grid)
 
-def fade(t):
-    return t * t * t * (t * (t * 6 - 15) + 10)
+    value = 0.0
+    value += interpolate(noise_grid[y1][x1], noise_grid[y1][x2], fraction_x) * (1 - fraction_y)
+    value += interpolate(noise_grid[y2][x1], noise_grid[y2][x2], fraction_x) * fraction_y
+    return value
 
+def generate_terrain(width, height, scale, octaves, persistence, lacunarity):
+    noise_grid = generate_noise(width, height, scale)
+    terrain = []
+    for y in range(height):
+        row = []
+        for x in range(width):
+            value = 0.0
+            frequency = 1
+            amplitude = 1
+            for _ in range(octaves):
+                value += smooth_noise(noise_grid, x * frequency / scale, y * frequency / scale) * amplitude
+                frequency *= lacunarity
+                amplitude *= persistence
+            row.append(value)
+        terrain.append(row)
+    return terrain
 
-def lerp(a, b, t):
-    return (1 - t) * a + t * b
+def generate_terrain_types(terrain, water_threshold, deep_water_threshold):
+    terrain_types = []
+    for y in range(len(terrain)):
+        row = []
+        for x in range(len(terrain[0])):
+            value = terrain[y][x]
+            if value < deep_water_threshold:
+                row.append(DEEP_WATER)
+            elif value < water_threshold:
+                row.append(WATER)
+            else:
+                row.append(LAND)
+        terrain_types.append(row)
+    return terrain_types
 
+def render_terrain(terrain_types):
+    for y, row in enumerate(terrain_types):
+        for x, terrain_type in enumerate(row):
+            if terrain_type == DEEP_WATER:
+                color = (0, 0, 192)  # Light blue for deeper water
+            elif terrain_type == WATER:
+                color = (0, 0, 255)  # Blue for water
+            elif terrain_type == LAND:
+                color = (0, 100, 0)  # Dark green for land
+            pygame.draw.rect(screen, color, (x, y, 1, 1))
 
-def grad(hash, x, y):
-    h = hash & 15
-    u = x if h < 8 else y
-    v = y if h < 4 else (x if h == 12 or h == 14 else 0)
-    return (u if (h & 1) == 0 else -u) + (v if (h & 2) == 0 else -v)
+# Terrain generation parameters
+scale = 50
+octaves = 6
+persistence = 0.5
+lacunarity = 2.0
 
+terrain = generate_terrain(width, height, scale, octaves, persistence, lacunarity)
 
-# Permutation table
-p = np.arange(512, dtype=int)
-np.random.shuffle(p)
-p = np.tile(p, 2)
+water_threshold = 0.3  # Adjust these thresholds as needed
+deep_water_threshold = 0.2
 
-# Generate Perlin noise-based terrain
-for y in range(terrain_size[0]):
-    for x in range(terrain_size[1]):
-        noise_val = perlin(x * 0.1, y * 0.1)
+terrain_types = generate_terrain_types(terrain, water_threshold, deep_water_threshold)
 
-        if noise_val > 0.3:
-            terrain_data[y, x] = 4
-        elif noise_val > -0.3:
-            terrain_data[y, x] = 1
-        elif noise_val > -0.6:
-            terrain_data[y, x] = 2
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-# Convert numpy array to list of lists
-terrain_list = terrain_data.tolist()
+    screen.fill((0, 0, 0))
+    render_terrain(terrain_types)
+    pygame.display.flip()
+    clock.tick(60)
 
-# Display the generated terrain data
-for row in terrain_list:
-    row_str = ''.join(str(cell) for cell in row)
-    print(row_str)
+pygame.quit()
