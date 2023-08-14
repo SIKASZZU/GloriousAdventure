@@ -1,32 +1,21 @@
 import pygame
-import sys
 import random
 import time
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 750))
-pygame.display.set_caption("GA")  # Window nimi
+pygame.display.set_caption('GA')  # Window nimi
 set_framerate = pygame.time.Clock()  # framerate
 
-###
-
-# playeri suurused
-player_x = 50
-player_y = 50
+player_size = 25
 
 # Minimaalse ruudu summa arvutamine
-Ymax = 1000 // player_y
-Xmax = 750 // player_x
+Ymax = 1000 // player_size
+Xmax = 750 // player_size
 
-terrain_data = [[0 for _ in range(Ymax)] for _ in range(Xmax)]  # Ehitab 2D matrixi 0idest.
-
-# terrain_data = []  # see kood on praeguse terrain_data lihtsamini kirjutatult.
-# for _ in range(Xmin):
-#    row = []
-#    for _ in range(Ymin):
-#        row.append(0)
-#    terrain_data.append(row)
-
+terrain_data = [
+    [0 for _ in range(Ymax)] for _ in range(Xmax)
+]  # Ehitab 2D matrixi 0idest.
 
 # mapi keskosa arvutamine
 center_x = Xmax // 2
@@ -37,20 +26,29 @@ max_distance = min(center_x, center_y)
 # Koostab islandi
 for x in range(Xmax):
     for y in range(Ymax):
-        distance_to_center = ((x - center_x) ** 2 + (y - center_y) ** 2) ** 0.5  # Euclidean forumla
+        distance_to_center = (
+            (x - center_x) ** 2 + (y - center_y) ** 2
+        ) ** 0.5  # Euclidean forumla
         normalized_distance = distance_to_center / max_distance  # Output 0 kuni 1
-        land_probability = 1 - (normalized_distance ** 2)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+        land_probability = 1 - (
+            normalized_distance**4
+        )  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
         if random.random() < land_probability:  # random.random output = [0, 1]
             terrain_data[x][y] = 1
+
+
+#  muudab muru kiviks 1 --> 0
+for i in range(len(terrain_data)):
+    for j in range(len(terrain_data[i])):
+        if terrain_data[i][j] == 1 and random.random() < 0.15:
+            terrain_data[i][j] = 2
 
 # Spawnib suvalisse kohta
 player_x = random.randint(0, 1000)
 player_y = random.randint(0, 750)
 
-
 # GAME LOOP
 while True:
-
     # Checkib kas user quitib v6i ei
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -60,11 +58,9 @@ while True:
     # Liikumine
     keys = pygame.key.get_pressed()
 
-
-    class Player():
+    class Player:
         def __init__(self, speed):
             self.speed = speed
-
 
     # Kalkuleerib gridilt kus mängija seisab
     player_col = player_x // 50
@@ -78,7 +74,9 @@ while True:
         if player_terrain_value == 1:  # Standing on terrain (1)
             user = Player(speed=4)
     except IndexError:  # tra seda try, excepti pole vaja aga just l2ks vaja niiet idk
-        print("Indexerror - Out of range: player_terrain_value = terrain_data[player_row][player_col]")
+        print(
+            'Indexerror - Out of range: player_terrain_value = terrain_data[player_row][player_col]'
+        )
 
     new_player_x = player_x
     new_player_y = player_y
@@ -99,24 +97,36 @@ while True:
     player_y = new_player_y
 
     # Nurgad
-    if player_x <= -50: player_x += 50
+    if player_x <= -50:
+        player_x += 50
 
-    if player_x >= 1000: player_x -= 50
+    if player_x >= 1000:
+        player_x -= 50
 
-    if player_y <= -50: player_y += 50
+    if player_y <= -50:
+        player_y += 50
 
-    if player_y >= 750: player_y -= 50
+    if player_y >= 750:
+        player_y -= 50
 
     screen.fill('gray')  # K6ige alumine layer
 
-    # v2rvib 2ra teatud ruudud || 1 = roheline, 0 = sinine
+    # v2rvib 2ra teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     for i in range(len(terrain_data)):
         for j in range(len(terrain_data[i])):
-            cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
-            pygame.draw.rect(screen, cell_color, (j * 50, i * 50, 50, 50))
+            if terrain_data[i][j] == 1:
+                cell_color = 'green'
+            if terrain_data[i][j] == 2:
+                cell_color = 'gray'
+            elif terrain_data[i][j] == 0:
+                cell_color = 'blue'
+            # cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
+            pygame.draw.rect(screen, cell_color, (j * player_size, i * player_size, player_size, player_size))
 
-    player_rect = pygame.Rect(player_x, player_y, 50, 50)  # Playeri koordinaadid visuaalseks v2ljatoomiseks
-    pygame.draw.rect(screen, 'YELLOW', player_rect)  # Visuaalselt playeri v2ljatoomine
+    player_rect = pygame.Rect(
+        player_x, player_y, 50, 50
+    )  # Playeri koordinaadid visuaalseks v2ljatoomiseks
+    pygame.draw.rect(screen, 'yellow', player_rect)  # Visuaalselt playeri v2ljatoomine
 
     # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
     if player_col < 0:
@@ -132,19 +142,19 @@ while True:
     # Mis blocki peal seisab
     player_terrain_value = terrain_data[player_row][player_col]
     if player_terrain_value == 0:
-        print("vesi")
+        print('Position: water')
     if player_terrain_value == 1:
-        print("maa")
+        print('Position: terrain')
     else:
-        pass
+        print('Position: unknown')
 
     set_framerate.tick(60)  # fps limit
-    pygame.display.update()
+    pygame.display.update()  # update display
 
     # print statementidd
-    print(f"Grid coordinates: {player_col, player_row}")
-    print(f"Location coordinates: {new_player_x, new_player_y}")
-    print(f"Columns: {Ymax}, Rows: {Xmax}")
-    print(f"Player speed: {user.speed}")
+    print(f'Grid coordinates: {player_col, player_row}')
+    print(f'Location coordinates: {new_player_x, new_player_y}')
+    print(f'Columns: {Ymax}, Rows: {Xmax}')
+    print(f'Player speed: {user.speed}')
+    print(f'Terrain_data: {terrain_data}')
     print('\n')  # new line et terminalist oleks lihtsam lugeda
-
