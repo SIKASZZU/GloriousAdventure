@@ -21,7 +21,7 @@ Xmax = 750 // player_x
 
 terrain_data = [[0 for _ in range(Ymax)] for _ in range(Xmax)]  # Ehitab 2D matrixi 0idest.
 
-# terrain_data = []  # see kood on praeguse terrain_data lihtsamini kirjutatult.
+# terrain_data = []
 #for _ in range(Xmin):
 #    row = []
 #    for _ in range(Ymin):
@@ -33,7 +33,7 @@ terrain_data = [[0 for _ in range(Ymax)] for _ in range(Xmax)]  # Ehitab 2D matr
 center_x = Xmax // 2
 center_y = Ymax // 2
 
-max_distance = min(center_x, center_y)
+max_distance = min(center_x, center_y)  # max distance
 
 # Koostab islandi
 for x in range(Xmax):
@@ -111,7 +111,7 @@ while True:
             cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
             pygame.draw.rect(screen, cell_color, (j * 50, i * 50, 50, 50))
 
-    player_rect = pygame.Rect(player_x, player_y, 50, 50)  # Playeri koordinaadid visuaalseks v2ljatoomiseks
+    player_rect = pygame.Rect(player_x, player_y, 50, 50)
     pygame.draw.rect(screen, 'YELLOW', player_rect)  # Visuaalselt playeri v2ljatoomine
 
     # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
@@ -125,12 +125,15 @@ while True:
     elif player_row >= Xmax:
         player_row = 0
 
+
+
     set_framerate.tick(60)  # fps limit
-    pygame.display.update()
+    pygame.display.flip()
+
 
     # print statementid
-    print(f"Grid coordinates: {player_col, player_row}")
-    print(f"Location coordinates: {new_player_x, new_player_y}")
+    print(f"Grid coordinates: {player_col, player_row}")  # broken, ei vaata playerit vaid 1,1 ruutu
+    print(f"Location coordinates: {new_player_x, new_player_y}")  # broken, ei vaata playerit vaid 1,1 ruutu
     print(f"Columns: {Ymax}, Rows: {Xmax}")
     print(f"Player speed: {user.speed}")
     print('\n') # new line et terminalist oleks lihtsam lugeda
