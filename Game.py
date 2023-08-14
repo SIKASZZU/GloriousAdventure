@@ -1,13 +1,28 @@
 import pygame
+import sys
 import random
 import time
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 750))
-pygame.display.set_caption('GA')  # Window nimi
+pygame.display.set_caption("GA")  # Window nimi
 set_framerate = pygame.time.Clock()  # framerate
 
+##################
+##################
+
+# Mängija suurus
 player_size = 25
+
+
+# Hitboxi suurus
+hitbox_width = player_size
+hitbox_height = player_size
+
+player_color = "yellow"  # Default värv
+
+##################
+##################
 
 # Minimaalse ruudu summa arvutamine
 Ymax = 1000 // player_size
@@ -36,16 +51,24 @@ for x in range(Xmax):
         if random.random() < land_probability:  # random.random output = [0, 1]
             terrain_data[x][y] = 1
 
-
-#  muudab muru kiviks 1 --> 0
 for i in range(len(terrain_data)):
     for j in range(len(terrain_data[i])):
-        if terrain_data[i][j] == 1 and random.random() < 0.15:
+        if terrain_data[i][j] == 1 and random.random() < 0.03:
             terrain_data[i][j] = 2
 
 # Spawnib suvalisse kohta
 player_x = random.randint(0, 1000)
 player_y = random.randint(0, 750)
+
+
+class Player:
+    def __init__(self, health, stamina, speed):
+        self.health = health
+        self.stamina = stamina
+        self.speed = speed
+
+
+user = Player(health=10, stamina=10, speed=4)
 
 # GAME LOOP
 while True:
@@ -58,25 +81,9 @@ while True:
     # Liikumine
     keys = pygame.key.get_pressed()
 
-    class Player:
-        def __init__(self, speed):
-            self.speed = speed
-
     # Kalkuleerib gridilt kus mängija seisab
     player_col = player_x // 50
     player_row = player_y // 50
-
-    # Mis blocki peal seisab
-    try:
-        player_terrain_value = terrain_data[player_row][player_col]
-        if player_terrain_value == 0:  # Standing on water (0)
-            user = Player(speed=1)
-        if player_terrain_value == 1:  # Standing on terrain (1)
-            user = Player(speed=4)
-    except IndexError:  # tra seda try, excepti pole vaja aga just l2ks vaja niiet idk
-        print(
-            'Indexerror - Out of range: player_terrain_value = terrain_data[player_row][player_col]'
-        )
 
     new_player_x = player_x
     new_player_y = player_y
@@ -98,18 +105,19 @@ while True:
 
     # Nurgad
     if player_x <= -50:
-        player_x += 50
-
+        player_x = 950
     if player_x >= 1000:
-        player_x -= 50
-
+        player_x = 0
     if player_y <= -50:
-        player_y += 50
-
+        player_y = 700
     if player_y >= 750:
-        player_y -= 50
+        player_y = 0
 
-    screen.fill('gray')  # K6ige alumine layer
+    screen.fill('white')  # K6ige alumine layer
+
+    player_rect = pygame.Rect(
+        new_player_x, new_player_y, hitbox_width, hitbox_height
+    )  # Playeri koordinaadid visuaalseks v2ljatoomiseks
 
     # v2rvib 2ra teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     for i in range(len(terrain_data)):
@@ -121,40 +129,51 @@ while True:
             elif terrain_data[i][j] == 0:
                 cell_color = 'blue'
             # cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
-            pygame.draw.rect(screen, cell_color, (j * player_size, i * player_size, player_size, player_size))
+            terrain_rect = pygame.draw.rect(screen, cell_color, (j * player_size, i * player_size, player_size, player_size))
 
-    player_rect = pygame.Rect(
-        player_x, player_y, 50, 50
-    )  # Playeri koordinaadid visuaalseks v2ljatoomiseks
-    pygame.draw.rect(screen, 'yellow', player_rect)  # Visuaalselt playeri v2ljatoomine
+            pygame.draw.rect(screen, cell_color, terrain_rect)
 
-    # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
-    if player_col < 0:
-        player_col = Ymax - 1
-    elif player_col >= Ymax:
-        player_col = 0
+            # Check for collision with terrain cell
+            if player_rect.colliderect(terrain_rect):
+                print(
+                    f"Collision with {terrain_data[i][j]} at grid coordinates: ({j}, {i})"
+                )
 
-    if player_row < 0:
-        player_row = Xmax - 1
-    elif player_row >= Xmax:
-        player_row = 0
+                in_water = False
 
-    # Mis blocki peal seisab
-    player_terrain_value = terrain_data[player_row][player_col]
-    if player_terrain_value == 0:
-        print('Position: water')
-    if player_terrain_value == 1:
-        print('Position: terrain')
-    else:
-        print('Position: unknown')
+                if terrain_data[i][j] == 0:
+                    in_water = True
 
-    set_framerate.tick(60)  # fps limit
-    pygame.display.update()  # update display
+                elif terrain_data[i - 1][j] == 0:
+                    in_water = True
+
+                elif terrain_data[i][j - 1] == 0:
+                    in_water = True
+
+                elif terrain_data[i - 1][j - 1] == 0:
+                    in_water = True
+
+                else:
+                    player_color = "yellow"
+                    user.speed = 4
+                    in_water = False
+
+                if in_water == True:
+                    player_color = "red"
+                    user.speed = 1
+
+    # Hitboxi suuruse muutmiseks
+    player_col = (player_x + hitbox_width // 2) // player_size
+    player_row = (player_y + hitbox_height // 2) // player_size
+
+    pygame.draw.rect(screen, player_color, player_rect)
+
+    set_framerate.tick(60)
+    pygame.display.flip()  # Update the entire display
 
     # print statementidd
-    print(f'Grid coordinates: {player_col, player_row}')
-    print(f'Location coordinates: {new_player_x, new_player_y}')
-    print(f'Columns: {Ymax}, Rows: {Xmax}')
-    print(f'Player speed: {user.speed}')
-    print(f'Terrain_data: {terrain_data}')
-    print('\n')  # new line et terminalist oleks lihtsam lugeda
+    print(f"Grid coordinates: {player_col, player_row}")
+    print(f"Location coordinates: {new_player_x, new_player_y}")
+    print(f"Columns: {Ymax}, Rows: {Xmax}")
+    print(f"Player speed: {user.speed}")
+    print("\n")  # new line et terminalist oleks lihtsam lugeda
