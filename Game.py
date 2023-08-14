@@ -1,137 +1,101 @@
 import pygame
 import sys
 import random
+import time
 
-# Initialize Pygame
 pygame.init()
+screen = pygame.display.set_mode((1000, 750))
+pygame.display.set_caption("GA")  # Window nimi
+set_framerate = pygame.time.Clock()  # framerate
 
-# Screen dimensions
-SCREEN_WIDTH = 1600
-SCREEN_HEIGHT = 750
+# playeri suurused
+player_x = 50
+player_y = 50
 
-# Colors
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-BROWN = (139, 69, 19)
-BLUE = (0, 0, 255)
-GRAY = (128, 128, 128)
-YELLOW = (255, 255, 0)
+# Minimaalse ruudu summa arvutamine
+Ymin = 1024 // player_y
+Xmin = 786 // player_x
 
-# Character properties
-character_size = 30  # Reduced character size
-character_speed = 3
+# randomized mapi tegemine
+terrain_data = [[random.choice([0, 1]) for _ in range(Ymin)] for _ in range(Xmin)]  # random terrain
 
-# Terrain data
-terrain_data = [
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 0, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4],
-    [4, 4, 4, 4, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4],
-    [4, 4, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 4, 4, 4],
-    [4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4],
-    [4, 4, 4, 4, 0, 0, 1, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4, 4],
-    [4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 1, 0, 0, 4, 4, 4],
-    [4, 4, 4, 4, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4],
-    [4, 4, 4, 4, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-]
+while True:
 
-
-# Find a valid spawn location that is not water
-def find_valid_spawn():
-    while True:
-        x = random.randint(0, len(terrain_data[0]) - 1)
-        y = random.randint(0, len(terrain_data) - 1)
-        if terrain_data[y][x] != 4:
-            return x * 50, y * 50
-
-# Create the screen
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Controllable Character")
-
-# Get a valid spawn location for the character
-character_x, character_y = find_valid_spawn()
-
-# Clear the screen once
-screen.fill(BLUE)  # Use the blue color as the background
-pygame.display.flip()
-
-# Game loop
-running = True
-while running:
+    # Checkib kas user quitib v6i ei
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            exit()  # Kui seda ei oleks, runniks kood edasi, kuid pygame windowi enam ei ole. Tekib error.
 
-    # Get the state of all keys
+    # Liikumine
     keys = pygame.key.get_pressed()
 
-    # Calculate the character's potential new position
-    new_character_x = character_x
-    new_character_y = character_y
-    if keys[pygame.K_a]:  # Left
-        new_character_x -= character_speed
-    if keys[pygame.K_d]:  # Right
-        new_character_x += character_speed
-    if keys[pygame.K_w]:  # Up
-        new_character_y -= character_speed
-    if keys[pygame.K_s]:  # Down
-        new_character_y += character_speed
+    new_player_x = player_x
+    new_player_y = player_y
 
-    # Check if the potential new position is valid (not water) at each corner
-    corners = [
-        (new_character_x, new_character_y),
-        (new_character_x + character_size, new_character_y),
-        (new_character_x, new_character_y + character_size),
-        (new_character_x + character_size, new_character_y + character_size)
-    ]
-    valid_move = True
-    for corner_x, corner_y in corners:
-        corner_grid_x = corner_x // 50
-        corner_grid_y = corner_y // 50
-        if (
-            corner_grid_x < 0 or corner_grid_x >= len(terrain_data[0]) or
-            corner_grid_y < 0 or corner_grid_y >= len(terrain_data)
-        ):
-            valid_move = False
-            break
-        if terrain_data[int(corner_grid_y)][int(corner_grid_x)] == 4:
-            if (
-                keys[pygame.K_a] and corner_grid_x != int(character_x // 50) and corner_grid_y == int(character_y // 50)
-            ) or (
-                keys[pygame.K_w] and corner_grid_y != int(character_y // 50) and corner_grid_x == int(character_x // 50)
-            ):
-                valid_move = True
-            else:
-                valid_move = False
-            break
+    if keys[pygame.K_a]:  # is True, left
+        new_player_x = player_x - 10
+        
+    if keys[pygame.K_d]:  # right
+        new_player_x = player_x + 10
 
-    if valid_move:
-        character_x = new_character_x
-        character_y = new_character_y
+    if keys[pygame.K_w]:  # up
+        new_player_y = player_y - 10
+        
+    if keys[pygame.K_s]:  # down
+        new_player_y = player_y + 10
+    
+    player_x = new_player_x
+    player_y = new_player_y 
 
-    # Calculate camera position to center on the character
-    camera_x = character_x - SCREEN_WIDTH // 2
-    camera_y = character_y - SCREEN_HEIGHT // 2
+    # Nurgad
+    if player_x <= -50: player_x += 50
 
-    # Copy the previous frame to the screen
-    screen.fill(BLUE)  # Clear the screen with the blue color
+    if player_x >= 1024: player_x -= 50
 
-    # Draw terrain and character on the updated frame
-    for y, row in enumerate(terrain_data):
-        for x, terrain_type in enumerate(row):
-            terrain_color = GREEN if terrain_type == 0 else BROWN if terrain_type == 1 else GRAY if terrain_type == 2 else BLUE
-            pygame.draw.rect(screen, terrain_color, (x * 50 - camera_x, y * 50 - camera_y, 50, 50))
+    if player_y <= -50: player_y += 50
 
-    pygame.draw.rect(screen, YELLOW, (character_x - camera_x, character_y - camera_y, character_size, character_size))
+    if player_y >= 786: player_y -= 50 
+    
 
-    # Update the display
-    pygame.display.flip()
+    screen.fill('gray')  # K6ige alumine layer
 
-# Clean up
-pygame.quit()
-sys.exit()
+    # v2rvib 2ra teatud ruudud || 1 = roheline, 0 = sinine
+    for i in range(len(terrain_data)):
+        for j in range(len(terrain_data[i])):
+            cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
+            pygame.draw.rect(screen, cell_color, (j * 50, i * 50, 50, 50))
+
+    player_rect = pygame.Rect(player_x, player_y, 50, 50)  # Playeri koordinaadid visuaalseks v2ljatoomiseks
+    pygame.draw.rect(screen, 'YELLOW', player_rect)  # Visuaalselt playeri v2ljatoomine
+
+    # Kalkuleerib gridilt kus mängija seisab
+    player_col = player_x // 50
+    player_row = player_y // 50
+
+    # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
+    if player_col < 0:
+        player_col = Ymin - 1
+    elif player_col >= Ymin:
+        player_col = 0
+
+    if player_row < 0:
+        player_row = Xmin - 1
+    elif player_row >= Xmin:
+        player_row = 0
+
+    # Mis blocki peal seisab
+    player_terrain_value = terrain_data[player_row][player_col]
+    if player_terrain_value == 0: print("Currently standing on: water, (0)")
+    if player_terrain_value == 1: print("Currently standing on: terrain, (1)")
+
+    set_framerate.tick(60)  # fps limit
+    pygame.display.update()
+
+    # print statementid
+    #time.sleep(1)
+    print(f"player_col: {player_col}, player_row: {player_row}")
+    print(f"LOCATION X: {new_player_x}, LOCATION Y: {new_player_y}")
+    print(f"cols: {Ymin}, rows: {Xmin}")
+    print('\n') # new line et terminalist oleks lihtsam lugeda
+ 
