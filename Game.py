@@ -17,7 +17,7 @@ Ymin = 1024 // player_y
 Xmin = 786 // player_x
 
 # randomized mapi tegemine
-terrain_data = [[random.choice([0, 1]) for _ in range(Ymin)] for _ in range(Xmin)]  # random terrain
+terrain_data = [[random.choice([0, 0, 1]) for _ in range(Ymin)] for _ in range(Xmin)]  # random terrain
 
 while True:
 
@@ -30,21 +30,36 @@ while True:
     # Liikumine
     keys = pygame.key.get_pressed()
 
+    class Player():
+        def __init__(self, speed):
+            self.speed = speed
+
+    # Kalkuleerib gridilt kus mängija seisab
+    player_col = player_x // 50
+    player_row = player_y // 50
+
+    # Mis blocki peal seisab
+    player_terrain_value = terrain_data[player_row][player_col]
+    if player_terrain_value == 0:  # Standing on water (0)
+        user = Player(speed=3)
+    if player_terrain_value == 1:  # Standing on terrain (1)
+        user = Player(speed=10)
+
     new_player_x = player_x
     new_player_y = player_y
 
     if keys[pygame.K_a]:  # is True, left
-        new_player_x = player_x - 10
-        
+        new_player_x = player_x - user.speed
+
     if keys[pygame.K_d]:  # right
-        new_player_x = player_x + 10
+        new_player_x = player_x + user.speed
 
     if keys[pygame.K_w]:  # up
-        new_player_y = player_y - 10
-        
+        new_player_y = player_y - user.speed
+
     if keys[pygame.K_s]:  # down
-        new_player_y = player_y + 10
-    
+        new_player_y = player_y + user.speed
+
     player_x = new_player_x
     player_y = new_player_y 
 
@@ -69,10 +84,6 @@ while True:
     player_rect = pygame.Rect(player_x, player_y, 50, 50)  # Playeri koordinaadid visuaalseks v2ljatoomiseks
     pygame.draw.rect(screen, 'YELLOW', player_rect)  # Visuaalselt playeri v2ljatoomine
 
-    # Kalkuleerib gridilt kus mängija seisab
-    player_col = player_x // 50
-    player_row = player_y // 50
-
     # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
     if player_col < 0:
         player_col = Ymin - 1
@@ -84,18 +95,13 @@ while True:
     elif player_row >= Xmin:
         player_row = 0
 
-    # Mis blocki peal seisab
-    player_terrain_value = terrain_data[player_row][player_col]
-    if player_terrain_value == 0: print("Currently standing on: water, (0)")
-    if player_terrain_value == 1: print("Currently standing on: terrain, (1)")
-
     set_framerate.tick(60)  # fps limit
     pygame.display.update()
 
     # print statementid
-    #time.sleep(1)
-    print(f"player_col: {player_col}, player_row: {player_row}")
-    print(f"LOCATION X: {new_player_x}, LOCATION Y: {new_player_y}")
-    print(f"cols: {Ymin}, rows: {Xmin}")
+    print(f"Grid coordinates: {player_col, player_row}")
+    print(f"Location coordinates: {new_player_x, new_player_y}")
+    print(f"Columns: {Ymin}, Rows: {Xmin}")
+    print(f"Player speed: {user.speed}")
     print('\n') # new line et terminalist oleks lihtsam lugeda
  
