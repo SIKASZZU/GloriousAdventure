@@ -1,4 +1,4 @@
-# Mind tuleb importida nii:
+# Impordi nii:
 # from player import user
 
 class Player():
