@@ -8,7 +8,6 @@ screen = pygame.display.set_mode((1000, 750))
 pygame.display.set_caption("GA")  # Window nimi
 set_framerate = pygame.time.Clock()  # framerate
 
-
 ###
 
 # playeri suurused
@@ -21,8 +20,8 @@ Xmax = 750 // player_x
 
 terrain_data = [[0 for _ in range(Ymax)] for _ in range(Xmax)]  # Ehitab 2D matrixi 0idest.
 
-# terrain_data = []
-#for _ in range(Xmin):
+# terrain_data = []  # see kood on praeguse terrain_data lihtsamini kirjutatult.
+# for _ in range(Xmin):
 #    row = []
 #    for _ in range(Ymin):
 #        row.append(0)
@@ -33,7 +32,7 @@ terrain_data = [[0 for _ in range(Ymax)] for _ in range(Xmax)]  # Ehitab 2D matr
 center_x = Xmax // 2
 center_y = Ymax // 2
 
-max_distance = min(center_x, center_y)  # max distance
+max_distance = min(center_x, center_y)
 
 # Koostab islandi
 for x in range(Xmax):
@@ -44,7 +43,10 @@ for x in range(Xmax):
         if random.random() < land_probability:  # random.random output = [0, 1]
             terrain_data[x][y] = 1
 
-###
+# Spawnib suvalisse kohta
+player_x = random.randint(0, 1000)
+player_y = random.randint(0, 750)
+
 
 # GAME LOOP
 while True:
@@ -58,9 +60,11 @@ while True:
     # Liikumine
     keys = pygame.key.get_pressed()
 
+
     class Player():
         def __init__(self, speed):
             self.speed = speed
+
 
     # Kalkuleerib gridilt kus mängija seisab
     player_col = player_x // 50
@@ -92,7 +96,7 @@ while True:
         new_player_y = player_y + user.speed
 
     player_x = new_player_x
-    player_y = new_player_y 
+    player_y = new_player_y
 
     # Nurgad
     if player_x <= -50: player_x += 50
@@ -101,8 +105,8 @@ while True:
 
     if player_y <= -50: player_y += 50
 
-    if player_y >= 750: player_y -= 50 
-    
+    if player_y >= 750: player_y -= 50
+
     screen.fill('gray')  # K6ige alumine layer
 
     # v2rvib 2ra teatud ruudud || 1 = roheline, 0 = sinine
@@ -111,7 +115,7 @@ while True:
             cell_color = 'green' if terrain_data[i][j] == 1 else 'blue'
             pygame.draw.rect(screen, cell_color, (j * 50, i * 50, 50, 50))
 
-    player_rect = pygame.Rect(player_x, player_y, 50, 50)
+    player_rect = pygame.Rect(player_x, player_y, 50, 50)  # Playeri koordinaadid visuaalseks v2ljatoomiseks
     pygame.draw.rect(screen, 'YELLOW', player_rect)  # Visuaalselt playeri v2ljatoomine
 
     # Et mängija saaks mapist (mapist mitte ekraanist) välja mina - Et mäng ei crashiks
@@ -125,17 +129,22 @@ while True:
     elif player_row >= Xmax:
         player_row = 0
 
-
+    # Mis blocki peal seisab
+    player_terrain_value = terrain_data[player_row][player_col]
+    if player_terrain_value == 0:
+        print("vesi")
+    if player_terrain_value == 1:
+        print("maa")
+    else:
+        pass
 
     set_framerate.tick(60)  # fps limit
-    pygame.display.flip()
+    pygame.display.update()
 
-
-    # print statementid
-    print(f"Grid coordinates: {player_col, player_row}")  # broken, ei vaata playerit vaid 1,1 ruutu
-    print(f"Location coordinates: {new_player_x, new_player_y}")  # broken, ei vaata playerit vaid 1,1 ruutu
+    # print statementidd
+    print(f"Grid coordinates: {player_col, player_row}")
+    print(f"Location coordinates: {new_player_x, new_player_y}")
     print(f"Columns: {Ymax}, Rows: {Xmax}")
     print(f"Player speed: {user.speed}")
-    print('\n') # new line et terminalist oleks lihtsam lugeda
+    print('\n')  # new line et terminalist oleks lihtsam lugeda
 
- 
