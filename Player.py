@@ -1,5 +1,5 @@
 # Impordi nii:
-# from player import user
+# from player import user 
 
 class Player():
     def __init__(self, health, stamina, speed):
