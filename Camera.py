@@ -4,7 +4,7 @@ import random
 pygame.init()
 
 # Set up display dimensions
-screen_width, screen_height = 800, 600
+screen_width, screen_height = 100, 750
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Sectioned Camera Example")
 clock = pygame.time.Clock()
