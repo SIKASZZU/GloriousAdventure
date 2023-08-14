@@ -104,14 +104,14 @@ while True:
     player_y = new_player_y
 
     # Nurgad
-    if player_x <= -50:
-        player_x = 950
+    if player_x <= -player_size:
+        player_x += player_size
     if player_x >= 1000:
-        player_x = 0
-    if player_y <= -50:
-        player_y = 700
+        player_x -= player_size
+    if player_y <= -player_size:
+        player_y += player_size
     if player_y >= 750:
-        player_y = 0
+        player_y -= player_size
 
     screen.fill('white')  # K6ige alumine layer
 
