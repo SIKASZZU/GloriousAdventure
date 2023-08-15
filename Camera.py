@@ -43,6 +43,8 @@ max_distance = min(center_x, center_y)
 
 def new_island(seed):
     # Koostab islandi
+
+    # Mapile tekib seed nagu Minecraftis vms
     random.seed(seed)
     for x in range(Xmax):
         for y in range(Ymax):
