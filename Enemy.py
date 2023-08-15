@@ -1,5 +1,4 @@
-# Impordi nii:
-# from enemy import
+
 
 class Enemy:
     def __init__(self, types, health, speed):
@@ -7,4 +6,4 @@ class Enemy:
         self.health = health
         self.speed = speed
 
-shark.Enemy =
+type = Enemy(types=type, health=2, speed= 1.5)
