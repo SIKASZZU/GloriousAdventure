@@ -1,4 +1,4 @@
-# rock/tree groups
+# Minerals groups - rock/tree/ores/fishing spots ect
 # enemy class
 # inv + playeri statid ekraanile
 # camera angle pask
