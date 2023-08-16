@@ -157,3 +157,9 @@ class SpeedComponent:
 
     def get_speed(self):
         return self.current_speed
+
+class AttackSpeedComponent:
+    pass
+
+class HitBoxComponent:
+    pass
