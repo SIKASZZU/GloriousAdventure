@@ -35,17 +35,17 @@ class HealthComponent:
         self.min_health = min_health
         self.current_health = max(min_health, min(max_health, max_health))
         self.health_regeneration_rate = health_regeneration_rate
-        self.last_update_time = time.time()
+        self.health_last_update_time = time.time()
 
     def health_regenerate(self):
-        if self.last_update_time is None:
+        if self.health_last_update_time is None:
             return
 
-        health_regenerate_elapsed_time = time.time() - self.last_update_time
+        health_regenerate_elapsed_time = time.time() - self.health_last_update_time
         stamina_regained = health_regenerate_elapsed_time * self.health_regeneration_rate
         rounded_stamina_regained = math.floor(stamina_regained)
         self.current_health = min(self.current_health + rounded_stamina_regained, self.max_health)
-        self.last_update_time = time.time()
+        self.health_last_update_time = time.time()
 
     def heal(self, amount):
         self.current_health = min(self.current_health + amount, self.max_health)
@@ -94,31 +94,31 @@ class StaminaComponent:
         self.current_stamina = max(min_stamina, min(max_stamina, max_stamina))
         self.stamina_regeneration_rate = stamina_regeneration_rate
         self.stamina_degeneration_rate = stamina_degeneration_rate
-        self.last_update_time = time.time()
+        self.stamina_last_update_time = time.time()
 
     def use_stamina(self, amount):
         self.current_stamina = max(self.current_stamina - amount, self.min_stamina)
-        self.last_update_time = time.time()
+        self.stamina_last_update_time = time.time()
 
     def stamina_degenerate(self):
-        if self.last_update_time is None:
+        if self.stamina_last_update_time is None:
             return
 
-        stamina_degenerate_elapsed_time = time.time() - self.last_update_time
+        stamina_degenerate_elapsed_time = time.time() - self.stamina_last_update_time
         stamina_lost = stamina_degenerate_elapsed_time * self.stamina_degeneration_rate
         rounded_stamina_lost = math.floor(stamina_lost)
         self.current_stamina = max(self.current_stamina - rounded_stamina_lost, self.min_stamina)
-        self.last_update_time = time.time()
+        self.stamina_last_update_time = time.time()
 
     def stamina_regenerate(self):
-        if self.last_update_time is None:
+        if self.stamina_last_update_time is None:
             return
 
-        stamina_regenerate_elapsed_time = time.time() - self.last_update_time
+        stamina_regenerate_elapsed_time = time.time() - self.stamina_last_update_time
         stamina_regained = stamina_regenerate_elapsed_time * self.stamina_regeneration_rate
         rounded_stamina_regained = math.floor(stamina_regained)
         self.current_stamina = min(self.current_stamina + rounded_stamina_regained, self.max_stamina)
-        self.last_update_time = time.time()
+        self.stamina_last_update_time = time.time()
 
     def get_stamina(self):
         self.stamina_regenerate()
