@@ -15,13 +15,35 @@ code/välimus vms
 # arusaadavamaks
 # importid kõige üleval
 # ühte sorti asjad ühes kohas nt pole vaja panna game loopi sisse playersize = 10 juhul kui me seda muuta ei taha 
-# teha game class.. class Game:
-                     def funcid():
-                         pass
-                     def run():
-                        pass
-                      
-# lisada kui main on main
+# teha game class..
+class Game:
+    def __init__(self):
+        self.player = Player(...)
+    
+    def handle_events(self):
+        pass
+    
+    def update_player(self):
+        pass
+    
+    def check_collisions(self):
+        pass
+    
+    def render(self):
+        pass
+    
+# Game loop
+    def run(self):
+        while True:
+            self.handle_events()
+            self.update_player()
+            self.check_collisions()
+            self.render()
+
+
+game = Game()
+game.run()
+
 if __name__ == "__main__":
     run()
 
