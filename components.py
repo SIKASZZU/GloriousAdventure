@@ -70,7 +70,7 @@ class StaminaComponent:
       Use a specified amount of stamina. Decreases the current stamina and updates the last update time
       for regeneration calculations.
 
-    'degenerate(self):'
+    'stamina_degenerate(self):'
       Simulate gradual loss of stamina over time based on the degeneration rate.
       Updates the last update time for regeneration calculations.
 
