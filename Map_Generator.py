@@ -1,110 +1,77 @@
-import pygame
 import random
-import math
 
-# Define terrain types
-LAND = 0
-WATER = 1
-DEEP_WATER = 2
 
-# Pygame setup
-pygame.init()
-width, height = 800, 600
-screen = pygame.display.set_mode((width, height))
-clock = pygame.time.Clock()
+columns = 5
+rows = 5
 
-def generate_noise(width, height, scale):
-    noise_grid = []
-    for y in range(height):
-        row = []
-        for x in range(width):
-            value = random.uniform(-1, 1)
-            row.append(value)
-        noise_grid.append(row)
-    return noise_grid
 
-def interpolate(a, b, t):
-    return a * (1 - t) + b * t
+# teeb row ja column suuruse 2D matrixi green : 1 (terraini)
+terrain_data = {(row, column): {'color': 'green'} for row in range(rows) for column in range(columns)}
 
-def smooth_noise(noise_grid, x, y):
-    fraction_x = x - int(x)
-    fraction_y = y - int(y)
 
-    x1 = int(x) % len(noise_grid[0])
-    y1 = int(y) % len(noise_grid)
-    x2 = (x1 + 1) % len(noise_grid[0])
-    y2 = (y1 + 1) % len(noise_grid)
+# Muudab random green (terrain) ruudu blueks (wateriks)
+for _ in range(5):  
+    random_row = random.randint(0, rows - 1)
+    random_column = random.randint(0, columns - 1)
+    terrain_data[(random_row, random_column)] = {'color': 'blue'}
 
-    value = 0.0
-    value += interpolate(noise_grid[y1][x1], noise_grid[y1][x2], fraction_x) * (1 - fraction_y)
-    value += interpolate(noise_grid[y2][x1], noise_grid[y2][x2], fraction_x) * fraction_y
-    return value
 
-def generate_terrain(width, height, scale, octaves, persistence, lacunarity):
-    noise_grid = generate_noise(width, height, scale)
-    terrain = []
-    for y in range(height):
-        row = []
-        for x in range(width):
-            value = 0.0
-            frequency = 1
-            amplitude = 1
-            for _ in range(octaves):
-                value += smooth_noise(noise_grid, x * frequency / scale, y * frequency / scale) * amplitude
-                frequency *= lacunarity
-                amplitude *= persistence
-            row.append(value)
-        terrain.append(row)
-    return terrain
+# Kui on tekkinud 1 blue (water) ruut, ss yritab selle ymber juurde tekitada
+def change_terrain_to_water(terrain_change_tile):
+    try:
+      if random.random() < 0.8:
+          terrain_data[(random_row - 1, random_column - 1)] = {'color': 'blue'}
+          print(f'Changed {terrain_data[(random_row - 1, random_column - 1)]} to blue: 2')
+          print()
+    except KeyError:
+        print('Keyerror in function change_terrain_to_water')   
 
-def generate_terrain_types(terrain, water_threshold, deep_water_threshold):
-    terrain_types = []
-    for y in range(len(terrain)):
-        row = []
-        for x in range(len(terrain[0])):
-            value = terrain[y][x]
-            if value < deep_water_threshold:
-                row.append(DEEP_WATER)
-            elif value < water_threshold:
-                row.append(WATER)
-            else:
-                row.append(LAND)
-        terrain_types.append(row)
-    return terrain_types
 
-def render_terrain(terrain_types):
-    for y, row in enumerate(terrain_types):
-        for x, terrain_type in enumerate(row):
-            if terrain_type == DEEP_WATER:
-                color = (0, 0, 192)  # Light blue for deeper water
-            elif terrain_type == WATER:
-                color = (0, 0, 255)  # Blue for water
-            elif terrain_type == LAND:
-                color = (0, 100, 0)  # Dark green for land
-            pygame.draw.rect(screen, color, (x, y, 1, 1))
+# Kui on tekkinud 1 blue (water) ruut, ss yritab selle ymber juurde tekitada
+for _ in range(len(terrain_data)):
+    if terrain_data[(random_row, random_column)] == {'color': 'blue'}:
+      print(f'Found blue {terrain_data[(random_row, random_column)]}')
 
-# Terrain generation parameters
-scale = 50
-octaves = 6
-persistence = 0.5
-lacunarity = 2.0
+      try:  # Proovib muuta terraini VASAKUL
+        tile = terrain_data[(random_row, random_column - 1)]
+        if tile == {'color': 'blue'}:
+            pass  #  K6rval (vasakul) ruut on juba sinine
+        else:
+          change_terrain_to_water(tile)
+      except KeyError:
+        print('Keyerror #1')
 
-terrain = generate_terrain(width, height, scale, octaves, persistence, lacunarity)
+      try:  # Proovib muuta terraini PAREMAL
+        tile = terrain_data[(random_row, random_column + 1)]
+        if tile == {'color': 'blue'}:
+            pass  #  K6rval (paremal) ruut on juba sinine
+        else:
+          change_terrain_to_water(tile)     
+      except KeyError:
+        print('Keyerror #2')
 
-water_threshold = 0.3  # Adjust these thresholds as needed
-deep_water_threshold = 0.2
+      try:  # Proovib muuta terraini YLEVAL
+        tile = terrain_data[(random_row - 1, random_column)]
+        if tile == {'color': 'blue'}:
+            pass  #  K6rval (yleval) ruut on juba sinine
+        else:
+          change_terrain_to_water(tile)
 
-terrain_types = generate_terrain_types(terrain, water_threshold, deep_water_threshold)
+      except KeyError:
+        print('Keyerror #3')
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+      try:  # Proovib muuta terraini ALL
+        tile = terrain_data[(random_row + 1, random_column)]
+        if tile == {'color': 'blue'}:
+            pass  #  K6rval (all) ruut on juba sinine
+        else:
+          change_terrain_to_water(tile)
+      except KeyError:
+        print('Keyerror #4')
 
-    screen.fill((0, 0, 0))
-    render_terrain(terrain_types)
-    pygame.display.flip()
-    clock.tick(60)
 
-pygame.quit()
+# pohhuj printimine terminali
+for row in range(rows):
+    for column in range(columns):
+        print(terrain_data[(row, column)], end='\t')
+    print()
