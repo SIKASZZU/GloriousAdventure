@@ -1,12 +1,18 @@
 from components import HealthComponent
+from components import HungerComponent
 from components import StaminaComponent
 from components import SpeedComponent
+from components import HitBoxComponent
+
+from components import AttackComponent
 
 import time
 
+# hunger / hitbox / attack - pole tehtud
+
 
 class Player:
-    
+
     """
     Initialize a Player object with various attributes related to health, stamina, and speed.
 
@@ -24,7 +30,7 @@ class Player:
         max_speed (float): The maximum speed the player can achieve.
         min_speed (float): The minimum speed the player can have.
     """
-        
+
     def __init__(self, max_health, min_health, health_regeneration_rate,
                  max_stamina, min_stamina, stamina_regeneration_rate, stamina_degeneration_rate,
                  base_speed, max_speed, min_speed):
@@ -41,3 +47,4 @@ class Player:
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
+
