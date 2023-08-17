@@ -1,0 +1,30 @@
+# world_objects - rock/tree/ores/fishing spots ect
+# kännud mida saab lõhkuda kaevates ja kirvega pekstes ning ka farming pask
+
+
+# attack speed/hitbox - components
+# inv + playeri statid ekraanile
+# vee pask ära muuta stamina peale 
+
+map/worldgen
+# parem worldgen
+# camera angle pask  https://youtu.be/u7LPRqrzry8 min-26
+# tile color ära muuta, et läbi dicti võtaks - blocks = {"water": 0, "grass_block": 1}
+
+code/välimus vms
+# arusaadavamaks
+# importid kõige üleval
+# ühte sorti asjad ühes kohas nt pole vaja panna game loopi sisse playersize = 10 juhul kui me seda muuta ei taha 
+# teha game class.. class Game:
+                     def funcid():
+                         pass
+                     def run():
+                        pass
+                      
+# lisada kui main on main
+if __name__ == "__main__":
+    run()
+
+
+
+
