@@ -70,7 +70,7 @@ class StaminaComponent:
       Use a specified amount of stamina. Decreases the current stamina and updates the last update time
       for regeneration calculations.
 
-    'stamina_degenerate(self):'
+    'degenerate(self):'
       Simulate gradual loss of stamina over time based on the degeneration rate.
       Updates the last update time for regeneration calculations.
 
@@ -110,18 +110,18 @@ class StaminaComponent:
         self.current_stamina = max(self.current_stamina - rounded_stamina_lost, self.min_stamina)
         self.stamina_last_update_time = time.time()
 
-    def stamina_regenerate(self):
+    def stamina_regenerate(self, elapsed_time):
         if self.stamina_last_update_time is None:
             return
 
-        stamina_regenerate_elapsed_time = time.time() - self.stamina_last_update_time
+        stamina_regenerate_elapsed_time = elapsed_time
         stamina_regained = stamina_regenerate_elapsed_time * self.stamina_regeneration_rate
         rounded_stamina_regained = math.floor(stamina_regained)
         self.current_stamina = min(self.current_stamina + rounded_stamina_regained, self.max_stamina)
         self.stamina_last_update_time = time.time()
 
-    def get_stamina(self):
-        self.stamina_regenerate()
+    def get_stamina(self, elapsed_time):
+        self.stamina_regenerate(elapsed_time)
         return self.current_stamina
 
 
@@ -154,12 +154,19 @@ class SpeedComponent:
 
     def set_speed(self, speed):
         self.current_speed = max(min(speed, self.max_speed), self.min_speed)
+        return self.current_speed  # Return the newly set speed value
 
     def get_speed(self):
         return self.current_speed
 
-class AttackSpeedComponent:
+
+class AttackComponent:
     pass
+
+
+class HungerComponent:
+    pass
+
 
 class HitBoxComponent:
     pass
