@@ -5,6 +5,7 @@
 # attack speed/hitbox - components
 # inv + playeri statid ekraanile
 # vee pask ära muuta stamina peale 
+# 6:50 https://youtu.be/3OJx5x0jymM itemid
 
 map/worldgen
 # parem worldgen
