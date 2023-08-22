@@ -35,8 +35,8 @@ class Game:
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
 
-        self.X_max = 1000 // self.block_size
-        self.Y_max = 750 // self.block_size
+        self.X_max = 2000 // self.block_size
+        self.Y_max = 1500 // self.block_size
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
@@ -44,8 +44,26 @@ class Game:
         self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
         self.new_island(69)
 
-        self.player_x = random.randint(0, 1000)
-        self.player_y = random.randint(0, 750)
+        self.player_x = random.randint(400, 600)
+        self.player_y = random.randint(200, 550)
+
+        # camera stuff
+        self.camera_borders = {'left': 200, 'right': 200, 'top': 100, 'bottom': 100}
+        l = self.camera_borders['left'] 
+        t = self.camera_borders['top']
+        w = self.screen.get_size()[0]  - (self.camera_borders['left'] + self.camera_borders['right'])  # width
+        h = self.screen.get_size()[1]  - (self.camera_borders['top'] + self.camera_borders['bottom'])  # height
+        print(l, t, w, h)
+        self.camera_rect = pygame.Rect(l,t,w,h)
+        
+        ## camera offset
+        self.offset_x = 0
+        self.offset_y = 0
+
+        #self.terrain_offset = pygame.math.Vector2()
+        #self.half_w = self.screen.get_size()[0] // 2
+        #self.half_h = self.screen.get_size()[1] // 2
+
 
     def new_island(self, seed):
         # Koostab islandi
@@ -64,6 +82,7 @@ class Game:
             for j in range(len(self.terrain_data[i])):
                 if self.terrain_data[i][j] == 1 and random.random() < 0.03:
                     self.terrain_data[i][j] = 2
+
 
     def update_player(self):
         keys = pygame.key.get_pressed()
@@ -95,16 +114,17 @@ class Game:
                 self.stamina_regeneration_timer = 0
 
         if self.player.stamina.current_stamina == 0:
-            self.player.speed = 1  # Set the speed directly
+            self.player.speed = 10  # Set the speed directly
             print(self.player.speed)
         else:
-            self.player.speed = 4
+            self.player.speed = 10
 
         print(self.player.stamina.current_stamina)
 
 
         # Update the player's rectangle
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
+
 
     def check_collisions(self):
         for i in range(len(self.terrain_data)):
@@ -122,10 +142,33 @@ class Game:
                     )
 
                     if in_water:
-                        self.player.speed = 1
+                        self.player.speed = 10
+
+
+    # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
+    def box_target_camera(self):
+        if self.player_rect.left < self.camera_rect.left:
+            self.camera_rect.left = self.player_rect.left
+
+        if self.player_rect.right > self.camera_rect.right:
+            self.camera_rect.right = self.player_rect.right
+
+        if self.player_rect.top < self.camera_rect.top:
+            self.camera_rect.top = self.player_rect.top
+
+        if self.player_rect.bottom > self.camera_rect.bottom:
+            self.camera_rect.bottom = self.player_rect.bottom
+
+
+        self.offset_x = self.camera_borders['left'] - self.camera_rect.left  
+        self.offset_y = self.camera_borders['top'] - self.camera_rect.top
+
+        print(f"self.offset_x: {self.offset_x} = {self.camera_borders['left']} - {self.camera_rect.left}")
+        print(f"self.offset_y: {self.offset_y} = {self.camera_borders['top']} - {self.camera_rect.top}")
+
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
-    def render(self, offset_x, offset_y):
+    def render(self):
         self.screen.fill('white')  # Clear the screen with a black color
 
         for i in range(len(self.terrain_data)):
@@ -138,8 +181,8 @@ class Game:
                     cell_color = 'blue'
 
                 terrain_rect = pygame.Rect(
-                    j * self.block_size + offset_x,
-                    i * self.block_size + offset_y,
+                    j * self.block_size + self.offset_x,
+                    i * self.block_size + self.offset_y,
                     self.block_size, 
                     self.block_size
                 )
@@ -147,6 +190,7 @@ class Game:
                 pygame.draw.rect(self.screen, cell_color, terrain_rect)
 
         pygame.draw.rect(self.screen, self.player_color, self.player_rect)  # Draw the player rectangle
+        pygame.draw.rect(self.screen, 'yellow', self.camera_rect, 5)
         pygame.display.flip()
 
         self.set_frame_rate.tick(60)
@@ -156,7 +200,8 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.update_player()
             self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeid
-            self.render(50,50)  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
+            self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
+            self.box_target_camera()
             # print(self.player_x,
             #       self.player_y)
 if __name__ == "__main__":
