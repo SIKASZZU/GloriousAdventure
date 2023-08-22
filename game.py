@@ -31,7 +31,7 @@ class Game:
         self.block_size = 25
         # self.hit_box_width =
         # self.hit_box_height =
-        self.player_color = "white"
+        self.player_color = 'red'
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
 
@@ -54,13 +54,9 @@ class Game:
         random.seed(seed)
         for x in range(self.X_max):
             for y in range(self.Y_max):
-                distance_to_center = (
-                                             (x - self.center_x) ** 2 + (y - self.center_y) ** 2
-                                     ) ** 0.5  # Euclidean forumla
+                distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (
-                        normalized_distance ** 4
-                )  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                land_probability = 1 - (normalized_distance ** 4)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
 
@@ -129,8 +125,8 @@ class Game:
                         self.player.speed = 1
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
-    def render(self):
-        self.screen.fill((0, 0, 0))  # Clear the screen with a black color
+    def render(self, offset_x, offset_y):
+        self.screen.fill('white')  # Clear the screen with a black color
 
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
@@ -142,8 +138,10 @@ class Game:
                     cell_color = 'blue'
 
                 terrain_rect = pygame.Rect(
-                    j * self.block_size, i * self.block_size,
-                    self.block_size, self.block_size
+                    j * self.block_size + offset_x,
+                    i * self.block_size + offset_y,
+                    self.block_size, 
+                    self.block_size
                 )
 
                 pygame.draw.rect(self.screen, cell_color, terrain_rect)
@@ -158,7 +156,7 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.update_player()
             self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeid
-            self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
+            self.render(50,50)  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
             # print(self.player_x,
             #       self.player_y)
 if __name__ == "__main__":
