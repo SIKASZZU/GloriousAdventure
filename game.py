@@ -35,7 +35,7 @@ class Game:
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
 
-        self.X_max = 2000 // self.block_size
+        self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
@@ -74,7 +74,8 @@ class Game:
             for y in range(self.Y_max):
                 distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (normalized_distance ** 4)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                land_probability = 1 - (normalized_distance ** 49)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                print('land prob', land_probability)
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
 
@@ -114,10 +115,10 @@ class Game:
                 self.stamina_regeneration_timer = 0
 
         if self.player.stamina.current_stamina == 0:
-            self.player.speed = 10  # Set the speed directly
+            self.player.speed = 20  # Set the speed directly
             print(self.player.speed)
         else:
-            self.player.speed = 10
+            self.player.speed = 20
 
         print(self.player.stamina.current_stamina)
 
