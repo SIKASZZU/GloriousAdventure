@@ -127,7 +127,7 @@ class Game:
         # Muudetakse playeri speedi ja võetakse staminat.
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
             if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s]:
-                self.stamina_bar_decay = 0
+                self.stamina_bar_decay = 0  # Kui stamina bari pole siis tuleb kui player liigub
                 self.player.speed = 20
                 self.player.stamina.use_stamina(0.05)
 
