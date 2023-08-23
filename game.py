@@ -42,7 +42,7 @@ class Game:
 
         self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
         # # # # # Seed # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-        self.new_island(69)
+        self.new_island(64)
 
         self.player_x = random.randint(400, 600)
         self.player_y = random.randint(200, 550)
@@ -51,17 +51,13 @@ class Game:
         self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
         l = self.camera_borders['left']
         t = self.camera_borders['top']
-        w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])  # width
-        h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])  # height
+        w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l, t, w, h)
 
         # camera offset
         self.offset_x = 0
         self.offset_y = 0
-
-        # self.terrain_offset = pygame.math.Vector2()
-        # self.half_w = self.screen.get_size()[0] // 2
-        # self.half_h = self.screen.get_size()[1] // 2
 
     def new_island(self, seed):
         # Koostab islandi
@@ -72,8 +68,7 @@ class Game:
             for y in range(self.Y_max):
                 distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (
-                            normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                land_probability = 1 - (normalized_distance ** 213)  # Suurendab (1) v6imalust tekkida mapi keskele.
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
 
@@ -159,12 +154,9 @@ class Game:
         self.offset_x = self.camera_borders['left'] - self.camera_rect.left
         self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
-        # print(f"self.offset_x: {self.offset_x} = {self.camera_borders['left']} - {self.camera_rect.left}")
-        # print(f"self.offset_y: {self.offset_y} = {self.camera_borders['top']} - {self.camera_rect.top}")
-
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     def render(self):
-        self.screen.fill('blue')  # Clear the screen with a black color
+        self.screen.fill('blue')  # Teeb ülejäänud ala siniseks
 
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
