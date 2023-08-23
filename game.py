@@ -73,11 +73,10 @@ class Game:
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
 
     def stamina_bar_update(self):
-        if self.stamina_bar_decay == 50:
+        if self.stamina_bar_decay == 120:
             self.stamina_rect_bg = pygame.Rect(0, 0, 0, 0)
             self.stamina_rect = pygame.Rect(0, 0, 0, 0)
             self.stamina_rect_border = pygame.Rect(0, 0, 0, 0)
-            self.stamina_bar_decay = 0
 
         if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
             self.stamina_bar_decay += 1
@@ -122,13 +121,13 @@ class Game:
         # Update player's position and stamina
         self.player_x = new_player_x
         self.player_y = new_player_y
-
         self.player.speed = 4
 
         # Kui hoitakse all Shifti ja a, d, w, s:
         # Muudetakse playeri speedi ja võetakse staminat.
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
             if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s]:
+                self.stamina_bar_decay = 0
                 self.player.speed = 20
                 self.player.stamina.use_stamina(0.05)
 
@@ -212,7 +211,7 @@ class Game:
             self.block_size,
         )
 
-        if self.stamina_bar_decay < 120:
+        if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
