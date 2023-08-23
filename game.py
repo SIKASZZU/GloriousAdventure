@@ -4,9 +4,6 @@ import random
 
 from game_entities import Player
 
-from timer import Timer
-
-
 class Game:
 
     @staticmethod
@@ -74,6 +71,9 @@ class Game:
         self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
 
+        # interaction box
+        self.interaction_rect = pygame.Rect(0,0,0,0)
+
     def stamina_bar_update(self):
         if self.stamina_bar_decay == 120:
             self.stamina_rect_bg = pygame.Rect(0, 0, 0, 0)
@@ -110,16 +110,36 @@ class Game:
         keys = pygame.key.get_pressed()
         new_player_x = self.player_x
         new_player_y = self.player_y
+        interaction_x = 0 
+        interaction_y = 0
 
         if keys[pygame.K_a]:
             new_player_x = self.player_x - self.player.speed
+            interaction_x = self.player_rect.left + self.offset_x
+            interaction_y = self.player_rect.top + self.offset_y
+            self.interaction_rect = pygame.Rect(interaction_x - 4 * self.block_size,
+                                                interaction_y - 1.5 * self.block_size, 100, 100)
+            
         if keys[pygame.K_d]:
             new_player_x = self.player_x + self.player.speed
+            interaction_x = self.player_rect.left + self.offset_x
+            interaction_y = self.player_rect.top + self.offset_y
+            self.interaction_rect = pygame.Rect(interaction_x + self.block_size,
+                                                interaction_y - 1.5 * self.block_size, 100, 100)
+            
         if keys[pygame.K_w]:
             new_player_y = self.player_y - self.player.speed
+            interaction_x = self.player_rect.left + self.offset_x
+            interaction_y = self.player_rect.top + self.offset_y
+            self.interaction_rect = pygame.Rect(interaction_x + -1.5 * self.block_size,
+                                                interaction_y - 4 * self.block_size, 100, 100)
+
         if keys[pygame.K_s]:
             new_player_y = self.player_y + self.player.speed
-
+            interaction_x = self.player_rect.left + self.offset_x
+            interaction_y = self.player_rect.top + self.offset_y
+            self.interaction_rect = pygame.Rect(interaction_x + -1.5 * self.block_size,
+                                                interaction_y + self.block_size, 100, 100)
         # Update player's position and stamina
         self.player_x = new_player_x
         self.player_y = new_player_y
@@ -218,6 +238,7 @@ class Game:
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
+        pygame.draw.rect(self.screen, 'yellow', self.interaction_rect, 2)
         pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
 
         pygame.display.flip()
