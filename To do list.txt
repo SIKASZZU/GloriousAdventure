@@ -4,50 +4,8 @@
 
 # attack speed/hitbox - components
 # inv + playeri statid ekraanile
-# vee pask ära muuta stamina peale 
 # 6:50 https://youtu.be/3OJx5x0jymM itemid
 
 map/worldgen
 # parem worldgen
-# camera angle pask  https://youtu.be/u7LPRqrzry8 min-26
 # tile color ära muuta, et läbi dicti võtaks - blocks = {"water": 0, "grass_block": 1}
-
-code/välimus vms
-# arusaadavamaks
-# importid kõige üleval
-# ühte sorti asjad ühes kohas nt pole vaja panna game loopi sisse playersize = 10 juhul kui me seda muuta ei taha 
-# teha game class..
-class Game:
-    def __init__(self):
-        self.player = Player(...)
-    
-    def handle_events(self):
-        pass
-    
-    def update_player(self):
-        pass
-    
-    def check_collisions(self):
-        pass
-    
-    def render(self):
-        pass
-    
-# Game loop
-    def run(self):
-        while True:
-            self.handle_events()
-            self.update_player()
-            self.check_collisions()
-            self.render()
-
-
-game = Game()
-game.run()
-
-if __name__ == "__main__":
-    run()
-
-
-
-
