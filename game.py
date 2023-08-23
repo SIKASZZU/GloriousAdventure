@@ -23,14 +23,12 @@ class Game:
         self.player = Player(
             max_health=20, min_health=0,
             max_stamina=20, min_stamina=0,
-            health_regeneration_rate=0.5, stamina_regeneration_rate=0.5, stamina_degeneration_rate=0.05,
+            health_regeneration_rate=0.5,
             base_speed=4, max_speed=10, min_speed=0.5
         )
 
         # Game-related attributes
         self.block_size = 25
-        # self.hit_box_width =
-        # self.hit_box_height =
         self.player_color = 'red'
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
@@ -42,6 +40,7 @@ class Game:
         self.max_distance = min(self.center_x, self.center_y)
 
         self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
+# # # # # Seed # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
         self.new_island(69)
 
         self.player_x = random.randint(400, 600)
@@ -102,24 +101,25 @@ class Game:
         self.player_x = new_player_x
         self.player_y = new_player_y
 
-        if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s]:
-            self.player.stamina.use_stamina(0.05)
-            self.stamina_regeneration_timer = 0
+        self.player.speed = 4
+
+        # Kui hoitakse all Shifti ja a, d, w, s:
+            # Muudetakse playeri speedi ja võetakse staminat.
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+            if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s]:
+                self.player.speed = 20
+                self.player.stamina.use_stamina(0.05)
+                
+            # Kui stamina on 0 siis playeri speed läheb sama
+            # kiireks kui enne shifti vajutamist oli.
+            if self.player.stamina.current_stamina == 0:
+                self.player.speed = base speed
+
+        if not keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+            self.player.stamina.stamina_regenerate(0.025)
+
         else:
-            self.stamina_regeneration_timer += 1
-
-            if self.stamina_regeneration_timer >= self.REGENERATION_DELAY:
-                elapsed_time = 1.0 / 60.0  # Assuming 60 FPS
-                self.player.stamina.stamina_regenerate(elapsed_time)
-                self.stamina_regeneration_timer = 0
-
-        if self.player.stamina.current_stamina == 0:
-            self.player.speed = 20  # Set the speed directly
-            print(self.player.speed)
-        else:
-            self.player.speed = 20
-
-        print(self.player.stamina.current_stamina)
+            self.player.speed = 4
 
         # Update the player's rectangle
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
@@ -140,7 +140,7 @@ class Game:
                     )
 
                     if in_water:
-                        self.player.speed = 10
+                        self.player.speed = 4
 
     # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
     def box_target_camera(self):
@@ -159,8 +159,8 @@ class Game:
         self.offset_x = self.camera_borders['left'] - self.camera_rect.left
         self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
-        print(f"self.offset_x: {self.offset_x} = {self.camera_borders['left']} - {self.camera_rect.left}")
-        print(f"self.offset_y: {self.offset_y} = {self.camera_borders['top']} - {self.camera_rect.top}")
+        # print(f"self.offset_x: {self.offset_x} = {self.camera_borders['left']} - {self.camera_rect.left}")
+        # print(f"self.offset_y: {self.offset_y} = {self.camera_borders['top']} - {self.camera_rect.top}")
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     def render(self):
