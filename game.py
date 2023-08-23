@@ -59,8 +59,29 @@ class Game:
         self.offset_x = 0
         self.offset_y = 0
 
+        # stamina bar
+        self.stamina_bar_size = 200
+        self.half_w = self.screen.get_size()[0] // 2
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # Kui staminat kulub, ss on background taga
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # K6igi stamina baride ymber border
+        self.stamina_bar_decay = 0
+
+        self.ratio = self.stamina_bar_size // self.player.stamina.max_stamina  # 200 // 20 = 10
+
+    def stamina_bar_update(self):
+        if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
+            self.stamina_bar_decay += 1
+            if self.stamina_bar_decay == 50:
+                self.stamina_rect_bg = pygame.Rect(0,0,0,0)
+                self.stamina_rect = pygame.Rect(0,0,0,0)
+                self.stamina_rect_border = pygame.Rect(0,0,0,0)
+                self.stamina_bar_decay == 0
+            else:
+                self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
+                self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # -6 ja +12 et 2ra centerida stamina bar.
+
+    # Koostab islandi
     def new_island(self, seed):
-        # Koostab islandi
 
         # Mapile tekib seed nagu Minecraftis vms
         random.seed(seed)
@@ -108,13 +129,14 @@ class Game:
             # kiireks kui enne shifti vajutamist oli.
             if self.player.stamina.current_stamina == 0:
                 self.player.speed = self.base_speed
+            else:
+                self.player.stamina.stamina_regenerate(0.025)
 
         # Kui ei hoia shifti all siis regeneb staminat
         if not keys[pygame.K_LSHIFT] and not keys[pygame.K_RSHIFT]:
             self.player.stamina.stamina_regenerate(0.025)
             self.player.speed = 4
 
-        # Update the player's rectangle
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
 
     def check_collisions(self):
@@ -183,9 +205,12 @@ class Game:
             self.block_size,
         )
 
-        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)  # Draw the player rectangle
-        pygame.display.flip()
+        pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)  # stamina background
+        pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)  # stamina bar itself
+        pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)  # stamina border
+        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)  # player
 
+        pygame.display.flip()
         self.set_frame_rate.tick(60)
 
     def run(self):
@@ -193,8 +218,9 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.update_player()
             self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeid
-            self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
             self.box_target_camera()
+            self.stamina_bar_update()
+            self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
             # print(self.player_x,
             #       self.player_y)
 
