@@ -24,7 +24,7 @@ class Game:
             max_health=20, min_health=0,
             max_stamina=20, min_stamina=0,
             health_regeneration_rate=0.5, stamina_regeneration_rate=0.5, stamina_degeneration_rate=0.05,
-            base_speed=0.5, max_speed=10, min_speed=0.5
+            base_speed=4, max_speed=10, min_speed=0.5
         )
 
         # Game-related attributes
@@ -48,22 +48,21 @@ class Game:
         self.player_y = random.randint(200, 550)
 
         # camera stuff
-        self.camera_borders = {'left': 200, 'right': 200, 'top': 100, 'bottom': 100}
-        l = self.camera_borders['left'] 
+        self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
+        l = self.camera_borders['left']
         t = self.camera_borders['top']
-        w = self.screen.get_size()[0]  - (self.camera_borders['left'] + self.camera_borders['right'])  # width
-        h = self.screen.get_size()[1]  - (self.camera_borders['top'] + self.camera_borders['bottom'])  # height
+        w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])  # width
+        h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])  # height
         print(l, t, w, h)
-        self.camera_rect = pygame.Rect(l,t,w,h)
-        
-        ## camera offset
+        self.camera_rect = pygame.Rect(l, t, w, h)
+
+        # camera offset
         self.offset_x = 0
         self.offset_y = 0
 
-        #self.terrain_offset = pygame.math.Vector2()
-        #self.half_w = self.screen.get_size()[0] // 2
-        #self.half_h = self.screen.get_size()[1] // 2
-
+        # self.terrain_offset = pygame.math.Vector2()
+        # self.half_w = self.screen.get_size()[0] // 2
+        # self.half_h = self.screen.get_size()[1] // 2
 
     def new_island(self, seed):
         # Koostab islandi
@@ -74,7 +73,8 @@ class Game:
             for y in range(self.Y_max):
                 distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (normalized_distance ** 49)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                land_probability = 1 - (
+                            normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
                 print('land prob', land_probability)
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
@@ -83,7 +83,6 @@ class Game:
             for j in range(len(self.terrain_data[i])):
                 if self.terrain_data[i][j] == 1 and random.random() < 0.03:
                     self.terrain_data[i][j] = 2
-
 
     def update_player(self):
         keys = pygame.key.get_pressed()
@@ -122,10 +121,8 @@ class Game:
 
         print(self.player.stamina.current_stamina)
 
-
         # Update the player's rectangle
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
-
 
     def check_collisions(self):
         for i in range(len(self.terrain_data)):
@@ -145,7 +142,6 @@ class Game:
                     if in_water:
                         self.player.speed = 10
 
-
     # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
     def box_target_camera(self):
         if self.player_rect.left < self.camera_rect.left:
@@ -160,13 +156,11 @@ class Game:
         if self.player_rect.bottom > self.camera_rect.bottom:
             self.camera_rect.bottom = self.player_rect.bottom
 
-
-        self.offset_x = self.camera_borders['left'] - self.camera_rect.left  
+        self.offset_x = self.camera_borders['left'] - self.camera_rect.left
         self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
         print(f"self.offset_x: {self.offset_x} = {self.camera_borders['left']} - {self.camera_rect.left}")
         print(f"self.offset_y: {self.offset_y} = {self.camera_borders['top']} - {self.camera_rect.top}")
-
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     def render(self):
@@ -184,13 +178,20 @@ class Game:
                 terrain_rect = pygame.Rect(
                     j * self.block_size + self.offset_x,
                     i * self.block_size + self.offset_y,
-                    self.block_size, 
+                    self.block_size,
                     self.block_size
                 )
 
                 pygame.draw.rect(self.screen, cell_color, terrain_rect)
 
-        pygame.draw.rect(self.screen, self.player_color, self.player_rect)  # Draw the player rectangle
+        player_rect_adjusted = pygame.Rect(
+            self.player_rect.left + self.offset_x,
+            self.player_rect.top + self.offset_y,
+            self.block_size,
+            self.block_size,
+        )
+
+        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)  # Draw the player rectangle
         pygame.draw.rect(self.screen, 'yellow', self.camera_rect, 5)
         pygame.display.flip()
 
@@ -205,6 +206,8 @@ class Game:
             self.box_target_camera()
             # print(self.player_x,
             #       self.player_y)
+
+
 if __name__ == "__main__":
     game = Game()
     game.run()
