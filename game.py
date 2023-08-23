@@ -61,24 +61,31 @@ class Game:
 
         # stamina bar
         self.stamina_bar_size = 200
+        self.stamina_bar_size_bg = 200
+        self.stamina_bar_size_border = 200
         self.half_w = self.screen.get_size()[0] // 2
-        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # Kui staminat kulub, ss on background taga
-        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # K6igi stamina baride ymber border
-        self.stamina_bar_decay = 0
 
+        self.stamina_bar_decay = 0
         self.ratio = self.stamina_bar_size // self.player.stamina.max_stamina  # 200 // 20 = 10
 
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, 725, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
+        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
+
     def stamina_bar_update(self):
+        if self.stamina_bar_decay == 50:
+            self.stamina_rect_bg = pygame.Rect(0, 0, 0, 0)
+            self.stamina_rect = pygame.Rect(0, 0, 0, 0)
+            self.stamina_rect_border = pygame.Rect(0, 0, 0, 0)
+            self.stamina_bar_decay = 0
+
         if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
             self.stamina_bar_decay += 1
-            if self.stamina_bar_decay == 50:
-                self.stamina_rect_bg = pygame.Rect(0,0,0,0)
-                self.stamina_rect = pygame.Rect(0,0,0,0)
-                self.stamina_rect_border = pygame.Rect(0,0,0,0)
-                self.stamina_bar_decay == 0
-            else:
-                self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
-                self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)  # -6 ja +12 et 2ra centerida stamina bar.
+        else:
+            self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
+            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6,725, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
+            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
 
     # Koostab islandi
     def new_island(self, seed):
@@ -205,10 +212,12 @@ class Game:
             self.block_size,
         )
 
-        pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)  # stamina background
-        pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)  # stamina bar itself
-        pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)  # stamina border
-        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)  # player
+        if self.stamina_bar_decay < 120:
+            pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
+            pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
+            pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
+
+        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
 
         pygame.display.flip()
         self.set_frame_rate.tick(60)
