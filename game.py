@@ -32,6 +32,7 @@ class Game:
         self.player_color = 'red'
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
+        self.base_speed = 4
 
         self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
@@ -72,9 +73,7 @@ class Game:
             for y in range(self.Y_max):
                 distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (
-                            normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
-                print('land prob', land_probability)
+                land_probability = 1 - (normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
 
@@ -113,7 +112,7 @@ class Game:
             # Kui stamina on 0 siis playeri speed läheb sama
             # kiireks kui enne shifti vajutamist oli.
             if self.player.stamina.current_stamina == 0:
-                self.player.speed = base speed
+                self.player.speed = self.base_speed
 
         if not keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
             self.player.stamina.stamina_regenerate(0.025)
@@ -128,9 +127,11 @@ class Game:
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
                 terrain_rect = pygame.Rect(
-                    j * self.block_size, i * self.block_size,
-                    self.block_size, self.block_size
-                )
+                    j * self.block_size, 
+                    i * self.block_size,
+                    self.block_size, 
+                    self.block_size
+                    )
 
                 if self.player_rect.colliderect(terrain_rect):
                     in_water = any(
@@ -192,7 +193,6 @@ class Game:
         )
 
         pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)  # Draw the player rectangle
-        pygame.draw.rect(self.screen, 'yellow', self.camera_rect, 5)
         pygame.display.flip()
 
         self.set_frame_rate.tick(60)
