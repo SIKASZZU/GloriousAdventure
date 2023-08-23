@@ -215,8 +215,8 @@ class Game:
 
         if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
-            pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
+            pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
         pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
 
