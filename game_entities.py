@@ -40,9 +40,7 @@ class Player:
                                       health_regeneration_rate=health_regeneration_rate)
 
         self.stamina = StaminaComponent(max_stamina=max_stamina,
-                                        min_stamina=min_stamina,
-                                        stamina_regeneration_rate=stamina_regeneration_rate,
-                                        stamina_degeneration_rate=stamina_degeneration_rate)
+                                        min_stamina=min_stamina)
 
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
