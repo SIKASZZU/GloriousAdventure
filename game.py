@@ -4,6 +4,8 @@ import random
 
 from game_entities import Player
 
+from timer import Timer
+
 
 class Game:
 
@@ -184,16 +186,16 @@ class Game:
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     def render(self):
-        self.screen.fill('blue')  # Teeb ülejäänud ala siniseks
+        self.screen.fill('blue')  # Teeb ülejäänud backgroundi siniseks
 
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
+                cell_color = 'blue'  # Default värv
+
                 if self.terrain_data[i][j] == 1:
                     cell_color = 'green'
-                if self.terrain_data[i][j] == 2:
+                elif self.terrain_data[i][j] == 2:
                     cell_color = 'gray'
-                elif self.terrain_data[i][j] == 0:
-                    cell_color = 'blue'
 
                 terrain_rect = pygame.Rect(
                     j * self.block_size + self.offset_x,
@@ -229,6 +231,7 @@ class Game:
             self.box_target_camera()
             self.stamina_bar_update()
             self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
+
             # print(self.player_x,
             #       self.player_y)
 
