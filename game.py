@@ -2,7 +2,9 @@ import pygame
 import sys
 import random
 
+from world_objects import minerals
 from game_entities import Player
+
 
 class Game:
 
@@ -22,8 +24,7 @@ class Game:
         self.player = Player(
             max_health=20, min_health=0,
             max_stamina=20, min_stamina=0,
-            health_regeneration_rate=0.5,
-            base_speed=4, max_speed=10, min_speed=0.5
+            base_speed=4, max_speed=10, min_speed=1
         )
 
         # Game-related attributes
@@ -32,6 +33,10 @@ class Game:
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
         self.base_speed = 4
+
+        self.inventory = {}  # Inventory dictionary itemite hoidmiseks
+
+
 
         self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
@@ -54,6 +59,9 @@ class Game:
         h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l, t, w, h)
 
+        # interaction box
+        self.interaction_rect = pygame.Rect(0, 0, 0, 0)
+
         # camera offset
         self.offset_x = 0
         self.offset_y = 0
@@ -70,9 +78,6 @@ class Game:
         self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, 725, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
-
-        # interaction box
-        self.interaction_rect = pygame.Rect(0,0,0,0)
 
     def stamina_bar_update(self):
         if self.stamina_bar_decay == 120:
@@ -110,8 +115,6 @@ class Game:
         keys = pygame.key.get_pressed()
         new_player_x = self.player_x
         new_player_y = self.player_y
-        interaction_x = 0 
-        interaction_y = 0
 
         if keys[pygame.K_a]:
             new_player_x = self.player_x - self.player.speed
@@ -119,14 +122,14 @@ class Game:
             interaction_y = self.player_rect.top + self.offset_y
             self.interaction_rect = pygame.Rect(interaction_x - 4 * self.block_size,
                                                 interaction_y - 1.5 * self.block_size, 100, 100)
-            
+
         if keys[pygame.K_d]:
             new_player_x = self.player_x + self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
             interaction_y = self.player_rect.top + self.offset_y
             self.interaction_rect = pygame.Rect(interaction_x + self.block_size,
                                                 interaction_y - 1.5 * self.block_size, 100, 100)
-            
+
         if keys[pygame.K_w]:
             new_player_y = self.player_y - self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
@@ -140,6 +143,7 @@ class Game:
             interaction_y = self.player_rect.top + self.offset_y
             self.interaction_rect = pygame.Rect(interaction_x + -1.5 * self.block_size,
                                                 interaction_y + self.block_size, 100, 100)
+
         # Update player's position and stamina
         self.player_x = new_player_x
         self.player_y = new_player_y
@@ -244,6 +248,50 @@ class Game:
         pygame.display.flip()
         self.set_frame_rate.tick(60)
 
+    def item_interaction(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_e]:
+            items_found = set()  # Hoiab leitud esemed
+            item_count = {}  # Hoiab leitud esemete arve
+
+            for i in range(len(self.terrain_data)):
+                for j in range(len(self.terrain_data[i])):
+                    terrain_x = j * self.block_size + self.offset_x
+                    terrain_y = i * self.block_size + self.offset_y
+                    if self.interaction_rect.collidepoint(terrain_x, terrain_y):
+                        for item_name, item_values in minerals.items():
+                            if self.terrain_data[i][j] == item_values[2]:
+                                items_found.add(item_name)  # Lisab leitud eseme nime
+
+            for item_name in items_found:
+                item_count[item_name] = 0  # Resetib itemi koguse kuna muidu fkupiks...
+
+            for i in range(len(self.terrain_data)):
+                for j in range(len(self.terrain_data[i])):
+                    terrain_x = j * self.block_size + self.offset_x
+                    terrain_y = i * self.block_size + self.offset_y
+                    if self.interaction_rect.collidepoint(terrain_x, terrain_y):
+                        for item_name, item_values in minerals.items():
+                            if self.terrain_data[i][j] == item_values[2] and item_name in items_found:
+                                item_count[item_name] += 1
+                                self.terrain_data[i][j] = 1  # Muudab terraini datat et maailm muutuks
+                                items_found.remove(item_name)  # Eemaldab eseme leitud hulgast
+
+                                # Lisab eseme inventuuri dicti
+                                if item_name in self.inventory:
+                                    self.inventory[item_name] += 1
+                                else:
+                                    self.inventory[item_name] = 1
+
+
+            # Prindib leitud asjad ja koguse
+            print("inv:")
+            for item_name, count in self.inventory.items():
+                if count == 1:
+                    print(f"{count} {item_name}")
+                else:
+                    print(f"{count} {item_name}s")
+
     def run(self):
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
@@ -252,6 +300,7 @@ class Game:
             self.box_target_camera()
             self.stamina_bar_update()
             self.render()  # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
+            self.item_interaction()
 
             # print(self.player_x,
             #       self.player_y)
