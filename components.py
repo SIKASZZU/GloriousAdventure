@@ -97,31 +97,16 @@ class StaminaComponent:
         self.stamina_last_update_time = time.time()
 
     def use_stamina(self, amount):
-        self.current_stamina = max(self.current_stamina - amount, self.min_stamina)
+        self.current_stamina = round(max(self.current_stamina - amount, self.min_stamina), 3)
         self.stamina_last_update_time = time.time()
 
-    def stamina_degenerate(self):
-        if self.stamina_last_update_time is None:
-            return
+    def stamina_regenerate(self, amount):
+        if self.current_stamina >= self.max_stamina:
+            self.max_stamina = 20
+        else:
+            self.current_stamina = round(self.current_stamina + amount, 3)
 
-        stamina_degenerate_elapsed_time = time.time() - self.stamina_last_update_time
-        stamina_lost = stamina_degenerate_elapsed_time * self.stamina_degeneration_rate
-        rounded_stamina_lost = math.floor(stamina_lost)
-        self.current_stamina = max(self.current_stamina - rounded_stamina_lost, self.min_stamina)
-        self.stamina_last_update_time = time.time()
-
-    def stamina_regenerate(self, elapsed_time):
-        if self.stamina_last_update_time is None:
-            return
-
-        stamina_regenerate_elapsed_time = elapsed_time
-        stamina_regained = stamina_regenerate_elapsed_time * self.stamina_regeneration_rate
-        rounded_stamina_regained = math.floor(stamina_regained)
-        self.current_stamina = min(self.current_stamina + rounded_stamina_regained, self.max_stamina)
-        self.stamina_last_update_time = time.time()
-
-    def get_stamina(self, elapsed_time):
-        self.stamina_regenerate(elapsed_time)
+    def get_stamina(self):
         return self.current_stamina
 
 
@@ -161,7 +146,9 @@ class SpeedComponent:
 
 
 class AttackComponent:
-    pass
+    def __init__(self, base_attack_speed, min_attack_speed, max_attack_speed):
+        self.base_attack_speed = base_attack_speed
+        self.current_speed = max(min_attack_speed, min(max_attack_speed, base_attack_speed))
 
 
 class HungerComponent:
