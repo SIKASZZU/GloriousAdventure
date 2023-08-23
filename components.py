@@ -88,12 +88,10 @@ class StaminaComponent:
       stamina_degeneration_rate (float): The rate at which stamina degenerates, in stamina points per second.
     """
 
-    def __init__(self, max_stamina, min_stamina, stamina_regeneration_rate, stamina_degeneration_rate):
+    def __init__(self, max_stamina, min_stamina):
         self.max_stamina = max_stamina
         self.min_stamina = min_stamina
         self.current_stamina = max(min_stamina, min(max_stamina, max_stamina))
-        self.stamina_regeneration_rate = stamina_regeneration_rate
-        self.stamina_degeneration_rate = stamina_degeneration_rate
         self.stamina_last_update_time = time.time()
 
     def use_stamina(self, amount):
