@@ -53,7 +53,6 @@ class Game:
         t = self.camera_borders['top']
         w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])  # width
         h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])  # height
-        print(l, t, w, h)
         self.camera_rect = pygame.Rect(l, t, w, h)
 
         # camera offset
