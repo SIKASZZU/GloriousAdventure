@@ -41,7 +41,7 @@ class Game:
         self.max_distance = min(self.center_x, self.center_y)
 
         self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
-# # # # # Seed # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        # # # # # Seed # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
         self.new_island(69)
 
         self.player_x = random.randint(400, 600)
@@ -72,7 +72,8 @@ class Game:
             for y in range(self.Y_max):
                 distance_to_center = ((x - self.center_x) ** 2 + (y - self.center_y) ** 2) ** 0.5  # Euclidean forumla
                 normalized_distance = distance_to_center / self.max_distance  # Output 0 kuni 1
-                land_probability = 1 - (normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
+                land_probability = 1 - (
+                            normalized_distance ** 213)  # Suurendasin terraini (1) v6imalust tekkida mapi keskele.
                 if random.random() < land_probability:  # random.random output = [0, 1]
                     self.terrain_data[x][y] = 1
 
@@ -102,21 +103,20 @@ class Game:
         self.player.speed = 4
 
         # Kui hoitakse all Shifti ja a, d, w, s:
-            # Muudetakse playeri speedi ja võetakse staminat.
+        # Muudetakse playeri speedi ja võetakse staminat.
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
             if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s]:
                 self.player.speed = 20
                 self.player.stamina.use_stamina(0.05)
-                
+
             # Kui stamina on 0 siis playeri speed läheb sama
             # kiireks kui enne shifti vajutamist oli.
             if self.player.stamina.current_stamina == 0:
                 self.player.speed = self.base_speed
 
-        if not keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+        # Kui ei hoia shifti all siis regeneb staminat
+        if not keys[pygame.K_LSHIFT] and not keys[pygame.K_RSHIFT]:
             self.player.stamina.stamina_regenerate(0.025)
-
-        else:
             self.player.speed = 4
 
         # Update the player's rectangle
@@ -126,11 +126,11 @@ class Game:
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
                 terrain_rect = pygame.Rect(
-                    j * self.block_size, 
+                    j * self.block_size,
                     i * self.block_size,
-                    self.block_size, 
+                    self.block_size,
                     self.block_size
-                    )
+                )
 
                 if self.player_rect.colliderect(terrain_rect):
                     in_water = any(
@@ -164,7 +164,7 @@ class Game:
 
     # värvib ära teatud ruudud || 2 = rock, 1 = terrain (muru), 0 = water
     def render(self):
-        self.screen.fill('white')  # Clear the screen with a black color
+        self.screen.fill('blue')  # Clear the screen with a black color
 
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
