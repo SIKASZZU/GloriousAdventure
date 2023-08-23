@@ -23,8 +23,6 @@ class Player:
 
         max_stamina (float): The maximum stamina value for the player.
         min_stamina (float): The minimum stamina value for the player.
-        stamina_regeneration_rate (float): The rate at which stamina regenerates for the player.
-        stamina_degeneration_rate (float): The rate at which stamina decreases over time.
 
         base_speed (float): The base speed of the player.
         max_speed (float): The maximum speed the player can achieve.
@@ -32,7 +30,7 @@ class Player:
     """
 
     def __init__(self, max_health, min_health, health_regeneration_rate,
-                 max_stamina, min_stamina, stamina_regeneration_rate, stamina_degeneration_rate,
+                 max_stamina, min_stamina,
                  base_speed, max_speed, min_speed):
 
         self.health = HealthComponent(max_health=max_health,
