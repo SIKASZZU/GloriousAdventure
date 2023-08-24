@@ -30,21 +30,10 @@ class HealthComponent:
       health_regeneration_rate (float): The rate at which health regenerates, in health points per second.
     """
 
-    def __init__(self, max_health, min_health, health_regeneration_rate):
+    def __init__(self, max_health, min_health):
         self.max_health = max_health
         self.min_health = min_health
         self.current_health = max(min_health, min(max_health, max_health))
-        self.health_regeneration_rate = health_regeneration_rate
-        self.health_last_update_time = time.time()
-
-    def health_regenerate(self):
-        if self.health_last_update_time is None:
-            return
-
-        health_regenerate_elapsed_time = time.time() - self.health_last_update_time
-        stamina_regained = health_regenerate_elapsed_time * self.health_regeneration_rate
-        rounded_stamina_regained = math.floor(stamina_regained)
-        self.current_health = min(self.current_health + rounded_stamina_regained, self.max_health)
         self.health_last_update_time = time.time()
 
     def heal(self, amount):
@@ -70,13 +59,9 @@ class StaminaComponent:
       Use a specified amount of stamina. Decreases the current stamina and updates the last update time
       for regeneration calculations.
 
-    'degenerate(self):'
-      Simulate gradual loss of stamina over time based on the degeneration rate.
-      Updates the last update time for regeneration calculations.
-
     'stamina_regenerate(self):'
-      Calculate and apply stamina regeneration based on elapsed time and the regeneration rate.
-      Ensures that the regenerated stamina is rounded down to the nearest whole number using math.floor.
+      Adds a specified amount of stamina. Increases the current stamina and updates the last update time
+      for regeneration calculations.
 
     'get_stamina(self):'
       Retrieve the current stamina value while applying regeneration if needed.
@@ -84,8 +69,6 @@ class StaminaComponent:
     Args:
       max_stamina (float): The maximum stamina value the component can hold.
       min_stamina (float): The minimum stamina value the component can have.
-      stamina_regeneration_rate (float): The rate at which stamina regenerates, in stamina points per second.
-      stamina_degeneration_rate (float): The rate at which stamina degenerates, in stamina points per second.
     """
 
     def __init__(self, max_stamina, min_stamina):
@@ -93,16 +76,26 @@ class StaminaComponent:
         self.min_stamina = min_stamina
         self.current_stamina = max(min_stamina, min(max_stamina, max_stamina))
         self.stamina_last_update_time = time.time()
+        self.timer = 0
+        self.timer_regen = 0
 
     def use_stamina(self, amount):
         self.current_stamina = round(max(self.current_stamina - amount, self.min_stamina), 3)
         self.stamina_last_update_time = time.time()
+        self.timer = 0
 
     def stamina_regenerate(self, amount):
-        if self.current_stamina >= self.max_stamina:
-            self.max_stamina = 20
+        if not self.current_stamina >= self.max_stamina:
+            self.timer += 1
+            if self.timer >= 60:
+                self.timer_regen += 1
+                if self.timer_regen >= 3:
+                    self.current_stamina = round(self.current_stamina + amount, 3)
+                    self.timer_regen = 0
+                    if self.current_stamina == self.max_stamina:
+                        self.timer = 0
         else:
-            self.current_stamina = round(self.current_stamina + amount, 3)
+            self.max_stamina = 20
 
     def get_stamina(self):
         return self.current_stamina
