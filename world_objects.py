@@ -2,45 +2,57 @@ from components import HealthComponent
 
 
 class Tree:
-    def __init__(self, max_health, min_health, health_regeneration_rate):
-        """
-        Initialize a Tree object with attributes related to health and regeneration.
 
-        Args:
-            max_health (float): The maximum health value for the tree.
-            min_health (float): The minimum health value for the tree.
-            health_regeneration_rate (float): The rate at which health regenerates for the tree.
-        """
+    """
+    Initialize a Tree object with attributes related to health and regeneration.
+
+    Args:
+        max_health (float): The maximum health value for the tree.
+        min_health (float): The minimum health value for the tree.
+    """
+
+    def __init__(self, max_health, min_health, value, image):
         self.health = HealthComponent(max_health=max_health,
-                                      min_health=min_health,
-                                      health_regeneration_rate=health_regeneration_rate)
+                                      min_health=min_health)
+        self.value = value
+        self.image = image
 
 
 class Stump:
-    def __init__(self, max_health, min_health, health_regeneration_rate):
-        """
-        Initialize a Stump object with attributes related to health and regeneration.
 
-        Args:
-            max_health (float): The maximum health value for the stump.
-            min_health (float): The minimum health value for the stump.
-            health_regeneration_rate (float): The rate at which health regenerates for the stump.
-        """
+    """
+    Initialize a Stump object with attributes related to health and regeneration.
+
+    Args:
+        max_health (float): The maximum health value for the stump.
+        min_health (float): The minimum health value for the stump.
+    """
+
+    def __init__(self, max_health, min_health, value):
         self.health = HealthComponent(max_health=max_health,
-                                      min_health=min_health,
-                                      health_regeneration_rate=health_regeneration_rate)
+                                      min_health=min_health)
+        self.value = value
 
 
 class Stone:
-    def __init__(self, max_health, min_health, health_regeneration_rate):
-        """
-        Initialize a Stone object with attributes related to health and regeneration.
 
-        Args:
-            max_health (float): The maximum health value for the stone.
-            min_health (float): The minimum health value for the stone.
-            health_regeneration_rate (float): The rate at which health regenerates for the stone.
-        """
+    """
+    Initialize a Stone object with attributes related to health and regeneration.
+
+    Args:
+        max_health (float): The maximum health value for the stone.
+        min_health (float): The minimum health value for the stone.
+    """
+
+    def __init__(self, max_health, min_health, value):
         self.health = HealthComponent(max_health=max_health,
-                                      min_health=min_health,
-                                      health_regeneration_rate=health_regeneration_rate)
+                                      min_health=min_health)
+        self.value = value
+
+
+# Max hp, Min hp, Value
+minerals = {"Tree": (5, 0, 4),
+            "Stone": (0, 0, 2),
+            }
+
+
