@@ -16,8 +16,10 @@ class Game:
                 sys.exit()
 
     def __init__(self):
+        self.screen_x = 1000
+        self.screen_y = 750
         pygame.init()
-        self.screen = pygame.display.set_mode((1000, 750))
+        self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
         pygame.display.set_caption("GA")
         self.set_frame_rate = pygame.time.Clock()
 
@@ -35,14 +37,22 @@ class Game:
         self.base_speed = 4
 
         # Inventory display settings
+        # Create inventory display rects
         self.inventory_display_rects = [
             pygame.Rect(50, 50, 50, 50),
             pygame.Rect(100, 50, 50, 50),
             pygame.Rect(150, 50, 50, 50),
             pygame.Rect(200, 50, 50, 50),
+            pygame.Rect(250, 50, 50, 50),
         ]
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
+
+        # Itemite pildid
+        self.item_images = {
+            "Tree": pygame.image.load("images/Tree.PNG"),
+            "Stone": pygame.image.load("images/Stone.PNG"),
+        }
 
         self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
@@ -81,9 +91,9 @@ class Game:
         self.stamina_bar_decay = 0
         self.ratio = self.stamina_bar_size // self.player.stamina.max_stamina  # 200 // 20 = 10
 
-        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, 725, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
-        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
-        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
+        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
 
     def stamina_bar_update(self):
         if self.stamina_bar_decay == 120:
@@ -95,10 +105,9 @@ class Game:
             self.stamina_bar_decay += 1
         else:
             self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
-            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6,725, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
-            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, 725, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
-            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, 725, self.stamina_bar_size + 12, 15)
-
+            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
+            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
     def render_inventory(self):
         # Invi hall taust
         inventory_bar_rect = pygame.Rect(50, 50, 250, 50)
@@ -108,23 +117,26 @@ class Game:
         for rect in self.inventory_display_rects:
             pygame.draw.rect(self.screen, 'black', rect, 2)
 
-        # Näitab itemit ja palju seda on
         for rect, (item_name, count) in zip(self.inventory_display_rects, self.inventory.items()):
             item_color = minerals.get(item_name, 'black')
-
-            # item_name on item mis ta leidsis ja selle pilti oleks ka vaja ju
-            item_rect = pygame.Rect(
-                rect.x + (rect.x / 1.4) / 4,
-                rect.width + (rect.width / 1.4) / 4,
-                rect.y / 1.4, rect.height / 1.4)
-
+            item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
             pygame.draw.rect(self.screen, item_color, item_rect)
-            text_x = rect.centerx
-            text_y = rect.centery + rect.height // 4
+
+            # Retrieve the item image from the item_images dictionary
+            item_image = self.item_images.get(item_name)
+            if item_image is not None:
+                # Resize the item image to fit within the item_rect
+                item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
+
+                # Calculate the position to center the item image within the item_rect
+                item_image_rect = item_image.get_rect(center=item_rect.center)
+
+                # Draw the resized item image onto the screen
+                self.screen.blit(item_image, item_image_rect.topleft)
 
             font = pygame.font.Font(None, 20)
             text = font.render(str(count), True, 'White')
-            text_rect = text.get_rect(center=(text_x, text_y))
+            text_rect = text.get_rect(center=(rect.x+10, rect.y+10))
             self.screen.blit(text, text_rect)
 
         inventory_bar_rect = pygame.Rect(50, 50, 250, 50)
