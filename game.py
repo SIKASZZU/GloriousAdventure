@@ -124,11 +124,12 @@ class Game:
             [(0, 0), (65, 65)]
         ]
 
-        self.animation_index = 0  # Start with left animation
+        self.animation_index = 3  # Vaatab alla
         self.frame_index = 0
         self.idle_frame_index = 0
-        self.frame_delay = 10  # Adjust the delay based on animation speed
-        self.idle_frame_delay = 5  # Adjust the delay for idle animation
+        self.frame_delay = 10
+        self.idle_frame_delay = 5
+        self.animation_timer = 0
 
         self.clock = pygame.time.Clock()
 
@@ -230,7 +231,7 @@ class Game:
         x, y = self.animations[self.animation_index][0]
         width, height = self.animations[self.animation_index][1]
         self.frame = sprite_sheet.get_image(x + self.frame_index * width, y, width, height)
-        self.frame_index = (self.frame_index + 1) % 4  # Assuming 4 frames per animation
+        self.frame_index = (self.frame_index + 1) % 4
 
         self.screen.blit(self.frame, (self.player_x, self.player_y))
 
@@ -318,13 +319,12 @@ class Game:
         # Renderdab inventuuri
         inventory.render_inventory(self)
 
-        # Blit the animation frame at the player's current position
+        # Displayb playeri animatsiooni
         self.screen.blit(self.frame, player_position_adjusted)
 
         # Värskendab ekraani ja hoiab mängu kiirust 60 kaadrit sekundis
         pygame.display.flip()
         self.set_frame_rate.tick(60)
-
 
     def run(self):
         while True:
