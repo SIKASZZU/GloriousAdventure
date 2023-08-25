@@ -4,6 +4,7 @@ import random
 
 from world_objects import minerals
 from game_entities import Player
+import camera
 
 
 class Game:
@@ -35,6 +36,7 @@ class Game:
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
         self.base_speed = 4
+        self.generated_ground_images = None
 
         # Inventory display settings
         self.inventory_display_rects = [
@@ -93,21 +95,10 @@ class Game:
 
         self.player_x = random.randint(400, 600)
         self.player_y = random.randint(200, 550)
-
-        # camera stuff
-        self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
-        l = self.camera_borders['left']
-        t = self.camera_borders['top']
-        w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
-        h = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
-        self.camera_rect = pygame.Rect(l, t, w, h)
+        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
 
         # interaction box
         self.interaction_rect = pygame.Rect(0, 0, 0, 0)
-
-        # camera offset
-        self.offset_x = 0
-        self.offset_y = 0
 
         # stamina bar
         self.stamina_bar_size = 200
@@ -121,6 +112,9 @@ class Game:
         self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
+
+        #self.camera_rect = pygame.Rect(self.l, self.t, self.w, self.h)
+
 
     def stamina_bar_update(self):
         if self.stamina_bar_decay == 120:
@@ -270,6 +264,7 @@ class Game:
             self.player.stamina.stamina_regenerate(0.05)
             self.player.speed = 4
 
+
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
 
     def check_collisions(self):
@@ -291,23 +286,6 @@ class Game:
 
                     if in_water:
                         self.player.speed = 4
-
-    # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
-    def box_target_camera(self):
-        if self.player_rect.left < self.camera_rect.left:
-            self.camera_rect.left = self.player_rect.left
-
-        if self.player_rect.right > self.camera_rect.right:
-            self.camera_rect.right = self.player_rect.right
-
-        if self.player_rect.top < self.camera_rect.top:
-            self.camera_rect.top = self.player_rect.top
-
-        if self.player_rect.bottom > self.camera_rect.bottom:
-            self.camera_rect.bottom = self.player_rect.bottom
-
-        self.offset_x = self.camera_borders['left'] - self.camera_rect.left
-        self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
     def render(self):
         # Tühjendab ekraani siniseks
@@ -415,7 +393,8 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
             self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeid
-            self.box_target_camera()  # Box camera, et player ei saaks boxist välja minna vms
+            
+            camera.Camera.box_target_camera(self)  # Box camera, et player ei saaks boxist välja minna vms
             self.stamina_bar_update()  # Stamina bar
             self.render()  # Renderib terraini
             self.item_interaction()  # Loeb ja korjab itemeid
