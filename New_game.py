@@ -6,6 +6,7 @@ from world_objects import minerals
 from game_entities import Player
 from camera import Camera
 import stamina
+import inventory
 
 class Game:
 
@@ -120,41 +121,6 @@ class Game:
         self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
-
-
-    def render_inventory(self):
-        # Invi hall taust
-        inventory_bar_rect = pygame.Rect(50, 50, 450, 50)
-        pygame.draw.rect(self.screen, '#B1B1B1', inventory_bar_rect)
-
-        # Mustad boxid itemite ümber
-        for rect in self.inventory_display_rects:
-            pygame.draw.rect(self.screen, 'black', rect, 2)
-
-        for rect, (item_name, count) in zip(self.inventory_display_rects, self.inventory.items()):
-            item_color = minerals.get(item_name, 'black')
-            item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(self.screen, item_color, item_rect)
-
-            # Paneb invile pildid
-            item_image = self.item_images.get(item_name)
-            if item_image is not None:
-                # Resize
-                item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
-
-                # Paneb itembi invi boxi keskele
-                item_image_rect = item_image.get_rect(center=item_rect.center)
-
-                # Displayb resized itemit
-                self.screen.blit(item_image, item_image_rect.topleft)
-
-            font = pygame.font.Font(None, 20)
-            text = font.render(str(count), True, 'White')
-            text_rect = text.get_rect(center=(rect.x+10, rect.y+10))
-            self.screen.blit(text, text_rect)
-
-        inventory_bar_rect = pygame.Rect(50, 50, 450, 50)
-        pygame.draw.rect(self.screen, 'black', inventory_bar_rect, 4)  # Paksem border
 
     # Koostab uue saare
     def new_island(self, seed):
@@ -337,7 +303,7 @@ class Game:
         pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
 
         # Renderdab inventuuri
-        self.render_inventory()
+        inventory.render_inventory(self)
 
         # Värskendab ekraani ja hoiab mängu kiirust 60 kaadrit sekundis
         pygame.display.flip()
