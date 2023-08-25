@@ -30,7 +30,7 @@ class Game:
         )
 
         # Game-related attributes
-        self.block_size = 50
+        self.block_size = 100
         self.player_color = 'red'
         self.REGENERATION_DELAY = 2
         self.stamina_regeneration_timer = 0
@@ -150,16 +150,16 @@ class Game:
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
             pygame.draw.rect(self.screen, item_color, item_rect)
 
-            # Retrieve the item image from the item_images dictionary
+            # Paneb invile pildid
             item_image = self.item_images.get(item_name)
             if item_image is not None:
-                # Resize the item image to fit within the item_rect
+                # Resize
                 item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
 
-                # Calculate the position to center the item image within the item_rect
+                # Paneb itembi invi boxi keskele
                 item_image_rect = item_image.get_rect(center=item_rect.center)
 
-                # Draw the resized item image onto the screen
+                # Displayb resized itemit
                 self.screen.blit(item_image, item_image_rect.topleft)
 
             font = pygame.font.Font(None, 20)
@@ -212,29 +212,38 @@ class Game:
             new_player_x = self.player_x - self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
             interaction_y = self.player_rect.top + self.offset_y
-            self.interaction_rect = pygame.Rect(interaction_x - 4 * self.block_size,
-                                                interaction_y - 1.5 * self.block_size, 100, 100)
+            self.interaction_rect = pygame.Rect(interaction_x - self.block_size * 2,
+                                                interaction_y - self.block_size / 1.35,
+                                                2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_d]:
             new_player_x = self.player_x + self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
             interaction_y = self.player_rect.top + self.offset_y
-            self.interaction_rect = pygame.Rect(interaction_x + self.block_size,
-                                                interaction_y - 1.5 * self.block_size, 100, 100)
+            self.interaction_rect = pygame.Rect(interaction_x + self.block_size / 2,
+                                                interaction_y - self.block_size / 1.35,
+                                                2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_w]:
             new_player_y = self.player_y - self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
             interaction_y = self.player_rect.top + self.offset_y
-            self.interaction_rect = pygame.Rect(interaction_x + -1.5 * self.block_size,
-                                                interaction_y - 4 * self.block_size, 100, 100)
+            self.interaction_rect = pygame.Rect(interaction_x - self.block_size / 1.35,
+                                                interaction_y - self.block_size * 2,
+                                                2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_s]:
             new_player_y = self.player_y + self.player.speed
             interaction_x = self.player_rect.left + self.offset_x
             interaction_y = self.player_rect.top + self.offset_y
-            self.interaction_rect = pygame.Rect(interaction_x + -1.5 * self.block_size,
-                                                interaction_y + self.block_size, 100, 100)
+            self.interaction_rect = pygame.Rect(interaction_x - self.block_size / 1.35,
+                                                interaction_y + self.block_size / 2,
+                                                2 * self.block_size, 2 * self.block_size)
+
+        if keys[pygame.K_w]:
+            new_player_y = self.player_y - self.player.speed
+            interaction_x = self.player_rect.left + self.offset_x
+            interaction_y = self.player_rect.top + self.offset_y
 
         # Update player's position and stamina
         self.player_x = new_player_x
@@ -254,11 +263,11 @@ class Game:
             if self.player.stamina.current_stamina == 0:
                 self.player.speed = self.base_speed
             else:
-                self.player.stamina.stamina_regenerate(0.025)
+                self.player.stamina.stamina_regenerate(0.05)
 
         # Kui ei hoia shifti all siis regeneb staminat
         if not keys[pygame.K_LSHIFT] and not keys[pygame.K_RSHIFT]:
-            self.player.stamina.stamina_regenerate(0.025)
+            self.player.stamina.stamina_regenerate(0.05)
             self.player.speed = 4
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size, self.block_size)
