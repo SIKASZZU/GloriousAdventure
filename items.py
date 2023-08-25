@@ -12,3 +12,8 @@ items = {"Tree":    (5, 0, "b_0001", item_images.get("Tree")),
              "Axe":     (0, 0, "i_0002", item_images.get("Axe")),
              "Apple":   (0, 0, "c_0001", item_images.get("Apple")),
              }
+
+minerals = {"Tree":    (5, 0, 4),
+            "Stone":   (0, 0, 2),
+            "Pickaxe": (0, 0, 10),
+            }
