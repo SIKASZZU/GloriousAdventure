@@ -311,7 +311,53 @@ class Game:
 
             # Joonistab hit boxi
             obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+            #print('hit_box_x', hit_box_x)
+            #print('hit_box_y', hit_box_y)
+            #print('hit_box_width', hit_box_width)
+            #print('hit_box_height', hit_box_height)
+            print()
             pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
+
+            hit_box_left = hit_box_x  # left on koordinaat x .. obj_hit_box.left?
+            hit_box_right = hit_box_x + hit_box_width # right on koordinaat x + hitboxi laius .. obj_hit_box.right?
+            hit_box_top = hit_box_y  # obj_hit_box.top?
+            hit_box_bottom = hit_box_y + hit_box_height  # see on 6ige, usalda. sikzu @1:39 AM. Koordinaatide lugemine algab ylevalt alla
+
+            player_left = self.player_x
+            player_right = self.player_x + self.player_rect.width
+            player_top = self.player_y
+            player_bottom = self.player_y + self.player_rect.height
+
+            print('player_left', player_left, 'player_right', player_right, 'player_top', player_top, 'player_bottom', player_bottom)
+            print('hit_box_left',hit_box_left, 'hit_box_right',hit_box_right, 'hit_box_top',hit_box_top, 'hit_box_bottom',hit_box_bottom)
+
+            hitbox_treshold = 20
+            print(self.player_x, 'player_x')
+            print('player_rect', self.player_rect)
+            print('obj_hit_box', obj_hit_box)
+
+            if self.player_rect.colliderect(obj_hit_box):  # v22rtus saab olla boolean // colliderect on puutumine argumendis oleva rectiga
+                if abs(player_left - hit_box_left) < hitbox_treshold:  # vasak
+                    self.player_x = hit_box_left + 10
+                    print('left')
+
+                if abs(player_right - hit_box_right) < hitbox_treshold:  # parem
+                    self.player_x = hit_box_right + 10
+                    print('right')
+
+                if abs(player_top - hit_box_top) < hitbox_treshold:  # ylemine 22r
+                    self.player_y = hit_box_top + 10
+                    print('top')
+
+                if abs(player_bottom - hit_box_bottom) < hitbox_treshold:  # alumine pask
+                    self.player_y = hit_box_bottom + 10
+                    print('bottom')
+
+
+    #if self.player_rect.left == hit_box_x:
+    #    pass
+    #if self.player_rect.right == hit_box_x:
+    #    pass
 
     def render(self):
         self.screen.fill('blue')
@@ -435,9 +481,9 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.box_target_camera()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
-            self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeidW
             stamina.stamina_bar_update(self)  # Stamina bar
             self.render()  # Renderib terraini
+            self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeidW
 
 if __name__ == "__main__":
     game = Game()
