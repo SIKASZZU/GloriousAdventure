@@ -19,8 +19,9 @@ class Game:
                 sys.exit()
 
     def __init__(self):
-        self.offset_y = None
-        self.offset_x = None
+        self.collided_with = ()
+        self.terrain_data_minerals = 0
+        self.display_hit_box_decay = 0
         self.screen_x = 1000
         self.screen_y = 750
         pygame.init()
@@ -61,15 +62,21 @@ class Game:
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
 
+
+        # Objects data
+        self.hit_boxes = []
+
+
         self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
-
         self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
-
         new_island(self, 64)
+
+
+
 
         self.player_x = random.randint(500, 500)
         self.player_y = random.randint(375, 375)
@@ -77,12 +84,6 @@ class Game:
 
         # interaction box
         self.interaction_rect = pygame.Rect(0, 0, 0, 0)
-
-
-
-
-
-
 
         # camera stuff
         self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
@@ -241,14 +242,57 @@ class Game:
 
         if self.frame is not None:
             self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
-            # print(self.sprite_rect.left, self.sprite_rect.right,
-            #       self.sprite_rect.top, self.sprite_rect.bottom)
 
+    def get_object_id_at_position(self, x, y):
+        terrain_x = x - self.offset_x
+        terrain_y = y - self.offset_y
+        grid_col = terrain_x // self.block_size
+        grid_row = terrain_y // self.block_size
+        return self.terrain_data[grid_row][grid_col]
+
+    def remove_object_at_position(self, x, y, terrain_x, terrain_y, obj_hit_box):
+        grid_col = terrain_x // self.block_size
+        grid_row = terrain_y // self.block_size
+
+        if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+            self.terrain_data[grid_row][grid_col] = 1
+        else:
+            print("Invalid grid indices:", grid_row, grid_col)
+
+        index = self.hit_boxes.index(obj_hit_box)
+        self.hit_boxes.pop(index)
 
     def check_collisions(self):
         keys = pygame.key.get_pressed()
-        on_land = False
 
+        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,\
+                hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+
+            # Saame olemasoleva blocki TOP-LEFT koordinaadid
+            terrain_x = hit_box_x - hit_box_offset_x
+            terrain_y = hit_box_y - hit_box_offset_y
+
+            # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
+            obj_hit_box = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
+                           hit_box_offset_x, hit_box_offset_y)
+
+            if object_id == 2:
+                block_size = self.block_size
+
+            if object_id == 4:
+                block_size = self.block_size * 2
+                terrain_x = terrain_x - self.block_size / 2
+                terrain_y = terrain_y - self.block_size
+
+            collision_terrain_rect = (terrain_x, terrain_y, block_size , block_size)
+            if self.player_rect.colliderect(collision_terrain_rect):
+                print("True")
+                if keys[pygame.K_SPACE]:
+                    self.remove_object_at_position(hit_box_x, hit_box_y,
+                                                   terrain_x, terrain_y,
+                                                   obj_hit_box)
+
+        on_land = False
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
                 terrain_rect = pygame.Rect(
@@ -301,63 +345,28 @@ class Game:
                 self.player.speed = self.base_speed
                 self.player.stamina.stamina_regenerate(0.05)
 
-    def place_and_render_object(self, obj_image, obj_x, obj_y,
+    def place_and_render_object(self, object_id, obj_image, obj_x, obj_y,
                                  obj_width, obj_height, hit_box_color,
                                  hit_box_x, hit_box_y, hit_box_width, hit_box_height):
         if obj_image:
-            # Renderib objecti pildi
-            scaled_obj_image = pygame.transform.scale(obj_image, (obj_width, obj_height))
-            self.screen.blit(scaled_obj_image, (obj_x, obj_y))
+            # Kui mineral on puu siis annab eraldi koordinaadid
+            if object_id == 4:
+                # Render object image
+                scaled_obj_image = pygame.transform.scale(obj_image, (obj_width, obj_height))
+                self.screen.blit(scaled_obj_image, (obj_x - self.block_size / 2, obj_y - self.block_size))
 
-            # Joonistab hit boxi
-            obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-            #print('hit_box_x', hit_box_x)
-            #print('hit_box_y', hit_box_y)
-            #print('hit_box_width', hit_box_width)
-            #print('hit_box_height', hit_box_height)
-            print()
-            pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
+                # Draw hit box
+                obj_hit_box = pygame.Rect(hit_box_x - self.block_size / 2, hit_box_y - self.block_size, hit_box_width, hit_box_height)
+                pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
 
-            hit_box_left = hit_box_x  # left on koordinaat x .. obj_hit_box.left?
-            hit_box_right = hit_box_x + hit_box_width # right on koordinaat x + hitboxi laius .. obj_hit_box.right?
-            hit_box_top = hit_box_y  # obj_hit_box.top?
-            hit_box_bottom = hit_box_y + hit_box_height  # see on 6ige, usalda. sikzu @1:39 AM. Koordinaatide lugemine algab ylevalt alla
+            else:
+                # Render object image
+                scaled_obj_image = pygame.transform.scale(obj_image, (obj_width, obj_height))
+                self.screen.blit(scaled_obj_image, (obj_x, obj_y))
 
-            player_left = self.player_x
-            player_right = self.player_x + self.player_rect.width
-            player_top = self.player_y
-            player_bottom = self.player_y + self.player_rect.height
-
-            print('player_left', player_left, 'player_right', player_right, 'player_top', player_top, 'player_bottom', player_bottom)
-            print('hit_box_left',hit_box_left, 'hit_box_right',hit_box_right, 'hit_box_top',hit_box_top, 'hit_box_bottom',hit_box_bottom)
-
-            hitbox_treshold = 20
-            print(self.player_x, 'player_x')
-            print('player_rect', self.player_rect)
-            print('obj_hit_box', obj_hit_box)
-
-            if self.player_rect.colliderect(obj_hit_box):  # v22rtus saab olla boolean // colliderect on puutumine argumendis oleva rectiga
-                if abs(player_left - hit_box_left) < hitbox_treshold:  # vasak
-                    self.player_x = hit_box_left + 10
-                    print('left')
-
-                if abs(player_right - hit_box_right) < hitbox_treshold:  # parem
-                    self.player_x = hit_box_right + 10
-                    print('right')
-
-                if abs(player_top - hit_box_top) < hitbox_treshold:  # ylemine 22r
-                    self.player_y = hit_box_top + 10
-                    print('top')
-
-                if abs(player_bottom - hit_box_bottom) < hitbox_treshold:  # alumine pask
-                    self.player_y = hit_box_bottom + 10
-                    print('bottom')
-
-
-    #if self.player_rect.left == hit_box_x:
-    #    pass
-    #if self.player_rect.right == hit_box_x:
-    #    pass
+                # Draw hit box
+                obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
 
     def render(self):
         self.screen.fill('blue')
@@ -380,8 +389,13 @@ class Game:
                 terrain_x = j * self.block_size + self.offset_x
                 terrain_y = i * self.block_size + self.offset_y
 
+                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
+                    self.terrain_data_minerals += 1
+
                 # Jätab muud blockid välja millele pole hit boxe vaja
                 if self.terrain_data[i][j] != 0:
+
+                    # Peavad olema muidu järgnevates if statementides tulevad errorid
                     object_id = self.terrain_data[i][j]
                     obj_image = None
                     obj_width = 0
@@ -427,21 +441,24 @@ class Game:
                     hit_box_x = terrain_x + hit_box_offset_x
                     hit_box_y = terrain_y + hit_box_offset_y
 
+                    if object_id != 0:
+                        if object_id != 1:
+                            if self.display_hit_box_decay <= self.terrain_data_minerals:
 
-                    # # Prindib objecti ID ja Top-Left, Top-Right, Down-Left, Down-Right
-                    # if hit_box_x == hit_box_x + hit_box_width:
-                    #     pass
-                    # else:
-                    #     print("")
-                    #     print(object_id)
-                    #     print(f"Top-Left: ({hit_box_x + hit_box_width})({hit_box_y + hit_box_height})")
-                    #     print(f"Top-Right: ({hit_box_x})({hit_box_y + hit_box_height})")
-                    #     print(f"Down-Left: ({hit_box_x + hit_box_width})({hit_box_y})")
-                    #     print(f"Down-Right: ({hit_box_x})({hit_box_y})")
+                                self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
 
-                    self.place_and_render_object(obj_image, terrain_x, terrain_y,
-                                                 obj_width, obj_height, hit_box_color,
-                                                 hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                                                       # Et saada terrain_x/y def remove_object_at_position():'s
+                                                       hit_box_offset_x, hit_box_offset_y))
+
+                                self.display_hit_box_decay += 1
+
+
+                            self.place_and_render_object(object_id, obj_image, terrain_x, terrain_y,
+                                                         obj_width, obj_height, hit_box_color,
+                                                         hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+
+
+        self.terrain_data_minerals = 0
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_rect_adjusted = pygame.Rect(
@@ -460,8 +477,8 @@ class Game:
         inventory.render_inventory(self)
 
         # Renderib kollase boxi mille seest saab player asju korjata
-        pygame.draw.rect(self.screen, 'yellow', self.interaction_rect, 2)
-        pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
+        #pygame.draw.rect(self.screen, 'yellow', self.interaction_rect, 2)
+        # pygame.draw.rect(self.screen, self.player_color, player_rect_adjusted)
 
         # Renderib playeri animatsioni
         self.screen.blit(self.frame, player_position_adjusted)
@@ -472,6 +489,8 @@ class Game:
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
+        # Clear hit box list after rendering
+
         # Uuendab displaid ja fps cap 60
         pygame.display.flip()
         self.set_frame_rate.tick(60)
@@ -481,10 +500,12 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.box_target_camera()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
+            self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeidW
             stamina.stamina_bar_update(self)  # Stamina bar
             self.render()  # Renderib terraini
-            self.check_collisions()  # Vaatab mängija ja maastiku kokkupõrkeidW
+
 
 if __name__ == "__main__":
     game = Game()
     game.run()
+
