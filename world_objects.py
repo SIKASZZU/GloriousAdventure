@@ -49,10 +49,3 @@ class Stone:
                                       min_health=min_health)
         self.value = value
 
-
-# Max hp, Min hp, Value
-minerals = {"Tree": (5, 0, 4),
-            "Stone": (0, 0, 2),
-            }
-
-

@@ -1,4 +1,4 @@
-from world_objects import minerals
+from items import minerals
 import pygame
 import images
 
