@@ -79,9 +79,6 @@ class Game:
         self.player_y = random.randint(375, 375)
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
-        # interaction box
-        self.interaction_rect = pygame.Rect(0, 0, 0, 0)
-
         # camera stuff
         self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
         l = self.camera_borders['left']
@@ -167,10 +164,6 @@ class Game:
         new_player_x = self.player_x
         new_player_y = self.player_y
 
-        # Playeri itemite korjamise kast
-        interaction_x = self.player_rect.left + self.offset_x
-        interaction_y = self.player_rect.top + self.offset_y
-
         if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
             self.tab_pressed = True
 
@@ -206,20 +199,16 @@ class Game:
 
         if keys[pygame.K_a]:
             new_player_x = self.player_x - self.player.speed
-            self.interaction_rect = pygame.Rect(interaction_x - self.block_size * 2, interaction_y - self.block_size / 1.35, 2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_d]:
             new_player_x = self.player_x + self.player.speed
-            self.interaction_rect = pygame.Rect(interaction_x + self.block_size / 2, interaction_y - self.block_size / 1.35, 2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_w]:
             new_player_y = self.player_y - self.player.speed
-            self.interaction_rect = pygame.Rect(interaction_x - self.block_size / 1.35, interaction_y - self.block_size * 2, 2 * self.block_size, 2 * self.block_size)
 
         if keys[pygame.K_s]:
             new_player_y = self.player_y + self.player.speed
-            self.interaction_rect = pygame.Rect(interaction_x - self.block_size / 1.35, interaction_y + self.block_size / 2, 2 * self.block_size, 2 * self.block_size)
-
+            
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x = new_player_x
@@ -238,10 +227,6 @@ class Game:
         if self.frame is not None:
             self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
-    #objects.get_object_id_at_position(self)
-    #objects.place_and_render_object(self)
-    #objects.remove_object_at_position(self)
-#
     def render(self):
         self.screen.fill('blue')
 
@@ -368,3 +353,4 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
+
