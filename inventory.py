@@ -1,5 +1,6 @@
-import pygame
 from world_objects import minerals
+import pygame
+import images
 
 def render_inventory(self):
 
@@ -16,7 +17,7 @@ def render_inventory(self):
         item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
         pygame.draw.rect(self.screen, item_color, item_rect)
         # Paneb invile pildid
-        item_image = self.item_images.get(item_name)
+        item_image = images.item_images.get(item_name)
 
         if item_image is not None:
             # Resize
