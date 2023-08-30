@@ -1,4 +1,5 @@
 import pygame
+import inventory
 
 def check_collisions(self):
     keys = pygame.key.get_pressed()
@@ -26,9 +27,17 @@ def check_collisions(self):
         if self.player_rect.colliderect(collision_terrain_rect):
             print("True")
             if keys[pygame.K_SPACE]:
-                self.remove_object_at_position(hit_box_x, hit_box_y,
-                                                terrain_x, terrain_y,
-                                                obj_hit_box, object_id)
+                if self.grab_decay >= 20:  # Kui player korjab midagi ülesse (Animationi jaoks - GRABBING)
+                    inventory.item_interaction(self) # Loeb ja korjab itemeid
+                    print('item interaction')
+                    #self.remove_object_at_position(hit_box_x, hit_box_y,
+                    #                                terrain_x, terrain_y,
+                    #                                obj_hit_box, object_id)  # removib itemi maailmast nahhuj
+                    #print('removing')
+                
+
+                else:
+                    self.grab_decay += 1
 
     on_land = False
     for i in range(len(self.terrain_data)):

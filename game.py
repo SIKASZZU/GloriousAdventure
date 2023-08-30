@@ -1,7 +1,10 @@
+# Pythoni inbuilt/downloaded files
 import pygame
 import sys
 import random
+import time
 
+# Oma enda failid
 from sprite import load_sprite_sheets, AnimationManager
 from map_generator import new_island
 from images import item_images
@@ -132,18 +135,9 @@ class Game:
         self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
                                                        self.animation_speeds)
 
-        keys = pygame.key.get_pressed()
-        is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[
-            pygame.K_e])
-
-        # Use the appropriate AnimationManager based on idle status
-        if is_idle:
-            self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
-        else:
-            self.frame = self.animation_manager.update_animation(keys, is_idle)
-
-        if self.frame is not None:
-            self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
+        self.render_inv = False  # Inventory renderminmine
+        self.inv_count = 0  # Otsustab, kas renderida inv v6i mitte
+        self.tab_pressed = False  # Keep track of whether Tab was pressed
 
     # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
     def box_target_camera(self):
@@ -164,8 +158,7 @@ class Game:
 
     # Uuendab player datat ja laseb tal liikuda
     def update_player(self):
-        # Jälgib keyboard inputte
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
         # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
         new_player_x = self.player_x
@@ -183,6 +176,24 @@ class Game:
 
             else:
                 self.grab_decay += 1
+
+        if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
+            self.tab_pressed = True
+
+            self.inv_count += 1
+            print('self.inv_count', self.inv_count)
+
+            if (self.inv_count % 2) == 0:
+                self.render_inv = False
+                print('Render inv false')
+            else:
+                self.render_inv = True
+                print('Render inv true')
+
+            print('inv_count', self.inv_count)
+
+        elif not keys[pygame.K_TAB]:
+            self.tab_pressed = False
 
         else:
             if keys[pygame.K_LSHIFT]:
@@ -374,20 +385,14 @@ class Game:
         self.terrain_data_minerals = 0
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_rect_adjusted = pygame.Rect(
-            self.player_rect.left + self.offset_x,
-            self.player_rect.top + self.offset_y,
-            self.block_size * 0.6,
-            self.block_size * 0.75
-        )
-
         player_position_adjusted = (
             self.player_x + self.offset_x,
             self.player_y + self.offset_y
         )
 
-        # Renderib invi
-        inventory.render_inventory(self)
+        if self.render_inv: # == True
+            inventory.render_inventory(self)
+
 
         # Renderib playeri animatsioni
         self.screen.blit(self.frame, player_position_adjusted)
@@ -410,7 +415,6 @@ class Game:
             collisions.check_collisions(self)  # Vaatab mängija ja maastiku kokkupõrkeidW
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             self.render()  # Renderib terraini
-
 
 if __name__ == "__main__":
     game = Game()
