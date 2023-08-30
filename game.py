@@ -10,6 +10,7 @@ from map_generator import new_island
 from images import item_images
 from game_entities import Player
 from stamina import StaminaComponent
+from world_objects import minerals
 import inventory
 import collisions
 #import camera
@@ -168,15 +169,6 @@ class Game:
         interaction_x = self.player_rect.left + self.offset_x
         interaction_y = self.player_rect.top + self.offset_y
 
-        # Kui player korjab midagi ülesse (Animationi jaoks - GRABBING)
-        # 20 fps cooldown
-        if keys[pygame.K_e]:
-            if self.grab_decay >= 20:
-                inventory.item_interaction(self) # Loeb ja korjab itemeid
-
-            else:
-                self.grab_decay += 1
-
         if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
             self.tab_pressed = True
 
@@ -251,7 +243,12 @@ class Game:
         grid_row = terrain_y // self.block_size
         return self.terrain_data[grid_row][grid_col]
 
+    # eemaldab objekti ning lisab selle inventory
     def remove_object_at_position(self, x, y, terrain_x, terrain_y, obj_hit_box, object_id=None):
+        items_found = set()  # Hoiab leitud esemed
+        item_count = {}  # Hoiab leitud esemete arve
+        
+        # itemi eemaldamine visuaalselt
         grid_col = terrain_x // self.block_size
         grid_row = terrain_y // self.block_size
 
@@ -264,11 +261,38 @@ class Game:
                 grid_row += 1
             self.terrain_data[grid_row][grid_col] = 1
 
+            # itemi lisamine playeri inventorisse
+            for item_name, item_values in minerals.items():
+                if object_id == item_values[2]:
+                    print(object_id, item_values[2])
+                    items_found.add(item_name)
+
+            try:
+                for item_name in items_found:
+                    item_count[item_name] = 0  # Resetib itemi koguse kuna muidu fkupiks...
+
+                    for item_name, item_values in minerals.items():
+                        if object_id == item_values[2] and item_name in items_found:
+                            item_count[item_name] += 1
+                            items_found.remove(item_name)  # Eemaldab eseme leitud hulgast
+
+                            # Lisab eseme inventuuri dicti
+                            if item_name in self.inventory:
+                                self.inventory[item_name] += 1
+                            else:
+                                self.inventory[item_name] = 1
+
+                            self.grab_decay = 0        
+            except RuntimeError:
+                print('RuntimeError')
+
         else:
             print("Invalid grid indices:", grid_row, grid_col)
 
         index = self.hit_boxes.index(obj_hit_box)
         self.hit_boxes.pop(index)
+
+
 
     def place_and_render_object(self, object_id, obj_image, obj_x, obj_y,
                                  obj_width, obj_height, hit_box_color,
