@@ -49,19 +49,7 @@ class Game:
         self.generated_ground_images = None
         self.grab_decay = 0
 
-        # Inventory display settings
-        self.inventory_display_rects = [
-            pygame.Rect(50, 50, 50, 50),
-            pygame.Rect(100, 50, 50, 50),
-            pygame.Rect(150, 50, 50, 50),
-            pygame.Rect(200, 50, 50, 50),
-            pygame.Rect(250, 50, 50, 50),
-            pygame.Rect(300, 50, 50, 50),
-            pygame.Rect(350, 50, 50, 50),
-            pygame.Rect(400, 50, 50, 50),
-            pygame.Rect(450, 50, 50, 50),
-        ]
-
+        ## Inventory display settings
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
 
         # Objects data
@@ -80,7 +68,7 @@ class Game:
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
         # camera stuff
-        self.camera_borders = {'left': 100, 'right': 100, 'top': 100, 'bottom': 100}
+        self.camera_borders = {'left': 100, 'right': 100, 'top': 200, 'bottom': 200}
         l = self.camera_borders['left']
         t = self.camera_borders['top']
         w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
@@ -208,7 +196,7 @@ class Game:
 
         if keys[pygame.K_s]:
             new_player_y = self.player_y + self.player.speed
-            
+
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x = new_player_x
@@ -336,6 +324,7 @@ class Game:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
+
 
         # Uuendab displaid ja fps cap 60
         pygame.display.flip()
