@@ -6,14 +6,14 @@ import time
 
 # Oma enda failid
 from sprite import load_sprite_sheets, AnimationManager
-from map_generator import new_island
 from images import item_images
+from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
+from map_generator import map_data_generator
 import objects
 import inventory
 import collisions
-#import camera
 
 class Game:
 
@@ -23,6 +23,7 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
 
     def __init__(self):
         self.collided_with = ()
@@ -46,7 +47,7 @@ class Game:
         self.block_size = 100
         self.player_color = 'red'
         self.base_speed = 4
-        self.generated_ground_images = None
+        self.generated_ground_images = {}
         self.grab_decay = 0
 
         ## Inventory display settings
@@ -60,15 +61,15 @@ class Game:
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
-        self.terrain_data = [[0 for _ in range(self.Y_max)] for _ in range(self.X_max)]
-        new_island(self, 64)
+        self.terrain_data = map_data_generator()  # argument seed, default seed=None
+        #new_island(self, 64)
 
         self.player_x = random.randint(500, 500)
         self.player_y = random.randint(375, 375)
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
         # camera stuff
-        self.camera_borders = {'left': 100, 'right': 100, 'top': 200, 'bottom': 200}
+        self.camera_borders = {'left': 250, 'right': 250, 'top': 200, 'bottom': 200}
         l = self.camera_borders['left']
         t = self.camera_borders['top']
         w = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
@@ -214,21 +215,29 @@ class Game:
 
         if self.frame is not None:
             self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
-
+    
     def render(self):
         self.screen.fill('blue')
 
-        # Loopib läbi terrain data ja saab x ja y ja renerib vee ja maa
+        # Loop through terrain data and render water and land
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
                 terrain_x = j * self.block_size + self.offset_x
                 terrain_y = i * self.block_size + self.offset_y
 
-                # Renderib GROUND pildid
-                ground_image = self.generated_ground_images.get((i, j))
-                if ground_image:
-                    ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
-                    self.screen.blit(ground_image, (terrain_x, terrain_y))
+                # Check if terrain_data value is 1 (land)
+                if self.terrain_data[i][j] == 1:
+                    # Check if ground image is already generated and cached
+                    if (i, j) not in self.generated_ground_images:
+                        ground_image_name = f"Ground_{random.randint(0, 19)}"
+                        ground_image = ground_images.get(ground_image_name)
+                        self.generated_ground_images[(i, j)] = ground_image
+
+                    # Render the ground image if it exists
+                    ground_image = self.generated_ground_images.get((i, j))
+                    if ground_image:
+                        ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
+                        self.screen.blit(ground_image, (terrain_x, terrain_y))
 
         # Loopib läbi terrain data ja saab x ja y
         for i in range(len(self.terrain_data)):
@@ -292,7 +301,11 @@ class Game:
                         if object_id != 1:
                             if self.display_hit_box_decay <= self.terrain_data_minerals:
 
-                                self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
+                                self.hit_boxes.append((hit_box_x, 
+                                                       hit_box_y, 
+                                                       hit_box_width, 
+                                                       hit_box_height, 
+                                                       object_id,
 
                                                        # Et saada terrain_x/y def remove_object_at_position():'s
                                                        hit_box_offset_x, hit_box_offset_y))
