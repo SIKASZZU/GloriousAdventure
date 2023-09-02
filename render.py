@@ -1,36 +1,78 @@
 import pygame
+from map_generator import map_data_generator
 import random
 from images import ground_images, item_images
-from map_generator import map_data_generator
-from objects import place_and_render_object
+from objects import place_and_render_object, remove_object_at_position
 
 
+grid_pattern = map_data_generator()  # world data, terraindata  # list
+
+def render_data(self, collison_x, collison_y, object_id):
+    for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, \
+            hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        # Saame olemasoleva blocki TOP-LEFT koordinaadid
+        terrain_x = hit_box_x - hit_box_offset_x
+        terrain_y = hit_box_y - hit_box_offset_y
+
+    # teha grid x ja y-ist
+    if object_id == 2:
+        block_size = self.block_size
+
+    if object_id == 4:
+        block_size = self.block_size * 2
+        terrain_x = terrain_x - self.block_size / 2
+        terrain_y = terrain_y - self.block_size
+
+    single_grid = pygame.Rect(collison_x, collison_y, block_size, block_size)
+
+    # gridpattern[]
+
+
+def render_grid(self):
+    x = 125
+    left = self.player_x - x
+    top = self.player_y - x
+    width = 3 * x
+    height = 3 * x
+
+    render_rect = pygame.Rect(left,top,width,height)
+    return render_rect  # Rect
+
+
+generated_ground_images = {}
 def map_render(self):
     self.screen.fill('blue')
+    render_range = 9  # Muudab renerimise suurust
 
-    # Loop through terrain data and render water and land
-    for i in range(len(self.terrain_data)):
-        for j in range(len(self.terrain_data[i])):
+    player_grid_row = int(self.player_x // self.block_size)
+    player_grid_col = int(self.player_y // self.block_size)
+
+    for i in range(player_grid_col - render_range, player_grid_col + render_range + 1):
+        for j in range(player_grid_row - render_range, player_grid_row + render_range + 1):
+
             terrain_x = j * self.block_size + self.offset_x
             terrain_y = i * self.block_size + self.offset_y
 
-            # Check if terrain_data value is 1 (land)
-            if self.terrain_data[i][j] == 1:
-                # Check if ground image is already generated and cached
-                if (i, j) not in self.generated_ground_images:
-                    ground_image_name = f"Ground_{random.randint(0, 19)}"
-                    ground_image = ground_images.get(ground_image_name)
-                    self.generated_ground_images[(i, j)] = ground_image
+            # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
+            if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                # Render the ground image if it exists
-                ground_image = self.generated_ground_images.get((i, j))
-                if ground_image:
-                    ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
-                    self.screen.blit(ground_image, (terrain_x, terrain_y))
+                # Vaatab kas terrain data on 1
+                if self.terrain_data[i][j] == 1:
+
+                    # Vaatab kas ground pilt on juba olemas
+                    if (i, j) not in generated_ground_images:
+                        ground_image_name = f"Ground_{random.randint(0, 19)}"
+                        ground_image = ground_images.get(ground_image_name)
+                        generated_ground_images[(i, j)] = ground_image
+
+                    # Renderib ground pidid kui need eksisteerivad
+                    ground_image = generated_ground_images.get((i, j))
+                    if ground_image:
+                        ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
+                        self.screen.blit(ground_image, (terrain_x, terrain_y))
 
 
 def object_render(self):
-
     # Loopib läbi terrain data ja saab x ja y
     for i in range(len(self.terrain_data)):
         for j in range(len(self.terrain_data[i])):
@@ -92,43 +134,11 @@ def object_render(self):
                 if object_id != 0:
                     if object_id != 1:
                         if self.display_hit_box_decay <= self.terrain_data_minerals:
-                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
+                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
+                                                   hit_box_offset_x, hit_box_offset_y))
                             self.display_hit_box_decay += 1
-                            
-                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+
+                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height,
+                                                hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
     self.terrain_data_minerals = 0
-
-grid_pattern = map_data_generator() # world data, terraindata  # list
-
-def render_data(self, collison_x, collison_y, object_id):
-    for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,\
-        hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
-
-        # Saame olemasoleva blocki TOP-LEFT koordinaadid
-        terrain_x = hit_box_x - hit_box_offset_x
-        terrain_y = hit_box_y - hit_box_offset_y
-    
-    # teha grid x ja y-ist
-    if object_id == 2:
-        block_size = self.block_size
-
-    if object_id == 4:
-        block_size = self.block_size * 2
-        terrain_x = terrain_x - self.block_size / 2
-        terrain_y = terrain_y - self.block_size
-
-    single_grid = pygame.Rect(collison_x, collison_y, block_size, block_size)
-
-
-def render_grid(self):
-    """Renderib (visuaalselt) gridi, mille sees asuv terrain ennast playeri jaoks renderib... Siin ei renderi, teeb ainult gridi"""
-    x = 100
-    left = self.player_x - x
-    top = self.player_y - x
-    width = 3 * x
-    height = 3 * x
-
-    render_rect = pygame.Rect(left,top,width,height)
-
-    return render_rect  # Rect
