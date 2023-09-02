@@ -6,7 +6,6 @@ from objects import place_and_render_object, remove_object_at_position
 
 
 grid_pattern = map_data_generator()  # world data, terraindata  # list
-
 def render_data(self, collison_x, collison_y, object_id):
     for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, \
             hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
@@ -27,7 +26,6 @@ def render_data(self, collison_x, collison_y, object_id):
 
     # gridpattern[]
 
-
 def render_grid(self):
     x = 125
     left = self.player_x - x
@@ -40,22 +38,25 @@ def render_grid(self):
 
 
 generated_ground_images = {}
+
 def map_render(self):
+    render_terrain_data = []
     self.screen.fill('blue')
-    render_range = 9  # Muudab renerimise suurust
+    render_range = 8  # Muudab renerimise suurust
 
     player_grid_row = int(self.player_x // self.block_size)
     player_grid_col = int(self.player_y // self.block_size)
 
     for i in range(player_grid_col - render_range, player_grid_col + render_range + 1):
+        row = []
         for j in range(player_grid_row - render_range, player_grid_row + render_range + 1):
 
             terrain_x = j * self.block_size + self.offset_x
             terrain_y = i * self.block_size + self.offset_y
+            row.append(self.terrain_data[i][j])
 
             # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
             if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-
                 # Vaatab kas terrain data on 1
                 if self.terrain_data[i][j] == 1:
 
@@ -70,7 +71,7 @@ def map_render(self):
                     if ground_image:
                         ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
                         self.screen.blit(ground_image, (terrain_x, terrain_y))
-
+        render_terrain_data.append(row)
 
 def object_render(self):
     # Loopib läbi terrain data ja saab x ja y
@@ -112,7 +113,7 @@ def object_render(self):
                     hit_box_offset_y = int(obj_height * 0.25)
 
                 # Vaatab kas terrain data on puu
-                elif object_id == 4:
+                elif object_id == 8:
                     obj_image = item_images.get("Tree")
                     hit_box_color = 'green'
 
@@ -140,5 +141,4 @@ def object_render(self):
 
                         place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height,
                                                 hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
     self.terrain_data_minerals = 0
