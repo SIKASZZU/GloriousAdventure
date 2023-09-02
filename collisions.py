@@ -1,7 +1,5 @@
 import pygame
 import objects
-from chuncks import render_grid
-from render import render_data
 
 def check_collisions(self):
     keys = pygame.key.get_pressed()
@@ -26,13 +24,6 @@ def check_collisions(self):
             terrain_y = terrain_y - self.block_size
 
         collision_terrain_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
-        render_rect = render_grid(self)
-
-        if render_rect.colliderect(collision_terrain_rect):
-            cx = max(render_rect.left, collision_terrain_rect.left)
-            cy = max(render_rect.top, collision_terrain_rect.top)
-            render_data(self, cx, cy, object_id)
-
         if self.player_rect.colliderect(collision_terrain_rect):
             print('Collision')
             if keys[pygame.K_SPACE]:
@@ -46,20 +37,11 @@ def collison_terrain(self):
     on_land = False
     for i in range(len(self.terrain_data)):
         for j in range(len(self.terrain_data[i])):
-            terrain_rect = pygame.Rect(
-                j * self.block_size,
-                i * self.block_size,
-                self.block_size,
-                self.block_size
-            )
+            terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
 
             # Vaatab kas player hitib midai v mitte
             if self.player_rect.colliderect(terrain_rect):
-                in_water = any(
-                    self.terrain_data[row][col] == 0
-                    for row in range(i, i - 1, -1)
-                    for col in range(j, j - 1, -1)
-                )
+                in_water = any(self.terrain_data[row][col] == 0 for row in range(i, i - 1, -1) for col in range(j, j - 1, -1))
 
                 if in_water:
                     if keys[pygame.K_LSHIFT]:
@@ -95,3 +77,4 @@ def collison_terrain(self):
         else:
             self.player.speed = self.base_speed
             self.player.stamina.stamina_regenerate(0.05)
+

@@ -9,9 +9,11 @@ from sprite import load_sprite_sheets, AnimationManager
 from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
-from map_generator import map_data_generator, map_render, object_render
+from map_generator import map_data_generator
+from render import map_render, object_render
 from collisions import check_collisions, collison_terrain
-from inventory import render_inventory
+from inventory import render_inventory, call_inventory
+from camera import box_target_camera
 
 class Game:
 
@@ -121,22 +123,6 @@ class Game:
 
         self.render_rect = pygame.Rect(0,0,0,0)
 
-    # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
-    def box_target_camera(self):
-        if self.player_rect.left < self.camera_rect.left:
-            self.camera_rect.left = self.player_rect.left
-
-        if self.player_rect.right > self.camera_rect.right:
-            self.camera_rect.right = self.player_rect.right
-
-        if self.player_rect.top < self.camera_rect.top:
-            self.camera_rect.top = self.player_rect.top
-
-        if self.player_rect.bottom > self.camera_rect.bottom:
-            self.camera_rect.bottom = self.player_rect.bottom
-
-        self.offset_x = self.camera_borders['left'] - self.camera_rect.left
-        self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
     # Uuendab player datat ja laseb tal liikuda
     def update_player(self):
@@ -146,33 +132,19 @@ class Game:
         new_player_x = self.player_x
         new_player_y = self.player_y
 
-        if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
-            self.tab_pressed = True
-            self.inv_count += 1
-
-            if (self.inv_count % 2) == 0:
-                self.render_inv = False
-
-            else:
-                self.render_inv = True
-
-        elif not keys[pygame.K_TAB]:
-            self.tab_pressed = False
-
+        if keys[pygame.K_LSHIFT]:
+            self.frame_delay = 10  # Adjust running speed
         else:
-            if keys[pygame.K_LSHIFT]:
-                self.frame_delay = 10  # Adjust running speed
-            else:
-                self.frame_delay = 7  # Default walking speed
+            self.frame_delay = 7  # Default walking speed
 
-            if keys[pygame.K_a]:
-                self.animation_index = 0  # Left animation
-            elif keys[pygame.K_d]:
-                self.animation_index = 1  # Right animation
-            elif keys[pygame.K_w]:
-                self.animation_index = 2  # Up animation
-            elif keys[pygame.K_s]:
-                self.animation_index = 3  # Down animation
+        if keys[pygame.K_a]:
+            self.animation_index = 0  # Left animation
+        elif keys[pygame.K_d]:
+            self.animation_index = 1  # Right animation
+        elif keys[pygame.K_w]:
+            self.animation_index = 2  # Up animation
+        elif keys[pygame.K_s]:
+            self.animation_index = 3  # Down animation
 
         if keys[pygame.K_a]:
             new_player_x = self.player_x - self.player.speed
@@ -213,6 +185,10 @@ class Game:
 
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
+        from render import render_grid
+        rect = render_grid(self)
+        pygame.draw.rect(self.screen, 'pink', rect, 2)
+
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
@@ -226,10 +202,11 @@ class Game:
     def run(self):
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
-            self.box_target_camera()
+            box_target_camera(self)  # Kaamera
+            call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
-            collison_terrain(self)
-            check_collisions(self)  # Vaatab mängija ja maastiku kokkupõrkeidW
+            collison_terrain(self)  # Vaatab m2ngija kokkup6rkeid terrainiga
+            check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             map_render(self)  # Renderib terraini
             object_render(self)  # Renderib objektid
