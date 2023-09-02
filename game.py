@@ -10,10 +10,11 @@ from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
-from render import map_render, object_render
+from render import Collision_Checker
 from collisions import check_collisions, collison_terrain
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
+
 
 class Game:
 
@@ -24,6 +25,8 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
+    pygame.init()
+    pygame.display.set_caption("Glorious Adventure - BETA")
 
     def __init__(self):
         self.collided_with = ()
@@ -31,9 +34,7 @@ class Game:
         self.display_hit_box_decay = 0
         self.screen_x = 1000
         self.screen_y = 750
-        pygame.init()
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
-        pygame.display.set_caption("GA")
         self.set_frame_rate = pygame.time.Clock()
         self.stamina_bar_decay = 0
 
@@ -176,6 +177,7 @@ class Game:
         if self.frame is not None:
             self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
+
     def render(self):
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
@@ -184,10 +186,6 @@ class Game:
             render_inventory(self)  # renderib inventory
 
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
-
-        from render import render_grid
-        rect = render_grid(self)
-        pygame.draw.rect(self.screen, 'pink', rect, 2)
 
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
@@ -199,6 +197,7 @@ class Game:
         pygame.display.flip()
         self.set_frame_rate.tick(60)
 
+
     def run(self):
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
@@ -208,11 +207,10 @@ class Game:
             collison_terrain(self)  # Vaatab m2ngija kokkup6rkeid terrainiga
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
-            map_render(self)  # Renderib terraini
-            object_render(self)  # Renderib objektid
+            Collision_Checker.map_render(self)  # Renderib terraini
+            Collision_Checker.object_render(self)  # Renderib objektid
             self.render()
 
 if __name__ == "__main__":
     game = Game()
     game.run()
-
