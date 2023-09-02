@@ -58,8 +58,5 @@ def calculate_inventory(self):
 
     for rows in range(self.total_rows):
         for cols in range(self.total_cols):
-            rect = pygame.Rect(self.rect_x + cols * self.rect_width,
-                                self.rect_y + rows * self.rect_height,
-                                self.rect_width, self.rect_height
-                                )
+            rect = pygame.Rect(self.rect_x + cols * self.rect_width, self.rect_y + rows * self.rect_height, self.rect_width, self.rect_height)
             self.inventory_display_rects.append(rect)

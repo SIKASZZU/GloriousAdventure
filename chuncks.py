@@ -1,23 +1,30 @@
 import pygame
 
-def chunck_loader(self):
-# playeri ymbruse m2rgistamine
-    self.player_x + 1000
-    self.player_y + 1000
-    # rect, mis peaks olema alati loaded:
-    render_rect_top = self.player_y + 1000
-    render_rect_left = self.player_x - 1000
-    render_rect_width = 2000
-    render_rect_height = 2000
-    
-    render_rect = pygame.Rect(render_rect_left,
-                            render_rect_top, 
-                            render_rect_width,
-                            render_rect_height
-                        )
-    
-    # gridiks 
-    render_rect_top_grid = render_rect_top / self.block_size + self.offset_y
-    render_rect_left_grid = render_rect_left / self.block_size + self.offset_x
-    render_rect_width_grid = render_rect_width / self.block_size + self.offset_x
-    render_rect_height_grid = render_rect_height / self.block_size + self.offset_y
+#def render_grid(self):
+#    grid_size = self.block_size  # Yks grid on self.block_size * self.block_size
+#    player_grid_x = (self.player_x + self.offset_x) // grid_size * grid_size
+#    player_grid_y = (self.player_y + self.offset_y) // grid_size * grid_size
+#
+#    Xmin,Xmax,Ymin,Ymax = int(player_grid_x - 2 * grid_size), int(player_grid_x + 3 * grid_size), int(player_grid_y - 2 * grid_size), int(player_grid_y + 3 * grid_size)
+#
+#    rects = []
+#
+#    for x in range(Xmin, Xmax, grid_size):
+#        for y in range(Ymin, Ymax, grid_size):
+#            rect = pygame.Rect(x, y, grid_size, grid_size)
+#            rects.append(rect)
+#
+#    render_rect = rects[0].unionall(rects[1:])
+
+
+def render_grid(self):
+    x = 100
+    left = self.player_x - x
+    top = self.player_y - x
+    width = 3 * x
+    height = 3 * x
+
+    render_rect = pygame.Rect(left,top,width,height)
+    #self.render_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
+    return render_rect  # Rect
+

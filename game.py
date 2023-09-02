@@ -6,14 +6,12 @@ import time
 
 # Oma enda failid
 from sprite import load_sprite_sheets, AnimationManager
-from images import item_images
 from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
-from map_generator import map_data_generator
-import objects
-import inventory
-import collisions
+from map_generator import map_data_generator, map_render, object_render
+from collisions import check_collisions, collison_terrain
+from inventory import render_inventory
 
 class Game:
 
@@ -50,24 +48,20 @@ class Game:
         self.generated_ground_images = {}
         self.grab_decay = 0
 
-        ## Inventory display settings
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
 
-        # Objects data
-        self.hit_boxes = []
+        self.hit_boxes = []  # Objects data
 
         self.X_max = 1500 // self.block_size
         self.Y_max = 1500 // self.block_size
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
-        self.terrain_data = map_data_generator()  # argument seed, default seed=None
-        #new_island(self, 64)
+        self.terrain_data = map_data_generator(10)  # argument seed, default seed=None
 
         self.player_x = random.randint(500, 500)
         self.player_y = random.randint(375, 375)
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
-
         # camera stuff
         self.camera_borders = {'left': 250, 'right': 250, 'top': 200, 'bottom': 200}
         l = self.camera_borders['left']
@@ -80,6 +74,8 @@ class Game:
         self.offset_x = 0
         self.offset_y = 0
 
+        # *************** visual stuff ***************
+
         # stamina
         self.stamina_bar_decay = 0
 
@@ -87,14 +83,11 @@ class Game:
         self.stamina_bar_size = 200
         self.stamina_bar_size_bg = 200
         self.stamina_bar_size_border = 200
-
         self.screen_x = 1000
         self.screen_y = 750
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
         self.half_w = self.screen.get_size()[0] // 2
-
         self.ratio = self.stamina_bar_size // 20  # 200 // 20 = 10
-
         self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
@@ -126,6 +119,7 @@ class Game:
         self.inv_count = 0  # Otsustab, kas renderida inv v6i mitte
         self.tab_pressed = False  # Keep track of whether Tab was pressed
 
+        self.render_rect = pygame.Rect(0,0,0,0)
 
     # Teeb boxi, kui minna sellele vastu, siis liigub kaamera
     def box_target_camera(self):
@@ -144,7 +138,6 @@ class Game:
         self.offset_x = self.camera_borders['left'] - self.camera_rect.left
         self.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
-
     # Uuendab player datat ja laseb tal liikuda
     def update_player(self):
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -155,18 +148,13 @@ class Game:
 
         if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
             self.tab_pressed = True
-
             self.inv_count += 1
-            print('self.inv_count', self.inv_count)
 
             if (self.inv_count % 2) == 0:
                 self.render_inv = False
-                print('Render inv false')
+
             else:
                 self.render_inv = True
-                print('Render inv true')
-
-            print('inv_count', self.inv_count)
 
         elif not keys[pygame.K_TAB]:
             self.tab_pressed = False
@@ -215,129 +203,21 @@ class Game:
 
         if self.frame is not None:
             self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
-    
+
     def render(self):
-        self.screen.fill('blue')
-
-        # Loop through terrain data and render water and land
-        for i in range(len(self.terrain_data)):
-            for j in range(len(self.terrain_data[i])):
-                terrain_x = j * self.block_size + self.offset_x
-                terrain_y = i * self.block_size + self.offset_y
-
-                # Check if terrain_data value is 1 (land)
-                if self.terrain_data[i][j] == 1:
-                    # Check if ground image is already generated and cached
-                    if (i, j) not in self.generated_ground_images:
-                        ground_image_name = f"Ground_{random.randint(0, 19)}"
-                        ground_image = ground_images.get(ground_image_name)
-                        self.generated_ground_images[(i, j)] = ground_image
-
-                    # Render the ground image if it exists
-                    ground_image = self.generated_ground_images.get((i, j))
-                    if ground_image:
-                        ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
-                        self.screen.blit(ground_image, (terrain_x, terrain_y))
-
-        # Loopib läbi terrain data ja saab x ja y
-        for i in range(len(self.terrain_data)):
-            for j in range(len(self.terrain_data[i])):
-                terrain_x = j * self.block_size + self.offset_x
-                terrain_y = i * self.block_size + self.offset_y
-
-                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
-                    self.terrain_data_minerals += 1
-
-                # Jätab muud blockid välja millele pole hit boxe vaja
-                if self.terrain_data[i][j] != 0:
-
-                    # Peavad olema muidu järgnevates if statementides tulevad errorid
-                    object_id = self.terrain_data[i][j]
-                    obj_image = None
-                    obj_width = 0
-                    obj_height = 0
-                    hit_box_width = 0
-                    hit_box_height = 0
-                    hit_box_color = ''
-                    hit_box_offset_x = 0
-                    hit_box_offset_y = 0
-
-                    # Vaatab kas terrain data on kivi
-                    if object_id == 2:
-                        obj_image = item_images.get("Rock")
-                        hit_box_color = 'green'
-
-                        obj_width = int(self.block_size * 1)
-                        obj_height = int(self.block_size * 0.8)
-
-                        # Pane TOP-LEFT otsa järgi paika
-                        # ja siis muuda - palju lihtsam
-                        hit_box_width = int(obj_width * 0.5)
-                        hit_box_height = int(obj_height * 0.5)
-                        hit_box_offset_x = int(obj_width * 0.3)
-                        hit_box_offset_y = int(obj_height * 0.25)
-
-                    # Vaatab kas terrain data on puu
-                    elif object_id == 4:
-                        obj_image = item_images.get("Tree")
-                        hit_box_color = 'green'
-
-                        # Pane TOP-LEFT otsa järgi paika
-                        # ja siis muuda - palju lihtsam
-                        obj_width = int(self.block_size * 2)
-                        obj_height = int(self.block_size * 2)
-                        hit_box_width = int(obj_width * 0.25)
-                        hit_box_height = int(obj_height * 0.65)
-
-                        hit_box_offset_x = int(obj_width * 0.4)
-                        hit_box_offset_y = int(obj_height * 0.2)
-
-                    # Arvutab hit boxi positsiooni
-                    # Default hit box on terrain_x ja terrain_y
-                    hit_box_x = terrain_x + hit_box_offset_x
-                    hit_box_y = terrain_y + hit_box_offset_y
-
-                    if object_id != 0:
-                        if object_id != 1:
-                            if self.display_hit_box_decay <= self.terrain_data_minerals:
-
-                                self.hit_boxes.append((hit_box_x, 
-                                                       hit_box_y, 
-                                                       hit_box_width, 
-                                                       hit_box_height, 
-                                                       object_id,
-
-                                                       # Et saada terrain_x/y def remove_object_at_position():'s
-                                                       hit_box_offset_x, hit_box_offset_y))
-
-                                self.display_hit_box_decay += 1
-
-
-                            objects.place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y,
-                                                         obj_width, obj_height, hit_box_color,
-                                                         hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
-        self.terrain_data_minerals = 0
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_position_adjusted = (
-            self.player_x + self.offset_x,
-            self.player_y + self.offset_y
-        )
-
+        player_position_adjusted = (self.player_x + self.offset_x, self.player_y + self.offset_y)
         if self.render_inv: # == True
-            inventory.render_inventory(self)
+            render_inventory(self)  # renderib inventory
 
-
-        # Renderib playeri animatsioni
-        self.screen.blit(self.frame, player_position_adjusted)
+        self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
-
 
         # Uuendab displaid ja fps cap 60
         pygame.display.flip()
@@ -348,9 +228,12 @@ class Game:
             self.handle_events()  # Paneb mängu õigesti kinni
             self.box_target_camera()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
-            collisions.check_collisions(self)  # Vaatab mängija ja maastiku kokkupõrkeidW
+            collison_terrain(self)
+            check_collisions(self)  # Vaatab mängija ja maastiku kokkupõrkeidW
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
-            self.render()  # Renderib terraini
+            map_render(self)  # Renderib terraini
+            object_render(self)  # Renderib objektid
+            self.render()
 
 if __name__ == "__main__":
     game = Game()

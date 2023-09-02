@@ -1,4 +1,7 @@
 import pygame
+import objects
+from chuncks import render_grid
+from render import render_data
 
 def check_collisions(self):
     keys = pygame.key.get_pressed()
@@ -17,23 +20,28 @@ def check_collisions(self):
         if object_id == 2:
             block_size = self.block_size
 
-        if object_id == 4:
+        elif object_id == 4:
             block_size = self.block_size * 2
             terrain_x = terrain_x - self.block_size / 2
             terrain_y = terrain_y - self.block_size
 
-        collision_terrain_rect = (terrain_x, terrain_y, block_size , block_size)
-        if self.player_rect.colliderect(collision_terrain_rect):
-            print("True")
-            if keys[pygame.K_SPACE]:
-                if self.grab_decay >= 20:  # Kui player korjab midagi ülesse (Animationi jaoks - GRABBING)
-                    self.remove_object_at_position(hit_box_x, hit_box_y,
-                                                    terrain_x, terrain_y,
-                                                    obj_hit_box, object_id)  # removib itemi maailmast nahhuj
-                    print('Removed item')
+        collision_terrain_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
+        render_rect = render_grid(self)
 
-                else:
-                    self.grab_decay += 1
+        if render_rect.colliderect(collision_terrain_rect):
+            cx = max(render_rect.left, collision_terrain_rect.left)
+            cy = max(render_rect.top, collision_terrain_rect.top)
+            render_data(self, cx, cy, object_id)
+
+        if self.player_rect.colliderect(collision_terrain_rect):
+            print('Collision')
+            if keys[pygame.K_SPACE]:
+                objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)  # removib itemi maailmast nahhuj
+                objects.add_object_to_inv(self, object_id, obj_hit_box)
+
+def collison_terrain(self):
+
+    keys = pygame.key.get_pressed()
 
     on_land = False
     for i in range(len(self.terrain_data)):
