@@ -26,7 +26,6 @@ def check_collisions(self):
 
         collision_terrain_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
         if self.player_rect.colliderect(collision_terrain_rect):
-            # print('Collision')
             if keys[pygame.K_SPACE]:
                 objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)  # removib itemi maailmast nahhuj
                 objects.add_object_to_inv(self, object_id, obj_hit_box)
@@ -43,7 +42,6 @@ def collison_terrain(self):
 
     for i in range(player_grid_col - render_range, player_grid_col + render_range + 1):
         for j in range(player_grid_row - render_range, player_grid_row + render_range + 1):
-            print(i, j)
             terrain_x = j * self.block_size + self.offset_x
             terrain_y = i * self.block_size + self.offset_y
 
