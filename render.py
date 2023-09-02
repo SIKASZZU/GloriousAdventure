@@ -42,7 +42,7 @@ generated_ground_images = {}
 def map_render(self):
     render_terrain_data = []
     self.screen.fill('blue')
-    render_range = 8  # Muudab renerimise suurust
+    render_range = 9  # Muudab renerimise suurust
 
     player_grid_row = int(self.player_x // self.block_size)
     player_grid_col = int(self.player_y // self.block_size)
