@@ -2,8 +2,24 @@ from items import minerals
 import pygame
 import images
 
-def render_inventory(self):
 
+def call_inventory(self):
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
+        self.tab_pressed = True
+        self.inv_count += 1
+
+        if (self.inv_count % 2) == 0:
+            self.render_inv = False
+
+        else:
+            self.render_inv = True
+
+    elif not keys[pygame.K_TAB]:
+        self.tab_pressed = False
+
+
+def render_inventory(self):
     calculate_inventory(self)
     # Mustad boxid itemite ümber
     for rect in self.inventory_display_rects:
