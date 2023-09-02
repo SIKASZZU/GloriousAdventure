@@ -30,7 +30,7 @@ def check_collisions(self):
                 objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)  # removib itemi maailmast nahhuj
                 objects.add_object_to_inv(self, object_id, obj_hit_box)
 
-render_range = 8  # Muudab renerimise suurust
+render_range = 4  # Muudab renerimise suurust
 
 def collison_terrain(self):
 
