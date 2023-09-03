@@ -42,9 +42,6 @@ def collison_terrain(self):
 
     for i in range(player_grid_col - render_range, player_grid_col + render_range + 1):
         for j in range(player_grid_row - render_range, player_grid_row + render_range + 1):
-            terrain_x = j * self.block_size + self.offset_x
-            terrain_y = i * self.block_size + self.offset_y
-
             terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
             if self.player_rect.colliderect(terrain_rect):
 
