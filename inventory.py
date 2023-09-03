@@ -9,14 +9,10 @@ def call_inventory(self):
         self.tab_pressed = True
         self.inv_count += 1
 
-        if (self.inv_count % 2) == 0:
-            self.render_inv = False
+        if (self.inv_count % 2) == 0: self.render_inv = False
+        else: self.render_inv = True
 
-        else:
-            self.render_inv = True
-
-    elif not keys[pygame.K_TAB]:
-        self.tab_pressed = False
+    elif not keys[pygame.K_TAB]: self.tab_pressed = False
 
 
 def render_inventory(self):
