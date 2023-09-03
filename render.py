@@ -5,7 +5,7 @@ from images import ground_images, water_images, item_images
 from objects import place_and_render_object, remove_object_at_position
 
 
-class Collision_Checker:
+class Rendering:
     def __init__(self):
         self.grid_pattern = map_data_generator()  # world data, terraindata  # list
         self.display_hit_box_decay = 0
@@ -13,23 +13,7 @@ class Collision_Checker:
         # Tee dict et tile pilti maailma lisada
         self.generated_ground_images = {}
         self.generated_water_images = {}
-    def render_data(self, collison_x, collison_y, object_id):
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, \
-                hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
-            # Saame olemasoleva blocki TOP-LEFT koordinaadid
-            terrain_x = hit_box_x - hit_box_offset_x
-            terrain_y = hit_box_y - hit_box_offset_y
 
-        # teha grid x ja y-ist
-        if object_id == 2:
-            block_size = self.block_size
-
-        if object_id == 4:
-            block_size = self.block_size * 2
-            terrain_x = terrain_x - self.block_size / 2
-            terrain_y = terrain_y - self.block_size
-
-        single_grid = pygame.Rect(collison_x, collison_y, block_size, block_size)
 
     def render_grid(self):
         x = 125
@@ -96,8 +80,7 @@ class Collision_Checker:
                 # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                    if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
-                        self.terrain_data_minerals += 1
+                    if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4: self.terrain_data_minerals += 1
 
                     # Jätab muud blockid välja millele pole hit boxe vaja
                     if self.terrain_data[i][j] != 0:
@@ -151,15 +134,11 @@ class Collision_Checker:
                         if object_id != 0:
                             if object_id != 1:
                                 if self.display_hit_box_decay <= self.terrain_data_minerals:
-                                    self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
-                                                           hit_box_offset_x, hit_box_offset_y))
+                                    self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
                                     self.display_hit_box_decay += 1
 
 
-                                place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width,
-                                                        obj_height,
-                                                        hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                                place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-        print(self.terrain_data_minerals)
         self.terrain_data_minerals = 0
         self.display_hit_box_decay = 0
