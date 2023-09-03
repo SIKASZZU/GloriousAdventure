@@ -62,8 +62,7 @@ class Collision_Checker:
                 terrain_x = j * self.block_size + self.offset_x
                 terrain_y = i * self.block_size + self.offset_y
 
-                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
-                    self.terrain_data_minerals += 1
+                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4: self.terrain_data_minerals += 1
 
                 # Jätab muud blockid välja millele pole hit boxe vaja
                 if self.terrain_data[i][j] != 0:
@@ -114,14 +113,13 @@ class Collision_Checker:
                     hit_box_x = terrain_x + hit_box_offset_x
                     hit_box_y = terrain_y + hit_box_offset_y
 
-                    if object_id != 0:
-                        if object_id != 1:
-                            if self.display_hit_box_decay <= self.terrain_data_minerals:
-                                self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
-                                                       hit_box_offset_x, hit_box_offset_y))
-                                self.display_hit_box_decay += 1
+                    if object_id != 0 or 1:
+                        if self.display_hit_box_decay <= self.terrain_data_minerals:
+                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
+                                                    hit_box_offset_x, hit_box_offset_y))
+                            self.display_hit_box_decay += 1
 
-                            place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width,
-                                                    obj_height,
-                                                    hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width,
+                                                obj_height,
+                                                hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         self.terrain_data_minerals = 0

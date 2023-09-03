@@ -59,7 +59,7 @@ class Game:
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
-        self.terrain_data = map_data_generator(10)  # argument seed, default seed=None
+        self.terrain_data = map_data_generator()  # argument seed, default seed=None
 
         self.player_x = random.randint(500, 500)
         self.player_y = random.randint(375, 375)
@@ -181,9 +181,7 @@ class Game:
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted = (self.player_x + self.offset_x, self.player_y + self.offset_y)
-        if self.render_inv: # == True
-            render_inventory(self)  # renderib inventory
-
+        if self.render_inv: render_inventory(self)  # renderib inventory
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Renderib stamina-bari
