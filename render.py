@@ -1,8 +1,8 @@
 import pygame
 from map_generator import map_data_generator
 import random
-from images import ground_images, item_images
-from objects import place_and_render_object, remove_object_at_position
+from images import ground_images, item_images, water_images
+from objects import place_and_render_object
 
 
 class Collision_Checker:
@@ -23,7 +23,7 @@ class Collision_Checker:
 
     def map_render(self):
         self.render_terrain_data = []
-        self.screen.fill('blue')
+        self.screen.fill('white')
         self.render_range = 9  # Muudab renerimise suurust
 
         player_grid_row = int(self.player_x // self.block_size)
@@ -32,27 +32,42 @@ class Collision_Checker:
         for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
             row = []
             for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
+                try:
+                    terrain_x = j * self.block_size + self.offset_x
+                    terrain_y = i * self.block_size + self.offset_y
+                    row.append(self.terrain_data[i][j])
+                    # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
+                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                terrain_x = j * self.block_size + self.offset_x
-                terrain_y = i * self.block_size + self.offset_y
-                row.append(self.terrain_data[i][j])
+                        # Vaatab kas terrain data on 1
+                        if self.terrain_data[i][j] == 1:
+                            # Vaatab kas ground pilt on juba olemas
+                            if (i, j) not in self.generated_ground_images:
+                                ground_image_name = f"Ground_{random.randint(0, 19)}"
+                                ground_image = ground_images.get(ground_image_name)
+                                self.generated_ground_images[(i, j)] = ground_image
 
-                # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-                    # Vaatab kas terrain data on 1
-                    if self.terrain_data[i][j] == 1:
+                            # Renderib ground pidid kui need eksisteerivad
+                            ground_image = self.generated_ground_images.get((i, j))
+                            if ground_image:
+                                ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
+                                self.screen.blit(ground_image, (terrain_x, terrain_y))
 
-                        # Vaatab kas ground pilt on juba olemas
-                        if (i, j) not in self.generated_ground_images:
-                            ground_image_name = f"Ground_{random.randint(0, 19)}"
-                            ground_image = ground_images.get(ground_image_name)
-                            self.generated_ground_images[(i, j)] = ground_image
+                        if self.terrain_data[i][j] == 0:
+                            # Vaatab kas water pilt on juba olemas
+                            if (i, j) not in self.generated_water_images:
+                                generated_water_images = f"Water_{random.randint(0, 0)}"
+                                water_image = water_images.get(generated_water_images)
+                                self.generated_water_images[(i, j)] = water_image
 
-                        # Renderib ground pidid kui need eksisteerivad
-                        ground_image = self.generated_ground_images.get((i, j))
-                        if ground_image:
-                            ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
-                            self.screen.blit(ground_image, (terrain_x, terrain_y))
+                            # Renderib water pidid kui need eksisteerivad
+                            water_image = self.generated_water_images.get((i, j))
+                            if water_image:
+                                water_image = pygame.transform.scale(water_image, (self.block_size, self.block_size))
+                                self.screen.blit(water_image, (terrain_x, terrain_y))
+
+                except IndexError:
+                    print("IndexError")
             self.render_terrain_data.append(row)
 
     def object_render(self):

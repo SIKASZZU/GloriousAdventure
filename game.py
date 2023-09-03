@@ -6,6 +6,7 @@ import time
 
 # Oma enda failid
 from sprite import load_sprite_sheets, AnimationManager
+from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
@@ -43,6 +44,8 @@ class Game:
             base_speed=4, max_speed=10, min_speed=1
         )
 
+        self.generated_water_images = {}
+
         # Game-related attributes
         self.block_size = 100
         self.player_color = 'red'
@@ -59,7 +62,7 @@ class Game:
         self.center_x = self.X_max // 2
         self.center_y = self.Y_max // 2
         self.max_distance = min(self.center_x, self.center_y)
-        self.terrain_data = map_data_generator()  # argument seed, default seed=None
+        self.terrain_data = map_data_generator(10)  # argument seed, default seed=None
 
         self.player_x = random.randint(500, 500)
         self.player_y = random.randint(375, 375)
@@ -85,8 +88,6 @@ class Game:
         self.stamina_bar_size = 200
         self.stamina_bar_size_bg = 200
         self.stamina_bar_size_border = 200
-        self.screen_x = 1000
-        self.screen_y = 750
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
         self.half_w = self.screen.get_size()[0] // 2
         self.ratio = self.stamina_bar_size // 20  # 200 // 20 = 10
