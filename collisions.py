@@ -34,10 +34,9 @@ def check_collisions(self):
 
 render_range = 4  # Muudab renerimise suurust
 
-def collison_terrain(self):
+def player_collison_terrain(self):
 
     keys = pygame.key.get_pressed()
-    on_land = False
 
     player_grid_row = int(self.player_x // self.block_size)
     player_grid_col = int(self.player_y // self.block_size)
@@ -67,20 +66,16 @@ def collison_terrain(self):
                         self.player.speed = self.base_speed / 2
                         self.player.stamina.stamina_regenerate(0.05)
 
+                elif keys[pygame.K_LSHIFT]:
+                    # stamina = 0 - playeri speed = base speed
+                    if self.player.stamina.current_stamina == 0:
+                        self.player.stamina.stamina_regenerate(0.05)
+                        self.player.speed = self.base_speed
+                    else:
+                        self.player.speed = self.base_speed * 2.5
+                        self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                        self.player.stamina.use_stamina(0.05)
+
                 else:
-                    on_land = True
-
-    if on_land:
-        if keys[pygame.K_LSHIFT]:
-            # stamina = 0 - playeri speed = base speed
-            if self.player.stamina.current_stamina == 0:
-                self.player.stamina.stamina_regenerate(0.05)
-                self.player.speed = self.base_speed
-            else:
-                self.player.speed = self.base_speed * 2.5
-                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                self.player.stamina.use_stamina(0.05)
-
-        else:
-            self.player.speed = self.base_speed
-            self.player.stamina.stamina_regenerate(0.05)
+                    self.player.speed = self.base_speed
+                    self.player.stamina.stamina_regenerate(0.05)

@@ -11,10 +11,11 @@ from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
 from render import Rendering
-from collisions import check_collisions, collison_terrain
+from collisions import check_collisions, player_collison_terrain
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
 
+clock = pygame.time.Clock()
 
 class Game:
 
@@ -24,6 +25,7 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        clock.tick(240)
 
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
@@ -35,7 +37,8 @@ class Game:
         self.screen_x = 1000
         self.screen_y = 750
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
-        self.set_frame_rate = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.SysFont("Verdana", 20)
         self.stamina_bar_decay = 0
 
         self.player = Player(
@@ -192,9 +195,13 @@ class Game:
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
         # Uuendab displaid ja fps cap 60
-        pygame.display.flip()
-        self.set_frame_rate.tick(60)
+        fps_text = self.font.render(f"FPS: {int(self.clock.get_fps())}", True, (255, 0, 0))
+        self.screen.blit(fps_text, (100, 150))  # Adjust the position as needed
 
+        pygame.display.update()
+
+        # Limit the frame rate to 60 FPS
+        self.clock.tick(240)
 
     def run(self):
         while True:
@@ -202,7 +209,7 @@ class Game:
             box_target_camera(self)  # Kaamera
             call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
-            collison_terrain(self)  # Vaatab m2ngija kokkup6rkeid terrainiga
+            player_collison_terrain(self)  # Vaatab m2ngija kokkup6rkeid terrainiga
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Rendering.map_render(self)  # Renderib terraini
