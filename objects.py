@@ -1,5 +1,8 @@
-from items import minerals
 import pygame
+import random
+
+from items import minerals
+from images import ground_images
 
 def get_object_id_at_position(self, x, y):
     terrain_x = x - self.offset_x
@@ -11,7 +14,7 @@ def get_object_id_at_position(self, x, y):
 
 # eemaldab objekti ning lisab selle inventory
 def remove_object_at_position(self, terrain_x, terrain_y, object_id=None):
-    # itemi eemaldamine visuaalselt
+    # itemi eemaldamine visuaalselt, asendamine terraini valuga (1)
     grid_col = terrain_x // self.block_size
     grid_row = terrain_y // self.block_size
 
@@ -54,8 +57,8 @@ def add_object_to_inv(self, object_id, obj_hit_box):
                                 self.inventory[item_name] = 1
 
                             index = self.hit_boxes.index(obj_hit_box)
-                            self.hit_boxes.pop(index)
-                            
+                            self.hit_boxes.pop(index)    
+
             except RuntimeError:
                 print('RuntimeError')
 

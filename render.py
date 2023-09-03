@@ -41,10 +41,9 @@ class Rendering:
                     # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                        # Vaatab kas terrain data on 1
-                        if self.terrain_data[i][j] == 1:
-                            # Vaatab kas ground pilt on juba olemas
-                            if (i, j) not in self.generated_ground_images:
+                        # Renderib muru, terraini
+                        if self.terrain_data[i][j] == 1 or 4:
+                            if (i, j) not in self.generated_ground_images:  # Vaatab kas ground pilt on juba olemas
                                 ground_image_name = f"Ground_{random.randint(0, 19)}"
                                 ground_image = ground_images.get(ground_image_name)
                                 self.generated_ground_images[(i, j)] = ground_image
@@ -55,9 +54,9 @@ class Rendering:
                                 ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
                                 self.screen.blit(ground_image, (terrain_x, terrain_y))
 
+                        # Renderib vee
                         if self.terrain_data[i][j] == 0:
-                            # Vaatab kas water pilt on juba olemas
-                            if (i, j) not in self.generated_water_images:
+                            if (i, j) not in self.generated_water_images:  # Vaatab kas water pilt on juba olemas
                                 generated_water_images = f"Water_{random.randint(0, 0)}"
                                 water_image = water_images.get(generated_water_images)
                                 self.generated_water_images[(i, j)] = water_image
@@ -95,11 +94,11 @@ class Rendering:
                     hit_box_color = ''
                     hit_box_offset_x = 0
                     hit_box_offset_y = 0
+                    hit_box_color = 'green'
 
                     # Vaatab kas terrain data on kivi
                     if object_id == 2:
                         obj_image = item_images.get("Rock")
-                        hit_box_color = 'green'
 
                         obj_width = int(self.block_size * 1)
                         obj_height = int(self.block_size * 0.8)
@@ -114,7 +113,6 @@ class Rendering:
                     # Vaatab kas terrain data on puu
                     elif object_id == 4:
                         obj_image = item_images.get("Tree")
-                        hit_box_color = 'green'
 
                         # Pane TOP-LEFT otsa järgi paika
                         # ja siis muuda - palju lihtsam
@@ -133,11 +131,8 @@ class Rendering:
 
                     if object_id != 0 or 1:
                         if self.display_hit_box_decay <= self.terrain_data_minerals:
-                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
-                                                    hit_box_offset_x, hit_box_offset_y))
+                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
                             self.display_hit_box_decay += 1
 
-                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width,
-                                                obj_height,
-                                                hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         self.terrain_data_minerals = 0
