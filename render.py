@@ -5,11 +5,12 @@ from images import ground_images, item_images, water_images
 from objects import place_and_render_object
 
 
-class Collision_Checker:
+class Rendering:
     def __init__(self):
         self.grid_pattern = map_data_generator()  # world data, terraindata  # list
         self.generated_ground_images = {}
         self.display_hit_box_decay = 0
+
 
     def render_grid(self):
         x = 125
@@ -20,6 +21,7 @@ class Collision_Checker:
 
         render_rect = pygame.Rect(left, top, width, height)
         return render_rect  # Rect
+
 
     def map_render(self):
         self.render_terrain_data = []
@@ -69,6 +71,7 @@ class Collision_Checker:
                 except IndexError:
                     print("IndexError")
             self.render_terrain_data.append(row)
+
 
     def object_render(self):
         # Loopib läbi terrain data ja saab x ja y
