@@ -16,6 +16,8 @@ def check_collisions(self):
         obj_hit_box = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id,
                         hit_box_offset_x, hit_box_offset_y)
 
+        block_size = self.block_size
+
         if object_id == 2:
             block_size = self.block_size
 
