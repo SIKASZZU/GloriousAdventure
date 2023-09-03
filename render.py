@@ -74,17 +74,16 @@ class Collision_Checker:
 
     def object_render(self):
         # Loopib läbi terrain data ja saab x ja y
-
-        for i in range(len(self.render_terrain_data)):
-            for j in range(len(self.render_terrain_data)):
-
+        for i in range(len(self.terrain_data)):
+            for j in range(len(self.terrain_data[i])):
                 terrain_x = j * self.block_size + self.offset_x
                 terrain_y = i * self.block_size + self.offset_y
-                if self.render_terrain_data[i][j] == 2 or self.render_terrain_data[i][j] == 4:
+
+                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
                     self.terrain_data_minerals += 1
 
                 # Jätab muud blockid välja millele pole hit boxe vaja
-                if self.render_terrain_data[i][j] != 0:
+                if self.terrain_data[i][j] != 0:
 
                     # Peavad olema muidu järgnevates if statementides tulevad errorid
                     object_id = self.terrain_data[i][j]
@@ -113,7 +112,7 @@ class Collision_Checker:
                         hit_box_offset_y = int(obj_height * 0.25)
 
                     # Vaatab kas terrain data on puu
-                    if object_id == 4:
+                    elif object_id == 4:
                         obj_image = item_images.get("Tree")
                         hit_box_color = 'green'
 
@@ -142,6 +141,4 @@ class Collision_Checker:
                             place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width,
                                                     obj_height,
                                                     hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
         self.terrain_data_minerals = 0
-        self.display_hit_box_decay = 0
