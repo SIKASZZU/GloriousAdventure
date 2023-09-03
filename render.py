@@ -69,76 +69,66 @@ class Rendering:
 
 
     def object_render(self):
-        player_grid_row = int(self.player_x // self.block_size)
-        player_grid_col = int(self.player_y // self.block_size)
-
-        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
-            for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
+        # Loopib läbi terrain data ja saab x ja y
+        for i in range(len(self.terrain_data)):
+            for j in range(len(self.terrain_data[i])):
                 terrain_x = j * self.block_size + self.offset_x
                 terrain_y = i * self.block_size + self.offset_y
 
-                # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4: self.terrain_data_minerals += 1
 
-                    if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4: self.terrain_data_minerals += 1
+                # Jätab muud blockid välja millele pole hit boxe vaja
+                if self.terrain_data[i][j] != 0:
 
-                    # Jätab muud blockid välja millele pole hit boxe vaja
-                    if self.terrain_data[i][j] != 0:
+                    # Peavad olema muidu järgnevates if statementides tulevad errorid
+                    object_id = self.terrain_data[i][j]
+                    obj_image = None
+                    obj_width = 0
+                    obj_height = 0
+                    hit_box_width = 0
+                    hit_box_height = 0
+                    hit_box_color = ''
+                    hit_box_offset_x = 0
+                    hit_box_offset_y = 0
+                    hit_box_color = 'green'
 
-                        # Peavad olema muidu järgnevates if statementides tulevad errorid
-                        object_id = self.terrain_data[i][j]
-                        obj_image = None
-                        obj_width = 0
-                        obj_height = 0
-                        hit_box_width = 0
-                        hit_box_height = 0
-                        hit_box_color = ''
-                        hit_box_offset_x = 0
-                        hit_box_offset_y = 0
+                    # Vaatab kas terrain data on kivi
+                    if object_id == 2:
+                        obj_image = item_images.get("Rock")
 
-                        # Vaatab kas terrain data on kivi
-                        if object_id == 2:
-                            obj_image = item_images.get("Rock")
-                            hit_box_color = 'green'
+                        obj_width = int(self.block_size * 1)
+                        obj_height = int(self.block_size * 0.8)
 
-                            obj_width = int(self.block_size * 1)
-                            obj_height = int(self.block_size * 0.8)
+                        # Pane TOP-LEFT otsa järgi paika
+                        # ja siis muuda - palju lihtsam
+                        hit_box_width = int(obj_width * 0.5)
+                        hit_box_height = int(obj_height * 0.5)
+                        hit_box_offset_x = int(obj_width * 0.3)
+                        hit_box_offset_y = int(obj_height * 0.25)
 
-                            # Pane TOP-LEFT otsa järgi paika
-                            # ja siis muuda - palju lihtsam
-                            hit_box_width = int(obj_width * 0.5)
-                            hit_box_height = int(obj_height * 0.5)
-                            hit_box_offset_x = int(obj_width * 0.3)
-                            hit_box_offset_y = int(obj_height * 0.25)
+                    # Vaatab kas terrain data on puu
+                    elif object_id == 4:
+                        obj_image = item_images.get("Tree")
 
-                        # Vaatab kas terrain data on puu
-                        elif object_id == 4:
-                            obj_image = item_images.get("Tree")
-                            hit_box_color = 'green'
+                        # Pane TOP-LEFT otsa järgi paika
+                        # ja siis muuda - palju lihtsam
+                        obj_width = int(self.block_size * 2)
+                        obj_height = int(self.block_size * 2)
+                        hit_box_width = int(obj_width * 0.25)
+                        hit_box_height = int(obj_height * 0.65)
 
-                            # Pane TOP-LEFT otsa järgi paika
-                            # ja siis muuda - palju lihtsam
-                            obj_width = int(self.block_size * 2)
-                            obj_height = int(self.block_size * 2)
-                            hit_box_width = int(obj_width * 0.25)
-                            hit_box_height = int(obj_height * 0.65)
+                        hit_box_offset_x = int(obj_width * 0.4)
+                        hit_box_offset_y = int(obj_height * 0.2)
 
-                            hit_box_offset_x = int(obj_width * 0.4)
-                            hit_box_offset_y = int(obj_height * 0.2)
+                    # Arvutab hit boxi positsiooni
+                    # Default hit box on terrain_x ja terrain_y
+                    hit_box_x = terrain_x + hit_box_offset_x
+                    hit_box_y = terrain_y + hit_box_offset_y
 
-                        # Arvutab hit boxi positsiooni
-                        # Default hit box on terrain_x ja terrain_y
-                        hit_box_x = terrain_x + hit_box_offset_x
-                        hit_box_y = terrain_y + hit_box_offset_y
+                    if object_id != 0 or 1:
+                        if self.display_hit_box_decay <= self.terrain_data_minerals:
+                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
+                            self.display_hit_box_decay += 1
 
-                        if object_id != 0:
-                            if object_id != 1:
-                                if self.display_hit_box_decay <= self.terrain_data_minerals:
-                                    self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
-                                    self.display_hit_box_decay += 1
-
-
-                                place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
+                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         self.terrain_data_minerals = 0
-        self.display_hit_box_decay = 0
