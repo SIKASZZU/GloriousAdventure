@@ -41,11 +41,7 @@ class Game:
         self.font = pygame.font.SysFont("Verdana", 20)
         self.stamina_bar_decay = 0
 
-        self.player = Player(
-            max_health=20, min_health=0,
-            max_stamina=20, min_stamina=0,
-            base_speed=4, max_speed=10, min_speed=1
-        )
+        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1)
 
         self.generated_water_images = {}
 
@@ -57,7 +53,6 @@ class Game:
         self.grab_decay = 0
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
-
         self.hit_boxes = []  # Objects data
 
         self.X_max = 1500 // self.block_size
@@ -99,32 +94,19 @@ class Game:
         self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
 
         # Animation shit
-        self.sprite_sheets, self.animations = load_sprite_sheets([
-            'images/Player/Left.png',
-            'images/Player/Right.png',
-            'images/Player/Up.png',
-            'images/Player/Down.png'
-        ])
-
-        self.sprite_sheets_idle, self.animations_idle = load_sprite_sheets([
-            'images/Player/Idle_Left.png',
-            'images/Player/Idle_Right.png',
-            'images/Player/Idle_Up.png',
-            'images/Player/Idle_Down.png'
-        ])
+        self.sprite_sheets, self.animations = load_sprite_sheets(['images/Player/Left.png','images/Player/Right.png','images/Player/Up.png','images/Player/Down.png'])
+        self.sprite_sheets_idle, self.animations_idle = load_sprite_sheets(['images/Player/Idle_Left.png','images/Player/Idle_Right.png','images/Player/Idle_Up.png','images/Player/Idle_Down.png'])
 
         # Set animation speeds
         self.animation_speeds = [10, 10, 10, 10]  # Example speeds, adjust as needed
 
         # Create AnimationManagers for both regular and idle animations
         self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds)
-        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
-                                                       self.animation_speeds)
+        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle, self.animation_speeds)
 
         self.render_inv = False  # Inventory renderminmine
         self.inv_count = 0  # Otsustab, kas renderida inv v6i mitte
         self.tab_pressed = False  # Keep track of whether Tab was pressed
-
         self.render_rect = pygame.Rect(0,0,0,0)
 
 
@@ -136,31 +118,21 @@ class Game:
         new_player_x = self.player_x
         new_player_y = self.player_y
 
-        if keys[pygame.K_LSHIFT]:
-            self.frame_delay = 10  # Adjust running speed
-        else:
-            self.frame_delay = 7  # Default walking speed
+        if keys[pygame.K_LSHIFT]: self.frame_delay = 10  # Adjust running speed
+        else: self.frame_delay = 7  # Default walking speed
 
-        if keys[pygame.K_a]:
-            self.animation_index = 0  # Left animation
-        elif keys[pygame.K_d]:
-            self.animation_index = 1  # Right animation
-        elif keys[pygame.K_w]:
-            self.animation_index = 2  # Up animation
-        elif keys[pygame.K_s]:
-            self.animation_index = 3  # Down animation
+        if keys[pygame.K_a]: self.animation_index = 0  # Left animation
+        elif keys[pygame.K_d]: self.animation_index = 1  # Right animation
+        elif keys[pygame.K_w]: self.animation_index = 2  # Up animation
+        elif keys[pygame.K_s]: self.animation_index = 3  # Down animation
 
-        if keys[pygame.K_a]:
-            new_player_x = self.player_x - self.player.speed
+        if keys[pygame.K_a]: new_player_x = self.player_x - self.player.speed
 
-        if keys[pygame.K_d]:
-            new_player_x = self.player_x + self.player.speed
+        if keys[pygame.K_d]: new_player_x = self.player_x + self.player.speed
 
-        if keys[pygame.K_w]:
-            new_player_y = self.player_y - self.player.speed
+        if keys[pygame.K_w]: new_player_y = self.player_y - self.player.speed
 
-        if keys[pygame.K_s]:
-            new_player_y = self.player_y + self.player.speed
+        if keys[pygame.K_s]: new_player_y = self.player_y + self.player.speed
 
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
@@ -169,16 +141,11 @@ class Game:
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
         # Kui player seisab (Animationi jaoks - IDLE)
-        is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[
-            pygame.K_e])
+        is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
-        if is_idle:
-            self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
-        else:
-            self.frame = self.animation_manager.update_animation(keys, is_idle)
-
-        if self.frame is not None:
-            self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
+        if is_idle: self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
+        else: self.frame = self.animation_manager.update_animation(keys, is_idle)
+        if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
 
     def render(self):
