@@ -2,7 +2,7 @@ import pygame
 from map_generator import map_data_generator
 import random
 from images import ground_images, water_images, item_images
-from objects import place_and_render_object, remove_object_at_position
+from objects import place_and_render_hitbox, place_and_render_object
 
 
 class Rendering:
@@ -130,5 +130,6 @@ class Rendering:
                             self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
                             self.display_hit_box_decay += 1
 
-                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height)
+                        place_and_render_hitbox(self, object_id, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         self.terrain_data_minerals = 0

@@ -62,15 +62,16 @@ def add_object_to_inv(self, object_id, obj_hit_box):
             except RuntimeError:
                 print('RuntimeError')
 
-def place_and_render_object(self, object_id, obj_image, obj_x, obj_y, obj_width, obj_height, hit_box_color, hit_box_x, hit_box_y, hit_box_width, hit_box_height):
-    
+def place_and_render_object(self, object_id, obj_image, obj_x, obj_y, obj_width, obj_height):
     if obj_image:
-        if object_id == 4:  # Kui mineral on puu siis annab eraldi koordinaadid
-            position =  (obj_x - self.block_size / 2, obj_y - self.block_size)
-            hit_box_x = hit_box_x - self.block_size / 2
-            hit_box_y = hit_box_y - self.block_size
-
-        obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-        pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
+        if object_id == 4: position =  (obj_x - self.block_size / 2, obj_y - self.block_size)
         scaled_obj_image = pygame.transform.scale(obj_image, (obj_width, obj_height))
         self.screen.blit(scaled_obj_image, position)
+
+def place_and_render_hitbox(self, object_id, hit_box_x, hit_box_y, hit_box_width, hit_box_height):
+    if object_id == 4:
+        hit_box_x = hit_box_x - self.block_size / 2
+        hit_box_y = hit_box_y - self.block_size    
+    hit_box_color = 'Green'
+    obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+    pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
