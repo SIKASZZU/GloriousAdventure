@@ -27,7 +27,7 @@ class Render_Checker:
 
     def map_render(self):
         self.screen.fill('white')
-        self.render_range = 9  # Muudab renerimise suurust
+        self.render_range = 2  # Muudab renerimise suurust
 
         player_grid_row = int(self.player_x // self.block_size)
         player_grid_col = int(self.player_y // self.block_size)
@@ -69,67 +69,52 @@ class Render_Checker:
 
 
     def object_render(self):
-        # Loopib läbi terrain data ja saab x ja y
-        for i in range(len(self.terrain_data)):
-            for j in range(len(self.terrain_data[i])):
-                terrain_x = j * self.block_size + self.offset_x
-                terrain_y = i * self.block_size + self.offset_y
+        player_grid_row = int(self.player_x // self.block_size)
+        player_grid_col = int(self.player_y // self.block_size)
 
-                if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4: self.terrain_data_minerals += 1
+        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
+            for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
+                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[0]):
+                    if self.terrain_data[i][j] > 1:
+                        Render_Checker.render_object_at(self, i, j)
 
-                # Jätab muud blockid välja millele pole hit boxe vaja
-                if self.terrain_data[i][j] != 0:
+    def render_object_at(self, i, j):
+        terrain_x = j * self.block_size + self.offset_x
+        terrain_y = i * self.block_size + self.offset_y
+        object_id = self.terrain_data[i][j]
 
-                    # Peavad olema muidu järgnevates if statementides tulevad errorid
-                    object_id = self.terrain_data[i][j]
-                    obj_image = None
-                    obj_width = 0
-                    obj_height = 0
-                    hit_box_width = 0
-                    hit_box_height = 0
-                    hit_box_color = ''
-                    hit_box_offset_x = 0
-                    hit_box_offset_y = 0
-                    hit_box_color = 'green'
+        obj_image = None
+        obj_width, obj_height = 0, 0
+        hit_box_width, hit_box_height = 0, 0
+        hit_box_offset_x, hit_box_offset_y = 0, 0
 
-                    # Vaatab kas terrain data on kivi
-                    if object_id == 2:
-                        obj_image = item_images.get("Rock")
+        if object_id == 2:
+            obj_image = item_images.get("Rock")
+            obj_width = int(self.block_size * 1)
+            obj_height = int(self.block_size * 0.8)
+            hit_box_width = int(obj_width * 0.5)
+            hit_box_height = int(obj_height * 0.5)
+            hit_box_offset_x = int(obj_width * 0.3)
+            hit_box_offset_y = int(obj_height * 0.25)
 
-                        obj_width = int(self.block_size * 1)
-                        obj_height = int(self.block_size * 0.8)
+        elif object_id == 4:
+            obj_image = item_images.get("Tree")
+            obj_width = int(self.block_size * 2)
+            obj_height = int(self.block_size * 2)
+            hit_box_width = int(obj_width * 0.25)
+            hit_box_height = int(obj_height * 0.65)
+            hit_box_offset_x = int(obj_width * 0.4)
+            hit_box_offset_y = int(obj_height * 0.2)
 
-                        # Pane TOP-LEFT otsa järgi paika
-                        # ja siis muuda - palju lihtsam
-                        hit_box_width = int(obj_width * 0.5)
-                        hit_box_height = int(obj_height * 0.5)
-                        hit_box_offset_x = int(obj_width * 0.3)
-                        hit_box_offset_y = int(obj_height * 0.25)
+        hit_box_x = terrain_x + hit_box_offset_x
+        hit_box_y = terrain_y + hit_box_offset_y
 
-                    # Vaatab kas terrain data on puu
-                    elif object_id == 4:
-                        obj_image = item_images.get("Tree")
+        if object_id > 1: 
+            if self.display_hit_box_decay <= self.terrain_data_minerals:
+                self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
+                self.display_hit_box_decay += 1
 
-                        # Pane TOP-LEFT otsa järgi paika
-                        # ja siis muuda - palju lihtsam
-                        obj_width = int(self.block_size * 2)
-                        obj_height = int(self.block_size * 2)
-                        hit_box_width = int(obj_width * 0.25)
-                        hit_box_height = int(obj_height * 0.65)
+            place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height)
+            place_and_render_hitbox(self, object_id, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-                        hit_box_offset_x = int(obj_width * 0.4)
-                        hit_box_offset_y = int(obj_height * 0.2)
-
-                    # Arvutab hit boxi positsiooni
-                    # Default hit box on terrain_x ja terrain_y
-                    hit_box_x = terrain_x + hit_box_offset_x
-                    hit_box_y = terrain_y + hit_box_offset_y
-
-                    if object_id != 0 or 1:
-                        if self.display_hit_box_decay <= self.terrain_data_minerals:
-                            self.hit_boxes.append((hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y))
-                            self.display_hit_box_decay += 1
-
-                        place_and_render_object(self, object_id, obj_image, terrain_x, terrain_y, obj_width, obj_height)
-                        place_and_render_hitbox(self, object_id, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         self.terrain_data_minerals = 0
