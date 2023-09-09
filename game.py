@@ -10,7 +10,7 @@ from images import ground_images
 from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
-from render import Rendering
+from render import Render_Checker
 from collisions import check_collisions, player_collison_terrain
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
@@ -179,8 +179,8 @@ class Game:
             player_collison_terrain(self)  # Vaatab m2ngija kokkup6rkeid terrainiga
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
-            Rendering.map_render(self)  # Renderib terraini
-            Rendering.object_render(self)  # Renderib objektid
+            Render_Checker.map_render(self)  # Renderib terraini
+            Render_Checker.object_render(self)  # Renderib objektid
             self.render()
 
 if __name__ == "__main__":

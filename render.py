@@ -5,7 +5,7 @@ from images import ground_images, water_images, item_images
 from objects import place_and_render_hitbox, place_and_render_object
 
 
-class Rendering:
+class Render_Checker:
     def __init__(self):
         self.grid_pattern = map_data_generator()  # world data, terraindata  # list
         self.display_hit_box_decay = 0
