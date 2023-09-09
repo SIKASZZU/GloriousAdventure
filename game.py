@@ -51,6 +51,7 @@ class Game:
         self.base_speed = 4
         self.generated_ground_images = {}
         self.grab_decay = 0
+        self.render_range = 0
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
         self.hit_boxes = []  # Objects data
