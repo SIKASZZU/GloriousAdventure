@@ -26,8 +26,7 @@ def remove_object_at_position(
 
         # Kui ei jää mapi sisse siis prindib errori
         else:
-            print('Error in file: objects.py')
-            print("Invalid grid indices:", grid_row, grid_col)
+            print("Error in file: objects.py\nInvalid grid indices:", grid_row, grid_col)
 
 
 # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
