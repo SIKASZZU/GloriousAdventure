@@ -20,14 +20,13 @@ def remove_object_at_position(
                 grid_col += 1
                 grid_row += 1
 
-            # Muudab objecti value 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
+            # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
             # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
             self.terrain_data[grid_row][grid_col] = 1
 
         # Kui ei jää mapi sisse siis prindib errori
         else:
-            print("Error in file: objects.py\nInvalid grid indices:", grid_row, grid_col)
-
+            print("\nError in file: objects.py \n  Invalid grid indices:", grid_row, grid_col)
 
 # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
 # 160 - X
@@ -80,7 +79,7 @@ def add_object_to_inv(
                     self.hit_boxes.pop(index)
 
     except RuntimeError as e:
-        print('Error in file: objects.py', e)
+        print("\nError in file: objects.py", e)
 
 
 # ID, pilt, x, y, laius, pikkus
