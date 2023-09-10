@@ -10,7 +10,7 @@ class Render_Checker:
     display_hit_box_decay: int = 0
     index: int = 0
 
-    def map_render(self):
+    def map_render(self) -> None:
         self.screen.fill('white')
         self.render_terrain_data: list = []
 
