@@ -18,8 +18,7 @@ class Render_Checker:
         if self.index < 10:
             self.render_range: int = 70  # Muudab renerimise suurust
             self.index += 1
-        else:
-            self.render_range: int = 8
+        else: self.render_range: int = 8
 
         player_grid_row = int(self.player_x // self.block_size)
         player_grid_col = int(self.player_y // self.block_size)
@@ -30,10 +29,8 @@ class Render_Checker:
                 terrain_x: int = j * self.block_size + self.offset_x
                 terrain_y: int = i * self.block_size + self.offset_y
 
-                try:
-                    self.row.append(self.terrain_data[i][j])
-                except IndexError as e:
-                    pass
+                try: self.row.append(self.terrain_data[i][j])
+                except IndexError: pass
 
                 # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
@@ -64,6 +61,17 @@ class Render_Checker:
                         if water_image:
                             water_image = pygame.transform.scale(water_image, (self.block_size, self.block_size))
                             self.screen.blit(water_image, (terrain_x, terrain_y))
+                else:
+                    # Renderib vee v2ljaspool piire
+                    if (i, j) not in self.generated_water_images:
+                        generated_water_images: str = f"Water_{random.randint(0, 0)}"
+                        water_image = water_images.get(generated_water_images)
+                        self.generated_water_images[(i, j)] = water_image
+
+                    water_image = self.generated_water_images.get((i, j))
+                    if water_image:
+                        water_image = pygame.transform.scale(water_image, (self.block_size, self.block_size))
+                        self.screen.blit(water_image, (terrain_x, terrain_y))
 
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
