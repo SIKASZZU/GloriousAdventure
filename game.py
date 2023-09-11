@@ -126,19 +126,13 @@ class Game:
         new_player_x: int = self.player_x
         new_player_y: int = self.player_y
 
-        if keys[pygame.K_LSHIFT]:
-            self.frame_delay = 10  # Adjust running speed
-        else:
-            self.frame_delay = 7  # Default walking speed
+        if keys[pygame.K_LSHIFT]: self.frame_delay = 10  # Adjust running speed
+        else: self.frame_delay = 7  # Default walking speed
 
-        if keys[pygame.K_a]:
-            self.animation_index = 0  # Left animation
-        elif keys[pygame.K_d]:
-            self.animation_index = 1  # Right animation
-        elif keys[pygame.K_w]:
-            self.animation_index = 2  # Up animation
-        elif keys[pygame.K_s]:
-            self.animation_index = 3  # Down animation
+        if keys[pygame.K_a]: self.animation_index = 0  # Left animation
+        elif keys[pygame.K_d]: self.animation_index = 1  # Right animation
+        elif keys[pygame.K_w]: self.animation_index = 2  # Up animation
+        elif keys[pygame.K_s]: self.animation_index = 3  # Down animation
 
         if keys[pygame.K_a]: new_player_x = self.player_x - self.player.speed
         if keys[pygame.K_d]: new_player_x = self.player_x + self.player.speed
@@ -154,10 +148,8 @@ class Game:
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
-        if is_idle:
-            self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
-        else:
-            self.frame = self.animation_manager.update_animation(keys, is_idle)
+        if is_idle: self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
+        else: self.frame = self.animation_manager.update_animation(keys, is_idle)
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
     def render(self) -> None:
@@ -167,8 +159,7 @@ class Game:
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Create a player_rect using pygame.Rect() instead of pygame.rect()
-        player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60,
-                                  75)
+        player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60, 75)
 
         pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)  # Draw a red rectangle around the player
 
@@ -194,8 +185,8 @@ class Game:
             call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
             collison_terrain(self)
-            StaminaComponent.stamina_bar_update(self)  # Stamina bar
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+            StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Render_Checker.map_render(self)  # Renderib terraini
             Render_Checker.object_render(self)  # Renderib objektid
             self.render()
