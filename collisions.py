@@ -74,8 +74,24 @@ def collison_terrain(self) -> None:
                                 self.player.stamina.stamina_regenerate(0.05)
                         else:
                             on_land = True
+                    
+                    # Koodi kordus. Fix speed component TypeError: int() argument must be a string, a bytes-like object or a real number, not 'SpeedComponent'
                     else:
-                        in_water = True
+                        if keys[pygame.K_LSHIFT]:
+
+                            # stamina = 0 - playeri speed = base speed
+                            if self.player.stamina.current_stamina == 0:
+                                self.player.stamina.stamina_regenerate(0.05)
+                                self.player.speed = self.base_speed / 2
+
+                            else:
+                                self.player.speed = self.base_speed
+                                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                self.player.stamina.use_stamina(0.05)
+
+                        else:
+                            self.player.speed = self.base_speed / 2
+                            self.player.stamina.stamina_regenerate(0.05)
                 except IndexError: pass
     if on_land:
         if keys[pygame.K_LSHIFT]:
