@@ -39,7 +39,6 @@ def check_collisions(self) -> None:
 def collison_terrain(self) -> None:
     render_range: int = self.render_range
     keys = pygame.key.get_pressed()
-    on_land: bool = False
 
     player_grid_row = int(self.player_x // self.block_size)
     player_grid_col = int(self.player_y // self.block_size)
@@ -55,28 +54,24 @@ def collison_terrain(self) -> None:
                     # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                         in_water = self.terrain_data[i][j] == 0
+                        if not in_water:
 
-                        if in_water:
+                            # Player asub maal
                             if keys[pygame.K_LSHIFT]:
-
                                 # stamina = 0 - playeri speed = base speed
                                 if self.player.stamina.current_stamina == 0:
                                     self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed = self.base_speed / 2
-
-                                else:
                                     self.player.speed = self.base_speed
+                                else:
+                                    self.player.speed = self.base_speed * 2.5
                                     self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
 
                             else:
-                                self.player.speed = self.base_speed / 2
-                                self.player.stamina.stamina_regenerate(0.05)
-                        else:
-                            on_land = True
+                                self.player.speed = self.base_speed
+                                self.player.stamina.stamina_regenerate(0.05)           
                     
-                    # Koodi kordus. Fix speed component TypeError: int() argument must be a string, a bytes-like object or a real number, not 'SpeedComponent'
-                    else:
+                    else:  # Player asub vees v6i mapist v2ljas
                         if keys[pygame.K_LSHIFT]:
 
                             # stamina = 0 - playeri speed = base speed
@@ -92,18 +87,6 @@ def collison_terrain(self) -> None:
                         else:
                             self.player.speed = self.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
-                except IndexError: pass
-    if on_land:
-        if keys[pygame.K_LSHIFT]:
-            # stamina = 0 - playeri speed = base speed
-            if self.player.stamina.current_stamina == 0:
-                self.player.stamina.stamina_regenerate(0.05)
-                self.player.speed = self.base_speed
-            else:
-                self.player.speed = self.base_speed * 2.5
-                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                self.player.stamina.use_stamina(0.05)
 
-        else:
-            self.player.speed = self.base_speed
-            self.player.stamina.stamina_regenerate(0.05)
+                except IndexError: pass
+
