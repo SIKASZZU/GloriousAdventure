@@ -51,34 +51,32 @@ def collison_terrain(self) -> None:
             # Vaatab terrain recti ja playeri collisoneid
             terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
             if self.player_rect.colliderect(terrain_rect):
-
                 try:
                     # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                    in_water: bool = any(self.terrain_data[player_grid_row][player_grid_col] == 0 for player_grid_row in
-                                   range(i, i - 1, -1) for player_grid_col in range(j, j - 1, -1))
+                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                        in_water = self.terrain_data[i][j] == 0
 
-                    if in_water:
-                        if keys[pygame.K_LSHIFT]:
+                        if in_water:
+                            if keys[pygame.K_LSHIFT]:
 
-                            # stamina = 0 - playeri speed = base speed
-                            if self.player.stamina.current_stamina == 0:
-                                self.player.stamina.stamina_regenerate(0.05)
-                                self.player.speed = self.base_speed / 2
+                                # stamina = 0 - playeri speed = base speed
+                                if self.player.stamina.current_stamina == 0:
+                                    self.player.stamina.stamina_regenerate(0.05)
+                                    self.player.speed = self.base_speed / 2
+
+                                else:
+                                    self.player.speed = self.base_speed
+                                    self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                    self.player.stamina.use_stamina(0.05)
 
                             else:
-                                self.player.speed = self.base_speed
-                                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                self.player.stamina.use_stamina(0.05)
-
+                                self.player.speed = self.base_speed / 2
+                                self.player.stamina.stamina_regenerate(0.05)
                         else:
-                            self.player.speed = self.base_speed / 2
-                            self.player.stamina.stamina_regenerate(0.05)
-
+                            on_land = True
                     else:
-                        on_land = True
-
-                except IndexError:
-                    pass
+                        in_water = True
+                except IndexError: pass
     if on_land:
         if keys[pygame.K_LSHIFT]:
             # stamina = 0 - playeri speed = base speed
