@@ -1,3 +1,5 @@
+# Thanks, https://github.com/pvigier/perlin-numpy
+
 import numpy as np
 import matplotlib.pyplot as plt
 
