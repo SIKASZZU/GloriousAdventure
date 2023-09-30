@@ -15,28 +15,33 @@ def check_collisions(self) -> None:
         terrain_y: int = hit_box_y - hit_box_offset_y
 
         try:
-            if object_id == 4: 
-                block_size: int = self.block_size * 2
+            if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
         except TypeError:
             pass
-        
+
         if self.player_rect.colliderect(collision_object_rect):
-            if keys[pygame.K_SPACE]:
+            if keys[pygame.K_SPACE] and self.can_pickup:
+                self.pickup_timer = pygame.time.get_ticks()  # Start the pickup timer
+                self.can_pickup = False  # Set the flag to prevent further pickups
 
-                # Et visuaalselt võtaks puu ära
-                if object_id == 4:
-                    terrain_x = terrain_x - self.block_size / 2
-                    terrain_y = terrain_y - self.block_size
+        # Check if the pickup delay has passed
+        current_time = pygame.time.get_ticks()
+        if not self.can_pickup and current_time - self.pickup_timer >= self.pickup_delay * 1000:  # Convert seconds to milliseconds
+            self.can_pickup = True  # Reset the flag to allow another pickup
 
-                objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)  # removib itemi maailmast nahhuj
-                objects.add_object_to_inv(self, object_id, obj_hit_box)
-        
-        
+            # Here you can add your pickup logic
+            if object_id == 4:
+                terrain_x = terrain_x - self.block_size / 2
+                terrain_y = terrain_y - self.block_size
+
+            objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)
+            objects.add_object_to_inv(self, object_id, obj_hit_box)
+
+        # Vajalik, et teada kas player renderida peale v6i enne objekte
         if self.player_rect.colliderect(collision_object_rect):
             if (collision_object_rect[1] + 60) <= self.player_rect[1]:  # Y-v22rtus objectil [1], idk mdea kuidas teisiti seda saaks atm xD... +60 y value sest ss on v2he normaalsem see puutagant v2ljatulek
                 self.render_after = True
-
             else: 
                 self.render_after = False
 
