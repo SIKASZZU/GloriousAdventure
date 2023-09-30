@@ -24,7 +24,6 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        clock.tick(240)
 
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
@@ -176,7 +175,7 @@ class Game:
         pygame.display.update()
 
         # Limit the frame rate to 60 FPS
-        self.clock.tick(240)
+        self.clock.tick(60)
 
     def run(self) -> None:
         while True:
