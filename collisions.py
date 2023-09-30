@@ -50,43 +50,55 @@ def collison_terrain(self) -> None:
             # Vaatab terrain recti ja playeri collisoneid
             terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
             if self.player_rect.colliderect(terrain_rect):
-                try:
-                    # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-                        in_water = self.terrain_data[i][j] == 0
-                        if not in_water:
+                
+                # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
+                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                            # Player asub maal
-                            if keys[pygame.K_LSHIFT]:
-                                # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed = self.base_speed
-                                else:
-                                    self.player.speed = self.base_speed * 2.5
-                                    self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
-
-                            else:
+                    in_water = self.terrain_data[i][j] == 0
+                    if in_water != True:
+                        # Player asub maal
+                        if keys[pygame.K_LSHIFT]:
+                            # stamina = 0 - playeri speed = base speed
+                            if self.player.stamina.current_stamina == 0:
+                                self.player.stamina.stamina_regenerate(0.05)
                                 self.player.speed = self.base_speed
-                                self.player.stamina.stamina_regenerate(0.05)           
-                    
+                            else:
+                                self.player.speed = self.base_speed * 2.5
+                                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                self.player.stamina.use_stamina(0.05)
+                        else:
+                            self.player.speed = self.base_speed
+                            self.player.stamina.stamina_regenerate(0.05)
+
+### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
+
                     else:  # Player asub vees v6i mapist v2ljas
                         if keys[pygame.K_LSHIFT]:
-
                             # stamina = 0 - playeri speed = base speed
                             if self.player.stamina.current_stamina == 0:
                                 self.player.stamina.stamina_regenerate(0.05)
                                 self.player.speed = self.base_speed / 2
-
                             else:
                                 self.player.speed = self.base_speed
                                 self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                 self.player.stamina.use_stamina(0.05)
-
                         else:
                             self.player.speed = self.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
 
-                except IndexError: pass
+                else:  # Player asub vees v6i mapist v2ljas
+                    if keys[pygame.K_LSHIFT]:
+                    
+                        # stamina = 0 - playeri speed = base speed
+                        if self.player.stamina.current_stamina == 0:
+                            self.player.stamina.stamina_regenerate(0.05)
+                            self.player.speed = self.base_speed / 2
+                        else:
+                            self.player.speed = self.base_speed
+                            self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                            self.player.stamina.use_stamina(0.05)
+                    else:
+                        self.player.speed = self.base_speed / 2
+                        self.player.stamina.stamina_regenerate(0.05)
+                    
 
