@@ -67,8 +67,14 @@ class Game:
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
+        # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after: bool = bool
         self.hit_box_halfpoint: int = 0
+
+        # Vajalik, et pickup delay oleks.
+        self.pickup_timer = 0
+        self.pickup_delay = 2  # 2 seconds delay for picking up objects
+        self.can_pickup = True
 
         # ******** Camera stuff ******** #
         self.offset_x: int = 0
