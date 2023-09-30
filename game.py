@@ -8,7 +8,7 @@ from sprite import load_sprite_sheets, AnimationManager
 from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
-from render import Render_Checker
+from render import Render_Checker  # map_render, object_render
 from collisions import check_collisions, collison_terrain
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
@@ -67,6 +67,9 @@ class Game:
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
+        self.render_after: bool = bool
+        self.hit_box_halfpoint: int = 0
+
         # ******** Camera stuff ******** #
         self.offset_x: int = 0
         self.offset_y: int = 0
@@ -117,6 +120,7 @@ class Game:
         self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
                                                        self.animation_speeds)
 
+
     # Uuendab player datat ja laseb tal liikuda
     def update_player(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -151,7 +155,8 @@ class Game:
         else: self.frame = self.animation_manager.update_animation(keys, is_idle)
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
-    def render(self) -> None:
+
+    def render_player(self):
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
         if self.render_inv: render_inventory(self)  # renderib inventory
@@ -159,8 +164,10 @@ class Game:
 
         # Create a player_rect using pygame.Rect() instead of pygame.rect()
         player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60, 75)
-
         pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)  # Draw a red rectangle around the player
+
+
+    def render(self) -> None:
 
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
@@ -177,6 +184,7 @@ class Game:
         # Limit the frame rate to 60 FPS
         self.clock.tick(60)
 
+
     def run(self) -> None:
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
@@ -187,9 +195,15 @@ class Game:
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Render_Checker.map_render(self)  # Renderib terraini
-            Render_Checker.object_render(self)  # Renderib objektid
-            self.render()
-
+            
+            if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+                Render_Checker.object_render(self)  # Renderib objektid
+                self.render_player()  # Renderib playeri (+ tema recti)
+            else:  # self.render_after == False
+                self.render_player()
+                Render_Checker.object_render(self)
+           
+            self.render()  # inventory, stamina bari, fps counteri
 
 if __name__ == "__main__":
     game = Game()

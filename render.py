@@ -3,8 +3,6 @@ from map_generator import map_data_generator
 import random
 from images import ground_images, water_images, item_images
 from objects import place_and_render_hitbox, place_and_render_object
-import collisions
-
 
 class Render_Checker:
     display_hit_box_decay: int = 0
@@ -76,7 +74,6 @@ class Render_Checker:
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
 
-
     def object_render(self) -> None:
         player_grid_row: int = int(self.player_x // self.block_size)
         player_grid_col: int = int(self.player_y // self.block_size)
@@ -106,7 +103,7 @@ class Render_Checker:
                         hit_box_offset_x: int = 0
                         hit_box_offset_y: int = 0
 
-                        if object_id == 4: self.terrain_data_minerals += 1
+                        if object_id > 1: self.terrain_data_minerals += 1
 
                         if object_id == 2:
                             object_image = item_images.get("Rock")
@@ -130,30 +127,28 @@ class Render_Checker:
                             hit_box_offset_x = int(object_width * 0.4)
                             hit_box_offset_y = int(object_height * 0.2)
 
+                        self.hit_box_halfpoint: int = hit_box_height / 2
                         hit_box_x: int = terrain_x + hit_box_offset_x
                         hit_box_y: int = terrain_y + hit_box_offset_y
 
-                        if object_id > 1:
-                            if self.display_hit_box_decay <= self.terrain_data_minerals:
-                                new_item: tuple[int, ...] = (hit_box_x, hit_box_y,
-                                                             hit_box_width, hit_box_height,
-                                                             object_id,
-                                                             hit_box_offset_x, hit_box_offset_y)
+                        if self.display_hit_box_decay <= self.terrain_data_minerals:
+                            new_item: tuple[int, ...] = (hit_box_x, hit_box_y,
+                                                         hit_box_width, hit_box_height,
+                                                         object_id,
+                                                         hit_box_offset_x, hit_box_offset_y)
+                            
+                            if new_item not in self.hit_boxes:
+                                self.hit_boxes.append(new_item)
+                            self.display_hit_box_decay += 1
 
-                                if new_item not in self.hit_boxes:
-                                    self.hit_boxes.append(new_item)
-
-                                self.display_hit_box_decay += 1
-
-
-                            place_and_render_object(self,
-                                                    object_id, object_image,
-                                                    terrain_x, terrain_y,
-                                                    object_width, object_height
-                                                    )
-
-                            place_and_render_hitbox(self,
-                                                    object_id,
-                                                    hit_box_x, hit_box_y,
-                                                    hit_box_width, hit_box_height
-                                                    )
+                        place_and_render_object(self,
+                                                object_id, object_image,
+                                                terrain_x, terrain_y,
+                                                object_width, object_height
+                                                )
+                        
+                        place_and_render_hitbox(self,
+                                                object_id,
+                                                hit_box_x, hit_box_y,
+                                                hit_box_width, hit_box_height
+                                                )

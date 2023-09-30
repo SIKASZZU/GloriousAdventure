@@ -32,6 +32,14 @@ def check_collisions(self) -> None:
                 objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)  # removib itemi maailmast nahhuj
                 objects.add_object_to_inv(self, object_id, obj_hit_box)
         
+        
+        if self.player_rect.colliderect(collision_object_rect):
+            if (collision_object_rect[1] + 60) <= self.player_rect[1]:  # Y-v22rtus objectil [1], idk mdea kuidas teisiti seda saaks atm xD... +60 y value sest ss on v2he normaalsem see puutagant v2ljatulek
+                self.render_after = True
+
+            else: 
+                self.render_after = False
+
 ### BROKEN
 
 #        collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
