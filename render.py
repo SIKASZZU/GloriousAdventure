@@ -119,7 +119,6 @@ class Render_Checker:
 
                         elif object_id == 4:
                             object_image = item_images.get("Tree")
-                            hit_box_color = 'green'
 
                             # Pane TOP-LEFT otsa järgi paika
                             # ja siis muuda - palju lihtsam
