@@ -22,21 +22,21 @@ def check_collisions(self) -> None:
 
         if self.player_rect.colliderect(collision_object_rect):
             if keys[pygame.K_SPACE] and self.can_pickup:
-                self.pickup_timer = pygame.time.get_ticks()  # Start the pickup timer
-                self.can_pickup = False  # Set the flag to prevent further pickups
+                self.pickup_timer = pygame.time.get_ticks()
+                self.can_pickup = False  # Keelab j2rgmise pickupi
 
         # Check if the pickup delay has passed
         current_time = pygame.time.get_ticks()
         if not self.can_pickup and current_time - self.pickup_timer >= self.pickup_delay * 1000:  # Convert seconds to milliseconds
-            self.can_pickup = True  # Reset the flag to allow another pickup
+            self.can_pickup = True  # Lubaks j2rgmise pickupi
 
-            # Here you can add your pickup logic
-            if object_id == 4:
+            if object_id == 4:  # Teeb koordinaadid sobivaks self.hitboxile
                 terrain_x = terrain_x - self.block_size / 2
                 terrain_y = terrain_y - self.block_size
 
             objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)
             objects.add_object_to_inv(self, object_id, obj_hit_box)
+
 
         # Vajalik, et teada kas player renderida peale v6i enne objekte
         if self.player_rect.colliderect(collision_object_rect):
