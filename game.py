@@ -161,11 +161,10 @@ class Game:
         else: self.frame = self.animation_manager.update_animation(keys, is_idle)
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
-
+    # Renderib ainuyksi playeri
     def render_player(self):
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
-        if self.render_inv: render_inventory(self)  # renderib inventory
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Create a player_rect using pygame.Rect() instead of pygame.rect()
@@ -174,6 +173,7 @@ class Game:
 
 
     def render(self) -> None:
+        if self.render_inv: render_inventory(self)  # renderib inventory
 
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
