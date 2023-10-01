@@ -9,7 +9,7 @@ from game_entities import Player
 from stamina import StaminaComponent
 from map_generator import map_data_generator
 from render import Render_Checker  # map_render, object_render
-from collisions import check_collisions, collison_terrain
+from collisions import check_collisions, collison_terrain, collision_hitbox
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
 
@@ -53,6 +53,9 @@ class Game:
         # ******** Player stuff ******** #
         self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10,
                              min_speed=1)
+
+        self.player_height = self.block_size * 0.75
+        self.player_width = self.block_size * 0.6
 
         self.base_speed: int = 4
 
@@ -197,8 +200,11 @@ class Game:
             box_target_camera(self)  # Kaamera
             call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
+
+            # collision things
             collison_terrain(self)
             check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Render_Checker.map_render(self)  # Renderib terraini
             
