@@ -96,7 +96,7 @@ def collison_terrain(self) -> None:
 
 ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
 
-                    else:  # Player asub vees v6i mapist v2ljas
+                    else:  # Player asub vees
                         if keys[pygame.K_LSHIFT]:
                             # stamina = 0 - playeri speed = base speed
                             if self.player.stamina.current_stamina == 0:
@@ -110,7 +110,7 @@ def collison_terrain(self) -> None:
                             self.player.speed = self.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
 
-                else:  # Player asub vees v6i mapist v2ljas
+                else:  # Player asub mapist v2ljas
                     if keys[pygame.K_LSHIFT]:
                     
                         # stamina = 0 - playeri speed = base speed

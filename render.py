@@ -32,45 +32,28 @@ class Render_Checker:
 
                 # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                    terrain_value = self.terrain_data[i][j]
 
-                    # Vaatab kas terrain data on 1
-                    if self.terrain_data[i][j] != 0:
-                        # Vaatab kas ground pilt on juba olemas
-                        if (i, j) not in self.generated_ground_images:
-                            ground_image_name: str = f"Ground_{random.randint(0, 19)}"
-                            ground_image = ground_images.get(ground_image_name)
-                            self.generated_ground_images[(i, j)] = ground_image
+                    if terrain_value != 0 and (i, j) not in self.generated_ground_images:
+                        ground_image_name = f"Ground_{random.randint(0, 19)}"
+                        self.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (self.block_size, self.block_size))
 
-                        # Renderib ground pidid kui need eksisteerivad
-                        ground_image = self.generated_ground_images.get((i, j))
-                        if ground_image:
-                            ground_image = pygame.transform.scale(ground_image, (self.block_size, self.block_size))
-                            self.screen.blit(ground_image, (terrain_x, terrain_y))
+                    if terrain_value == 0 and (i, j) not in self.generated_water_images:
+                        generated_water_images = f"Water_{random.randint(0, 0)}"
+                        self.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
 
-                    if self.terrain_data[i][j] == 0:
-                        # Vaatab kas water pilt on juba olemas
-                        if (i, j) not in self.generated_water_images:
-                            generated_water_images: str = f"Water_{random.randint(0, 0)}"
-                            water_image = water_images.get(generated_water_images)
-                            self.generated_water_images[(i, j)] = water_image
-
-                        # Renderib water pidid kui need eksisteerivad
-                        water_image = self.generated_water_images.get((i, j))
-                        if water_image:
-                            water_image = pygame.transform.scale(water_image, (self.block_size, self.block_size))
-                            self.screen.blit(water_image, (terrain_x, terrain_y))
+                    image = self.generated_ground_images.get((i, j)) if terrain_value != 0 else self.generated_water_images.get((i, j))
+                    if image:
+                        self.screen.blit(image, (terrain_x, terrain_y))
                 else:
-                    # Renderib vee v2ljaspool piire
                     if (i, j) not in self.generated_water_images:
-                        generated_water_images: str = f"Water_{random.randint(0, 0)}"
-                        water_image = water_images.get(generated_water_images)
-                        self.generated_water_images[(i, j)] = water_image
-
-                    water_image = self.generated_water_images.get((i, j))
-                    if water_image:
-                        water_image = pygame.transform.scale(water_image, (self.block_size, self.block_size))
-                        self.screen.blit(water_image, (terrain_x, terrain_y))
-
+                        generated_water_images = f"Water_{random.randint(0, 0)}"
+                        self.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
+                        
+                    image = self.generated_water_images.get((i, j))
+                    if image:
+                        self.screen.blit(image, (terrain_x, terrain_y))
+                        
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
 

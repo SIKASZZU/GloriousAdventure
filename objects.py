@@ -93,14 +93,11 @@ def place_and_render_object(
     # Kui pilt on olemas siis võimaldab seda
     # ülesse võtta ja visualiseerib seda
     if obj_image:
+        position: tuple = (object_x, object_y)
 
         # Kui OBJECT ID on 4, võtab antud x ja y
-        if object_id == 4:
-            position: tuple = (object_x, object_y)
-            object_rect = pygame.Rect(object_x, object_y, self.block_size * 2, self.block_size * 2)
-
-        else:
-            object_rect = pygame.Rect(object_x, object_y, self.block_size, self.block_size)
+        if object_id == 4: object_rect = pygame.Rect(object_x, object_y, self.block_size * 2, self.block_size * 2)
+        else: object_rect = pygame.Rect(object_x, object_y, self.block_size, self.block_size)
 
         # Muudab pildi suurust ja visualiseerib seda
         scaled_obj_image = pygame.transform.scale(obj_image, (object_width, object_height))
