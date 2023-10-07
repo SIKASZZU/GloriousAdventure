@@ -26,25 +26,15 @@ class Player:
     """
 
     def __init__(self, max_health, min_health,
-                 max_stamina, min_stamina,
-                 base_speed, max_speed, min_speed):
+                max_stamina, min_stamina,
+                base_speed, max_speed, min_speed):
 
         self.health = HealthComponent(max_health=max_health,
-                                      min_health=min_health)
+                                    min_health=min_health)
 
-        self.stamina = StaminaComponent(max_stamina=max_stamina,
-                                        min_stamina=min_stamina)
+        self.stamina = StaminaComponent(max_stamina=max_stamina, 
+                                    min_stamina=min_stamina)
 
-        self.speed = SpeedComponent(base_speed=base_speed,
-                                    max_speed=max_speed,
-                                    min_speed=min_speed)
-    
-    def player(self):
-        
-        self.max_health=20
-        self.min_health=0
-        self.max_stamina=20
-        self.min_stamina=0
-        self.base_speed=4
-        self.max_speed=10
-        self.min_speed=1
+        self.speed= SpeedComponent(base_speed=base_speed, 
+                                max_speed=max_speed, 
+                                min_speed=min_speed)
