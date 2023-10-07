@@ -122,13 +122,13 @@ class Collisions:
                                 # stamina = 0 - playeri speed = base speed
                                 if self.player.stamina.current_stamina == 0:
                                     self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.current_speed = self.player.speed.base_speed
+                                    self.player.speed.current_speed = self.player.speed.base_speed
                                 else:
-                                    self.player.current_speed = self.player.speed.base_speed * 2.5
+                                    self.player.speed.current_speed = self.player.speed.base_speed * 2.5
                                     self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
-                                self.player.current_speed = self.player.speed.base_speed
+                                self.player.speed.current_speed = self.player.speed.base_speed
                                 self.player.stamina.stamina_regenerate(0.05)
 
     ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
@@ -138,13 +138,13 @@ class Collisions:
                                 # stamina = 0 - playeri speed = base speed
                                 if self.player.stamina.current_stamina == 0:
                                     self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.current_speed = self.player.speed.base_speed / 2
+                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
                                 else:
-                                    self.player.current_speed = self.player.speed.base_speed
+                                    self.player.speed.current_speed = self.player.speed.base_speed
                                     self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
-                                self.player.current_speed = self.player.speed.base_speed / 2
+                                self.player.speed.current_speed = self.player.speed.base_speed / 2
                                 self.player.stamina.stamina_regenerate(0.05)
 
                     else:  # Player asub mapist v2ljas
@@ -153,13 +153,13 @@ class Collisions:
                             # stamina = 0 - playeri speed = base speed
                             if self.player.stamina.current_stamina == 0:
                                 self.player.stamina.stamina_regenerate(0.05)
-                                self.player.current_speed = self.player.speed.base_speed / 2
+                                self.player.speed.current_speed = self.player.speed.base_speed / 2
                             else:
-                                self.player.current_speed = self.player.speed.base_speed
+                                self.player.speed.current_speed = self.player.speed.base_speed
                                 self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                 self.player.stamina.use_stamina(0.05)
                         else:
-                            self.player.current_speed = self.player.speed.base_speed / 2
+                            self.player.speed.current_speed = self.player.speed.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
 
 
