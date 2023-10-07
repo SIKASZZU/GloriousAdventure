@@ -8,10 +8,11 @@ from sprite import load_sprite_sheets, AnimationManager
 from game_settings import player_stats
 from stamina import StaminaComponent
 from map_generator import map_data_generator
-from render import Render_Checker  # map_render, object_render
+from render import Render_Checker  # map_render, object_list_creation
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
+from objects import Object_Management
 
 clock = pygame.time.Clock()
 
@@ -63,7 +64,11 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
-        self.player_x: int = random.randint(500, 500)
+
+        #self.player_x: int = random.randint(0,5000)
+        #self.player_y: int = random.randint(0,5000)
+
+        self.player_x: int = random.randint(500,500)
         self.player_y: int = random.randint(375, 375)
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
@@ -124,8 +129,7 @@ class Game:
 
         # Teeb idle ja mitte idle animatsioone
         self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds)
-        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
-                                                       self.animation_speeds)
+        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle, self.animation_speeds)
 
 
     # Uuendab player datat ja laseb tal liikuda
@@ -164,7 +168,6 @@ class Game:
         elif keys[pygame.K_w]: new_player_y = self.player_y - self.player.speed.current_speed
         elif keys[pygame.K_s]: new_player_y = self.player_y + self.player.speed.current_speed
 
-        # Kui
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
@@ -179,14 +182,14 @@ class Game:
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
     # Renderib ainuyksi playeri
-    def render_player(self):
+    def render_player(self) -> None:
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
-        # Create a player_rect using pygame.Rect() instead of pygame.rect()
+        # Draw a red rectangle around the player
         player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60, 75)
-        pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)  # Draw a red rectangle around the player
+        pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)  
 
 
     def render(self) -> None:
@@ -220,14 +223,19 @@ class Game:
             Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
+            Render_Checker.object_list_creation(self)
             Render_Checker.map_render(self)  # Renderib terraini
+
+
+            self.render_player()  # Renderib playeri (+ tema recti)
+            Object_Management.place_and_render_object  # Renderib objektid
             
-            if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
-                Render_Checker.object_render(self)  # Renderib objektid
-                self.render_player()  # Renderib playeri (+ tema recti)
-            else:  # self.render_after == False
-                self.render_player()
-                Render_Checker.object_render(self)
+            #if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+            #    Object_Management.place_and_render_object  # Renderib objektid
+            #    self.render_player()  # Renderib playeri (+ tema recti)
+            #else:  # self.render_after == False
+            #    self.render_player()
+            #    Object_Management.place_and_render_object  # Renderib objektid
            
             self.render()  # inventory, stamina bari, fps counteri
 
