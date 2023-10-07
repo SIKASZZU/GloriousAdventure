@@ -73,45 +73,34 @@ class Render_Checker:
 
                     # Kui terrain data [i][j] on suurem kui 1 siis arvutab
                     # objecti asukoha ja hitboxi ning displayib pildi
-                    if self.terrain_data[i][j] > 1:
+                    if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
                         terrain_x: int = j * self.block_size + self.offset_x
                         terrain_y: int = i * self.block_size + self.offset_y
                         object_id: int = self.terrain_data[i][j]
 
-                        object_width: int = 0
-                        object_height: int = 0
-                        hit_box_width: int = 0
-                        hit_box_height: int = 0
-                        hit_box_offset_x: int = 0
-                        hit_box_offset_y: int = 0
-
                         if object_id > 1: self.terrain_data_minerals += 1
 
+                        # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]
                         if object_id == 2:
-                            object_width = int(self.block_size * 1)
-                            object_height = int(self.block_size * 0.8)
-                            hit_box_width = int(object_width * 0.5)
-                            hit_box_height = int(object_height * 0.5)
-                            hit_box_offset_x = int(object_width * 0.3)
-                            hit_box_offset_y = int(object_height * 0.25)
+                            self.dimensions: list[int, ...] = [1, 0.8, 0.5, 0.5, 0.3, 0.25]
 
                         elif object_id == 4:
-                            # Pane TOP-LEFT otsa järgi paika
-                            # ja siis muuda - palju lihtsam
-                            object_width = int(self.block_size * 2)
-                            object_height = int(self.block_size * 2)
-                            hit_box_width = int(object_width * 0.25)
-                            hit_box_height = int(object_height * 0.65)
+                            self.dimensions: list[int, ...] = [2, 2, 0.25, 0.65, 0.4, 0.2]
 
-                            hit_box_offset_x = int(object_width * 0.4)
-                            hit_box_offset_y = int(object_height * 0.2)
+                        object_width_mlp, object_height_mlp, hit_box_width_mlp, hit_box_height_mlp, hit_box_offset_x_mlp, hit_box_offset_y_mlp = self.dimensions
+                        object_width = int(self.block_size * object_width_mlp)
+                        object_height = int(self.block_size * object_height_mlp)
+                        hit_box_width = int(object_width * hit_box_width_mlp)
+                        hit_box_height = int(object_height * hit_box_height_mlp)
 
-                        self.hit_box_halfpoint: int = hit_box_height / 2
+                        hit_box_offset_x = int(object_width * hit_box_offset_x_mlp)
+                        hit_box_offset_y = int(object_height * hit_box_offset_y_mlp)
+
                         hit_box_x: int = terrain_x + hit_box_offset_x
                         hit_box_y: int = terrain_y + hit_box_offset_y
 
                         if self.display_hit_box_decay <= self.terrain_data_minerals:
                             new_object: tuple[int, ...] = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
-                            
+
                             if new_object not in self.hit_boxes: self.hit_boxes.append(new_object)
                             self.display_hit_box_decay += 1
