@@ -5,11 +5,11 @@ import random
 
 # Oma enda failid
 from sprite import load_sprite_sheets, AnimationManager
-from game_entities import Player
+from game_settings import player_stats
 from stamina import StaminaComponent
 from map_generator import map_data_generator
 from render import Render_Checker  # map_render, object_render
-from collisions import check_collisions, collison_terrain, collision_hitbox
+from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from inventory import render_inventory, call_inventory
 from camera import box_target_camera
 
@@ -49,15 +49,13 @@ class Game:
         # ******** FPS counter ******** #
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
-
-        # ******** Player stuff ******** #
-        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10,
-                             min_speed=1)
+        
+        # Player stuff
+        self.player = player_stats
+        print(self.player, 'player_stats')
 
         self.player_height = self.block_size * 0.75
         self.player_width = self.block_size * 0.6
-
-        self.base_speed: int = 4
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
         self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
@@ -146,10 +144,10 @@ class Game:
         elif keys[pygame.K_w]: self.animation_index = 2  # Up animation
         elif keys[pygame.K_s]: self.animation_index = 3  # Down animation
 
-        if keys[pygame.K_a]: new_player_x = self.player_x - self.player.speed
-        if keys[pygame.K_d]: new_player_x = self.player_x + self.player.speed
-        if keys[pygame.K_w]: new_player_y = self.player_y - self.player.speed
-        if keys[pygame.K_s]: new_player_y = self.player_y + self.player.speed
+        if keys[pygame.K_a]: new_player_x = self.player_x - self.player.current_speed
+        if keys[pygame.K_d]: new_player_x = self.player_x + self.player.current_speed
+        if keys[pygame.K_w]: new_player_y = self.player_y - self.player.current_speed
+        if keys[pygame.K_s]: new_player_y = self.player_y + self.player.current_speed
 
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
@@ -202,8 +200,8 @@ class Game:
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
 
             # collision things
-            collison_terrain(self)
-            check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+            Collisions.collison_terrain(self)
+            Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Render_Checker.map_render(self)  # Renderib terraini
