@@ -225,10 +225,10 @@ class Game:
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
             Render_Checker.object_list_creation(self)
             Render_Checker.map_render(self)  # Renderib terraini
+            Object_Management.place_and_render_object(self)  # Renderib objektid
 
 
             self.render_player()  # Renderib playeri (+ tema recti)
-            Object_Management.place_and_render_object  # Renderib objektid
             
             #if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
             #    Object_Management.place_and_render_object  # Renderib objektid

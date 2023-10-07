@@ -106,7 +106,7 @@ class Render_Checker:
                             hit_box_offset_x = int(object_width * 0.4)
                             hit_box_offset_y = int(object_height * 0.2)
 
-                        self.hit_box_halfpoint: int = hit_box_height / 2
+                        #self.hit_box_halfpoint: int = hit_box_height / 2
                         hit_box_x: int = terrain_x + hit_box_offset_x
                         hit_box_y: int = terrain_y + hit_box_offset_y
 

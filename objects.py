@@ -80,31 +80,26 @@ class Object_Management:
 
     def place_and_render_object(self):
         """Visuaalselt paneb objekti maailma (imagei)"""
-    
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
-            
-            obj_hit_box = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
-            
             obj_image = None
             
-            terrain_x: int = hit_box_x - hit_box_offset_x - self.offset_x
-            terrain_y: int = hit_box_y - hit_box_offset_y - self.offset_y
+            terrain_x: int = hit_box_x - hit_box_offset_x
+            terrain_y: int = hit_box_y - hit_box_offset_y
 
             if object_id == 2:
-                object_image = item_images.get("Rock")
+                obj_image = item_images.get("Rock")
                 object_width = int(self.block_size * 1)
                 object_height = int(self.block_size * 0.8)
 
             elif object_id == 4:
+                obj_image = item_images.get("Tree")
                 object_width = int(self.block_size * 2)
                 object_height = int(self.block_size * 2)
             else:
                 object_width = int(self.block_size)
                 object_height = int(self.block_size)
 
-            
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width , object_height)
-            if obj_image == True:
+            if obj_image:
                 print('ture')
                 position: tuple = (terrain_x, terrain_y)
                 object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
@@ -120,7 +115,7 @@ class Object_Management:
             else: 
                 print('Object image missing!. File: objects.py Function: place_and_render_object')
 
-            Object_Management.place_and_render_hitbox(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+            Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
     
 
     def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
