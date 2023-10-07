@@ -71,7 +71,7 @@ class Render_Checker:
 
                     # Kui terrain data [i][j] on suurem kui 1 siis arvutab
                     # objecti asukoha ja hitboxi ning displayib pildi
-                    if self.terrain_data[i][j] > 1:
+                    if self.terrain_data[i][j] == 4 or self.terrain_data[i][j] == 2:
                         terrain_x: int = j * self.block_size + self.offset_x
                         terrain_y: int = i * self.block_size + self.offset_y
                         object_id: int = self.terrain_data[i][j]
