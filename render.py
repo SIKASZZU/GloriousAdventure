@@ -4,8 +4,6 @@ from images import ground_images, water_images, item_images
 from objects import Object_Management # place_and_render_hitbox, place_and_render_object
 
 class Render_Checker:
-    #display_hit_box_decay: int = 0
-    #index: int = 0
 
     def map_render(self) -> None:
         self.screen.fill('white')
@@ -85,7 +83,7 @@ class Render_Checker:
                         hit_box_offset_x: int = 0
                         hit_box_offset_y: int = 0
 
-                        if object_id > 1: self.terrain_data_minerals += 1
+                        if object_id == 4 or object_id == 2: self.terrain_data_minerals += 1
 
                         if object_id == 2:
                             object_width = int(self.block_size * 1)
