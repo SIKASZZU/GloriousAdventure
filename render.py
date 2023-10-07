@@ -78,7 +78,7 @@ class Render_Checker:
                         terrain_y: int = i * self.block_size + self.offset_y
                         object_id: int = self.terrain_data[i][j]
 
-                        if object_id > 1: self.terrain_data_minerals += 1
+                        if object_id == 2 or object_id == 4: self.terrain_data_minerals += 1
 
                         # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]
                         if object_id == 2:
