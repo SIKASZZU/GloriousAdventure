@@ -10,7 +10,7 @@ from stamina import StaminaComponent
 from map_generator import map_data_generator
 from render import Render_Checker  # map_render, object_list_creation
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
-from inventory import render_inventory, call_inventory
+from inventory import Inventory  # render_inventory, call_inventory
 from camera import box_target_camera
 from objects import Object_Management
 
@@ -189,7 +189,7 @@ class Game:
 
 
     def render(self) -> None:
-        if self.render_inv: render_inventory(self)  # renderib inventory
+        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
@@ -211,27 +211,24 @@ class Game:
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
             box_target_camera(self)  # Kaamera
-            call_inventory(self)  # update playeri osa()
+            Inventory.call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
+            
+            StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
             # collision things
             Collisions.collison_terrain(self)
             Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
-            StaminaComponent.stamina_bar_update(self)  # Stamina bar
-            Render_Checker.object_list_creation(self)
+            Render_Checker.object_list_creation(self)  # Creatib self.hit_boxes
             Render_Checker.map_render(self)  # Renderib terraini
-            Object_Management.place_and_render_object(self)  # Renderib objektid
 
-
-            self.render_player()  # Renderib playeri (+ tema recti)
-            
-            #if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
-            #    Object_Management.place_and_render_object  # Renderib objektid
-            #    self.render_player()  # Renderib playeri (+ tema recti)
-            #else:  # self.render_after == False
-            #    self.render_player()
-            #    Object_Management.place_and_render_object  # Renderib objektid
+            if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+                Object_Management.place_and_render_object(self)  # Renderib objektid
+                self.render_player()  # Renderib playeri (+ tema recti)
+            else:  # self.render_after == False
+                self.render_player()
+                Object_Management.place_and_render_object(self)  # Renderib objektid
            
             self.render()  # inventory, stamina bari, fps counteri
 
