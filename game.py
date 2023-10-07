@@ -64,12 +64,8 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
-
-        #self.player_x: int = random.randint(0,5000)
-        #self.player_y: int = random.randint(0,5000)
-
-        self.player_x: int = random.randint(500,500)
-        self.player_y: int = random.randint(375, 375)
+        self.player_x: int = random.randint(0,5000)
+        self.player_y: int = random.randint(0,5000)
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 

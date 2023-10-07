@@ -83,8 +83,8 @@ class Object_Management:
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             obj_image = None
             
-            terrain_x: int = hit_box_x - hit_box_offset_x
-            terrain_y: int = hit_box_y - hit_box_offset_y
+            terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
+            terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
 
             if object_id == 2:
                 obj_image = item_images.get("Rock")
@@ -95,26 +95,23 @@ class Object_Management:
                 obj_image = item_images.get("Tree")
                 object_width = int(self.block_size * 2)
                 object_height = int(self.block_size * 2)
+
             else:
                 object_width = int(self.block_size)
                 object_height = int(self.block_size)
 
             if obj_image:
-                print('ture')
                 position: tuple = (terrain_x, terrain_y)
                 object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-                print('object_rect', object_rect)
     
                 # Muudab pildi suurust ja visualiseerib seda
-                scaled_obj_image = pygame.transform.scale(obj_image, (self.block_size, self.block_size))
+                scaled_obj_image = pygame.transform.scale(obj_image, (object_width, object_height))
                 self.screen.blit(scaled_obj_image, position)
     
                 # Teeb roosa outline objecti ümber
                 pygame.draw.rect(self.screen, 'pink', object_rect, 2)
             
-            else: 
-                print('Object image missing!. File: objects.py Function: place_and_render_object')
-
+            else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
             Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
     
 
@@ -122,6 +119,8 @@ class Object_Management:
         """Renderib hitboxi objektitele"""
 
         hit_box_color: str = 'green'
+        hit_box_x += self.offset_x
+        hit_box_y += self.offset_y
 
         # Teeb antud asjadest hitboxi ja visualiseerib seda
         obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)

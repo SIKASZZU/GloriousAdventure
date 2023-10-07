@@ -32,18 +32,13 @@ class Collisions:
 
                     Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
                     Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
+                else: pass
 
 
-            # Vajalik, et teada kas player renderida peale v6i enne objekte
-                print('\n')
-                print('collisions', hit_box_x, hit_box_offset_x)
-                print('object', collision_object_rect)
-                print('player', self.player_rect)
-                print('\n')
-                if (collision_object_rect[1] + 60) <= self.player_rect[1]:  # Y-v22rtus objectil [1], idk mdea kuidas teisiti seda saaks atm xD... +60 y value sest ss on v2he normaalsem see puutagant v2ljatulek
-                    self.render_after = True
-                else: 
-                    self.render_after = False
+                # Vajalik, et teada kas player renderida peale v6i enne objekte
+                # Y-v22rtus == object_rectil [1] /// Y + 60, sest ss on v2he normaalsem see puutagant v2ljatulek
+                if (collision_object_rect[1] + 60) <= self.player_rect[1]: self.render_after = True
+                else:  self.render_after = False
 
         Collisions.collision_hitbox(self)
 
