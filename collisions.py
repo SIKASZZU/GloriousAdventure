@@ -42,52 +42,48 @@ class Collisions:
 
         Collisions.collision_hitbox(self)
 
-    ### BROKEN
-
-    # sest see vaatab ainult x ja y top cordinaati ja ta ei kontrolli teisi nurki ehk siis sama asi mis oli selle vee pasaga
-
     def collision_hitbox(self):
-            for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
-                collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+            collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-                # Calculate the player's corner positions
-                top_left_player_x = self.player_x
-                top_left_player_y = self.player_y
-                top_right_player_x = self.player_x + self.player_width
-                top_right_player_y = self.player_y
-                bottom_left_player_x = self.player_x
-                bottom_left_player_y = self.player_y + self.player_height
-                bottom_right_player_x = self.player_x + self.player_width
-                bottom_right_player_y = self.player_y + self.player_height
+            player_rect = pygame.Rect(self.player_x, self.player_y, self.player_width, self.player_height)
 
-                # Check for collision using all four corners of the player character
-                top_left_collision = collision_object_hitbox.collidepoint(top_left_player_x, top_left_player_y)
-                top_right_collision = collision_object_hitbox.collidepoint(top_right_player_x, top_right_player_y)
-                bottom_left_collision = collision_object_hitbox.collidepoint(bottom_left_player_x, bottom_left_player_y)
-                bottom_right_collision = collision_object_hitbox.collidepoint(bottom_right_player_x, bottom_right_player_y)
+            # Check for collision using rect.colliderect()
+            if player_rect.colliderect(collision_object_hitbox):
+                # Handle collision here
+                # You can access the object_id or perform other actions as needed
 
-                # Check for collisions on the right side
-                if top_right_collision or bottom_right_collision:
-                    if self.player_x < hit_box_x:
-                        self.player_x -= 4
+                # Example:
+                if object_id == 2:
+                    # Handle collision with object_id 2
+                    pass
+                elif object_id == 4:
+                    # Handle collision with object_id 4
+                    pass
 
-                # Check for collisions on the left side
-                if top_left_collision or bottom_left_collision:
-                    if self.player_x + self.player_width > (hit_box_x + hit_box_width):
-                        self.player_x += 4
+                # Determine the direction of the collision
+                dx = player_rect.centerx - collision_object_hitbox.centerx
+                dy = player_rect.centery - collision_object_hitbox.centery
 
-                # Check for collisions from bottom to top
-                if bottom_left_collision or bottom_right_collision:
-                    if self.player_y < hit_box_y:
-                        self.player_y -= 4
-
-                # Check for collisions from top to bottom
-                if top_left_collision or top_right_collision:
-                    if self.player_y + self.player_height > (hit_box_y + hit_box_height):
-                        self.player_y += 4
+                # Adjust player position based on the collision direction
+                if abs(dx) > abs(dy):
+                    # Horizontal collision
+                    if dx > 0:
+                        # Player collided on the right side of the object
+                        self.player_x += 4  # Move the player to the right
+                    else:
+                        # Player collided on the left side of the object
+                        self.player_x -= 4  # Move the player to the left
+                else:
+                    # Vertical collision
+                    if dy > 0:
+                        # Player collided on the bottom of the object
+                        self.player_y += 4  # Move the player downward
+                    else:
+                        # Player collided on the top of the object
+                        self.player_y -= 4  # Move the player upward
 
                 # Additional collision handling code can be added as needed
-
 
     def collison_terrain(self) -> None:
         render_range: int = self.render_range
