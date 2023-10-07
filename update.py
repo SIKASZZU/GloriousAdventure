@@ -54,7 +54,7 @@ class Game_update:
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
         self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
+        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_height, self.player_width)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
@@ -76,7 +76,7 @@ class Game_update:
         Inventory.call_inventory(self)  # update playeri osa()
 
         # Draw a red rectangle around the player
-        player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60, 75)
+        player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], self.player_width, self.player_height)
         pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
     # See peaks olema alati kõige peal

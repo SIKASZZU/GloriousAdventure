@@ -69,7 +69,7 @@ class Game:
         self.player_x: int = random.randint(0, 5000)
         self.player_y: int = random.randint(0, 5000)
 
-        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
+        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_height, self.player_width)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
