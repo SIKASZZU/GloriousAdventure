@@ -1,11 +1,7 @@
 import pygame
-import objects
-from game_settings import player_stats
-class Collisions:
+from objects import Object_Management
 
-    def __init__(self, game):
-        self.game = game
-        self.player = game.player_stats
+class Collisions:
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -16,14 +12,13 @@ class Collisions:
             obj_hit_box = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
 
             block_size: int = self.block_size
+            #print('collisions', hit_box_x, hit_box_offset_x)
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
-            try:
-                if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
-                collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
-            except TypeError:
-                pass
+            if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
+
 
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE] and self.can_pickup:
@@ -34,20 +29,16 @@ class Collisions:
                 current_time = pygame.time.get_ticks()
                 if not self.can_pickup and current_time - self.pickup_timer >= self.pickup_delay * 1000:  # Convert seconds to milliseconds
                     self.can_pickup = True  # Lubaks j2rgmise pickupi
-                    if object_id == 4:  # Teeb koordinaadid sobivaks self.hitboxile
-                        terrain_x = terrain_x - self.block_size / 2
-                        terrain_y = terrain_y - self.block_size
 
-                    objects.remove_object_at_position(self, terrain_x, terrain_y, object_id)
-                    objects.add_object_to_inv(self, object_id, obj_hit_box)
+                    Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
+                    Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
+                else: pass
 
 
-            # Vajalik, et teada kas player renderida peale v6i enne objekte
-            if self.player_rect.colliderect(collision_object_rect):
-                if (collision_object_rect[1] + 60) <= self.player_rect[1]:  # Y-v22rtus objectil [1], idk mdea kuidas teisiti seda saaks atm xD... +60 y value sest ss on v2he normaalsem see puutagant v2ljatulek
-                    self.render_after = True
-                else: 
-                    self.render_after = False
+                # Vajalik, et teada kas player renderida peale v6i enne objekte
+                # Y-v22rtus == object_rectil [1] /// Y + 60, sest ss on v2he normaalsem see puutagant v2ljatulek
+                if (collision_object_rect[1] + 60) <= self.player_rect[1]: self.render_after = True
+                else:  self.render_after = False
 
         Collisions.collision_hitbox(self)
 
@@ -96,6 +87,7 @@ class Collisions:
                         self.player_y += 4
 
                 # Additional collision handling code can be added as needed
+
 
     def collison_terrain(self) -> None:
         render_range: int = self.render_range
