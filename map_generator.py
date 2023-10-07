@@ -8,6 +8,7 @@ def map_data_generator(seed=None) -> None:
 
         (-0.15, -0.06, ("Sand")),
         (-0.06, 0.1, ("Grass")),
+        (-0.07, 0.09, ("Rock")),
         (0.1, 0.15, ("Tree")),
         (0.15, 0.2, ("Grass")),
 
@@ -46,6 +47,8 @@ def map_data_generator(seed=None) -> None:
                             if low <= biome_val < high:
                                 if tile_value == ("Grass"):
                                     cell_value = 1
+                                elif tile_value == ("Rock"):
+                                    cell_value = 2
                                 elif tile_value == ("Sand"):
                                     cell_value = 3
                                 elif tile_value == ("Tree"):

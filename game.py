@@ -36,6 +36,8 @@ class Game:
     generated_water_images: dict = {}
     hit_boxes: list = []
 
+    dimensions: list[int, ...] = []
+
     screen_x: int = 1000
     screen_y: int = 750
     screen = pygame.display.set_mode((screen_x, screen_y))
