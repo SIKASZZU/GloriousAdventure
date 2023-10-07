@@ -71,7 +71,6 @@ class Game:
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
-        self.hit_box_halfpoint: int = 0
 
         # Vajalik, et pickup delay oleks.
         self.pickup_timer = 0
