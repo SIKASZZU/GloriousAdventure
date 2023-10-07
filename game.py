@@ -50,7 +50,7 @@ class Game:
         # ******** FPS counter ******** #
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
-        
+
         # Player stuff
         self.player = player_stats
         print(self.player, 'player_stats')
@@ -64,13 +64,13 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
-        self.player_x: int = random.randint(0,5000)
-        self.player_y: int = random.randint(0,5000)
+        self.player_x: int = random.randint(0, 5000)
+        self.player_y: int = random.randint(0, 5000)
 
         self.player_rect = pygame.Rect(self.player_x, self.player_y, self.block_size * 0.6, self.block_size * 0.75)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
-        self.render_after: bool = bool
+        self.render_after = bool
         self.hit_box_halfpoint: int = 0
 
         # Vajalik, et pickup delay oleks.
@@ -125,8 +125,8 @@ class Game:
 
         # Teeb idle ja mitte idle animatsioone
         self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds)
-        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle, self.animation_speeds)
-
+        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
+                                                       self.animation_speeds)
 
     # Uuendab player datat ja laseb tal liikuda
     def update_player(self) -> None:
@@ -136,13 +136,19 @@ class Game:
         new_player_x: int = self.player_x
         new_player_y: int = self.player_y
 
-        if keys[pygame.K_LSHIFT]: self.frame_delay = 10  # Adjust running speed
-        else: self.frame_delay = 7  # Default walking speed
+        if keys[pygame.K_LSHIFT]:
+            self.frame_delay = 10  # Adjust running speed
+        else:
+            self.frame_delay = 7  # Default walking speed
 
-        if keys[pygame.K_a]: self.animation_index = 0  # Left animation
-        elif keys[pygame.K_d]: self.animation_index = 1  # Right animation
-        elif keys[pygame.K_w]: self.animation_index = 2  # Up animation
-        elif keys[pygame.K_s]: self.animation_index = 3  # Down animation
+        if keys[pygame.K_a]:
+            self.animation_index = 0  # Left animation
+        elif keys[pygame.K_d]:
+            self.animation_index = 1  # Right animation
+        elif keys[pygame.K_w]:
+            self.animation_index = 2  # Up animation
+        elif keys[pygame.K_s]:
+            self.animation_index = 3  # Down animation
 
         # Diagonaali speedi fiximine
         if keys[pygame.K_a] and keys[pygame.K_w]:
@@ -159,10 +165,14 @@ class Game:
             new_player_y = self.player_y + self.player.speed.current_speed / 1.5
 
         # Tavaline player speed (Verikaalselt, horisontaalselt)
-        elif keys[pygame.K_a]: new_player_x = self.player_x - self.player.speed.current_speed
-        elif keys[pygame.K_d]: new_player_x = self.player_x + self.player.speed.current_speed
-        elif keys[pygame.K_w]: new_player_y = self.player_y - self.player.speed.current_speed
-        elif keys[pygame.K_s]: new_player_y = self.player_y + self.player.speed.current_speed
+        elif keys[pygame.K_a]:
+            new_player_x = self.player_x - self.player.speed.current_speed
+        elif keys[pygame.K_d]:
+            new_player_x = self.player_x + self.player.speed.current_speed
+        elif keys[pygame.K_w]:
+            new_player_y = self.player_y - self.player.speed.current_speed
+        elif keys[pygame.K_s]:
+            new_player_y = self.player_y + self.player.speed.current_speed
 
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
@@ -173,8 +183,10 @@ class Game:
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
-        if is_idle: self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
-        else: self.frame = self.animation_manager.update_animation(keys, is_idle)
+        if is_idle:
+            self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
+        else:
+            self.frame = self.animation_manager.update_animation(keys, is_idle)
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
     # Renderib ainuyksi playeri
@@ -185,8 +197,7 @@ class Game:
 
         # Draw a red rectangle around the player
         player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], 60, 75)
-        pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)  
-
+        pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
     def render(self) -> None:
         if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
@@ -206,14 +217,13 @@ class Game:
         # Limit the frame rate to 60 FPS
         self.clock.tick(60)
 
-
     def run(self) -> None:
         while True:
             self.handle_events()  # Paneb mängu õigesti kinni
             box_target_camera(self)  # Kaamera
             Inventory.call_inventory(self)  # update playeri osa()
             self.update_player()  # Uuendab mängija asukohta, ja muid asju
-            
+
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
             # collision things
@@ -229,8 +239,9 @@ class Game:
             else:  # self.render_after == False
                 self.render_player()
                 Object_Management.place_and_render_object(self)  # Renderib objektid
-           
+
             self.render()  # inventory, stamina bari, fps counteri
+
 
 if __name__ == "__main__":
     game = Game()
