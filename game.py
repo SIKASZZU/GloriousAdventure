@@ -55,7 +55,6 @@ class Game:
 
         # Player stuff
         self.player = player_stats
-        print(self.player, 'player_stats')
 
         self.player_height = self.block_size * 0.75
         self.player_width = self.block_size * 0.6
