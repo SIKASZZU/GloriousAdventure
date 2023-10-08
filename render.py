@@ -4,9 +4,6 @@ from images import ground_images, water_images, item_images
 from objects import Object_Management # place_and_render_hitbox, place_and_render_object
 
 class Render_Checker:
-    #display_hit_box_decay: int = 0
-    #index: int = 0
-
     def map_render(self) -> None:
         self.screen.fill('white')
         self.render_terrain_data: list = []
@@ -67,7 +64,6 @@ class Render_Checker:
 
         for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
             for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
-
                 # Ei renderi asju mapist välja
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[0]):
 
@@ -104,3 +100,11 @@ class Render_Checker:
 
                             if new_object not in self.hit_boxes: self.hit_boxes.append(new_object)
                             self.display_hit_box_decay += 1
+        Render_Checker.object_list_control(self)
+
+
+    def object_list_control(self) -> None:
+        """Eemaldab self.hit_boxes listist kõik outside of map objektid
+            Need tekivad ikkagi sisse, sest render distance on alguses mega suur."""
+        
+        self.hit_boxes = [item for item in self.hit_boxes if item[0] >= 0 and item[1] >= 0]
