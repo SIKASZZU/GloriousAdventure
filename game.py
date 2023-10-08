@@ -7,7 +7,7 @@ import random
 from sprite import load_sprite_sheets, AnimationManager
 from game_settings import player_stats
 from stamina import StaminaComponent
-from map_generator import map_data_generator
+from map import Map_information  # map_data_generator
 from render import Render_Checker  # map_render, object_list_creation
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from camera import box_target_camera
@@ -30,7 +30,7 @@ class Game:
     pygame.display.set_caption("Glorious Adventure - BETA")
 
     # ******** Map data stuff ******** #
-    terrain_data = map_data_generator(10)  # argument seed, default seed=None
+    terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
     block_size: int = 100
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
