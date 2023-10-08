@@ -3,16 +3,14 @@ import pygame
 import images
 
 class Inventory:
+
     def handle_mouse_click(self):
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Check for left mouse button click
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    for index, rect in enumerate(self.inventory_display_rects):
-                        if rect.collidepoint(mouse_x, mouse_y):
-                            # Slot at 'index' was clicked, handle the click action
-                            print(f"Inventory slot {index + 1} clicked")
-                            # You can perform actions specific to the clicked slot here
+        mouse_state = pygame.mouse.get_pressed()
+        if mouse_state[0]:  # Check for left mouse button press
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            for index, rect in enumerate(self.inventory_display_rects):
+                if rect.collidepoint(mouse_x, mouse_y):
+                    print(f"Inventory slot {index} clicked")
     
 
     def call_inventory(self):
