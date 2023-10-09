@@ -51,17 +51,13 @@ class Collisions:
 
             player_rect = pygame.Rect(self.player_x, self.player_y, self.player_width, self.player_height)
 
-            # Check for collision using rect.colliderect()
             if player_rect.colliderect(collision_object_hitbox):
-                # Handle collision here
-                # You can access the object_id or perform other actions as needed
-
-                # Example:
                 if object_id == 2:
-                    # Handle collision with object_id 2
+                    # print("kivi")
                     pass
-                elif object_id == 4:
-                    # Handle collision with object_id 4
+
+                if object_id == 4:
+                    # print("puu")
                     pass
 
                 # Determine the direction of the collision
@@ -69,6 +65,10 @@ class Collisions:
                 dy = player_rect.centery - collision_object_hitbox.centery
 
                 # Adjust player position based on the collision direction
+                print(f"dx, dy: {dx}, {dy}")
+
+
+
                 if abs(dx) > abs(dy):
                     # Horizontal collision
                     if dx > 0:
@@ -77,6 +77,8 @@ class Collisions:
                     else:
                         # Player collided on the left side of the object
                         self.player_x -= 4  # Move the player to the left
+
+########### SEE STATEMENT ON VIGA !!
                 else:
                     # Vertical collision
                     if dy > 0:
