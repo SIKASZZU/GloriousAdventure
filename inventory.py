@@ -3,6 +3,16 @@ import pygame
 import images
 
 class Inventory:
+
+    def handle_mouse_click(self):
+        mouse_state = pygame.mouse.get_pressed()
+        if mouse_state[0]:  # Check for left mouse button press
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            for index, rect in enumerate(self.inventory_display_rects):
+                if rect.collidepoint(mouse_x, mouse_y):
+                    print(f"Inventory slot {index} clicked")
+    
+
     def call_inventory(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
@@ -48,6 +58,7 @@ class Inventory:
             text = font.render(str(count), True, 'White')
             text_rect = text.get_rect(center=(rect.x+10, rect.y+10))
             self.screen.blit(text, text_rect)
+
 
     def calculate_inventory(self):
         self.inventory_display_rects = []

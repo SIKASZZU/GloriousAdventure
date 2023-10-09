@@ -7,12 +7,13 @@ import random
 from sprite import load_sprite_sheets, AnimationManager
 from game_settings import player_stats
 from stamina import StaminaComponent
-from map_generator import map_data_generator
+from map import Map_information  # map_data_generator
 from render import Render_Checker  # map_render, object_list_creation
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from camera import box_target_camera
 from objects import Object_Management
 from update import Game_update  # update_player, render_player
+from inventory import Inventory
 
 clock = pygame.time.Clock()
 
@@ -30,7 +31,7 @@ class Game:
     pygame.display.set_caption("Glorious Adventure - BETA")
 
     # ******** Map data stuff ******** #
-    terrain_data = map_data_generator(10)  # argument seed, default seed=None
+    terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
     block_size: int = 100
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
@@ -53,9 +54,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
 
-        # Player stuff
+        # ******** Player stuff ******** #
         self.player = player_stats
-        print(self.player, 'player_stats')
 
         self.player_height = self.block_size * 0.75
         self.player_width = self.block_size * 0.6
@@ -88,6 +88,9 @@ class Game:
         w: int = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
         h: int = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l, t, w, h)
+
+        # ******** Inventory ******** #
+        self.inventory_display_rects = []
 
         # ******** Stamina bar ******** #
         self.stamina_bar_decay: int = 0
@@ -152,6 +155,7 @@ class Game:
                 Game_update.render_player(self)
                 Object_Management.place_and_render_object(self)  # Renderib objektid
 
+            Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
             Game_update.render(self)  # inventory, stamina bari, fps counteri
 
 

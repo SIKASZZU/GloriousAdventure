@@ -1,3 +1,4 @@
+"""Seda faili peab manuaalselt pushima. Gitignores ignorerib seda, et meil speediga conflict ei tekiks"""
 from game_entities import Player
 
 
