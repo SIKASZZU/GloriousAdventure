@@ -3,7 +3,6 @@ import math
 
 
 class HealthComponent:
-
     """
     Represents a health component that manages the health of an object.
 
@@ -45,8 +44,8 @@ class HealthComponent:
     def get_health(self):
         return self.current_health
 
-class SpeedComponent:
 
+class SpeedComponent:
     """
     Represents a speed component that manages the speed of an object.
 

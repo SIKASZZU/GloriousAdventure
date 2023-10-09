@@ -12,17 +12,17 @@ class Object_Management:
         if object_id is not None:
             grid_col: int = int(terrain_x // self.block_size)
             grid_row: int = int(terrain_y // self.block_size)
-    
+
             # Kontrollib kas jääb mapi sissse
             if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
                 if object_id == 4:
                     grid_col += 1
                     grid_row += 1
-    
+
                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
                 self.terrain_data[grid_row][grid_col] = 1
-    
+
             # Kui ei jää mapi sisse siis prindib errori
             else:
                 print("\nError in file: objects.py \n  Invalid grid indices:", grid_row, grid_col)
@@ -98,7 +98,7 @@ class Object_Management:
 
             elif object_id == 5:
                 obj_image = item_images.get("Flower")
-                object_width = int(self.block_size * 0.5)
+                object_width = int(self.block_size * 0.6)
                 object_height = int(self.block_size * 0.5)
 
             elif object_id == 6:
