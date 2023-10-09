@@ -100,12 +100,3 @@ class Render_Checker:
 
                             if new_object not in self.hit_boxes: self.hit_boxes.append(new_object)
                             self.display_hit_box_decay += 1
-
-        Render_Checker.object_list_control(self)
-
-
-    def object_list_control(self) -> None:
-        """Eemaldab self.hit_boxes listist kõik outside of map objektid
-            Need tekivad ikkagi sisse, sest render distance on alguses mega suur."""
-        
-        self.hit_boxes = [item for item in self.hit_boxes if item[0] >= 0 and item[1] >= 0]
