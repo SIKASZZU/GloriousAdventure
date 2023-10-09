@@ -70,8 +70,8 @@ class Game:
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(0, 5000)
-        self.player_y: int = random.randint(0, 5000)
+        self.player_x: int = random.randint(4900, 4900)
+        self.player_y: int = random.randint(600, 600)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
@@ -137,6 +137,7 @@ class Game:
 
     def run(self) -> None:
         while True:
+            #print(self.terrain_data)
             self.handle_events()  # Paneb mängu õigesti kinni
             Game_update.update_player(self)  # Uuendab mängija asukohta, ja muid asju
             box_target_camera(self)  # Kaamera
@@ -149,7 +150,7 @@ class Game:
 
             Render_Checker.object_list_creation(self)  # Creatib self.hit_boxes
             Render_Checker.map_render(self)  # Renderib terraini
-
+            
             if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                 Object_Management.place_and_render_object(self)  # Renderib objektid
                 Game_update.render_player(self)  # Renderib playeri (+ tema recti)

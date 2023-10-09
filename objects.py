@@ -12,20 +12,24 @@ class Object_Management:
         if object_id is not None:
             grid_col: int = int(terrain_x // self.block_size)
             grid_row: int = int(terrain_y // self.block_size)
-    
-            # Kontrollib kas jääb mapi sissse
-            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
-                if object_id == 4:
-                    grid_col += 1
-                    grid_row += 1
-    
-                # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
-                # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                self.terrain_data[grid_row][grid_col] = 1
-    
-            # Kui ei jää mapi sisse siis prindib errori
-            else:
-                print("\nError in file: objects.py \n  Invalid grid indices:", grid_row, grid_col)
+
+            try:
+                # Kontrollib kas jääb mapi sissse
+                if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                    if object_id == 4:
+                        grid_col += 1
+                        grid_row += 1
+
+                    # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
+                    # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
+                    self.terrain_data[grid_row][grid_col] = 1
+
+                # Kui ei jää mapi sisse siis prindib errori
+                else:
+                    print("\nError in file: objects.py \n  Invalid grid indices:", grid_row, grid_col)
+
+            except:
+                print("IndexError: objects - remove_object_at_position", object_id)
     
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
@@ -86,6 +90,7 @@ class Object_Management:
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
             terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
 
+            # Object id, pilt, interaction boxi x ja y
             if object_id == 2:
                 obj_image = item_images.get("Rock")
                 object_width = int(self.block_size * 1)
@@ -95,6 +100,16 @@ class Object_Management:
                 obj_image = item_images.get("Tree")
                 object_width = int(self.block_size * 2)
                 object_height = int(self.block_size * 2)
+
+            elif object_id == 5:
+                obj_image = item_images.get("Flower")
+                object_width = int(self.block_size * 0.6)
+                object_height = int(self.block_size * 0.5)
+
+            elif object_id == 6:
+                obj_image = item_images.get("Mushroom")
+                object_width = int(self.block_size * 0.3)
+                object_height = int(self.block_size * 0.3)
 
             else:
                 object_width = int(self.block_size)

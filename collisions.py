@@ -19,6 +19,7 @@ class Collisions:
             terrain_y: int = hit_box_y - hit_box_offset_y
 
             if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
+            else: block_size: int = self.block_size
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size, block_size)
 
             if self.player_rect.colliderect(collision_object_rect):

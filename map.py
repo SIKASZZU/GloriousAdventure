@@ -8,12 +8,12 @@ class Map_information:
         color_ranges: list[tuple()] = [
             (-float('inf'), -0.15, ("Water")),
 
-            (-0.15, -0.06, ("Sand")),
-            (-0.06, -0.03, ("Grass")),
+            (-0.15, -0.05, ("Sand")),
+            (-0.05, -0.04, ("Flower")),
             (-0.03, -0.02, ("Rock")),
-            (-1, 0.1, ("Grass")),
-            (0.1, 0.15, ("Tree")),
-            (0.15, 0.2, ("Grass")),
+            (-0.01, 0, ("Mushroom")),
+            (0, 0.01, ("Tree")),
+            (0.01, 0.2, ("Grass")),
 
             (0.2, float('inf'), ("Water")),
         ]
@@ -56,6 +56,10 @@ class Map_information:
                                         cell_value = 3
                                     elif tile_value == ("Tree"):
                                         cell_value = 4
+                                    elif tile_value == ("Flower"):
+                                        cell_value = 5
+                                    elif tile_value == ("Mushroom"):
+                                        cell_value = 6
                                     else:
                                         cell_value = 0
                                     break

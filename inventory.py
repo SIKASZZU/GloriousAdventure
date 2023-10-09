@@ -11,7 +11,7 @@ class Inventory:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 for index, rect in enumerate(self.inventory_display_rects):
                     if rect.collidepoint(mouse_x, mouse_y):
-                        print(f"Inventory slot {index} clicked")
+                        print(f"Inventory slot {index + 1} clicked")
     
 
     def call_inventory(self):
@@ -45,12 +45,14 @@ class Inventory:
             # Paneb invi pildid
             item_image = images.item_images.get(item_name)
 
-            # Pildi mahutamine sellesse v2iksesse ruutu
+            # Muudab pildi suurust vastavalt inventory sloti suurusele
             if item_image is not None:
-                # Resize
+                # Resize itemi inventory
                 item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
+
                 # Paneb itembi invi boxi keskele
                 item_image_rect = item_image.get_rect(center=item_rect.center)
+
                 # Displayb resized itemit
                 self.screen.blit(item_image, item_image_rect.topleft)
 
@@ -62,23 +64,26 @@ class Inventory:
 
 
     def calculate_inventory(self):
+
+        """ Arvutab invetory suuruse,
+        asukoha ja visualiseerib seda
+        vastavalt playeri asukohale """
+
         self.inventory_display_rects = []
-        self.rect_width = 50
-        self.rect_height = 50
+        self.rect_width = self.block_size / 2
+        self.rect_height = self.block_size / 2
         self.total_rows = 6
         self.total_cols = 3
 
-        self.rect_x = self.player_rect.right + 50 + self.offset_x  # Tavaliselt on inv playerist paremal
-        self.rect_y = self.player_y - self.block_size + self.offset_y
+        # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
+        self.rect_x = self.player_rect.centerx + self.offset_x + self.block_size / 2
+        self.rect_y = self.player_rect.centery - self.total_rows * self.block_size / 4 + self.offset_y
 
         right_side = self.screen.get_size()[0] - (self.camera_borders['left'] * 2)  # 1000 - (100 * 2) = 800
         left_side = self.camera_borders['left']  # 100
 
         if self.rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            self.rect_x = self.player_x - 150 + self.offset_x
-
-        if self.rect_x <= left_side:  # invi visuaalselt n2itamine vasakul, kui see vasakust 22rest v2lja l2heb
-            self.rect_x = left_side + self.block_size + 25
+            self.rect_x = self.player_x - self.block_size * 3 / 2 + self.offset_x
 
         for rows in range(self.total_rows):
             for cols in range(self.total_cols):
