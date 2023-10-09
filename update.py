@@ -54,7 +54,7 @@ class Game_update:
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
         self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_height, self.player_width)
+        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_width, self.player_height)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
