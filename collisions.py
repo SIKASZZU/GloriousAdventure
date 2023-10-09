@@ -46,9 +46,17 @@ class Collisions:
         Collisions.collision_hitbox(self)
 
     def collision_hitbox(self):
+        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for hit_box_x, hit_box_y, \
                 hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+
+            # Kui player jookseb siis ta ei lähe läbi objektide
+            if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
+                collision_move = 10
+
+            else:
+                collision_move = 4
 
             # Kui läheb vastu hitboxi siis ei lase sellest läbi minna
             if self.player_rect.colliderect(collision_object_hitbox):
@@ -63,19 +71,19 @@ class Collisions:
                 if abs(dx) > abs(dy):
                     # Paremalt poolt
                     if dx > 0:
-                        self.player_x += 4  # Liigutab mängijat paremale
+                        self.player_x += collision_move  # Liigutab mängijat paremale
                     # Vasakultpoolt
                     else:
-                        self.player_x -= 4  # Liigutab mängijat vasakule
+                        self.player_x -= collision_move  # Liigutab mängijat vasakule
 
                 # Vertikaalne kokkupuude
                 else:
                     # Alt
                     if dy > 0:
-                        self.player_y += 4  # Liigutab mängijat alla
+                        self.player_y += collision_move  # Liigutab mängijat alla
                     # Ülevalt
                     else:
-                        self.player_y -= 4  # Liigutab mängijat ülesse
+                        self.player_y -= collision_move  # Liigutab mängijat ülesse
 
     def collison_terrain(self) -> None:
         render_range: int = self.render_range

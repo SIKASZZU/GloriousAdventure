@@ -57,8 +57,8 @@ class Game:
         # ******** Player stuff ******** #
         self.player = player_stats
 
-        self.player_height = self.block_size * 0.75
-        self.player_width = self.block_size * 0.6
+        self.player_height = self.block_size * 0.65
+        self.player_width = self.block_size * 0.45
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
         self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
@@ -66,10 +66,12 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
+        # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
+        self.player_hitbox_offset_x = 29
+        self.player_hitbox_offset_y = 22
+
         self.player_x: int = random.randint(0, 5000)
         self.player_y: int = random.randint(0, 5000)
-
-        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_height, self.player_width)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
@@ -135,9 +137,11 @@ class Game:
 
     def run(self) -> None:
         while True:
+            print(self.player_x, self.player_y)
+
             self.handle_events()  # Paneb mängu õigesti kinni
-            box_target_camera(self)  # Kaamera
             Game_update.update_player(self)  # Uuendab mängija asukohta, ja muid asju
+            box_target_camera(self)  # Kaamera
 
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
