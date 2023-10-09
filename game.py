@@ -161,7 +161,6 @@ class Game:
             Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
             Game_update.render(self)  # inventory, stamina bari, fps counteri
 
-
 if __name__ == "__main__":
     game = Game()
     game.run()
