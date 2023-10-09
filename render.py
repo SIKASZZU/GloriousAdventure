@@ -62,16 +62,16 @@ class Render_Checker:
         # Et ei tekiks lõpmatus arv pilte ühe ja sama objecti kohta
         self.terrain_data_minerals: int = 0
 
-        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
-            for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
+        for i in range(len(self.terrain_data)):
+            for j in range(len(self.terrain_data[i])):
                 # Ei renderi asju mapist välja
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[0]):
 
                     # Kui terrain data [i][j] on suurem kui 1 siis arvutab
                     # objecti asukoha ja hitboxi ning displayib pildi
                     if self.terrain_data[i][j] == 2 or self.terrain_data[i][j] == 4:
-                        terrain_x: int = j * self.block_size + self.offset_x
-                        terrain_y: int = i * self.block_size + self.offset_y
+                        terrain_x: int = j * self.block_size
+                        terrain_y: int = i * self.block_size
                         object_id: int = self.terrain_data[i][j]
 
                         if object_id == 2 or object_id == 4: self.terrain_data_minerals += 1
@@ -100,6 +100,7 @@ class Render_Checker:
 
                             if new_object not in self.hit_boxes: self.hit_boxes.append(new_object)
                             self.display_hit_box_decay += 1
+
         Render_Checker.object_list_control(self)
 
 
