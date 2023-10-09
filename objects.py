@@ -78,8 +78,8 @@ class Object_Management:
         except RuntimeError as e: print("\nError in file: objects.py", e)
     
 
-    def place_and_render_object(self):
-        """Visuaalselt paneb objekti maailma (imagei)"""
+    def place_and_render_object(self) -> None:
+        """Visuaalselt paneb objekti maailma (image)"""
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             obj_image = None
             
@@ -115,7 +115,10 @@ class Object_Management:
             Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
     
 
-    def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
+    def place_and_render_hitbox(self,
+                                hit_box_x, hit_box_y,
+                                hit_box_width, hit_box_height
+                                ) -> None:
         """Renderib hitboxi objektitele"""
 
         hit_box_color: str = 'green'

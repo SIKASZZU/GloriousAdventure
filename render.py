@@ -41,6 +41,7 @@ class Render_Checker:
                     image = self.generated_ground_images.get((i, j)) if terrain_value != 0 else self.generated_water_images.get((i, j))
                     if image:
                         self.screen.blit(image, (terrain_x, terrain_y))
+
                 else:
                     if (i, j) not in self.generated_water_images:
                         generated_water_images = f"Water_{random.randint(0, 0)}"
@@ -52,6 +53,7 @@ class Render_Checker:
                         
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
+
 
     def object_list_creation(self) -> None:
         """See func, object_list_creation, teeb ainult self.hit_boxes listi. Appendib sinna world objecktid."""
@@ -78,7 +80,7 @@ class Render_Checker:
 
                         # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]
                         if object_id == 2:
-                            self.dimensions: list[int, ...] = [1, 0.8, 0.5, 0.5, 0.3, 0.25]
+                            self.dimensions: list[int, ...] = [0.8, 0.8, 0.5, 0.5, 0.3, 0.25]
 
                         elif object_id == 4:
                             self.dimensions: list[int, ...] = [2, 2, 0.25, 0.65, 0.4, 0.2]
