@@ -14,32 +14,29 @@ class Collisions:
             hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
 
             block_size: int = self.block_size
-            # print('collisions', hit_box_x, hit_box_offset_x)
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
-            if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
-            else: block_size: int = self.block_size
+            if object_id == 4:
+                block_size: int = self.block_size * 2
+            elif object_id == 5:
+                block_size: int = self.block_size * 0.5
+            elif object_id == 6:
+                block_size: int = self.block_size * 0.3
+            else:
+                block_size: int = self.block_size
+
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size, block_size)
 
             if self.player_rect.colliderect(collision_object_rect):
-                if keys[pygame.K_SPACE] and self.can_pickup:
-                    self.pickup_timer = pygame.time.get_ticks()
-                    self.can_pickup = False  # Keelab j2rgmise pickupi
+                print(obj_hit_box)
 
-                # Check if the pickup delay has passed
-                current_time = pygame.time.get_ticks()
-                if not self.can_pickup and current_time - self.pickup_timer >= self.pickup_delay * 1000:  # Convert seconds to milliseconds
-                    self.can_pickup = True  # Lubaks j2rgmise pickupi
+                if keys[pygame.K_SPACE] and self.can_pickup:
 
                     Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
                     Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
-                else:
-                    pass
 
-                # Vajalik, et teada kas player renderida peale v6i enne objekte
-                # Y-v22rtus == object_rectil [1] /// Y + 60, sest ss on v2he normaalsem see puutagant v2ljatulek
-                if (collision_object_rect[1] + 60) <= self.player_rect[1]:
+                if (collision_object_rect[1] + self.block_size * 1.2) <= self.player_rect[1]:
                     self.render_after = True
                 else:
                     self.render_after = False
@@ -47,10 +44,12 @@ class Collisions:
         Collisions.collision_hitbox(self)
 
     def collision_hitbox(self):
+
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for hit_box_x, hit_box_y, \
                 hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+
 
             # Kui player jookseb siis ta ei lähe läbi objektide
             if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:

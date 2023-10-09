@@ -73,8 +73,8 @@ class Inventory:
         self.inventory_display_rects = []
         self.rect_width = self.block_size / 2
         self.rect_height = self.block_size / 2
-        self.total_rows = 9  # Max: 9
-        self.total_cols = 9  # Max: 9
+        self.total_rows = 6  # Max: 9
+        self.total_cols = 3  # Max: 9
 
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
@@ -83,8 +83,6 @@ class Inventory:
 
         right_side = self.screen.get_size()[0] - (self.camera_borders['left'] * 2) + self.block_size * 0.6 # 1000 - (100 * 2) = 800
         left_side = self.camera_borders['left'] * 2 # 100
-
-        print(right_side, left_side)
 
         if self.rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
             self.rect_x = self.player_x - self.block_size * self.total_cols / 2 + self.offset_x

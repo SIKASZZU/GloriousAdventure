@@ -1,7 +1,9 @@
 import pygame
 import random
+import items
 from images import ground_images, water_images, item_images
 from objects import Object_Management # place_and_render_hitbox, place_and_render_object
+
 
 class Render_Checker:
     def map_render(self) -> None:
@@ -40,6 +42,7 @@ class Render_Checker:
                     if image:
                         self.screen.blit(image, (terrain_x, terrain_y))
 
+                ####### Siin on koodi kordus, water images.
                 else:
                     if (i, j) not in self.generated_water_images:
                         generated_water_images = f"Water_{random.randint(0, 0)}"
@@ -58,7 +61,6 @@ class Render_Checker:
 
         # Et ei tekiks lõpmatus arv pilte ühe ja sama objecti kohta
         self.terrain_data_minerals: int = 0
-        object_nr_list: list = [2,4,5,6]  # object_id list
 
         for i in range(len(self.terrain_data)):
             for j in range(len(self.terrain_data[i])):
@@ -67,12 +69,12 @@ class Render_Checker:
 
                     # Kui terrain data [i][j] on suurem kui 1 siis arvutab
                     # objecti asukoha ja hitboxi ning displayib pildi
-                    if self.terrain_data[i][j] in object_nr_list:
+                    if self.terrain_data[i][j] in items.object_nr_list:
                         terrain_x: int = j * self.block_size
                         terrain_y: int = i * self.block_size
                         object_id: int = self.terrain_data[i][j]
 
-                        if object_id in object_nr_list: 
+                        if object_id in items.object_nr_list:
                             self.terrain_data_minerals += 1
                             
                         # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]

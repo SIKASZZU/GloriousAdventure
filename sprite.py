@@ -1,9 +1,11 @@
 import pygame
 
+
 def load_sprite_sheets(image_filenames):
     sprite_sheets = [pygame.image.load(filename).convert_alpha() for filename in image_filenames]
     animations = [[(0, 0, 130, 130)] * len(sprite_sheets) for _ in range(len(sprite_sheets))]
     return sprite_sheets, animations
+
 
 class SpriteSheet:
     def __init__(self, image):
@@ -46,7 +48,8 @@ class AnimationManager:
         x, y, animation_width, animation_height = self.animations[self.animation_index][0]
 
         if self.animation_timer >= self.animation_speeds[self.animation_index]:
-            self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width, animation_height)
+            self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
+                                                animation_height)
             self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
             self.animation_timer = 0  # Reset the animation timer
 
@@ -55,7 +58,3 @@ class AnimationManager:
         # If no frame change, return the current frame
         else:
             return sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width, animation_height)
-
-
-
-

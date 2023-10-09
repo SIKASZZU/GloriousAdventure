@@ -7,7 +7,10 @@ class Object_Management:
     def remove_object_at_position(
             self, terrain_x: int, terrain_y: int, object_id: int = None
             ) -> None:
-    
+
+        """ Itemeid ei saa ülesse võtta enne
+        kui need on lisatud mineralide listi """
+
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
             grid_col: int = int(terrain_x // self.block_size)
@@ -22,7 +25,7 @@ class Object_Management:
 
                     # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                     # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                    self.terrain_data[grid_row][grid_col] = 1
+                    # self.terrain_data[grid_row][grid_col] = 1
 
                 # Kui ei jää mapi sisse siis prindib errori
                 else:
@@ -42,7 +45,7 @@ class Object_Management:
     def add_object_to_inv(
             self, object_id: int, obj_hit_box: tuple[int, ...]
             ) -> None:  # Tuple kus on ainult integer'id
-    
+        print(object_id)
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
         # Hoiab leitud esemeid koos kogusega: test_count = {["Test0": 2], ["Test1": 4], ["Test2": 6]}
@@ -90,7 +93,7 @@ class Object_Management:
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
             terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
 
-            # Object id, pilt, interaction boxi x ja y
+            # Object id, pilt, ja pildi suurus
             if object_id == 2:
                 obj_image = item_images.get("Rock")
                 object_width = int(self.block_size * 1)
@@ -103,7 +106,7 @@ class Object_Management:
 
             elif object_id == 5:
                 obj_image = item_images.get("Flower")
-                object_width = int(self.block_size * 0.6)
+                object_width = int(self.block_size * 0.5)
                 object_height = int(self.block_size * 0.5)
 
             elif object_id == 6:
@@ -124,8 +127,8 @@ class Object_Management:
                 self.screen.blit(scaled_obj_image, position)
     
                 # Teeb roosa outline objecti ümber
-                pygame.draw.rect(self.screen, 'pink', object_rect, 2)
-            
+                pygame.draw.rect(self.screen, 'pink', object_rect, 1)
+
             else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
             Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
     
