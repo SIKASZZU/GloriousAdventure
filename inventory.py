@@ -1,4 +1,5 @@
-from items import minerals
+from items import object_nr_list, minerals
+
 import pygame
 import images
 
@@ -72,18 +73,24 @@ class Inventory:
         self.inventory_display_rects = []
         self.rect_width = self.block_size / 2
         self.rect_height = self.block_size / 2
-        self.total_rows = 6
-        self.total_cols = 3
+        self.total_rows = 9  # Max: 9
+        self.total_cols = 9  # Max: 9
+
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
-        self.rect_x = self.player_rect.centerx + self.offset_x + self.block_size / 2
+        self.rect_x = self.player_rect.centerx + self.total_cols + self.block_size / 2 + self.offset_x
         self.rect_y = self.player_rect.centery - self.total_rows * self.block_size / 4 + self.offset_y
 
-        right_side = self.screen.get_size()[0] - (self.camera_borders['left'] * 2)  # 1000 - (100 * 2) = 800
-        left_side = self.camera_borders['left']  # 100
+        right_side = self.screen.get_size()[0] - (self.camera_borders['left'] * 2) + self.block_size * 0.6 # 1000 - (100 * 2) = 800
+        left_side = self.camera_borders['left'] * 2 # 100
+
+        print(right_side, left_side)
 
         if self.rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            self.rect_x = self.player_x - self.block_size * 3 / 2 + self.offset_x
+            self.rect_x = self.player_x - self.block_size * self.total_cols / 2 + self.offset_x
+
+        elif self.rect_x >= left_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
+            self.rect_x = self.player_x + self.block_size * 2 / 2 + self.offset_x
 
         for rows in range(self.total_rows):
             for cols in range(self.total_cols):
