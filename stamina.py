@@ -1,8 +1,8 @@
 import pygame
 import time
 
-class StaminaComponent:
 
+class StaminaComponent:
     """
     Represents a stamina component that manages the stamina of an object.
 
@@ -34,12 +34,10 @@ class StaminaComponent:
         self.timer = 0
         self.timer_regen = 0
 
-
     def use_stamina(self, amount):
         self.current_stamina = round(max(self.current_stamina - amount, self.min_stamina), 3)
         self.stamina_last_update_time = time.time()
         self.timer = 0
-
 
     def stamina_regenerate(self, amount):
         if not self.current_stamina >= self.max_stamina:
@@ -54,10 +52,8 @@ class StaminaComponent:
         else:
             self.max_stamina = 20
 
-
     def get_stamina(self):
         return self.current_stamina
-    
 
     def stamina_bar_update(self):
 
@@ -72,6 +68,11 @@ class StaminaComponent:
 
         else:
             self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
-            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25, self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
-            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25, self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
-            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25, self.stamina_bar_size + 12, 15)
+            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25,
+                                               self.stamina_bar_size_bg + 12,
+                                               15)  # Kui staminat kulub, ss on background taga
+            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6,
+                                                   self.screen_y - 25, self.stamina_bar_size_border + 12,
+                                                   15)  # K6igi stamina baride ymber border
+            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25,
+                                            self.stamina_bar_size + 12, 15)

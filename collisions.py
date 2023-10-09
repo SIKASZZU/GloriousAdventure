@@ -47,49 +47,36 @@ class Collisions:
         Collisions.collision_hitbox(self)
 
     def collision_hitbox(self):
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        for hit_box_x, hit_box_y, \
+                hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-            player_rect = pygame.Rect(self.player_x, self.player_y, self.player_width, self.player_height)
+            # Kui läheb vastu hitboxi siis ei lase sellest läbi minna
+            if self.player_rect.colliderect(collision_object_hitbox):
 
-            if player_rect.colliderect(collision_object_hitbox):
-                if object_id == 2:
-                    # print("kivi")
-                    pass
+                # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
+                dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
+                            self.player_width / 2 + hit_box_width / 2)
+                dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
+                            self.player_height / 2 + hit_box_height / 2)
 
-                if object_id == 4:
-                    # print("puu")
-                    pass
-
-                # Determine the direction of the collision
-                dx = player_rect.centerx - collision_object_hitbox.centerx
-                dy = player_rect.centery - collision_object_hitbox.centery
-
-                # Adjust player position based on the collision direction
-                print(f"dx, dy: {dx}, {dy}")
-
-
-
+                # Horisontaalne kokkupuude
                 if abs(dx) > abs(dy):
-                    # Horizontal collision
+                    # Paremalt poolt
                     if dx > 0:
-                        # Player collided on the right side of the object
-                        self.player_x += 4  # Move the player to the right
+                        self.player_x += 4  # Liigutab mängijat paremale
+                    # Vasakultpoolt
                     else:
-                        # Player collided on the left side of the object
-                        self.player_x -= 4  # Move the player to the left
+                        self.player_x -= 4  # Liigutab mängijat vasakule
 
-########### SEE STATEMENT ON VIGA !!
+                # Vertikaalne kokkupuude
                 else:
-                    # Vertical collision
+                    # Alt
                     if dy > 0:
-                        # Player collided on the bottom of the object
-                        self.player_y += 4  # Move the player downward
+                        self.player_y += 4  # Liigutab mängijat alla
+                    # Ülevalt
                     else:
-                        # Player collided on the top of the object
-                        self.player_y -= 4  # Move the player upward
-
-                # Additional collision handling code can be added as needed
+                        self.player_y -= 4  # Liigutab mängijat ülesse
 
     def collison_terrain(self) -> None:
         render_range: int = self.render_range
