@@ -15,7 +15,6 @@ class Player:
     Args:
         max_health (float): The maximum health value for the player.
         min_health (float): The minimum health value for the player.
-        health_regeneration_rate (float): The rate at which health regenerates for the player.
 
         max_stamina (float): The maximum stamina value for the player.
         min_stamina (float): The minimum stamina value for the player.
