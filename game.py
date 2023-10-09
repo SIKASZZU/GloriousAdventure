@@ -135,6 +135,7 @@ class Game:
 
     def run(self) -> None:
         while True:
+            #print(self.terrain_data)
             self.handle_events()  # Paneb mängu õigesti kinni
             box_target_camera(self)  # Kaamera
             Game_update.update_player(self)  # Uuendab mängija asukohta, ja muid asju

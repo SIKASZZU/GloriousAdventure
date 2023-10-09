@@ -96,6 +96,16 @@ class Object_Management:
                 object_width = int(self.block_size * 2)
                 object_height = int(self.block_size * 2)
 
+            elif object_id == 5:
+                obj_image = item_images.get("Flower")
+                object_width = int(self.block_size * 1)
+                object_height = int(self.block_size * 0.8)
+
+            elif object_id == 6:
+                obj_image = item_images.get("Mushroom")
+                object_width = int(self.block_size * 1)
+                object_height = int(self.block_size * 0.8)
+
             else:
                 object_width = int(self.block_size)
                 object_height = int(self.block_size)
