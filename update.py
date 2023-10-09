@@ -30,24 +30,24 @@ class Game_update:
         if keys[pygame.K_a] and keys[pygame.K_w]:
             new_player_x = self.player_x - self.player.speed.current_speed / 1.5
             new_player_y = self.player_y - self.player.speed.current_speed / 1.5
-        elif keys[pygame.K_a] and keys[pygame.K_s]:
+        if keys[pygame.K_a] and keys[pygame.K_s]:
             new_player_x = self.player_x - self.player.speed.current_speed / 1.5
             new_player_y = self.player_y + self.player.speed.current_speed / 1.5
-        elif keys[pygame.K_d] and keys[pygame.K_w]:
+        if keys[pygame.K_d] and keys[pygame.K_w]:
             new_player_x = self.player_x + self.player.speed.current_speed / 1.5
             new_player_y = self.player_y - self.player.speed.current_speed / 1.5
-        elif keys[pygame.K_d] and keys[pygame.K_s]:
+        if keys[pygame.K_d] and keys[pygame.K_s]:
             new_player_x = self.player_x + self.player.speed.current_speed / 1.5
             new_player_y = self.player_y + self.player.speed.current_speed / 1.5
 
         # Tavaline player speed (Verikaalselt, horisontaalselt)
-        elif keys[pygame.K_a]:
+        if keys[pygame.K_a]:
             new_player_x = self.player_x - self.player.speed.current_speed
-        elif keys[pygame.K_d]:
+        if keys[pygame.K_d]:
             new_player_x = self.player_x + self.player.speed.current_speed
-        elif keys[pygame.K_w]:
+        if keys[pygame.K_w]:
             new_player_y = self.player_y - self.player.speed.current_speed
-        elif keys[pygame.K_s]:
+        if keys[pygame.K_s]:
             new_player_y = self.player_y + self.player.speed.current_speed
 
         # Kui seda pole siis player ei liigu mapi peal

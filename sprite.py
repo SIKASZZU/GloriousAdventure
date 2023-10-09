@@ -52,7 +52,6 @@ class AnimationManager:
 
             return self.frame
 
-
         # If no frame change, return the current frame
         else:
             return sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width, animation_height)

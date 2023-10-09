@@ -1,6 +1,7 @@
 import pygame
 from objects import Object_Management
 
+
 class Collisions:
 
     def check_collisions(self) -> None:
@@ -9,16 +10,16 @@ class Collisions:
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
-            obj_hit_box = (hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
+            obj_hit_box = (
+            hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
 
             block_size: int = self.block_size
-            #print('collisions', hit_box_x, hit_box_offset_x)
+            # print('collisions', hit_box_x, hit_box_offset_x)
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
             if object_id == 4: block_size: int = self.block_size * 2  # object 4jal on teised m66tmed
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size , block_size)
-
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size, block_size)
 
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE] and self.can_pickup:
@@ -32,13 +33,15 @@ class Collisions:
 
                     Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
                     Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
-                else: pass
-
+                else:
+                    pass
 
                 # Vajalik, et teada kas player renderida peale v6i enne objekte
                 # Y-v22rtus == object_rectil [1] /// Y + 60, sest ss on v2he normaalsem see puutagant v2ljatulek
-                if (collision_object_rect[1] + 60) <= self.player_rect[1]: self.render_after = True
-                else:  self.render_after = False
+                if (collision_object_rect[1] + 60) <= self.player_rect[1]:
+                    self.render_after = True
+                else:
+                    self.render_after = False
 
         Collisions.collision_hitbox(self)
 
@@ -119,7 +122,7 @@ class Collisions:
                                 self.player.speed.current_speed = self.player.speed.base_speed
                                 self.player.stamina.stamina_regenerate(0.05)
 
-    ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
+                        ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
 
                         else:  # Player asub vees
                             if keys[pygame.K_LSHIFT]:
@@ -137,7 +140,7 @@ class Collisions:
 
                     else:  # Player asub mapist v2ljas
                         if keys[pygame.K_LSHIFT]:
-                        
+
                             # stamina = 0 - playeri speed = base speed
                             if self.player.stamina.current_stamina == 0:
                                 self.player.stamina.stamina_regenerate(0.05)
@@ -149,5 +152,4 @@ class Collisions:
                         else:
                             self.player.speed.current_speed = self.player.speed.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
-
 
