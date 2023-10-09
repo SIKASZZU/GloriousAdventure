@@ -17,14 +17,14 @@ class Game_update:
         else:
             self.frame_delay = 7  # Default walking speed
 
-        if keys[pygame.K_a]:
-            self.animation_index = 0  # Left animation
-        elif keys[pygame.K_d]:
+        if keys[pygame.K_d]:
             self.animation_index = 1  # Right animation
-        elif keys[pygame.K_w]:
-            self.animation_index = 2  # Up animation
+        elif keys[pygame.K_a]:
+            self.animation_index = 0  # Left animation
         elif keys[pygame.K_s]:
             self.animation_index = 3  # Down animation
+        elif keys[pygame.K_w]:
+            self.animation_index = 2  # Up animation
 
         # Diagonaali speedi fiximine
         if keys[pygame.K_a] and keys[pygame.K_w]:
@@ -54,7 +54,7 @@ class Game_update:
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
         self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x, self.player_y, self.player_width, self.player_height)
+        self.player_rect = pygame.Rect(self.player_x + self.player_hitbox_offset_x, self.player_y + self.player_hitbox_offset_y, self.player_width, self.player_height)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
@@ -75,8 +75,8 @@ class Game_update:
         # Inventory
         Inventory.call_inventory(self)  # update playeri osa()
 
-        # Draw a red rectangle around the player
-        player_rect = pygame.Rect(player_position_adjusted[0], player_position_adjusted[1], self.player_width, self.player_height)
+        # Joonistab playeri ümber punase ringi ehk playeri hitboxi
+        player_rect = pygame.Rect(player_position_adjusted[0] + self.player_hitbox_offset_x, player_position_adjusted[1] + self.player_hitbox_offset_y, self.player_width, self.player_height)
         pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
     # See peaks olema alati kõige peal
