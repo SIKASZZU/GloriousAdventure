@@ -98,13 +98,13 @@ class Object_Management:
 
             elif object_id == 5:
                 obj_image = item_images.get("Flower")
-                object_width = int(self.block_size * 1)
-                object_height = int(self.block_size * 0.8)
+                object_width = int(self.block_size * 0.5)
+                object_height = int(self.block_size * 0.5)
 
             elif object_id == 6:
                 obj_image = item_images.get("Mushroom")
-                object_width = int(self.block_size * 1)
-                object_height = int(self.block_size * 0.8)
+                object_width = int(self.block_size * 0.3)
+                object_height = int(self.block_size * 0.3)
 
             else:
                 object_width = int(self.block_size)

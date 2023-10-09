@@ -148,7 +148,7 @@ class Game:
 
             Render_Checker.object_list_creation(self)  # Creatib self.hit_boxes
             Render_Checker.map_render(self)  # Renderib terraini
-
+            
             if self.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                 Object_Management.place_and_render_object(self)  # Renderib objektid
                 Game_update.render_player(self)  # Renderib playeri (+ tema recti)
