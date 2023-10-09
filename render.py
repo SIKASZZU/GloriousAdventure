@@ -8,11 +8,7 @@ class Render_Checker:
         self.screen.fill('white')
         self.render_terrain_data: list = []
 
-        # Renderiks kogu maailma ära ja siis muutub else statementis olevaks intager'iks
-        if self.index < 10:
-            self.render_range: int = 70  # Muudab renerimise suurust
-            self.index += 1
-        else: self.render_range: int = 8
+        self.render_range: int = 8
 
         player_grid_row = int(self.player_x // self.block_size)
         player_grid_col = int(self.player_y // self.block_size)
