@@ -45,21 +45,20 @@ class Map_information:
                             biome_val = terrain_val * 0.2 + elevation_val * 0.5 + temperature_val * 0.25 + moisture_val * 0.25
 
                             cell_value = None
+                            
+                            tile_to_cell = {
+                                "Grass": 1,
+                                "Rock": 2,
+                                "Sand": 3,
+                                "Tree": 4,
+                                "Flower": 5,
+                                "Mushroom": 6
+                            }
 
                             for low, high, tile_value in color_ranges:
                                 if low <= biome_val < high:
-                                    if tile_value == ("Grass"):
-                                        cell_value = 1
-                                    elif tile_value == ("Rock"):
-                                        cell_value = 2
-                                    elif tile_value == ("Sand"):
-                                        cell_value = 3
-                                    elif tile_value == ("Tree"):
-                                        cell_value = 4
-                                    elif tile_value == ("Flower"):
-                                        cell_value = 5
-                                    elif tile_value == ("Mushroom"):
-                                        cell_value = 6
+                                    if tile_value in tile_to_cell:
+                                        cell_value = tile_to_cell[tile_value]
                                     else:
                                         cell_value = 0
                                     break
