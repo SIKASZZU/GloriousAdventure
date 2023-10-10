@@ -89,11 +89,15 @@ class Game_update:
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
+
+        hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
+        self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
+
         # Uuendab displaid ja fps cap 60
-        fps_text = self.font.render(f"FPS: {int(self.clock.get_fps())}", True, (255, 0, 0))
-        self.screen.blit(fps_text, (100, 150))  # Adjust the position as needed
+        fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (0, 0, 0))
+        self.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
 
         pygame.display.update()
 
         # Limit the frame rate to 60 FPS
-        self.clock.tick(60)
+        self.clock.tick(240)

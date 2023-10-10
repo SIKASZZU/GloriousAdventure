@@ -35,8 +35,10 @@ class Game:
     block_size: int = 100
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
-    hit_boxes: list = []
 
+    # Hitboxid
+    hit_boxes: list = []
+    hitbox_count: int = 0
     dimensions: list[int, ...] = []
 
     screen_x: int = 1000
