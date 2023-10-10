@@ -45,7 +45,7 @@ class Object_Management:
     def add_object_to_inv(
             self, object_id: int, obj_hit_box: tuple[int, ...]
             ) -> None:  # Tuple kus on ainult integer'id
-        print(object_id)
+
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
         # Hoiab leitud esemeid koos kogusega: test_count = {["Test0": 2], ["Test1": 4], ["Test2": 6]}
@@ -86,6 +86,8 @@ class Object_Management:
     
 
     def place_and_render_object(self) -> None:
+        keys = pygame.key.get_pressed()
+
         """Visuaalselt paneb objekti maailma (image)"""
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             obj_image = None
@@ -125,13 +127,24 @@ class Object_Management:
                 # Muudab pildi suurust ja visualiseerib seda
                 scaled_obj_image = pygame.transform.scale(obj_image, (object_width, object_height))
                 self.screen.blit(scaled_obj_image, position)
-    
+
+            else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
+
+            # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
+            if keys[pygame.K_h] and not self.h_pressed:
+                self.h_pressed = True
+                self.hitbox_count += 1
+            elif not keys[pygame.K_h]:
+                self.h_pressed = False
+
+            if (self.hitbox_count % 2) != 0:
+                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+
                 # Teeb roosa outline objecti ümber
                 pygame.draw.rect(self.screen, 'pink', object_rect, 1)
 
-            else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
-            Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-    
+
+
 
     def place_and_render_hitbox(self,
                                 hit_box_x, hit_box_y,
@@ -146,4 +159,6 @@ class Object_Management:
         # Teeb antud asjadest hitboxi ja visualiseerib seda
         obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
         pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
-    
+
+
+

@@ -17,16 +17,27 @@ class Collisions:
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
-            if object_id == 4:
-                block_size: int = self.block_size * 2
-            elif object_id == 5:
-                block_size: int = self.block_size * 0.5
-            elif object_id == 6:
-                block_size: int = self.block_size * 0.3
-            else:
-                block_size: int = self.block_size
+            if object_id == 2:
+                width = 100
+                height = 80
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, block_size, block_size)
+            elif object_id == 4:
+                width = 200
+                height = 200
+
+            elif object_id == 5:
+                width = 50
+                height = 50
+
+            elif object_id == 6:
+                width = 30
+                height = 30
+
+            else:
+                width = 100
+                height = 100
+
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
 
             if self.player_rect.colliderect(collision_object_rect):
                 print(obj_hit_box)
@@ -44,12 +55,10 @@ class Collisions:
         Collisions.collision_hitbox(self)
 
     def collision_hitbox(self):
-
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for hit_box_x, hit_box_y, \
                 hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
 
             # Kui player jookseb siis ta ei lähe läbi objektide
             if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
