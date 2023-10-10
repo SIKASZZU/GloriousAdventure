@@ -92,6 +92,9 @@ class Object_Management:
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
             terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
 
+            """SEE TULEB TEHA LISTI PEALE YMBER"""
+
+
             # Object id, pilt, ja pildi suurus
             if object_id == 2:
                 obj_image = item_images.get("Rock")
