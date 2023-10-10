@@ -68,6 +68,8 @@ class Game_update:
 
     # Renderib ainuyksi playeri, tema inventory
     def render_player(self) -> None:
+        keys = pygame.key.get_pressed()
+
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
@@ -77,7 +79,16 @@ class Game_update:
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
         player_rect = pygame.Rect(player_position_adjusted[0] + self.player_hitbox_offset_x, player_position_adjusted[1] + self.player_hitbox_offset_y, self.player_width, self.player_height)
-        pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
+
+        # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
+        if keys[pygame.K_h] and not self.h_pressed:
+            self.h_pressed = True
+            self.hitbox_count += 1
+        elif not keys[pygame.K_h]:
+            self.h_pressed = False
+
+        if (self.hitbox_count % 2) != 0:
+            pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
     # See peaks olema alati kõige peal
     def render(self) -> None:
