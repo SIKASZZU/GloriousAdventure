@@ -49,6 +49,7 @@ class Game:
     display_hit_box_decay: int = 0
     stamina_bar_decay: int = 0
     render_range: int = 0
+    render_terrain_data: list = []
     index: int = 0
 
     def __init__(self):
@@ -72,8 +73,8 @@ class Game:
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(0, 5000)
-        self.player_y: int = random.randint(0, 5000)
+        self.player_x: int = random.randint(0, 4900)
+        self.player_y: int = random.randint(0, 4900)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
