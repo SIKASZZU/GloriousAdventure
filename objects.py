@@ -19,13 +19,10 @@ class Object_Management:
             try:
                 # Kontrollib kas jääb mapi sissse
                 if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
-                    if object_id == 4:
-                        grid_col += 1
-                        grid_row += 1
 
                     # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                     # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                    # self.terrain_data[grid_row][grid_col] = 1
+                    self.terrain_data[grid_row][grid_col] = 1
 
                 # Kui ei jää mapi sisse siis prindib errori
                 else:
