@@ -10,18 +10,19 @@ class Render_Checker:
         self.screen.fill('white')
         self.render_terrain_data: list = []
 
-        self.render_range: int = 8
+        self.render_range: int = (self.screen_x + self.screen_y) // 200
 
-        player_grid_row = int(self.player_x // self.block_size)
-        player_grid_col = int(self.player_y // self.block_size)
+        player_grid_row = int((self.player_x + self.player_hitbox_offset_x + self.player_width / 2) // self.block_size)
+        player_grid_col = int((self.player_y + self.player_hitbox_offset_y + self.player_height / 2) // self.block_size)
+        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range):
+            self.row: list[tuple[int, int], ...] = []
 
-        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range + 1):
-            self.row: list[int, ...] = []
             for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
                 terrain_x: int = j * self.block_size + self.offset_x
                 terrain_y: int = i * self.block_size + self.offset_y
 
-                try: self.row.append(self.terrain_data[i][j])
+                # Salvestab koordinaadid listi, et neid saaks hiljem kasutada object list renderis
+                try: self.row.append((j, i)),
                 except IndexError: pass
 
                 # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
@@ -61,12 +62,13 @@ class Render_Checker:
 
         # Et ei tekiks lõpmatus arv pilte ühe ja sama objecti kohta
         self.terrain_data_minerals: int = 0
+        self.hit_boxes: list = []
+        self.display_hit_box_decay: int = 0
 
-        for i in range(len(self.terrain_data)):
-            for j in range(len(self.terrain_data[i])):
-                # Ei renderi asju mapist välja
+
+        for row in self.render_terrain_data:
+            for j, i in row:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[0]):
-
                     # Kui terrain data [i][j] on suurem kui 1 siis arvutab
                     # objecti asukoha ja hitboxi ning displayib pildi
                     if self.terrain_data[i][j] in items.object_nr_list:
@@ -76,16 +78,15 @@ class Render_Checker:
 
                         if object_id in items.object_nr_list:
                             self.terrain_data_minerals += 1
-                            
-                        # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]
 
+                        # self.dimensions = [object_width, object_height, hit_box_width, hit_box_height, hit_box_offset_x, hit_box_offset_y]
                         if object_id == 2:  # Rock
                             self.dimensions: list[int, ...] = [1, 0.8, 0.5, 0.5, 0.3, 0.25]
 
 
                         elif object_id == 4:  # Tree
                             self.dimensions: list[int, ...] = [2, 2, 0.25, 0.65, 0.4, 0.2]
-                        
+
                         elif object_id == 5:  # Flower
                             self.dimensions: list[int, ...] = [0, 0, 0, 0, 0, 0]  # Neil ei pea ju hitboxe olema //
                                                                                   #
