@@ -100,4 +100,4 @@ class Game_update:
         pygame.display.update()
 
         # Limit the frame rate to 60 FPS
-        self.clock.tick(240)
+        self.clock.tick(60)
