@@ -1,4 +1,4 @@
-from items import object_nr_list, minerals
+from items import items_list
 
 import pygame
 import images
@@ -39,9 +39,8 @@ class Inventory:
             #pygame.draw.rect(self.screen, 'black', inventory_bar_rect, 4)  # Paks border ymber invi
 
         for rect, (item_name, count) in zip(self.inventory_display_rects, self.inventory.items()):
-            item_color = minerals.get(item_name, 'white')
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(self.screen, item_color, item_rect)
+            pygame.draw.rect(self.screen, "Dark Gray", item_rect)
 
             # Paneb invi pildid
             item_image = images.item_images.get(item_name)
@@ -59,7 +58,7 @@ class Inventory:
 
             # font, numbrid itemite loetlemiseks
             font = pygame.font.Font(None, 20)
-            text = font.render(str(count), True, 'White')
+            text = font.render(str(count), True, 'Black')
             text_rect = text.get_rect(center=(rect.x+10, rect.y+10))
             self.screen.blit(text, text_rect)
 

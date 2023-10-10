@@ -1,4 +1,5 @@
 import pygame
+from items import items_list
 from objects import Object_Management
 
 
@@ -6,6 +7,9 @@ class Collisions:
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
+
+        # Object id, pilt, ja pildi suurus
+        interaction_boxes = {}
 
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
 
@@ -17,27 +21,12 @@ class Collisions:
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
-            """SEE TULEB TEHA LISTI PEALE YMBER"""
+            for item in items_list:
+                if item.get("Type") == "Object" and item.get("ID") == object_id:
+                    width = item.get("Object_width")
+                    height = item.get("Object_height")
 
-            if object_id == 2:
-                width = 100
-                height = 80
-
-            elif object_id == 4:
-                width = 200
-                height = 200
-
-            elif object_id == 5:
-                width = 50
-                height = 50
-
-            elif object_id == 6:
-                width = 30
-                height = 30
-
-            else:
-                width = 100
-                height = 100
+                    interaction_boxes[object_id] = (width, height)
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
 
