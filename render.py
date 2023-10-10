@@ -112,3 +112,5 @@ class Render_Checker:
                                 self.hit_boxes.append(new_object)
                                 self.terrain_data_minerals += 1
                             self.display_hit_box_decay += 1
+
+        self.hit_boxes = sorted(self.hit_boxes, key=lambda box: box[1])  # sorteerib listi ära, Y väärtus kõige viimane
