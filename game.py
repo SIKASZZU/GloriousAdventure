@@ -73,8 +73,8 @@ class Game:
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(0, 4900)
-        self.player_y: int = random.randint(0, 4900)
+        self.player_x: int = random.randint(4900, 4900)
+        self.player_y: int = random.randint(100, 100)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool

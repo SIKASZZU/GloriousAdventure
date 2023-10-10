@@ -6,8 +6,6 @@
     * Hitboxide suurus           - Failis render.py,      Render_Checker.object_list_creation(self)
 
 # Add objects:
-    # Flower
-    # Stone
     # Earthworm
 
 # Weather
@@ -18,4 +16,4 @@
 
 
 # probleemid
-    # Renderib treed alati uuesti, uude kohta.
+    # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
