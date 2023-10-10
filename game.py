@@ -63,18 +63,12 @@ class Game:
         self.player_height = self.block_size * 0.65
         self.player_width = self.block_size * 0.45
 
-        self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
-        self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
-
-        self.render_inv: bool = False  # Inventory renderminmine
-        self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
-
         # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(2400, 2400)
-        self.player_y: int = random.randint(1400, 1400)
+        self.player_x: int = random.randint(0, 4900)
+        self.player_y: int = random.randint(0, 4900)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
@@ -96,6 +90,12 @@ class Game:
 
         # ******** Inventory ******** #
         self.inventory_display_rects = []
+
+        self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
+        self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
+
+        self.render_inv: bool = False  # Inventory renderminmine
+        self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
         # ******** Stamina bar ******** #
         self.stamina_bar_decay: int = 0
