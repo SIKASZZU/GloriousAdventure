@@ -17,6 +17,8 @@ class Collisions:
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
+            """SEE TULEB TEHA LISTI PEALE YMBER"""
+
             if object_id == 2:
                 width = 100
                 height = 80
@@ -56,8 +58,12 @@ class Collisions:
 
     def collision_hitbox(self):
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
-        for hit_box_x, hit_box_y, \
-                hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        for \
+                hit_box_x, hit_box_y, \
+                hit_box_width, hit_box_height,\
+                object_id, hit_box_offset_x,\
+                hit_box_offset_y in self.hit_boxes:
+
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
             # Kui player jookseb siis ta ei lähe läbi objektide
