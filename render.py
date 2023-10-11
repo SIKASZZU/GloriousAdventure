@@ -112,5 +112,12 @@ class Render_Checker:
                                 self.hit_boxes.append(new_object)
                                 self.terrain_data_minerals += 1
                             self.display_hit_box_decay += 1
+            
+        # Create a dictionary to map each id to its sort order
+        id_sort_order = {6: 1, # First to be rendered
+                        5: 2, 
+                        2: 3, 
+                        4: 4}  # Last to be rendered
 
-        self.hit_boxes = sorted(self.hit_boxes, key=lambda box: box[1])  # sorteerib listi ära, Y väärtus kõige viimane
+        # Sort the hit_boxes list based on the custom sort order
+        self.hit_boxes = sorted(self.hit_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
