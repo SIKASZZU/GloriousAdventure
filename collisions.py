@@ -17,7 +17,6 @@ class Collisions:
             obj_hit_box = (
             hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
 
-            block_size: int = self.block_size
             terrain_x: int = hit_box_x - hit_box_offset_x
             terrain_y: int = hit_box_y - hit_box_offset_y
 
@@ -25,10 +24,11 @@ class Collisions:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
                     width = item.get("Object_width")
                     height = item.get("Object_height")
+                    render_when = item.get("Render_when")
 
                     interaction_boxes[object_id] = (width, height)
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.hit_box
 
             if self.player_rect.colliderect(collision_object_rect):
                 print(obj_hit_box)
@@ -38,12 +38,14 @@ class Collisions:
                     Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
                     Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
 
-                if (collision_object_rect[1] + self.block_size * 1.2) <= self.player_rect[1]:
+                if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
+                    print(f'object id = {object_id}, item.get("Render_when") = {item.get("Render_when")}')
                     self.render_after = True
-                else:
+                else: 
                     self.render_after = False
 
         Collisions.collision_hitbox(self)
+
 
     def collision_hitbox(self):
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -88,6 +90,7 @@ class Collisions:
                     # Ülevalt
                     else:
                         self.player_y -= collision_move  # Liigutab mängijat ülesse
+
 
     def collison_terrain(self) -> None:
         render_range: int = self.render_range
