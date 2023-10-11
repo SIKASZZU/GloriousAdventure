@@ -12,8 +12,9 @@ items_list = [
         "Breakable": True,
         "Collision_box": [0.85, 0.85, 0.35, 0.7],
         "Object_width": int(block_size * 2),
-        "Object_height": int(block_size * 2)
-    },
+        "Object_height": int(block_size * 2),
+        "Render_when": block_size * 1
+        },
     {
         "Type": "Object",
         "Name": "Rock",
@@ -22,22 +23,27 @@ items_list = [
         "Breakable": True,
         "Collision_box": [0.3, 0.25, 0.5, 0.4],
         "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 0.8)
-    },
+        "Object_height": int(block_size * 0.8),
+        "Render_when": -(block_size * 1)
+        },
     {
         "Type": "Object",
         "Name": "Flower",
         "ID": 5,
         "Breakable": True,
         "Object_width": int(block_size * 0.5),
-        "Object_height": int(block_size * 0.5)    },
+        "Object_height": int(block_size * 0.5),
+        "Render_when": -(block_size * 0.3)
+        },
     {
         "Type": "Object",
         "Name": "Mushroom",
         "ID": 6,
         "Breakable": True,
         "Object_width": int(block_size * 0.3),
-        "Object_height": int(block_size * 0.3)    },
+        "Object_height": int(block_size * 0.3),
+        "Render_when": -(block_size * 1)
+        },
 ]
 
 # Testida asju mis on seotud ainult item'ga
