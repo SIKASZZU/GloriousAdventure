@@ -90,6 +90,11 @@ class Game_update:
             pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
 
+        # Renderib health-bari
+        pygame.draw.rect(self.screen, '#F7F7F6', self.health_rect_bg, 0, 7)
+        pygame.draw.rect(self.screen, '#FF6666', self.health_rect, 0, 7)
+        pygame.draw.rect(self.screen, 'black', self.health_rect_border, 2, 7)
+
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
         self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
