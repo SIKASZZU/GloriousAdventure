@@ -6,16 +6,38 @@ import images
 class Inventory:
 
     def handle_mouse_click(self):
+        """ Vaatab, kas inventoriesse on tehtud klikk.
+        Inventory spetsiifiline functioon. """
+
         if (self.inv_count % 2) != 0:
             mouse_state = pygame.mouse.get_pressed()
-            if mouse_state[0]:  # Check for left mouse button press
+            if mouse_state[0]:  # Vaatab, kas player klikib vasakut hiireklikki.
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 for index, rect in enumerate(self.inventory_display_rects):
                     if rect.collidepoint(mouse_x, mouse_y):
-                        print(f"Inventory slot {index + 1} clicked")
-    
+                        Inventory.check_slot(self, index)
+
+
+    def check_slot(self, index):
+        """ Vaatab, mis invenotrys toimub valitud slotis. """
+        
+        try:
+            if index != self.last_clicked_slot:  # Kontrollib, kas viimane klikk oli samale slotile v6i ei.
+                item = list(self.inventory.keys())[index]
+                value = list(self.inventory.values())[index]
+                print(f'Inventory slot {index + 1} slot contains: {item} : {value}')
+                self.last_clicked_slot = index  # Uuendab viimasena klikitud slotti
+            else: 
+                pass  # pst, v6iks PASSi asemel olla: print(f'Already selected slot nr {index + 1}')
+        except IndexError: 
+            print(f'Nothing in slot nr {index + 1}')
+            self.last_clicked_slot = index  # Uuendab viimasena klikitud slotti
+
 
     def call_inventory(self):
+        """ Kui TABi vajutada, ss perma on/off see inventory.
+        call_function fixib selle 2ra - self.render_inv tegeleb kui lukuna. """
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_TAB] and not self.tab_pressed:  # double locked, yks alati true aga teine mitte
             self.tab_pressed = True
@@ -26,25 +48,21 @@ class Inventory:
 
         elif not keys[pygame.K_TAB]: self.tab_pressed = False
 
+
     def render_inventory(self):
+        """ Renderib visuaalselt inventory. """
+
         Inventory.calculate_inventory(self)
-
-        # Tekitab semi-transparent recti
-        overlay = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
-        overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
-
         # Mustad boxid itemite ümber
         for rect in self.inventory_display_rects:
-            # Invi hall taust
-            pygame.draw.rect(overlay, (177, 177, 177), rect)  # Draw semi-transparent rectangles on the overlay
-            pygame.draw.rect(overlay, 'black', rect, 2)
 
-        # Visualiseerib invi
-        self.screen.blit(overlay, (0, 0))
+            # Invi hall taust
+            pygame.draw.rect(self.screen, '#B1B1B1', rect)  # Invi hall taust
+            pygame.draw.rect(self.screen, 'black', rect, 2)  # Sisemiste ruutude paksus
 
         for rect, (item_name, count) in zip(self.inventory_display_rects, self.inventory.items()):
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect) 
+            pygame.draw.rect(self.screen, 'Dark Gray', item_rect)
 
             # Paneb invi pildid
             item_image = images.item_images.get(item_name)
@@ -78,7 +96,6 @@ class Inventory:
         self.rect_height = self.block_size / 2
         self.total_rows = 6  # Max: 9
         self.total_cols = 3  # Max: 9
-
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
         self.rect_x = self.player_rect.centerx + self.total_cols + self.block_size / 2 + self.offset_x
