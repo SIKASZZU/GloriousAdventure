@@ -14,6 +14,13 @@
 # Savepoint
     # Save progress
 
+# Craftimine
+    # Craftib nupp võiks olla kuskil inventory kõravl.
+        # Klikkides seda, avaneb mingi menyy, kus kirjas kõik craftitav.
+    # Crafting station
+        # Inventorys peab olema v2hemalt 4 puitu
+        # L2heb crafing nupult endale itemit craftima
+    
 
 # probleemid
     # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
