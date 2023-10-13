@@ -43,7 +43,6 @@ class Game:
 
     screen_x: int = 1000
     screen_y: int = 750
-    screen = pygame.display.set_mode((screen_x, screen_y))
 
     terrain_data_minerals: int = 0
     display_hit_box_decay: int = 0
@@ -53,13 +52,14 @@ class Game:
     index: int = 0
 
     def __init__(self):
+        self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
+        
         # ******** FPS counter ******** #
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
 
         # ******** Player stuff ******** #
         self.player = player_stats
-
         self.player_height = self.block_size * 0.65
         self.player_width = self.block_size * 0.45
 
@@ -72,11 +72,6 @@ class Game:
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
-
-        # Vajalik, et pickup delay oleks.
-        self.pickup_timer = 0
-        self.pickup_delay = 2  # 2 seconds delay for picking up objects
-        self.can_pickup = True
 
         # ******** Camera stuff ******** #
         self.offset_x: int = 0
@@ -98,22 +93,35 @@ class Game:
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
         # ******** Stamina bar ******** #
-        self.stamina_bar_decay: int = 0
 
         self.stamina_bar_size: int = 200
         self.stamina_bar_size_bg: int = 200
         self.stamina_bar_size_border: int = 200
-        self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
+
         self.half_w = self.screen.get_size()[0] // 2
         self.ratio = self.stamina_bar_size // 20  # 200 // 20 = 10
-        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 25,
-                                           self.stamina_bar_size_bg + 12,
-                                           15)  # Kui staminat kulub, ss on background taga
-        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 25,
-                                               self.stamina_bar_size_border + 12,
-                                               15)  # K6igi stamina baride ymber border
-        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 25,
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 50,
+                                           self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+        
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 50,
+                                               self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
+        
+        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 50,
                                         self.stamina_bar_size + 12, 15)
+        
+        # ******** Health bar ******** #
+        self.health_bar_size: int = 200
+        self.health_bar_size_bg: int = 200
+        self.health_bar_size_border: int = 200
+
+        self.health_rect_bg = pygame.Rect(self.half_w - (self.health_bar_size_bg / 2) - 6, self.screen_y - 25,
+                                           self.health_bar_size_bg + 12, 15)
+        
+        self.health_rect_border = pygame.Rect(self.half_w - (self.health_bar_size_border / 2) - 6, self.screen_y - 25,
+                                               self.health_bar_size_border + 12, 15)
+        
+        self.health_rect = pygame.Rect(self.half_w - (self.health_bar_size / 2) - 6, self.screen_y - 25,
+                                        self.health_bar_size + 12, 15)
 
         # ******** Animation stuff ******** #
         self.sprite_sheets, self.animations = load_sprite_sheets([
