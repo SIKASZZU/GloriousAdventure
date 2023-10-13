@@ -85,6 +85,7 @@ class Game:
 
         # ******** Inventory ******** #
         self.inventory_display_rects = []
+        self.last_clicked_slot = None  # V2hendab terminali spammi. Ei sp2mmi seda slotti, mida juba klikkis.
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
         self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
