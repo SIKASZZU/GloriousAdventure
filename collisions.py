@@ -113,14 +113,15 @@ class Collisions:
                         if in_water != True:
                             # Player asub maal
                             if keys[pygame.K_LSHIFT]:
-                                # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed.current_speed = self.player.speed.base_speed
-                                else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed * 2.5
-                                    self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
+                                if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_s] or keys[pygame.K_w]:
+                                    # stamina = 0 - playeri speed = base speed
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(0.05)
+                                        self.player.speed.current_speed = self.player.speed.base_speed
+                                    else:
+                                        self.player.speed.current_speed = self.player.speed.base_speed * 2.5
+                                        self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.player.stamina.use_stamina(0.05)
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed
                                 self.player.stamina.stamina_regenerate(0.05)
@@ -129,6 +130,22 @@ class Collisions:
 
                         else:  # Player asub vees
                             if keys[pygame.K_LSHIFT]:
+                                if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_s] or keys[pygame.K_w]:
+                                    # stamina = 0 - playeri speed = base speed
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(0.05)
+                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                    else:
+                                        self.player.speed.current_speed = self.player.speed.base_speed
+                                        self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.player.stamina.use_stamina(0.05)
+                            else:
+                                self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                self.player.stamina.stamina_regenerate(0.05)
+
+                    else:  # Player asub mapist v2ljas
+                        if keys[pygame.K_LSHIFT]:
+                            if keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_s] or keys[pygame.K_w]:
                                 # stamina = 0 - playeri speed = base speed
                                 if self.player.stamina.current_stamina == 0:
                                     self.player.stamina.stamina_regenerate(0.05)
@@ -137,21 +154,6 @@ class Collisions:
                                     self.player.speed.current_speed = self.player.speed.base_speed
                                     self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
-                            else:
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                self.player.stamina.stamina_regenerate(0.05)
-
-                    else:  # Player asub mapist v2ljas
-                        if keys[pygame.K_LSHIFT]:
-
-                            # stamina = 0 - playeri speed = base speed
-                            if self.player.stamina.current_stamina == 0:
-                                self.player.stamina.stamina_regenerate(0.05)
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
-                            else:
-                                self.player.speed.current_speed = self.player.speed.base_speed
-                                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                self.player.stamina.use_stamina(0.05)
                         else:
                             self.player.speed.current_speed = self.player.speed.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
