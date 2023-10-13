@@ -21,6 +21,11 @@
         # Inventorys peab olema v2hemalt 4 puitu
         # L2heb crafing nupult endale itemit craftima
     
+# Mazeide loomine (Random element thing)
+    # Millised layoutid v6iksid mazeidel olla
+    # Millised tingimused v6iksid neil olla
+    # Millised puzzled v6iksid neil olla
 
 # probleemid
     # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
+
