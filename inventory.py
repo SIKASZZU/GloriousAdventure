@@ -49,7 +49,7 @@ class Inventory:
         elif not keys[pygame.K_TAB]: self.tab_pressed = False
 
 
-        def render_inventory(self):
+    def render_inventory(self):
         Inventory.calculate_inventory(self)
 
         # Tekitab semi-transparent recti
