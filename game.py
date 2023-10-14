@@ -138,6 +138,10 @@ class Game:
         
         self.food_rect = pygame.Rect(self.half_w + 6, self.screen_y - 50,
                                         self.food_bar_size, 45)
+        
+        # Iconi paigutamiseks food bari keskkoha leidmine
+        self.food_w_midpoint = self.food_rect[0] + (self.food_rect[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning pilt ei jää keskele muidu
+        self.food_h_midpoint = self.food_rect[1] + (self.food_rect[3] // 2) - 20  # -20 sest, me suurendame pilti 50px võrra ning pilt ei jää keskele muidu
 
         # ******** Animation stuff ******** #
         self.sprite_sheets, self.animations = load_sprite_sheets([

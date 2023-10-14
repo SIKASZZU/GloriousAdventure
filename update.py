@@ -1,6 +1,7 @@
 import pygame
 import math
 from inventory import Inventory
+import images
 
 
 class Game_update:
@@ -97,7 +98,11 @@ class Game_update:
         pygame.draw.rect(self.screen, '#F7F7F6', self.food_rect_bg, 0, 7)
         pygame.draw.rect(self.screen, '#C8AE7D', self.food_rect, 0, 7)
         pygame.draw.rect(self.screen, 'black', self.food_rect_border, 2, 7)
-
+        
+        # Food bari keskele icon
+        food_icon = pygame.image.load('images/Food.png')
+        scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
+        self.screen.blit(scaled_food_icon, (self.food_w_midpoint, self.food_h_midpoint))
 
     # See peaks olema alati kõige peal
     def render(self) -> None:
