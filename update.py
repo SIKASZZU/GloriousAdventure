@@ -80,10 +80,8 @@ class Game_update:
         if (self.hitbox_count % 2) != 0:
             pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
-    # See peaks olema alati kõige peal
-    def render(self) -> None:
-        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
+    def render_hud(self) -> None:
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
@@ -95,6 +93,15 @@ class Game_update:
         pygame.draw.rect(self.screen, '#FF6666', self.health_rect, 0, 7)
         pygame.draw.rect(self.screen, 'black', self.health_rect_border, 2, 7)
 
+        # Renderib food-bari
+        pygame.draw.rect(self.screen, '#F7F7F6', self.food_rect_bg, 0, 7)
+        pygame.draw.rect(self.screen, '#C8AE7D', self.food_rect, 0, 7)
+        pygame.draw.rect(self.screen, 'black', self.food_rect_border, 2, 7)
+
+
+    # See peaks olema alati kõige peal
+    def render(self) -> None:
+        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
         self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed

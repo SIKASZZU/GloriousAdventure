@@ -68,11 +68,11 @@ class StaminaComponent:
 
         else:
             self.stamina_bar_size = self.player.stamina.current_stamina * self.ratio  # arvutab stamina bari laiuse
-            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 50,
+            self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 75,
                                               self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
             
-            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 50, 
+            self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 75, 
                                                   self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
             
-            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 50,
+            self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 75,
                                             self.stamina_bar_size + 12, 15)
