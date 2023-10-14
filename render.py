@@ -34,8 +34,6 @@ class Render_Checker:
                         ground_image_name = f"Ground_{random.randint(0, 19)}"
                         self.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (self.block_size, self.block_size))
 
-                    ####### Siin on koodi kordus, water images.
-
                     if terrain_value == 0 and (i, j) not in self.generated_water_images:
                         generated_water_images = f"Water_{random.randint(0, 0)}"
                         self.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
@@ -43,17 +41,15 @@ class Render_Checker:
                     image = self.generated_ground_images.get((i, j)) if terrain_value != 0 else self.generated_water_images.get((i, j))
                     if image:
                         self.screen.blit(image, (terrain_x, terrain_y))
+                    
+                    if terrain_value == 7:
+                        wheat_bg_image = pygame.image.load("images/Wheat_background.png")
+                        self.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
 
-                ####### Siin on koodi kordus, water images.
-                else:
-                    if (i, j) not in self.generated_water_images:
-                        generated_water_images = f"Water_{random.randint(0, 0)}"
-                        self.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
-                        
-                    image = self.generated_water_images.get((i, j))
-                    if image:
-                        self.screen.blit(image, (terrain_x, terrain_y))
-                        
+                    if terrain_value == 99:
+                        wall = pygame.Rect(terrain_x, terrain_y, self.block_size, self.block_size)
+                        pygame.draw.rect(self.screen, 'black', wall)
+    
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
 
@@ -117,7 +113,8 @@ class Render_Checker:
         id_sort_order = {6: 1, # First to be rendered
                         5: 2, 
                         2: 3, 
-                        4: 4}  # Last to be rendered
+                        4: 4,
+                        7: 5}  # Last to be rendered
 
         # Sort the hit_boxes list based on the custom sort order
         self.hit_boxes = sorted(self.hit_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
