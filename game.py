@@ -31,10 +31,13 @@ class Game:
     pygame.display.set_caption("Glorious Adventure - BETA")
 
     # ******** Map data stuff ******** #
-    terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
+    #terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
+    terrain_data = Map_information.glade_creation()
+    
     block_size: int = 100
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
+    generated_wall_image: dict = {}
 
     # Hitboxid
     hit_boxes: list = []
@@ -53,7 +56,6 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
-        
         # ******** FPS counter ******** #
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
@@ -67,8 +69,8 @@ class Game:
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(0, 4900)
-        self.player_y: int = random.randint(0, 4900)
+        self.player_x: int = random.randint(400, 400)
+        self.player_y: int = random.randint(400, 400)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
