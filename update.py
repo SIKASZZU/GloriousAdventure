@@ -93,13 +93,18 @@ class Game_update:
         pygame.draw.rect(self.screen, '#F7F7F6', self.health_rect_bg, 0, 7)
         pygame.draw.rect(self.screen, '#FF6666', self.health_rect, 0, 7)
         pygame.draw.rect(self.screen, 'black', self.health_rect_border, 2, 7)
-
+        
         # Renderib food-bari
         pygame.draw.rect(self.screen, '#F7F7F6', self.food_rect_bg, 0, 7)
         pygame.draw.rect(self.screen, '#C8AE7D', self.food_rect, 0, 7)
         pygame.draw.rect(self.screen, 'black', self.food_rect_border, 2, 7)
+
+        # Health bari keskele icon (Heart.png)
+        heart_icon = pygame.image.load('images/Heart.png')
+        scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
+        self.screen.blit(scaled_heart_icon, (self.heart_w_midpoint, self.heart_h_midpoint))
         
-        # Food bari keskele icon
+        # Food bari keskele icon (Food.png)
         food_icon = pygame.image.load('images/Food.png')
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
         self.screen.blit(scaled_food_icon, (self.food_w_midpoint, self.food_h_midpoint))
