@@ -67,3 +67,48 @@ class Map_information:
 
                         grid_pattern.append(row)
                     return grid_pattern
+
+
+    def glade_creation():
+        # Define the dimensions of the map
+        width = 40
+        height = 40
+
+        # Initialize the map with 99s
+        map_matrix = [[99 for _ in range(width)] for _ in range(height)]
+
+        # Define the coordinates for the square of terrain (value 1)
+        square_top_left_x = 1
+        square_top_left_y = 1
+        square_width = width - 2
+        square_height = height - 2
+
+        # Fill the square area with value 1
+        for i in range(square_top_left_y, square_top_left_y + square_height):
+            for j in range(square_top_left_x, square_top_left_x + square_width):
+                map_matrix[i][j] = 1
+
+        # Define the coordinates for the smaller water bond (value 0)
+        water_bond_top_left_x = 5
+        water_bond_top_left_y = 7
+        water_bond_width = width // 2 - 7
+        water_bond_height =  height // 2 - 5
+
+        # Fill the smaller water bond area with value 0
+        for i in range(water_bond_top_left_y, water_bond_top_left_y + water_bond_height):
+            for j in range(water_bond_top_left_x, water_bond_top_left_x + water_bond_width):
+                map_matrix[i][j] = 0
+
+        # Define the coordinates for the farming area (value 7)
+        farm_top_left_x = width - 4
+        farm_top_left_y = 1
+        farm_width = 3
+        farm_height = height // 2 - 6
+
+        # Fill the farming area with value 7
+        for i in range(farm_top_left_y, farm_top_left_y + farm_height):
+            for j in range(farm_top_left_x, farm_top_left_x + farm_width):
+                map_matrix[i][j] = 7
+
+        return map_matrix
+
