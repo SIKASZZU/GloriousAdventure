@@ -44,6 +44,15 @@ items_list = [
         "Object_height": int(block_size * 0.3),
         "Render_when": -(block_size * 0.45)
         },
+    {
+        "Type": "Object",
+        "Name": "Wheat",
+        "ID": 7,
+        "Breakable": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * .2)
+        },
 ]
 
 # Testida asju mis on seotud ainult item'ga
