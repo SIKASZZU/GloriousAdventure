@@ -26,21 +26,25 @@ class Inventory:
 
         elif not keys[pygame.K_TAB]: self.tab_pressed = False
 
-
     def render_inventory(self):
         Inventory.calculate_inventory(self)
+
+        # Tekitab semi-transparent recti
+        overlay = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+        overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
+
         # Mustad boxid itemite ümber
         for rect in self.inventory_display_rects:
-
             # Invi hall taust
-            pygame.draw.rect(self.screen, '#B1B1B1', rect)  # Invi hall taust
-            pygame.draw.rect(self.screen, 'black', rect, 2)  # Sisemiste ruutude paksus
-            #inventory_bar_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            #pygame.draw.rect(self.screen, 'black', inventory_bar_rect, 4)  # Paks border ymber invi
+            pygame.draw.rect(overlay, (177, 177, 177), rect)  # Draw semi-transparent rectangles on the overlay
+            pygame.draw.rect(overlay, 'black', rect, 2)
+
+        # Visualiseerib invi
+        self.screen.blit(overlay, (0, 0))
 
         for rect, (item_name, count) in zip(self.inventory_display_rects, self.inventory.items()):
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(self.screen, "Dark Gray", item_rect)
+            pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect) 
 
             # Paneb invi pildid
             item_image = images.item_images.get(item_name)
