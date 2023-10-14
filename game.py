@@ -93,36 +93,51 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
-        # ******** Stamina bar ******** #
+        # ******** Bar ******** #
+        self.half_w = self.screen.get_size()[0] // 2  # pool screeni widthi
 
-        self.stamina_bar_size: int = 200
+        # ******** Stamina bar ******** #
         self.stamina_bar_size_bg: int = 200
         self.stamina_bar_size_border: int = 200
+        self.stamina_bar_size: int = 200
+        self.ratio = self.stamina_bar_size // 20  # Stamina bari suuruse muutmiseks
 
-        self.half_w = self.screen.get_size()[0] // 2
-        self.ratio = self.stamina_bar_size // 20  # 200 // 20 = 10
-        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 50,
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 75,
                                            self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         
-        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 50,
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 75,
                                                self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         
-        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 50,
+        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 75,
                                         self.stamina_bar_size + 12, 15)
         
         # ******** Health bar ******** #
-        self.health_bar_size: int = 200
-        self.health_bar_size_bg: int = 200
-        self.health_bar_size_border: int = 200
+        self.health_bar_size_bg: int = 100
+        self.health_bar_size_border: int = 100
+        self.health_bar_size: int = 100
 
-        self.health_rect_bg = pygame.Rect(self.half_w - (self.health_bar_size_bg / 2) - 6, self.screen_y - 25,
-                                           self.health_bar_size_bg + 12, 15)
+        self.health_rect_bg = pygame.Rect(self.half_w - self.health_bar_size_bg - 6, self.screen_y - 50,
+                                           self.health_bar_size_bg, 45)
         
-        self.health_rect_border = pygame.Rect(self.half_w - (self.health_bar_size_border / 2) - 6, self.screen_y - 25,
-                                               self.health_bar_size_border + 12, 15)
+        self.health_rect_border = pygame.Rect(self.half_w - self.health_bar_size_border - 6, self.screen_y - 50,
+                                               self.health_bar_size_border, 45)
         
-        self.health_rect = pygame.Rect(self.half_w - (self.health_bar_size / 2) - 6, self.screen_y - 25,
-                                        self.health_bar_size + 12, 15)
+        self.health_rect = pygame.Rect(self.half_w - self.health_bar_size - 6, self.screen_y - 50,
+                                        self.health_bar_size, 45)
+        
+        # ******** Food bar ******** #
+        self.food_bar_size_bg: int = 100
+        self.food_bar_size_border: int = 100
+        self.food_bar_size: int = 100
+
+        self.food_rect_bg = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                           self.food_bar_size_bg, 45)
+        
+        self.food_rect_border = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                               self.food_bar_size_border, 45)
+        
+        self.food_rect = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                        self.food_bar_size, 45)
 
         # ******** Animation stuff ******** #
         self.sprite_sheets, self.animations = load_sprite_sheets([
@@ -171,7 +186,8 @@ class Game:
                 Object_Management.place_and_render_object(self)  # Renderib objektid
 
             Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
-            Game_update.render(self)  # inventory, stamina bari, fps counteri
+            Game_update.render_hud(self)  # Render hud (health- ,food- ,stamina bar)
+            Game_update.render(self)  # inventory, fps counteri
 
 if __name__ == "__main__":
     game = Game()
