@@ -124,10 +124,6 @@ class Game:
         
         self.health_rect = pygame.Rect(self.half_w - self.health_bar_size - 6, self.screen_y - 50,
                                         self.health_bar_size, 45)
-        
-        # Iconi paigutamiseks health bari keskkoha leidmine
-        self.heart_w_midpoint = self.health_rect[0] + (self.health_rect[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
-        self.heart_h_midpoint = self.health_rect[1] + (self.health_rect[3] // 2) - 25
 
         # ******** Food bar ******** #
         self.food_bar_size_bg: int = 100
@@ -139,11 +135,14 @@ class Game:
         
         self.food_rect_border = pygame.Rect(self.half_w + 6, self.screen_y - 50,
                                                self.food_bar_size_border, 45)
-        
+         
         self.food_rect = pygame.Rect(self.half_w + 6, self.screen_y - 50,
                                         self.food_bar_size, 45)
         
-        # Iconi paigutamiseks food bari keskkoha leidmine
+        # Iconi paigutamiseks bari keskkoha leidmine
+        self.heart_w_midpoint = self.health_rect[0] + (self.health_rect[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
+        self.heart_h_midpoint = self.health_rect[1] + (self.health_rect[3] // 2) - 25
+               
         self.food_w_midpoint = self.food_rect[0] + (self.food_rect[2] // 2) - 25
         self.food_h_midpoint = self.food_rect[1] + (self.food_rect[3] // 2) - 20
 
