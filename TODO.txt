@@ -37,4 +37,5 @@
 
 # probleemid
     # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
+    # Wheatil pole hitboxe
 
