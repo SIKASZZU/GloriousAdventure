@@ -105,16 +105,14 @@ class Collisions:
                 # Vaatab terrain recti ja playeri collisoneid
                 terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
                 if self.player_rect.colliderect(terrain_rect):
-
+                    sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
+                        keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
+                        keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
+                        keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                     # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
                         in_water = self.terrain_data[i][j] == 0
-
-                        sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
-                            keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
-                            keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
-                            keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                         
                         if in_water != True:
                             # Player asub maal
@@ -160,4 +158,3 @@ class Collisions:
                         else:
                             self.player.speed.current_speed = self.player.speed.base_speed / 2
                             self.player.stamina.stamina_regenerate(0.05)
-
