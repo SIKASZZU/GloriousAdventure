@@ -31,6 +31,7 @@ items_list = [
         "Name": "Flower",
         "ID": 5,
         "Breakable": True,
+        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
         "Render_when": -(block_size * 0.23)
@@ -40,6 +41,7 @@ items_list = [
         "Name": "Mushroom",
         "ID": 6,
         "Breakable": True,
+        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.3),
         "Object_height": int(block_size * 0.3),
         "Render_when": -(block_size * 0.45)
@@ -49,9 +51,20 @@ items_list = [
         "Name": "Wheat",
         "ID": 7,
         "Breakable": True,
+        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * .2)
+        },
+    {
+        "Type": "Object",
+        "Name": "Wall",
+        "ID": 99,
+        "Breakable": False,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * 1)
         },
 ]
 
