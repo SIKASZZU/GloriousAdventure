@@ -42,7 +42,7 @@ class Render_Checker:
                     if image:
                         self.screen.blit(image, (terrain_x, terrain_y))
                     
-                    if terrain_value == 7:
+                    if terrain_value == 7 or terrain_value == 107:
                         wheat_bg_image = pygame.image.load("images/Wheat_background.png")
                         self.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
 

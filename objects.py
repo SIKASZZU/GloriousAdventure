@@ -22,7 +22,8 @@ class Object_Management:
 
                     # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                     # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                    self.terrain_data[grid_row][grid_col] = 1
+                    if object_id == 7: self.terrain_data[grid_row][grid_col] = 107
+                    else: self.terrain_data[grid_row][grid_col] = 1
 
                 # Kui ei jää mapi sisse siis prindib errori
                 else:
