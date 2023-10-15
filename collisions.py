@@ -2,6 +2,7 @@ import pygame
 from items import items_list
 from objects import Object_Management
 from render import Render_Checker
+from stamina import StaminaComponent
 
 
 class Collisions:
@@ -123,7 +124,7 @@ class Collisions:
                                     self.player.speed.current_speed = self.player.speed.base_speed
                                 else:
                                     self.player.speed.current_speed = self.player.speed.base_speed * 2.5
-                                    self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                    StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed
@@ -139,7 +140,7 @@ class Collisions:
                                     self.player.speed.current_speed = self.player.speed.base_speed / 2
                                 else:
                                     self.player.speed.current_speed = self.player.speed.base_speed
-                                    self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                    StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed / 2
@@ -153,7 +154,7 @@ class Collisions:
                                 self.player.speed.current_speed = self.player.speed.base_speed / 2
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed
-                                self.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                 self.player.stamina.use_stamina(0.05)
                         else:
                             self.player.speed.current_speed = self.player.speed.base_speed / 2
