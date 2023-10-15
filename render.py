@@ -53,8 +53,10 @@ class Render_Checker:
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             self.render_terrain_data.append(self.row)
 
+
     def object_list_creation(self) -> None:
-        """Teeb objectidele hitboxid. Kasutab items.py items_list'i"""
+        """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
+        
         self.terrain_data_minerals: int = 0
         self.hit_boxes: list = []
         self.display_hit_box_decay: int = 0
