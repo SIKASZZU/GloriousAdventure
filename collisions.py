@@ -34,9 +34,7 @@ class Collisions:
                 print(obj_hit_box)
 
                 if keys[pygame.K_SPACE]:
-
-                    Object_Management.remove_object_at_position(self, terrain_x, terrain_y, object_id)
-                    Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
+                    Object_Management.remove_object_at_position(self, terrain_x, terrain_y, obj_hit_box, object_id)
 
                 if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                     self.render_after = True
