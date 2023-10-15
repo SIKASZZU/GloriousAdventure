@@ -2,8 +2,9 @@ import pygame
 import math
 from inventory import Inventory
 from HUD import HUD_class
-
-
+from stamina import StaminaComponent
+from render import Render_Checker
+from objects import Object_Management
 class Game_update:
 
    # Uuendab player datat ja laseb tal liikuda
@@ -45,7 +46,7 @@ class Game_update:
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
         self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x + self.player_hitbox_offset_x, self.player_y + self.player_hitbox_offset_y, self.player_width, self.player_height)
+        self.player_rect = pygame.Rect(self.player_x + Render_Checker.player_hitbox_offset_x, self.player_y + Render_Checker.player_hitbox_offset_y, self.player_width, self.player_height)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
@@ -69,16 +70,16 @@ class Game_update:
         Inventory.call_inventory(self)  # update playeri osa()
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
-        player_rect = pygame.Rect(player_position_adjusted[0] + self.player_hitbox_offset_x, player_position_adjusted[1] + self.player_hitbox_offset_y, self.player_width, self.player_height)
+        player_rect = pygame.Rect(player_position_adjusted[0] + Render_Checker.player_hitbox_offset_x, player_position_adjusted[1] + Render_Checker.player_hitbox_offset_y, self.player_width, self.player_height)
 
         # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
         if keys[pygame.K_h] and not self.h_pressed:
             self.h_pressed = True
-            self.hitbox_count += 1
+            Object_Management.hitbox_count += 1
         elif not keys[pygame.K_h]:
             self.h_pressed = False
 
-        if (self.hitbox_count % 2) != 0:
+        if (Object_Management.hitbox_count % 2) != 0:
             pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
 
@@ -90,7 +91,7 @@ class Game_update:
             heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint = HUD_class.bar_visualization(self)
         
         # Renderib stamina-bari
-        if self.stamina_bar_decay < 50:
+        if StaminaComponent.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
             pygame.draw.rect(self.screen, '#4169E1', stamina_rect, 0, 7)
             pygame.draw.rect(self.screen, 'black', stamina_bar_border, 2, 7)

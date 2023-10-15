@@ -39,22 +39,18 @@ class Game:
     screen_x: int = 1000
     screen_y: int = 750
     screen = pygame.display.set_mode((screen_x, screen_y))
+    player = player_stats  # load in game_settings
     # universal sitt l6ppeb siin, muud pole testinud
-    
-    stamina_bar_decay: int = 0
     
     # ******** FPS counter ******** #
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Verdana", 20)
 
     # ******** Player stuff ******** #
-    player = player_stats
+    
     player_height = block_size * 0.65
     player_width = block_size * 0.45
 
-    # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
-    player_hitbox_offset_x = 29
-    player_hitbox_offset_y = 22
 
     player_x: int = random.randint(400, 400)
     player_y: int = random.randint(400, 400)

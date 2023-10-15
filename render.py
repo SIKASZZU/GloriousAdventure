@@ -14,15 +14,19 @@ class Render_Checker:
     render_terrain_data: list = []
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
-
+    
+    # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
+    player_hitbox_offset_x = 29
+    player_hitbox_offset_y = 22
+    
     def map_render(self) -> None:
         self.screen.fill('white')
         Render_Checker.render_terrain_data: list = []
 
         Render_Checker.render_range: int = (self.screen_x + self.screen_y) // 200
 
-        player_grid_row = int((self.player_x + self.player_hitbox_offset_x + self.player_width / 2) // self.block_size)
-        player_grid_col = int((self.player_y + self.player_hitbox_offset_y + self.player_height / 2) // self.block_size)
+        player_grid_row = int((self.player_x + Render_Checker.player_hitbox_offset_x + self.player_width / 2) // self.block_size)
+        player_grid_col = int((self.player_y + Render_Checker.player_hitbox_offset_y + self.player_height / 2) // self.block_size)
         for i in range(player_grid_col - Render_Checker.render_range, player_grid_col + Render_Checker.render_range):
             self.row: list[tuple[int, int], ...] = []
 
