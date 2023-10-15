@@ -1,10 +1,13 @@
 import pygame
 from items import items_list
 from objects import Object_Management
+from render import Render_Checker
 
 
 class Collisions:
-
+        
+    render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
+    
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
@@ -37,9 +40,9 @@ class Collisions:
                     Object_Management.remove_object_at_position(self, terrain_x, terrain_y, obj_hit_box, object_id)
 
                 if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
-                    self.render_after = True
+                    Collisions.render_after = True
                 else: 
-                    self.render_after = False
+                    Collisions.render_after = False
 
         Collisions.collision_hitbox(self)
 
@@ -90,15 +93,14 @@ class Collisions:
 
 
     def collison_terrain(self) -> None:
-        render_range: int = self.render_range
         keys = pygame.key.get_pressed()
 
         player_grid_row = int(self.player_x // self.block_size)
         player_grid_col = int(self.player_y // self.block_size)
 
         # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
-        for i in range(player_grid_col - render_range, player_grid_col + render_range + 1):
-            for j in range(player_grid_row - render_range, player_grid_row + render_range + 1):
+        for i in range(player_grid_col - Render_Checker.render_range, player_grid_col + Render_Checker.render_range + 1):
+            for j in range(player_grid_row - Render_Checker.render_range, player_grid_row + Render_Checker.render_range + 1):
 
                 # Vaatab terrain recti ja playeri collisoneid
                 terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)

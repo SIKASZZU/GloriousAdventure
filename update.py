@@ -1,7 +1,7 @@
 import pygame
 import math
 from inventory import Inventory
-import images
+from HUD import HUD_class
 
 
 class Game_update:
@@ -83,35 +83,41 @@ class Game_update:
 
 
     def render_hud(self) -> None:
+        #sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm = HUD_class.bar_visualization(self)
+        stamina_rect, stamina_bar_border, stamina_bar_bg, \
+            health_rect, health_bar_border, health_bar_bg, \
+            food_rect, food_bar_border, food_bar_bg, \
+            heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint = HUD_class.bar_visualization(self)
+        
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
-            pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
-            pygame.draw.rect(self.screen, '#4169E1', self.stamina_rect, 0, 7)
-            pygame.draw.rect(self.screen, 'black', self.stamina_rect_border, 2, 7)
+            pygame.draw.rect(self.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
+            pygame.draw.rect(self.screen, '#4169E1', stamina_rect, 0, 7)
+            pygame.draw.rect(self.screen, 'black', stamina_bar_border, 2, 7)
 
         # Renderib health-bari
-        pygame.draw.rect(self.screen, '#F7F7F6', self.health_rect_bg, 0, 7)
-        pygame.draw.rect(self.screen, '#FF6666', self.health_rect, 0, 7)
-        pygame.draw.rect(self.screen, 'black', self.health_rect_border, 2, 7)
+        pygame.draw.rect(self.screen, '#F7F7F6', health_bar_bg, 0, 7)
+        pygame.draw.rect(self.screen, '#FF6666', health_rect, 0, 7)
+        pygame.draw.rect(self.screen, 'black', health_bar_border, 2, 7)
         
         # Renderib food-bari
-        pygame.draw.rect(self.screen, '#F7F7F6', self.food_rect_bg, 0, 7)
-        pygame.draw.rect(self.screen, '#C8AE7D', self.food_rect, 0, 7)
-        pygame.draw.rect(self.screen, 'black', self.food_rect_border, 2, 7)
+        pygame.draw.rect(self.screen, '#F7F7F6', food_bar_bg, 0, 7)
+        pygame.draw.rect(self.screen, '#C8AE7D', food_rect, 0, 7)
+        pygame.draw.rect(self.screen, 'black', food_bar_border, 2, 7)
 
         # Health bari keskele icon (Heart.png)
         heart_icon = pygame.image.load('images/Heart.png')
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
-        self.screen.blit(scaled_heart_icon, (self.heart_w_midpoint, self.heart_h_midpoint))
+        self.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
         
         # Food bari keskele icon (Food.png)
         food_icon = pygame.image.load('images/Food.png')
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
-        self.screen.blit(scaled_food_icon, (self.food_w_midpoint, self.food_h_midpoint))
+        self.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
     # See peaks olema alati kõige peal
     def render(self) -> None:
-        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
+        if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
         self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
