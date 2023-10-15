@@ -8,6 +8,7 @@ item_images = {
     "Water": pygame.image.load("images/Water.PNG"),
     "Flower": pygame.image.load("images/Flower.PNG"),
     "Mushroom": pygame.image.load("images/Mushroom.PNG"),
+    "Wheat": pygame.image.load("images/Wheat.PNG")
 }
 
 # Maa pildid

@@ -1,0 +1,41 @@
+# Itemite list !!!
+    * Item interaction box       - Failis collision.py,   Collisions.check_collisions(self)
+
+    * Pildi suurus / asukoht     - Failis objects.py,     Object_Management.place_and_render_object(self)
+
+    * Hitboxide suurus           - Failis render.py,      Render_Checker.object_list_creation(self)
+
+# Add objects:
+    # Earthworm
+
+# Weather
+    # Lambist sajab vihma
+
+# Savepoint
+    # Save progress
+
+# Craftimine
+    # Craftib nupp võiks olla kuskil inventory kõravl.
+        # Klikkides seda, avaneb mingi menyy, kus kirjas kõik craftitav.
+    # Crafting station
+        # Inventorys peab olema v2hemalt 4 puitu
+        # L2heb crafing nupult endale itemit craftima
+    
+# Mazeide loomine (Random element thing)
+    # Millised layoutid v6iksid mazeidel olla
+    # Millised tingimused v6iksid neil olla
+
+# Puzzle
+    # Mingid png faili näitame, kus on mõistatus kas joonistatud või fucked up fontiga kirjas
+        # Lihtsalt paintis mingi sitt kokku keerata :D
+    # Selle lahendab ära ning saab mingi vastuse, mis on osa lõpukoodist
+
+# Lahenduseni jõudmine (lõpukood)
+    # Lahendus on vastuste järjestamine labürintide numbrite järgi.
+        # Ütleme, et valib kolme erineva labürindi vahel: nr1, nr2, nr 3.
+            Valib nr 3. Lahendades nr 3 labürindi vastuse, saab endale vastuse nr 3. slotti.
+
+# probleemid
+    # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
+    # Wheatil pole hitboxe
+

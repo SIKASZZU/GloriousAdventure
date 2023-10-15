@@ -31,10 +31,13 @@ class Game:
     pygame.display.set_caption("Glorious Adventure - BETA")
 
     # ******** Map data stuff ******** #
-    terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
+    #terrain_data = Map_information.map_data_generator(10)  # argument seed, default seed=None
+    terrain_data = Map_information.glade_creation()
+    
     block_size: int = 100
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
+    generated_wall_image: dict = {}
 
     # Hitboxid
     hit_boxes: list = []
@@ -53,7 +56,6 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
-        
         # ******** FPS counter ******** #
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Verdana", 20)
@@ -67,8 +69,8 @@ class Game:
         self.player_hitbox_offset_x = 29
         self.player_hitbox_offset_y = 22
 
-        self.player_x: int = random.randint(0, 4900)
-        self.player_y: int = random.randint(0, 4900)
+        self.player_x: int = random.randint(400, 400)
+        self.player_y: int = random.randint(400, 400)
 
         # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
         self.render_after = bool
@@ -85,6 +87,7 @@ class Game:
 
         # ******** Inventory ******** #
         self.inventory_display_rects = []
+        self.last_clicked_slot = None  # V2hendab terminali spammi. Ei sp2mmi seda slotti, mida juba klikkis.
 
         self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
         self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
@@ -92,36 +95,58 @@ class Game:
         self.render_inv: bool = False  # Inventory renderminmine
         self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
 
-        # ******** Stamina bar ******** #
+        # ******** Bar ******** #
+        self.half_w = self.screen.get_size()[0] // 2  # pool screeni widthi
 
-        self.stamina_bar_size: int = 200
+        # ******** Stamina bar ******** #
         self.stamina_bar_size_bg: int = 200
         self.stamina_bar_size_border: int = 200
+        self.stamina_bar_size: int = 200
+        self.ratio = self.stamina_bar_size // 20  # Stamina bari suuruse muutmiseks
 
-        self.half_w = self.screen.get_size()[0] // 2
-        self.ratio = self.stamina_bar_size // 20  # 200 // 20 = 10
-        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 50,
+        self.stamina_rect_bg = pygame.Rect(self.half_w - (self.stamina_bar_size_bg / 2) - 6, self.screen_y - 75,
                                            self.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
         
-        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 50,
+        self.stamina_rect_border = pygame.Rect(self.half_w - (self.stamina_bar_size_border / 2) - 6, self.screen_y - 75,
                                                self.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
         
-        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 50,
+        self.stamina_rect = pygame.Rect(self.half_w - (self.stamina_bar_size / 2) - 6, self.screen_y - 75,
                                         self.stamina_bar_size + 12, 15)
         
         # ******** Health bar ******** #
-        self.health_bar_size: int = 200
-        self.health_bar_size_bg: int = 200
-        self.health_bar_size_border: int = 200
+        self.health_bar_size_bg: int = 100
+        self.health_bar_size_border: int = 100
+        self.health_bar_size: int = 100
 
-        self.health_rect_bg = pygame.Rect(self.half_w - (self.health_bar_size_bg / 2) - 6, self.screen_y - 25,
-                                           self.health_bar_size_bg + 12, 15)
+        self.health_rect_bg = pygame.Rect(self.half_w - self.health_bar_size_bg - 6, self.screen_y - 50,
+                                           self.health_bar_size_bg, 45)
         
-        self.health_rect_border = pygame.Rect(self.half_w - (self.health_bar_size_border / 2) - 6, self.screen_y - 25,
-                                               self.health_bar_size_border + 12, 15)
+        self.health_rect_border = pygame.Rect(self.half_w - self.health_bar_size_border - 6, self.screen_y - 50,
+                                               self.health_bar_size_border, 45)
         
-        self.health_rect = pygame.Rect(self.half_w - (self.health_bar_size / 2) - 6, self.screen_y - 25,
-                                        self.health_bar_size + 12, 15)
+        self.health_rect = pygame.Rect(self.half_w - self.health_bar_size - 6, self.screen_y - 50,
+                                        self.health_bar_size, 45)
+
+        # ******** Food bar ******** #
+        self.food_bar_size_bg: int = 100
+        self.food_bar_size_border: int = 100
+        self.food_bar_size: int = 100
+
+        self.food_rect_bg = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                           self.food_bar_size_bg, 45)
+        
+        self.food_rect_border = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                               self.food_bar_size_border, 45)
+         
+        self.food_rect = pygame.Rect(self.half_w + 6, self.screen_y - 50,
+                                        self.food_bar_size, 45)
+        
+        # Iconi paigutamiseks bari keskkoha leidmine
+        self.heart_w_midpoint = self.health_rect[0] + (self.health_rect[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
+        self.heart_h_midpoint = self.health_rect[1] + (self.health_rect[3] // 2) - 25
+               
+        self.food_w_midpoint = self.food_rect[0] + (self.food_rect[2] // 2) - 25
+        self.food_h_midpoint = self.food_rect[1] + (self.food_rect[3] // 2) - 20
 
         # ******** Animation stuff ******** #
         self.sprite_sheets, self.animations = load_sprite_sheets([
@@ -170,7 +195,8 @@ class Game:
                 Object_Management.place_and_render_object(self)  # Renderib objektid
 
             Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
-            Game_update.render(self)  # inventory, stamina bari, fps counteri
+            Game_update.render_hud(self)  # Render hud (health- ,food- ,stamina bar)
+            Game_update.render(self)  # inventory, fps counteri
 
 if __name__ == "__main__":
     game = Game()

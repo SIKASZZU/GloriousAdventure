@@ -4,32 +4,35 @@ from images import ground_images, water_images, item_images
 
 class Object_Management:
     # x, y, ID
-    def remove_object_at_position(
-            self, terrain_x: int, terrain_y: int, object_id: int = None
-            ) -> None:
-
+    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_hit_box: tuple[int, ...], object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
 
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
-            grid_col: int = int(terrain_x // self.block_size)
-            grid_row: int = int(terrain_y // self.block_size)
+            for item_data in items_list:
+                if object_id == item_data["ID"]:
+                    if item_data["Breakable"] != True: pass
+                    else:
+                        grid_col: int = int(terrain_x // self.block_size)
+                        grid_row: int = int(terrain_y // self.block_size)
 
-            try:
-                # Kontrollib kas jääb mapi sissse
-                if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                        try:
+                            # Kontrollib kas jääb mapi sissse
+                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                            
+                                # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
+                                # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
+                                if object_id == 7: self.terrain_data[grid_row][grid_col] = 107
+                                else: self.terrain_data[grid_row][grid_col] = 1
+                                Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
 
-                    # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
-                    # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                    self.terrain_data[grid_row][grid_col] = 1
+                            else:
+                                print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
 
-                # Kui ei jää mapi sisse siis prindib errori
-                else:
-                    print("\nError in file: objects.py \n  Invalid grid indices:", grid_row, grid_col)
+                        except:
+                            print("IndexError: objects.py, remove_object_at_position", object_id)
 
-            except:
-                print("IndexError: objects - remove_object_at_position", object_id)
     
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
@@ -74,13 +77,14 @@ class Object_Management:
                         index = self.hit_boxes.index(obj_hit_box)
                         self.hit_boxes.pop(index)
 
-        except RuntimeError as e:
-            print("\nError in file: objects.py", e)
+        except RuntimeError as e: print("\nError in file: objects.py, add_object_to_inv", e)
+
 
     def place_and_render_object(self) -> None:
+        """ Visuaalselt paneb objekti maailma (image). """
+        
         keys = pygame.key.get_pressed()
 
-        """Visuaalselt paneb objekti maailma (image)"""
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
 
@@ -114,21 +118,17 @@ class Object_Management:
                 self.hitbox_count += 1
             elif not keys[pygame.K_h]:
                 self.h_pressed = False
+            try:
+                if (self.hitbox_count % 2) != 0:
+                    Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-            if (self.hitbox_count % 2) != 0:
-                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-
-                # Teeb roosa outline objecti ümber
-                pygame.draw.rect(self.screen, 'pink', object_rect, 1)
+                    # Teeb roosa outline objecti ümber
+                    pygame.draw.rect(self.screen, 'pink', object_rect, 1)
+            except Exception as e: print("\nError in file: objects.py, place_and_render_object:", e)
 
 
-
-
-    def place_and_render_hitbox(self,
-                                hit_box_x, hit_box_y,
-                                hit_box_width, hit_box_height
-                                ) -> None:
-        """Renderib hitboxi objektitele"""
+    def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
+        """ Renderib hitboxi objektitele. """
 
         hit_box_color: str = 'green'
         hit_box_x += self.offset_x

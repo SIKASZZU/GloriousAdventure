@@ -1,6 +1,7 @@
 import pygame
 import math
 from inventory import Inventory
+import images
 
 
 class Game_update:
@@ -80,10 +81,8 @@ class Game_update:
         if (self.hitbox_count % 2) != 0:
             pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
-    # See peaks olema alati kõige peal
-    def render(self) -> None:
-        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
+    def render_hud(self) -> None:
         # Renderib stamina-bari
         if self.stamina_bar_decay < 50:
             pygame.draw.rect(self.screen, '#F7F7F6', self.stamina_rect_bg, 0, 7)
@@ -94,7 +93,25 @@ class Game_update:
         pygame.draw.rect(self.screen, '#F7F7F6', self.health_rect_bg, 0, 7)
         pygame.draw.rect(self.screen, '#FF6666', self.health_rect, 0, 7)
         pygame.draw.rect(self.screen, 'black', self.health_rect_border, 2, 7)
+        
+        # Renderib food-bari
+        pygame.draw.rect(self.screen, '#F7F7F6', self.food_rect_bg, 0, 7)
+        pygame.draw.rect(self.screen, '#C8AE7D', self.food_rect, 0, 7)
+        pygame.draw.rect(self.screen, 'black', self.food_rect_border, 2, 7)
 
+        # Health bari keskele icon (Heart.png)
+        heart_icon = pygame.image.load('images/Heart.png')
+        scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
+        self.screen.blit(scaled_heart_icon, (self.heart_w_midpoint, self.heart_h_midpoint))
+        
+        # Food bari keskele icon (Food.png)
+        food_icon = pygame.image.load('images/Food.png')
+        scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
+        self.screen.blit(scaled_food_icon, (self.food_w_midpoint, self.food_h_midpoint))
+
+    # See peaks olema alati kõige peal
+    def render(self) -> None:
+        if self.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
         self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
