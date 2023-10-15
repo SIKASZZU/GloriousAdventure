@@ -71,44 +71,53 @@ class Map_information:
 
     def glade_creation():
         # Define the dimensions of the map
-        width = 40
-        height = 40
-
-        # Initialize the map with 99s
-        map_matrix = [[99 for _ in range(width)] for _ in range(height)]
-
-        # Define the coordinates for the square of terrain (value 1)
-        square_top_left_x = 1
-        square_top_left_y = 1
-        square_width = width - 2
-        square_height = height - 2
-
-        # Fill the square area with value 1
-        for i in range(square_top_left_y, square_top_left_y + square_height):
-            for j in range(square_top_left_x, square_top_left_x + square_width):
-                map_matrix[i][j] = 1
-
-        # Define the coordinates for the smaller water bond (value 0)
-        water_bond_top_left_x = 5
-        water_bond_top_left_y = 7
-        water_bond_width = width // 2 - 7
-        water_bond_height =  height // 2 - 5
-
-        # Fill the smaller water bond area with value 0
-        for i in range(water_bond_top_left_y, water_bond_top_left_y + water_bond_height):
-            for j in range(water_bond_top_left_x, water_bond_top_left_x + water_bond_width):
-                map_matrix[i][j] = 0
-
-        # Define the coordinates for the farming area (value 7)
-        farm_top_left_x = width - 4
-        farm_top_left_y = 1
-        farm_width = 3
-        farm_height = height // 2 - 6
-
-        # Fill the farming area with value 7
-        for i in range(farm_top_left_y, farm_top_left_y + farm_height):
-            for j in range(farm_top_left_x, farm_top_left_x + farm_width):
-                map_matrix[i][j] = 7
-
-        return map_matrix
+        map_width = 40
+        map_height = 40
+    
+        # Initialize the map with default value 99
+        glade_map = [[99 for _ in range(map_width)] for _ in range(map_height)]
+    
+        # Define different terrain areas
+        terrain_value = 1
+        water_value = 0
+        farming_value = 7
+        forest_value = 4
+    
+        # Create a function to fill an area with a specific value
+        def fill_area(top_left_x, top_left_y, width, height, value):
+            for i in range(top_left_y, top_left_y + height):
+                for j in range(top_left_x, top_left_x + width):
+                    glade_map[i][j] = value
+    
+        # Fill the terrain area
+        terrain_top_left_x = 1
+        terrain_top_left_y = 1
+        terrain_width = map_width - 2
+        terrain_height = map_height - 2
+        fill_area(terrain_top_left_x, terrain_top_left_y, terrain_width, terrain_height, terrain_value)
+    
+        # Fill the water area
+        water_top_left_x = 5
+        water_top_left_y = 7
+        water_width = map_width // 2 - 7
+        water_height = map_height // 2 - 5
+        fill_area(water_top_left_x, water_top_left_y, water_width, water_height, water_value)
+    
+        # Fill the farming area
+        farming_top_left_x = map_width - 4
+        farming_top_left_y = 1
+        farming_width = 3
+        farming_height = map_height // 2 - 6
+        fill_area(farming_top_left_x, farming_top_left_y, farming_width, farming_height, farming_value)
+    
+        # Fill the forest areas
+        forest_areas = [
+            (35, 17, 3, 21),
+            (17, 32, 18, 6)
+        ]
+    
+        for top_left_x, top_left_y, width, height in forest_areas:
+            fill_area(top_left_x, top_left_y, width, height, forest_value)
+    
+        return glade_map
 
