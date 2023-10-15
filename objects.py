@@ -1,8 +1,12 @@
 import pygame
 from items import items_list
 from images import ground_images, water_images, item_images
+from inventory import Inventory
 
 class Object_Management:
+    
+    hitbox_count: int = 0
+
     # x, y, ID
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_hit_box: tuple[int, ...], object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
@@ -30,8 +34,8 @@ class Object_Management:
                             else:
                                 print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
 
-                        except:
-                            print("IndexError: objects.py, remove_object_at_position", object_id)
+                        except Exception as e:
+                            print("IndexError: objects.py, remove_object_at_position", e)
 
     
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
@@ -67,12 +71,12 @@ class Object_Management:
                         items_found.remove(item_data["Name"])
 
                         # Uuenda mängija inventori
-                        if item_data["Name"] in self.inventory:
+                        if item_data["Name"] in Inventory.inventory:
                             # Kui ese on juba inventoris, suurendab eseme kogust
-                            self.inventory[item_data["Name"]] += 1
+                            Inventory.inventory[item_data["Name"]] += 1
                         else:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
-                            self.inventory[item_data["Name"]] = 1
+                            Inventory.inventory[item_data["Name"]] = 1
 
                         index = self.hit_boxes.index(obj_hit_box)
                         self.hit_boxes.pop(index)
@@ -85,15 +89,14 @@ class Object_Management:
         
         keys = pygame.key.get_pressed()
 
-        # Object id, pilt, ja pildi suurus
-        interaction_boxes = {}
+        interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             object_image = None
 
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
             terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
-
+            
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
                     object_image = item_images.get(item.get("Name"))
@@ -104,27 +107,21 @@ class Object_Management:
 
             if object_image:
                 position: tuple = (terrain_x, terrain_y)
-                object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-
-                # Muudab pildi suurust ja visualiseerib seda
                 scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
                 self.screen.blit(scaled_object_image, position)
-
-            else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
+            else: pass
+            object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
 
             # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
             if keys[pygame.K_h] and not self.h_pressed:
                 self.h_pressed = True
-                self.hitbox_count += 1
+                Object_Management.hitbox_count += 1
             elif not keys[pygame.K_h]:
                 self.h_pressed = False
-            try:
-                if (self.hitbox_count % 2) != 0:
-                    Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-                    # Teeb roosa outline objecti ümber
-                    pygame.draw.rect(self.screen, 'pink', object_rect, 1)
-            except Exception as e: print("\nError in file: objects.py, place_and_render_object:", e)
+            if (Object_Management.hitbox_count % 2) != 0:
+                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                pygame.draw.rect(self.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:

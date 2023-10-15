@@ -7,18 +7,30 @@ from objects import Object_Management # place_and_render_hitbox, place_and_rende
 
 
 class Render_Checker:
+
+    terrain_data_minerals: int = 0
+    render_range: int = 0
+    display_hit_box_decay: int = 0
+    render_terrain_data: list = []
+    generated_ground_images: dict = {}
+    generated_water_images: dict = {}
+    
+    # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
+    player_hitbox_offset_x = 29
+    player_hitbox_offset_y = 22
+    
     def map_render(self) -> None:
         self.screen.fill('white')
-        self.render_terrain_data: list = []
+        Render_Checker.render_terrain_data: list = []
 
-        self.render_range: int = (self.screen_x + self.screen_y) // 200
+        Render_Checker.render_range: int = (self.screen_x + self.screen_y) // 200
 
-        player_grid_row = int((self.player_x + self.player_hitbox_offset_x + self.player_width / 2) // self.block_size)
-        player_grid_col = int((self.player_y + self.player_hitbox_offset_y + self.player_height / 2) // self.block_size)
-        for i in range(player_grid_col - self.render_range, player_grid_col + self.render_range):
+        player_grid_row = int((self.player_x + Render_Checker.player_hitbox_offset_x + self.player_width / 2) // self.block_size)
+        player_grid_col = int((self.player_y + Render_Checker.player_hitbox_offset_y + self.player_height / 2) // self.block_size)
+        for i in range(player_grid_col - Render_Checker.render_range, player_grid_col + Render_Checker.render_range):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(player_grid_row - self.render_range, player_grid_row + self.render_range + 1):
+            for j in range(player_grid_row - Render_Checker.render_range, player_grid_row + Render_Checker.render_range + 1):
                 terrain_x: int = j * self.block_size + self.offset_x
                 terrain_y: int = i * self.block_size + self.offset_y
 
@@ -30,15 +42,15 @@ class Render_Checker:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
 
-                    if terrain_value != 0 and (i, j) not in self.generated_ground_images:
+                    if terrain_value != 0 and (i, j) not in Render_Checker.generated_ground_images:
                         ground_image_name = f"Ground_{random.randint(0, 19)}"
-                        self.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (self.block_size, self.block_size))
+                        Render_Checker.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (self.block_size, self.block_size))
 
-                    if terrain_value == 0 and (i, j) not in self.generated_water_images:
+                    if terrain_value == 0 and (i, j) not in Render_Checker.generated_water_images:
                         generated_water_images = f"Water_{random.randint(0, 0)}"
-                        self.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
+                        Render_Checker.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (self.block_size, self.block_size))
 
-                    image = self.generated_ground_images.get((i, j)) if terrain_value != 0 else self.generated_water_images.get((i, j))
+                    image = Render_Checker.generated_ground_images.get((i, j)) if terrain_value != 0 else Render_Checker.generated_water_images.get((i, j))
                     if image:
                         self.screen.blit(image, (terrain_x, terrain_y))
                     
@@ -51,15 +63,15 @@ class Render_Checker:
                         pygame.draw.rect(self.screen, 'black', wall)
     
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
-            self.render_terrain_data.append(self.row)
+            Render_Checker.render_terrain_data.append(self.row)
 
 
     def object_list_creation(self) -> None:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
         
-        self.terrain_data_minerals: int = 0
+        Render_Checker.terrain_data_minerals: int = 0
         self.hit_boxes: list = []
-        self.display_hit_box_decay: int = 0
+        Render_Checker.display_hit_box_decay: int = 0
 
         # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
         object_collision_boxes = {}
@@ -77,7 +89,7 @@ class Render_Checker:
                 collision_box = item.get("Collision_box", [0, 0, 0, 0])
                 object_collision_boxes[id] = collision_box
 
-        for row in self.render_terrain_data:
+        for row in Render_Checker.render_terrain_data:
             for x, y in row:
                 if 0 <= y < len(self.terrain_data) and 0 <= x < len(self.terrain_data[0]):
 
@@ -101,15 +113,15 @@ class Render_Checker:
                         hit_box_x: int = terrain_x + hit_box_offset_x
                         hit_box_y: int = terrain_y + hit_box_offset_y
 
-                        if self.display_hit_box_decay <= self.terrain_data_minerals:
+                        if Render_Checker.display_hit_box_decay <= Render_Checker.terrain_data_minerals:
                             new_object: tuple[int, ...] = (
                             hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x,
                             hit_box_offset_y)
 
                             if new_object not in self.hit_boxes:
                                 self.hit_boxes.append(new_object)
-                                self.terrain_data_minerals += 1
-                            self.display_hit_box_decay += 1
+                                Render_Checker.terrain_data_minerals += 1
+                            Render_Checker.display_hit_box_decay += 1
             
         # Create a dictionary to map each id to its sort order
         id_sort_order = {6: 1, # First to be rendered
