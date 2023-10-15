@@ -85,15 +85,14 @@ class Object_Management:
         
         keys = pygame.key.get_pressed()
 
-        # Object id, pilt, ja pildi suurus
-        interaction_boxes = {}
+        interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
         for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
             object_image = None
 
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
             terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
-
+            
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
                     object_image = item_images.get(item.get("Name"))
@@ -104,13 +103,10 @@ class Object_Management:
 
             if object_image:
                 position: tuple = (terrain_x, terrain_y)
-                object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-
-                # Muudab pildi suurust ja visualiseerib seda
                 scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
                 self.screen.blit(scaled_object_image, position)
-
-            else: pass  # print('Object image missing!. File: objects.py Function: place_and_render_object')
+            else: pass
+            object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
 
             # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
             if keys[pygame.K_h] and not self.h_pressed:
@@ -118,13 +114,10 @@ class Object_Management:
                 self.hitbox_count += 1
             elif not keys[pygame.K_h]:
                 self.h_pressed = False
-            try:
-                if (self.hitbox_count % 2) != 0:
-                    Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 
-                    # Teeb roosa outline objecti ümber
-                    pygame.draw.rect(self.screen, 'pink', object_rect, 1)
-            except Exception as e: print("\nError in file: objects.py, place_and_render_object:", e)
+            if (self.hitbox_count % 2) != 0:
+                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                pygame.draw.rect(self.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
