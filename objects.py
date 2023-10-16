@@ -3,7 +3,7 @@ from items import items_list
 from images import ground_images, water_images, item_images
 from inventory import Inventory
 
-class Object_Management:
+class ObjectManagement:
     
     hitbox_count: int = 0
 
@@ -29,7 +29,7 @@ class Object_Management:
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
                                 if object_id == 7: self.terrain_data[grid_row][grid_col] = 107
                                 else: self.terrain_data[grid_row][grid_col] = 1
-                                Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
+                                ObjectManagement.add_object_to_inv(self, object_id, obj_hit_box)
 
                             else:
                                 print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
@@ -115,12 +115,12 @@ class Object_Management:
             # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
             if keys[pygame.K_h] and not self.h_pressed:
                 self.h_pressed = True
-                Object_Management.hitbox_count += 1
+                ObjectManagement.hitbox_count += 1
             elif not keys[pygame.K_h]:
                 self.h_pressed = False
 
-            if (Object_Management.hitbox_count % 2) != 0:
-                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+            if (ObjectManagement.hitbox_count % 2) != 0:
+                ObjectManagement.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
                 pygame.draw.rect(self.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 

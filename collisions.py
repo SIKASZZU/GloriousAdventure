@@ -1,7 +1,7 @@
 import pygame
 from items import items_list
-from objects import Object_Management
-from render import Render_Checker
+from objects import ObjectManagement
+from render import RenderPictures
 from stamina import StaminaComponent
 
 
@@ -38,7 +38,7 @@ class Collisions:
                 print(obj_hit_box)
 
                 if keys[pygame.K_SPACE]:
-                    Object_Management.remove_object_at_position(self, terrain_x, terrain_y, obj_hit_box, object_id)
+                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_hit_box, object_id)
 
                 if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                     Collisions.render_after = True
@@ -100,8 +100,8 @@ class Collisions:
         player_grid_col = int(self.player_y // self.block_size)
 
         # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
-        for i in range(player_grid_col - Render_Checker.render_range, player_grid_col + Render_Checker.render_range + 1):
-            for j in range(player_grid_row - Render_Checker.render_range, player_grid_row + Render_Checker.render_range + 1):
+        for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
+            for j in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
 
                 # Vaatab terrain recti ja playeri collisoneid
                 terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)

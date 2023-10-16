@@ -3,7 +3,7 @@ class Crafting:
         pass
         # kammib terve invi l2bi
         # vaatba kas seal on 4 puitu
-        if puitu on 4 või rohkem invis siis
+        #if puitu on 4 või rohkem invis siis
 
     def crafting_menu(self):
         
