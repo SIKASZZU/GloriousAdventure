@@ -3,23 +3,19 @@ import math
 from inventory import Inventory
 from HUD import HUD_class
 from stamina import StaminaComponent
-from render import Render_Checker
-from objects import Object_Management
+from render import RenderPictures
+from objects import ObjectManagement
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
-class Game_update:
+
+
+class PlayerUpdate:
     sprite_sheets, animations = load_sprite_sheets([
-        'images/Player/Left.png',
-        'images/Player/Right.png',
-        'images/Player/Up.png',
-        'images/Player/Down.png'
+        'images/Player/Left.png', 'images/Player/Right.png', 'images/Player/Up.png', 'images/Player/Down.png'
     ])
 
     sprite_sheets_idle, animations_idle = load_sprite_sheets([
-        'images/Player/Idle_Left.png',
-        'images/Player/Idle_Right.png',
-        'images/Player/Idle_Up.png',
-        'images/Player/Idle_Down.png'
+        'images/Player/Idle_Left.png', 'images/Player/Idle_Right.png', 'images/Player/Idle_Up.png', 'images/Player/Idle_Down.png'
     ])
 
     animation_speeds = [10, 10, 10, 10]
@@ -28,8 +24,10 @@ class Game_update:
     animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
     idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
                                                     animation_speeds)
-   # Uuendab player datat ja laseb tal liikuda
+   
+   
     def update_player(self) -> None:
+        """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
         # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
@@ -67,45 +65,41 @@ class Game_update:
         # Uuendab playeri asukohta vastavalt keyboard inputile
         self.player_x: int = new_player_x
         self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x + Render_Checker.player_hitbox_offset_x, self.player_y + Render_Checker.player_hitbox_offset_y, self.player_width, self.player_height)
+        self.player_rect = pygame.Rect(self.player_x + RenderPictures.player_hitbox_offset_x, self.player_y + RenderPictures.player_hitbox_offset_y, self.player_width, self.player_height)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
         if is_idle:
-            self.frame = Game_update.idle_animation_manager.update_animation(keys, is_idle)
+            self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
         else:
-            self.frame = Game_update.animation_manager.update_animation(keys, is_idle)
-        if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
+            self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
 
 
-    # Renderib ainuyksi playeri, tema inventory
     def render_player(self) -> None:
+        """ Renderib ainult playeri. """
         keys = pygame.key.get_pressed()
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
-        # Inventory
-        Inventory.call_inventory(self)  # update playeri osa()
-
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
-        player_rect = pygame.Rect(player_position_adjusted[0] + Render_Checker.player_hitbox_offset_x, player_position_adjusted[1] + Render_Checker.player_hitbox_offset_y, self.player_width, self.player_height)
+        player_rect = pygame.Rect(player_position_adjusted[0] + RenderPictures.player_hitbox_offset_x, player_position_adjusted[1] + RenderPictures.player_hitbox_offset_y, self.player_width, self.player_height)
 
-        # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
+        # Renderib playerile hitboxi
         if keys[pygame.K_h] and not self.h_pressed:
             self.h_pressed = True
-            Object_Management.hitbox_count += 1
+            ObjectManagement.hitbox_count += 1
         elif not keys[pygame.K_h]:
             self.h_pressed = False
 
-        if (Object_Management.hitbox_count % 2) != 0:
+        if (ObjectManagement.hitbox_count % 2) != 0:
             pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
 
 
-    def render_hud(self) -> None:
-        #sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm = HUD_class.bar_visualization(self)
+    def render_HUD(self) -> None:
+        """ Renderib HUDi (Stamina-, food- ja healthbari). """
         stamina_rect, stamina_bar_border, stamina_bar_bg, \
             health_rect, health_bar_border, health_bar_bg, \
             food_rect, food_bar_border, food_bar_bg, \
@@ -137,8 +131,13 @@ class Game_update:
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
         self.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
-    # See peaks olema alati kõige peal
-    def render(self) -> None:
+
+    def render_general(self) -> None:
+        """ See peaks olema alati kõige peal. 
+            Renderib inventory, fps ja hitbox show text.
+            pygame.display_update() ja sätestab fps limiidi (60). """
+
+        Inventory.call_inventory(self)
         if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))

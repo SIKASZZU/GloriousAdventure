@@ -4,16 +4,16 @@ import sys
 import random
 
 # Oma enda failid
-from sprite import load_sprite_sheets, AnimationManager
-from game_settings import player_stats
-from stamina import StaminaComponent
-from map import Map_information  # map_data_generator
-from render import Render_Checker  # map_render, object_list_creation
-from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from map import MapData  # map_data_generator
 from camera import Camera  # box_target_camera
-from objects import Object_Management
-from update import Game_update  # update_player, render_player
+from update import PlayerUpdate  # update_player, render_player
 from inventory import Inventory
+from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from render import RenderPictures  # map_render
+from render import CreateHitboxes  # object_list_creation
+from stamina import StaminaComponent
+from objects import ObjectManagement
+from game_settings import player_stats  # erinevad settingud, speed jms
 
 clock = pygame.time.Clock()
 
@@ -30,8 +30,8 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
 
-    # universal sitt - peab mingisse faili minema
-    terrain_data = Map_information.glade_creation()
+    # universal sitt - peab mingisse faili minema (game_settings.py)
+    terrain_data = MapData.glade_creation()
     block_size: int = 100
     hit_boxes: list = []
     screen_x: int = 1000
@@ -51,7 +51,7 @@ class Game:
         while True:
             #print(self.terrain_data)
             self.handle_events()  # Paneb mängu õigesti kinni
-            Game_update.update_player(self)  # Uuendab mängija asukohta, ja muid asju
+            PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
             Camera.box_target_camera(self)  # Kaamera
 
             StaminaComponent.stamina_bar_update(self)  # Stamina bar
@@ -60,19 +60,19 @@ class Game:
             Collisions.collison_terrain(self)
             Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
-            Render_Checker.object_list_creation(self)  # Creatib self.hit_boxes
-            Render_Checker.map_render(self)  # Renderib terraini
+            CreateHitboxes.object_list_creation(self)  # Creatib self.hit_boxes
+            RenderPictures.map_render(self)  # Renderib terraini
             
             if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
-                Object_Management.place_and_render_object(self)  # Renderib objektid
-                Game_update.render_player(self)  # Renderib playeri (+ tema recti)
+                ObjectManagement.place_and_render_object(self)  # Renderib objektid
+                PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
             else:  # self.render_after == False
-                Game_update.render_player(self)
-                Object_Management.place_and_render_object(self)  # Renderib objektid
+                PlayerUpdate.render_player(self)
+                ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
             Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
-            Game_update.render_hud(self)  # Render HUD_class (health- ,food- ,stamina bar)
-            Game_update.render(self)  # inventory, fps counteri
+            PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
+            PlayerUpdate.render_general(self)  # inventory, fps counteri
 
 if __name__ == "__main__":
     game = Game()
