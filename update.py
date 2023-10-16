@@ -5,8 +5,29 @@ from HUD import HUD_class
 from stamina import StaminaComponent
 from render import Render_Checker
 from objects import Object_Management
+from sprite import AnimationManager
+from sprite import load_sprite_sheets
 class Game_update:
+    sprite_sheets, animations = load_sprite_sheets([
+        'images/Player/Left.png',
+        'images/Player/Right.png',
+        'images/Player/Up.png',
+        'images/Player/Down.png'
+    ])
 
+    sprite_sheets_idle, animations_idle = load_sprite_sheets([
+        'images/Player/Idle_Left.png',
+        'images/Player/Idle_Right.png',
+        'images/Player/Idle_Up.png',
+        'images/Player/Idle_Down.png'
+    ])
+
+    animation_speeds = [10, 10, 10, 10]
+
+    # Teeb idle ja mitte idle animatsioone
+    animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
+    idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
+                                                    animation_speeds)
    # Uuendab player datat ja laseb tal liikuda
     def update_player(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -52,9 +73,9 @@ class Game_update:
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
         if is_idle:
-            self.frame = self.idle_animation_manager.update_animation(keys, is_idle)
+            self.frame = Game_update.idle_animation_manager.update_animation(keys, is_idle)
         else:
-            self.frame = self.animation_manager.update_animation(keys, is_idle)
+            self.frame = Game_update.animation_manager.update_animation(keys, is_idle)
         if self.frame is not None: self.sprite_rect = self.screen.blit(self.frame, (self.player_x, self.player_y))
 
 

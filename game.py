@@ -30,52 +30,21 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
 
-    # ******** Map data stuff ******** #
-    terrain_data = Map_information.glade_creation()
-    
     # universal sitt - peab mingisse faili minema
+    terrain_data = Map_information.glade_creation()
     block_size: int = 100
     hit_boxes: list = []
     screen_x: int = 1000
     screen_y: int = 750
     screen = pygame.display.set_mode((screen_x, screen_y))
     player = player_stats  # load in game_settings
-    # universal sitt l6ppeb siin, muud pole testinud
-    
-    # ******** FPS counter ******** #
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Verdana", 20)
-
-    # ******** Player stuff ******** #
-    
     player_height = block_size * 0.65
     player_width = block_size * 0.45
-
-
     player_x: int = random.randint(400, 400)
     player_y: int = random.randint(400, 400)
-
-    # ******** Animation stuff ******** #
-    sprite_sheets, animations = load_sprite_sheets([
-        'images/Player/Left.png',
-        'images/Player/Right.png',
-        'images/Player/Up.png',
-        'images/Player/Down.png'
-    ])
-
-    sprite_sheets_idle, animations_idle = load_sprite_sheets([
-        'images/Player/Idle_Left.png',
-        'images/Player/Idle_Right.png',
-        'images/Player/Idle_Up.png',
-        'images/Player/Idle_Down.png'
-    ])
-
-    animation_speeds = [10, 10, 10, 10]
-
-    # Teeb idle ja mitte idle animatsioone
-    animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
-    idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
-                                                    animation_speeds)
+    # universal sitt l6ppeb siin, muud pole testinud
 
 
     def run(self) -> None:
