@@ -15,7 +15,7 @@ class Collisions:
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
 
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.collision_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
             obj_hit_box = (
@@ -54,7 +54,7 @@ class Collisions:
                 hit_box_x, hit_box_y, \
                 hit_box_width, hit_box_height,\
                 object_id, hit_box_offset_x,\
-                hit_box_offset_y in self.hit_boxes:
+                hit_box_offset_y in self.collision_boxes:
 
             collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
 

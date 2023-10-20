@@ -31,19 +31,23 @@ class Game:
     pygame.display.set_caption("Glorious Adventure - BETA")
 
     # universal sitt - peab mingisse faili minema (game_settings.py)
-    terrain_data = MapData.glade_creation()
+    player = player_stats  # load in game_settings
+
     block_size: int = 100
-    hit_boxes: list = []
+    player_height = block_size * 0.65
+    player_width = block_size * 0.45
+
+    player_x: int = random.randint(400, 400)
+    player_y: int = random.randint(400, 400)
+
     screen_x: int = 1000
     screen_y: int = 750
     screen = pygame.display.set_mode((screen_x, screen_y))
-    player = player_stats  # load in game_settings
+
+    terrain_data = MapData.glade_creation()
+    collision_boxes: list = []
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Verdana", 20)
-    player_height = block_size * 0.65
-    player_width = block_size * 0.45
-    player_x: int = random.randint(400, 400)
-    player_y: int = random.randint(400, 400)
     # universal sitt l6ppeb siin, muud pole testinud
 
 
@@ -60,7 +64,7 @@ class Game:
             Collisions.collison_terrain(self)
             Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
-            CreateHitboxes.object_list_creation(self)  # Creatib self.hit_boxes
+            CreateHitboxes.object_list_creation(self)  # Creatib self.collision_boxes
             RenderPictures.map_render(self)  # Renderib terraini
             
             if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.

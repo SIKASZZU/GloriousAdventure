@@ -78,8 +78,8 @@ class ObjectManagement:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
                             Inventory.inventory[item_data["Name"]] = 1
 
-                        index = self.hit_boxes.index(obj_hit_box)
-                        self.hit_boxes.pop(index)
+                        index = self.collision_boxes.index(obj_hit_box)
+                        self.collision_boxes.pop(index)
 
         except RuntimeError as e: print("\nError in file: objects.py, add_object_to_inv", e)
 
@@ -91,7 +91,7 @@ class ObjectManagement:
 
         interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.collision_boxes:
             object_image = None
 
             terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
