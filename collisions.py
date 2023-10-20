@@ -15,14 +15,14 @@ class Collisions:
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
 
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.collision_boxes:
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in self.collision_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
-            obj_hit_box = (
-            hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y)
+            obj_collision_box = (
+            collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y)
 
-            terrain_x: int = hit_box_x - hit_box_offset_x
-            terrain_y: int = hit_box_y - hit_box_offset_y
+            terrain_x: int = collision_box_x - collision_box_offset_x
+            terrain_y: int = collision_box_y - collision_box_offset_y
 
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
@@ -32,13 +32,13 @@ class Collisions:
 
                     interaction_boxes[object_id] = (width, height)
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.hit_box
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
             if self.player_rect.colliderect(collision_object_rect):
-                print(obj_hit_box)
+                print(obj_collision_box)
 
                 if keys[pygame.K_SPACE]:
-                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_hit_box, object_id)
+                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
 
                 if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                     Collisions.render_after = True
@@ -51,12 +51,12 @@ class Collisions:
     def collision_hitbox(self):
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for \
-                hit_box_x, hit_box_y, \
-                hit_box_width, hit_box_height,\
-                object_id, hit_box_offset_x,\
-                hit_box_offset_y in self.collision_boxes:
+                collision_box_x, collision_box_y, \
+                collision_box_width, collision_box_height,\
+                object_id, collision_box_offset_x,\
+                collision_box_offset_y in self.collision_boxes:
 
-            collision_object_hitbox = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
 
             # Kui player jookseb siis ta ei lähe läbi objektide
             if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
@@ -70,9 +70,9 @@ class Collisions:
 
                 # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
                 dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
-                            self.player_width / 2 + hit_box_width / 2)
+                            self.player_width / 2 + collision_box_width / 2)
                 dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
-                            self.player_height / 2 + hit_box_height / 2)
+                            self.player_height / 2 + collision_box_height / 2)
 
                 # Horisontaalne kokkupuude
                 if abs(dx) > abs(dy):

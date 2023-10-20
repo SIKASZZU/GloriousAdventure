@@ -8,7 +8,7 @@ class ObjectManagement:
     hitbox_count: int = 0
 
     # x, y, ID
-    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_hit_box: tuple[int, ...], object_id: int = None) -> None:
+    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_collision_box: tuple[int, ...], object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
 
@@ -29,7 +29,7 @@ class ObjectManagement:
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
                                 if object_id == 7: self.terrain_data[grid_row][grid_col] = 107
                                 else: self.terrain_data[grid_row][grid_col] = 1
-                                ObjectManagement.add_object_to_inv(self, object_id, obj_hit_box)
+                                ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
 
                             else:
                                 print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
@@ -46,7 +46,7 @@ class ObjectManagement:
     # 4   - objecti ID
     # 80  - hitboxi offset x
     # 40  - hitboxi offset y
-    def add_object_to_inv(self, object_id: int, obj_hit_box: tuple[int, ...]) -> None:
+    def add_object_to_inv(self, object_id: int, obj_collision_box: tuple[int, ...]) -> None:
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
         # Hoiab leitud esemeid koos kogusega: test_count = {"Test0": 2, "Test1": 4, "Test2": 6}
@@ -78,7 +78,7 @@ class ObjectManagement:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
                             Inventory.inventory[item_data["Name"]] = 1
 
-                        index = self.collision_boxes.index(obj_hit_box)
+                        index = self.collision_boxes.index(obj_collision_box)
                         self.collision_boxes.pop(index)
 
         except RuntimeError as e: print("\nError in file: objects.py, add_object_to_inv", e)
@@ -91,11 +91,11 @@ class ObjectManagement:
 
         interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.collision_boxes:
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in self.collision_boxes:
             object_image = None
 
-            terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
-            terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
+            terrain_x: int = (collision_box_x - collision_box_offset_x) + self.offset_x
+            terrain_y: int = (collision_box_y - collision_box_offset_y) + self.offset_y
             
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
@@ -120,20 +120,20 @@ class ObjectManagement:
                 self.h_pressed = False
 
             if (ObjectManagement.hitbox_count % 2) != 0:
-                ObjectManagement.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
+                ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
                 pygame.draw.rect(self.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
-    def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
+    def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height) -> None:
         """ Renderib hitboxi objektitele. """
 
-        hit_box_color: str = 'green'
-        hit_box_x += self.offset_x
-        hit_box_y += self.offset_y
+        collision_box_color: str = 'green'
+        collision_box_x += self.offset_x
+        collision_box_y += self.offset_y
 
         # Teeb antud asjadest hitboxi ja visualiseerib seda
-        obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-        pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
+        obj_collision_box = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+        pygame.draw.rect(self.screen, collision_box_color, obj_collision_box, 2)
 
 
 

@@ -10,7 +10,7 @@ from update import PlayerUpdate  # update_player, render_player
 from inventory import Inventory
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from render import RenderPictures  # map_render
-from render import CreateHitboxes  # object_list_creation
+from render import CreateCollisionBoxes  # object_list_creation
 from stamina import StaminaComponent
 from objects import ObjectManagement
 from game_settings import player_stats  # erinevad settingud, speed jms
@@ -64,7 +64,7 @@ class Game:
             Collisions.collison_terrain(self)
             Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
-            CreateHitboxes.object_list_creation(self)  # Creatib self.collision_boxes
+            CreateCollisionBoxes.object_list_creation(self)  # Creatib self.collision_boxes
             RenderPictures.map_render(self)  # Renderib terraini
             
             if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
