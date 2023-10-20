@@ -69,7 +69,7 @@ class CreateHitboxes:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
         
         CreateHitboxes.terrain_data_minerals: int = 0
-        self.hit_boxes: list = []
+        self.collision_boxes: list = []
         CreateHitboxes.display_hit_box_decay: int = 0
 
         # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
@@ -117,8 +117,8 @@ class CreateHitboxes:
                             hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x,
                             hit_box_offset_y)
 
-                            if new_object not in self.hit_boxes:
-                                self.hit_boxes.append(new_object)
+                            if new_object not in self.collision_boxes:
+                                self.collision_boxes.append(new_object)
                                 CreateHitboxes.terrain_data_minerals += 1
                             CreateHitboxes.display_hit_box_decay += 1
             
@@ -130,4 +130,4 @@ class CreateHitboxes:
                         7: 5}  # Last to be rendered
 
         # Sort the hit_boxes list based on the custom sort order
-        self.hit_boxes = sorted(self.hit_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+        self.collision_boxes = sorted(self.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
