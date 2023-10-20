@@ -2,7 +2,7 @@ import pygame
 import math
 from inventory import Inventory
 from HUD import HUD_class
-from stamina import StaminaComponent
+from components import StaminaComponent
 from render import RenderPictures
 from objects import ObjectManagement
 from sprite import AnimationManager

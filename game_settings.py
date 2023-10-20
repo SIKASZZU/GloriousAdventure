@@ -3,7 +3,7 @@ from components import HealthComponent
 from components import HungerComponent
 from components import SpeedComponent
 from components import HitBoxComponent
-from stamina import StaminaComponent
+from components import StaminaComponent
 from components import AttackComponent
 
 # hunger / hitbox / attack - pole tehtud

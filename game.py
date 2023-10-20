@@ -11,7 +11,7 @@ from inventory import Inventory
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from render import RenderPictures  # map_render
 from render import CreateCollisionBoxes  # object_list_creation
-from stamina import StaminaComponent
+from components import StaminaComponent
 from objects import ObjectManagement
 from game_settings import player_stats  # erinevad settingud, speed jms
 

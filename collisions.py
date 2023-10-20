@@ -2,7 +2,7 @@ import pygame
 from items import items_list
 from objects import ObjectManagement
 from render import RenderPictures
-from stamina import StaminaComponent
+from components import StaminaComponent
 
 
 class Collisions:
