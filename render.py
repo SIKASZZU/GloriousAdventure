@@ -61,16 +61,16 @@ class RenderPictures:
             RenderPictures.render_terrain_data.append(self.row)
 
 
-class CreateHitboxes:
+class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
-    display_hit_box_decay: int = 0
+    display_collision_box_decay: int = 0
 
     def object_list_creation(self) -> None:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
         
-        CreateHitboxes.terrain_data_minerals: int = 0
+        CreateCollisionBoxes.terrain_data_minerals: int = 0
         self.collision_boxes: list = []
-        CreateHitboxes.display_hit_box_decay: int = 0
+        CreateCollisionBoxes.display_collision_box_decay: int = 0
 
         # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
         object_collision_boxes = {}
@@ -102,25 +102,25 @@ class CreateHitboxes:
                         collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
 
                         # Arvutab hitboxi suuruse ja asukoha vastavalt camera / player / render offsetile
-                        hit_box_offset_x_mlp, hit_box_offset_y_mlp, hit_box_width_mlp, hit_box_height_mlp = collision_box
-                        hit_box_width = int(self.block_size * hit_box_width_mlp)
-                        hit_box_height = int(self.block_size * hit_box_height_mlp)
+                        collision_box_offset_x_mlp, collision_box_offset_y_mlp, collision_box_width_mlp, collision_box_height_mlp = collision_box
+                        collision_box_width = int(self.block_size * collision_box_width_mlp)
+                        collision_box_height = int(self.block_size * collision_box_height_mlp)
 
-                        hit_box_offset_x = int(self.block_size * hit_box_offset_x_mlp)
-                        hit_box_offset_y = int(self.block_size * hit_box_offset_y_mlp)
+                        collision_box_offset_x = int(self.block_size * collision_box_offset_x_mlp)
+                        collision_box_offset_y = int(self.block_size * collision_box_offset_y_mlp)
 
-                        hit_box_x: int = terrain_x + hit_box_offset_x
-                        hit_box_y: int = terrain_y + hit_box_offset_y
+                        collision_box_x: int = terrain_x + collision_box_offset_x
+                        collision_box_y: int = terrain_y + collision_box_offset_y
 
-                        if CreateHitboxes.display_hit_box_decay <= CreateHitboxes.terrain_data_minerals:
+                        if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
                             new_object: tuple[int, ...] = (
-                            hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x,
-                            hit_box_offset_y)
+                            collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x,
+                            collision_box_offset_y)
 
                             if new_object not in self.collision_boxes:
                                 self.collision_boxes.append(new_object)
-                                CreateHitboxes.terrain_data_minerals += 1
-                            CreateHitboxes.display_hit_box_decay += 1
+                                CreateCollisionBoxes.terrain_data_minerals += 1
+                            CreateCollisionBoxes.display_collision_box_decay += 1
             
         # Create a dictionary to map each id to its sort order
         id_sort_order = {6: 1, # First to be rendered
@@ -129,5 +129,5 @@ class CreateHitboxes:
                         4: 4,
                         7: 5}  # Last to be rendered
 
-        # Sort the hit_boxes list based on the custom sort order
+        # Sort the collision_boxes list based on the custom sort order
         self.collision_boxes = sorted(self.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
