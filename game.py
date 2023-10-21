@@ -4,13 +4,13 @@ import sys
 
 # Oma enda failid
 from camera import Camera  # box_target_camera
-from update import PlayerUpdate  # update_player, render_player
 from inventory import Inventory
-from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from update import PlayerUpdate  # update_player, render_player
 from render import RenderPictures  # map_render
+from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from objects import ObjectManagement
 from render import CreateCollisionBoxes  # object_list_creation
 from components import StaminaComponent
-from objects import ObjectManagement
 
 
 class Game:
@@ -25,6 +25,9 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
     
+    # ******************** PLAYER ******************** # 
+    player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
+
     # ******************** FPS, FONT ******************** # 
     clock = pygame.time.Clock()  # fps
     font = pygame.font.SysFont("Verdana", 20)  # font

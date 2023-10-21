@@ -1,6 +1,6 @@
-from images import item_images
+from variables import UniversalVariables
 
-block_size = 100
+block_size = UniversalVariables.block_size
 
 # hitbox: [offset_x, offset_y, width, height]
 items_list = [
