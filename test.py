@@ -18,7 +18,7 @@ class MazeGenerator:
 
         # Initialize Pygame
         pygame.init()
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        UniversalVariables.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Maze Generator")
 
         # Create a grid
@@ -52,22 +52,22 @@ class MazeGenerator:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self.screen.fill(self.WHITE)
+            UniversalVariables.screen.fill(self.WHITE)
 
             for y in range(self.GRID_HEIGHT):
                 for x in range(self.GRID_WIDTH):
                     if self.grid[y][x]:
-                        pygame.draw.rect(self.screen, self.BLACK,
+                        pygame.draw.rect(UniversalVariables.screen, self.BLACK,
                                          (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
 
             # Draw the starting point (red dot)
-            pygame.draw.circle(self.screen, self.RED, (
+            pygame.draw.circle(UniversalVariables.screen, self.RED, (
                 self.start_x * self.CELL_SIZE + self.CELL_SIZE // 2,
                 self.start_y * self.CELL_SIZE + self.CELL_SIZE // 2),
                                self.CELL_SIZE // 3)
 
             # Draw the finishing point (green dot)
-            pygame.draw.circle(self.screen, self.GREEN, (
+            pygame.draw.circle(UniversalVariables.screen, self.GREEN, (
                 self.finish_x * self.CELL_SIZE + self.CELL_SIZE // 2,
                 self.finish_y * self.CELL_SIZE + self.CELL_SIZE // 2),
                                self.CELL_SIZE // 3)

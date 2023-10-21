@@ -17,7 +17,7 @@ class Collisions:
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
 
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in self.collision_boxes:
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
             obj_collision_box = (
@@ -56,7 +56,7 @@ class Collisions:
                 collision_box_x, collision_box_y, \
                 collision_box_width, collision_box_height,\
                 object_id, collision_box_offset_x,\
-                collision_box_offset_y in self.collision_boxes:
+                collision_box_offset_y in UniversalVariables.collision_boxes:
 
             collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
 
@@ -112,10 +112,10 @@ class Collisions:
                         keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_s]
-                    # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                    # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
+                    if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
 
-                        in_water = self.terrain_data[i][j] == 0
+                        in_water = UniversalVariables.terrain_data[i][j] == 0
                         
                         if in_water != True:
                             # Player asub maal

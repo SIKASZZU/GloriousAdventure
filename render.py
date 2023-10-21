@@ -16,10 +16,10 @@ class RenderPictures:
     player_hitbox_offset_y = 22
     
     def map_render(self) -> None:
-        self.screen.fill('white')
+        UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
-        RenderPictures.render_range: int = (self.screen_x + self.screen_y) // 200
+        RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // 200
 
         player_grid_row = int((UniversalVariables.player_x + RenderPictures.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
         player_grid_col = int((UniversalVariables.player_y + RenderPictures.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
@@ -34,9 +34,9 @@ class RenderPictures:
                 try: self.row.append((j, i)),
                 except IndexError: pass
 
-                # Kontrollib kas terrain block jääb faili self.terrain_data piiridesse
-                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-                    terrain_value = self.terrain_data[i][j]
+                # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
+                if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
+                    terrain_value = UniversalVariables.terrain_data[i][j]
 
                     if terrain_value != 0 and (i, j) not in RenderPictures.generated_ground_images:
                         ground_image_name = f"Ground_{random.randint(0, 19)}"
@@ -48,15 +48,15 @@ class RenderPictures:
 
                     image = RenderPictures.generated_ground_images.get((i, j)) if terrain_value != 0 else RenderPictures.generated_water_images.get((i, j))
                     if image:
-                        self.screen.blit(image, (terrain_x, terrain_y))
+                        UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
                     
                     if terrain_value == 7 or terrain_value == 107:
                         wheat_bg_image = pygame.image.load("images/Wheat_background.png")
-                        self.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
+                        UniversalVariables.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
 
                     if terrain_value == 99:
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(self.screen, 'black', wall)
+                        pygame.draw.rect(UniversalVariables.screen, 'black', wall)
     
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
@@ -70,7 +70,7 @@ class CreateCollisionBoxes:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
         
         CreateCollisionBoxes.terrain_data_minerals: int = 0
-        self.collision_boxes: list = []
+        UniversalVariables.collision_boxes: list = []
         CreateCollisionBoxes.display_collision_box_decay: int = 0
 
         # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
@@ -91,13 +91,13 @@ class CreateCollisionBoxes:
 
         for row in RenderPictures.render_terrain_data:
             for x, y in row:
-                if 0 <= y < len(self.terrain_data) and 0 <= x < len(self.terrain_data[0]):
+                if 0 <= y < len(UniversalVariables.terrain_data) and 0 <= x < len(UniversalVariables.terrain_data[0]):
 
                     # Vaatab kas itemi ID on dict'is:    object_collision_boxes = {}
-                    if self.terrain_data[y][x] in object_collision_boxes:
+                    if UniversalVariables.terrain_data[y][x] in object_collision_boxes:
                         terrain_x: int = x * UniversalVariables.block_size
                         terrain_y: int = y * UniversalVariables.block_size
-                        object_id: int = self.terrain_data[y][x]
+                        object_id: int = UniversalVariables.terrain_data[y][x]
 
                         # Võtab õige itemi collision_box'i
                         collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
@@ -118,8 +118,8 @@ class CreateCollisionBoxes:
                             collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x,
                             collision_box_offset_y)
 
-                            if new_object not in self.collision_boxes:
-                                self.collision_boxes.append(new_object)
+                            if new_object not in UniversalVariables.collision_boxes:
+                                UniversalVariables.collision_boxes.append(new_object)
                                 CreateCollisionBoxes.terrain_data_minerals += 1
                             CreateCollisionBoxes.display_collision_box_decay += 1
             
@@ -131,4 +131,4 @@ class CreateCollisionBoxes:
                         7: 5}  # Last to be rendered
 
         # Sort the collision_boxes list based on the custom sort order
-        self.collision_boxes = sorted(self.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+        UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
