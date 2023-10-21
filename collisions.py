@@ -2,6 +2,8 @@ import pygame
 from items import items_list
 from objects import ObjectManagement
 from render import RenderPictures
+from components import player
+from variables import UniversalVariables
 from components import StaminaComponent
 
 
@@ -59,7 +61,7 @@ class Collisions:
             collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
 
             # Kui player jookseb siis ta ei lähe läbi objektide
-            if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
+            if keys[pygame.K_LSHIFT] and player.stamina.current_stamina != 0:
                 collision_move = 10
 
             else:
@@ -70,41 +72,41 @@ class Collisions:
 
                 # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
                 dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
-                            self.player_width / 2 + collision_box_width / 2)
+                            UniversalVariables.player_width / 2 + collision_box_width / 2)
                 dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
-                            self.player_height / 2 + collision_box_height / 2)
+                            UniversalVariables.player_height / 2 + collision_box_height / 2)
 
                 # Horisontaalne kokkupuude
                 if abs(dx) > abs(dy):
                     # Paremalt poolt
                     if dx > 0:
-                        self.player_x += collision_move  # Liigutab mängijat paremale
+                        UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
                     # Vasakultpoolt
                     else:
-                        self.player_x -= collision_move  # Liigutab mängijat vasakule
+                        UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
 
                 # Vertikaalne kokkupuude
                 else:
                     # Alt
                     if dy > 0:
-                        self.player_y += collision_move  # Liigutab mängijat alla
+                        UniversalVariables.player_y += collision_move  # Liigutab mängijat alla
                     # Ülevalt
                     else:
-                        self.player_y -= collision_move  # Liigutab mängijat ülesse
+                        UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
 
 
     def collison_terrain(self) -> None:
         keys = pygame.key.get_pressed()
 
-        player_grid_row = int(self.player_x // self.block_size)
-        player_grid_col = int(self.player_y // self.block_size)
+        player_grid_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
+        player_grid_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
         for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
             for j in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
 
                 # Vaatab terrain recti ja playeri collisoneid
-                terrain_rect = pygame.Rect(j * self.block_size, i * self.block_size, self.block_size, self.block_size)
+                terrain_rect = pygame.Rect(j * UniversalVariables.block_size, i * UniversalVariables.block_size, UniversalVariables.block_size, UniversalVariables.block_size)
                 if self.player_rect.colliderect(terrain_rect):
                     sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
@@ -119,43 +121,43 @@ class Collisions:
                             # Player asub maal
                             if sprinting:
                                 # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed.current_speed = self.player.speed.base_speed
+                                if player.stamina.current_stamina == 0:
+                                    player.stamina.stamina_regenerate(0.05)
+                                    player.speed.current_speed = player.speed.base_speed
                                 else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed * 2.5
+                                    player.speed.current_speed = player.speed.base_speed * 2.5
                                     StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
+                                    player.stamina.use_stamina(0.05)
                             else:
-                                self.player.speed.current_speed = self.player.speed.base_speed
-                                self.player.stamina.stamina_regenerate(0.05)
+                                player.speed.current_speed = player.speed.base_speed
+                                player.stamina.stamina_regenerate(0.05)
 
                         ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
 
                         else:  # Player asub vees
                             if sprinting:
                                 # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                if player.stamina.current_stamina == 0:
+                                    player.stamina.stamina_regenerate(0.05)
+                                    player.speed.current_speed = player.speed.base_speed / 2
                                 else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed
+                                    player.speed.current_speed = player.speed.base_speed
                                     StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
+                                    player.stamina.use_stamina(0.05)
                             else:
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                self.player.stamina.stamina_regenerate(0.05)
+                                player.speed.current_speed = player.speed.base_speed / 2
+                                player.stamina.stamina_regenerate(0.05)
 
                     else:  # Player asub mapist v2ljas
                         if sprinting:
                             # stamina = 0 - playeri speed = base speed
-                            if self.player.stamina.current_stamina == 0:
-                                self.player.stamina.stamina_regenerate(0.05)
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
+                            if player.stamina.current_stamina == 0:
+                                player.stamina.stamina_regenerate(0.05)
+                                player.speed.current_speed = player.speed.base_speed / 2
                             else:
-                                self.player.speed.current_speed = self.player.speed.base_speed
+                                player.speed.current_speed = player.speed.base_speed
                                 StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                self.player.stamina.use_stamina(0.05)
+                                player.stamina.use_stamina(0.05)
                         else:
-                            self.player.speed.current_speed = self.player.speed.base_speed / 2
-                            self.player.stamina.stamina_regenerate(0.05)
+                            player.speed.current_speed = player.speed.base_speed / 2
+                            player.stamina.stamina_regenerate(0.05)

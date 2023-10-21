@@ -1,35 +1,10 @@
 import pygame
 import time
+import random
 from HUD import HUD_class
 
 
 class HealthComponent:
-    """
-    Represents a health component that manages the health of an object.
-
-    Correct usage:
-      HealthComponent(max_health, min_health, health_regeneration_rate)
-        OBJECT.command(*args, **kwargs)
-
-    'health_regenerate(self):'
-      Calculate and apply health regeneration based on elapsed time and the regeneration rate.
-      Ensures that the regenerated health is rounded down to the nearest whole number using math.floor.
-
-    'heal(self, amount):'
-      Increase the current health by the specified amount, up to the maximum health limit.
-
-    'damage(self, amount):'
-      Decrease the current health by the specified amount, down to the minimum health limit.
-
-    'get_health(self):'
-      Retrieve the current health value while applying regeneration if needed.
-
-    Args:
-      max_health (float): The maximum health value the component can hold.
-      min_health (float): The minimum health value the component can have.
-      health_regeneration_rate (float): The rate at which health regenerates, in health points per second.
-    """
-
     def __init__(self, max_health, min_health):
         self.max_health = max_health
         self.min_health = min_health
@@ -87,11 +62,11 @@ class StaminaComponent:
         stamina_rect = pygame.Rect(0, 0, 0, 0)
         stamina_bar_border = pygame.Rect(0, 0, 0, 0)
 
-      if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
+      if player.stamina.current_stamina >= player.stamina.max_stamina:
           StaminaComponent.stamina_bar_decay += 1
 
       else:
-          HUD_class.stamina_bar_size = self.player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
+          HUD_class.stamina_bar_size = player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
           stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6, self.screen_y - 75,
                                             HUD_class.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
           
@@ -103,25 +78,6 @@ class StaminaComponent:
 
 
 class SpeedComponent:
-    """
-    Represents a speed component that manages the speed of an object.
-
-    Correct usage:
-      SpeedComponent(base_speed, max_speed, min_speed)
-        OBJECT.command(*args, **kwargs)
-
-    'set_speed(self, speed):'
-      Set the speed of the object to the specified value, within the maximum and minimum speed limits.
-
-    'get_speed(self):'
-      Retrieve the current speed value.
-
-    Args:
-      base_speed (float): The base speed value of the object.
-      max_speed (float): The maximum speed value the object can have.
-      min_speed (float): The minimum speed value the object can have.
-    """
-
     def __init__(self, base_speed, max_speed, min_speed):
         self.base_speed = base_speed
         self.max_speed = max_speed
@@ -148,3 +104,25 @@ class HungerComponent:
 
 class HitBoxComponent:
     pass
+
+
+class Player:
+    
+    def __init__(self, max_health, min_health,
+                max_stamina, min_stamina,
+                base_speed, max_speed, min_speed):
+
+        self.health = HealthComponent(max_health=max_health,
+                                    min_health=min_health)
+
+        self.stamina = StaminaComponent(max_stamina=max_stamina, 
+                                    min_stamina=min_stamina)
+
+        self.speed= SpeedComponent(base_speed=base_speed, 
+                                max_speed=max_speed, 
+                                min_speed=min_speed)
+
+
+player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1)
+
+    

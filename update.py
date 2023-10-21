@@ -3,6 +3,8 @@ import math
 from inventory import Inventory
 from HUD import HUD_class
 from components import StaminaComponent
+from components import player
+from variables import UniversalVariables
 from render import RenderPictures
 from objects import ObjectManagement
 from sprite import AnimationManager
@@ -31,8 +33,8 @@ class PlayerUpdate:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
         # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
-        new_player_x: int = self.player_x
-        new_player_y: int = self.player_y
+        new_player_x: int = UniversalVariables.player_x
+        new_player_y: int = UniversalVariables.player_y
 
         if keys[pygame.K_LSHIFT]:
             self.frame_delay = 10  # Adjust running speed
@@ -58,14 +60,14 @@ class PlayerUpdate:
             normalized_x = x / magnitude
             normalized_y = y / magnitude
 
-        new_player_x = self.player_x + self.player.speed.current_speed * normalized_x
-        new_player_y = self.player_y + self.player.speed.current_speed * normalized_y
+        new_player_x = UniversalVariables.player_x + player.speed.current_speed * normalized_x
+        new_player_y = UniversalVariables.player_y + player.speed.current_speed * normalized_y
 
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile
-        self.player_x: int = new_player_x
-        self.player_y: int = new_player_y
-        self.player_rect = pygame.Rect(self.player_x + RenderPictures.player_hitbox_offset_x, self.player_y + RenderPictures.player_hitbox_offset_y, self.player_width, self.player_height)
+        UniversalVariables.player_x: int = new_player_x
+        UniversalVariables.player_y: int = new_player_y
+        self.player_rect = pygame.Rect(UniversalVariables.player_x + RenderPictures.player_hitbox_offset_x, UniversalVariables.player_y + RenderPictures.player_hitbox_offset_y, UniversalVariables.player_width, UniversalVariables.player_height)
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
@@ -81,11 +83,11 @@ class PlayerUpdate:
         keys = pygame.key.get_pressed()
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_position_adjusted: tuple[int, int] = (self.player_x + self.offset_x, self.player_y + self.offset_y)
+        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + self.offset_x, UniversalVariables.player_y + self.offset_y)
         self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
-        player_rect = pygame.Rect(player_position_adjusted[0] + RenderPictures.player_hitbox_offset_x, player_position_adjusted[1] + RenderPictures.player_hitbox_offset_y, self.player_width, self.player_height)
+        player_rect = pygame.Rect(player_position_adjusted[0] + RenderPictures.player_hitbox_offset_x, player_position_adjusted[1] + RenderPictures.player_hitbox_offset_y, UniversalVariables.player_width, UniversalVariables.player_height)
 
         # Renderib playerile hitboxi
         if keys[pygame.K_h] and not self.h_pressed:

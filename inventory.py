@@ -1,7 +1,7 @@
 import pygame
 import images
 from camera import Camera
-
+from variables import UniversalVariables
 class Inventory:
 
     inventory_display_rects = []
@@ -62,23 +62,23 @@ class Inventory:
         vastavalt playeri asukohale """
 
         Inventory.inventory_display_rects = []
-        rect_width = self.block_size / 2
-        rect_height = self.block_size / 2
+        rect_width = UniversalVariables.block_size / 2
+        rect_height = UniversalVariables.block_size / 2
         total_rows = 6  # Max: 9
         total_cols = 3  # Max: 9
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
-        rect_x = self.player_rect.centerx + total_cols + self.block_size / 2 + self.offset_x
-        rect_y = self.player_rect.centery - total_rows * self.block_size / 4 + self.offset_y
+        rect_x = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2 + self.offset_x
+        rect_y = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4 + self.offset_y
 
-        right_side = self.screen.get_size()[0] - (Camera.camera_borders['left'] * 2) + self.block_size * 0.6 # 1000 - (100 * 2) = 800
+        right_side = self.screen.get_size()[0] - (Camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6 # 1000 - (100 * 2) = 800
         left_side = Camera.camera_borders['left'] * 2 # 100
 
         if rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            rect_x = self.player_x - self.block_size * total_cols / 2 + self.offset_x
+            rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + self.offset_x
 
         elif rect_x >= left_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            rect_x = self.player_x + self.block_size * 2 / 2 + self.offset_x
+            rect_x = UniversalVariables.player_x + UniversalVariables.block_size * 2 / 2 + self.offset_x
 
         for rows in range(total_rows):
             for cols in range(total_cols):

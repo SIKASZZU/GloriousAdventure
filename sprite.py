@@ -1,4 +1,5 @@
 import pygame
+from variables import UniversalVariables
 
 
 def load_sprite_sheets(image_filenames):
@@ -11,12 +12,12 @@ class SpriteSheet:
     def __init__(self, image):
         self.sheet = image
 
-        self.block_size = 100
+        UniversalVariables.block_size = 100
 
     def get_image(self, x, y, width, height):
         image = pygame.Surface((width, height), pygame.SRCALPHA)
         image.blit(self.sheet, (0, 0), (x, y, width, height))
-        image = pygame.transform.scale(image, (self.block_size, self.block_size))
+        image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
         return image
 
 
