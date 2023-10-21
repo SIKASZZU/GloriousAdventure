@@ -1,7 +1,6 @@
 # Pythoni inbuilt/downloaded files
 import pygame
 import sys
-import random
 
 # Oma enda failid
 from map import MapData  # map_data_generator
@@ -13,9 +12,6 @@ from render import RenderPictures  # map_render
 from render import CreateCollisionBoxes  # object_list_creation
 from components import StaminaComponent
 from objects import ObjectManagement
-from game_settings import player_stats  # erinevad settingud, speed jms
-
-clock = pygame.time.Clock()
 
 
 class Game:
@@ -30,25 +26,14 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
 
-    # universal sitt - peab mingisse faili minema (game_settings.py)
-    player = player_stats  # load in game_settings
-
-    block_size: int = 100
-    player_height = block_size * 0.65
-    player_width = block_size * 0.45
-
-    player_x: int = random.randint(400, 400)
-    player_y: int = random.randint(400, 400)
-
     screen_x: int = 1000
     screen_y: int = 750
     screen = pygame.display.set_mode((screen_x, screen_y))
-
+    
     terrain_data = MapData.glade_creation()
     collision_boxes: list = []
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Verdana", 20)
-    # universal sitt l6ppeb siin, muud pole testinud
 
 
     def run(self) -> None:

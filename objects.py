@@ -2,6 +2,7 @@ import pygame
 from items import items_list
 from images import ground_images, water_images, item_images
 from inventory import Inventory
+from variables import UniversalVariables
 
 class ObjectManagement:
     
@@ -18,8 +19,8 @@ class ObjectManagement:
                 if object_id == item_data["ID"]:
                     if item_data["Breakable"] != True: pass
                     else:
-                        grid_col: int = int(terrain_x // self.block_size)
-                        grid_row: int = int(terrain_y // self.block_size)
+                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
+                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
                         try:
                             # Kontrollib kas jääb mapi sissse
