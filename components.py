@@ -2,6 +2,7 @@ import pygame
 import time
 import random
 from HUD import HUD_class
+from variables import UniversalVariables
 
 
 class HealthComponent:
@@ -67,13 +68,13 @@ class StaminaComponent:
 
       else:
           HUD_class.stamina_bar_size = player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
-          stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6, self.screen_y - 75,
+          stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6, UniversalVariables.screen_y - 75,
                                             HUD_class.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
           
-          stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6, self.screen_y - 75, 
+          stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6, UniversalVariables.screen_y - 75, 
                                                 HUD_class.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
           
-          stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6, self.screen_y - 75,
+          stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6, UniversalVariables.screen_y - 75,
                                           HUD_class.stamina_bar_size + 12, 15)
 
 

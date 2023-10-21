@@ -12,6 +12,7 @@ from sprite import load_sprite_sheets
 
 
 class PlayerUpdate:
+    # ******************** ANIMATION ******************** #
     sprite_sheets, animations = load_sprite_sheets([
         'images/Player/Left.png', 'images/Player/Right.png', 'images/Player/Up.png', 'images/Player/Down.png'
     ])
@@ -26,8 +27,7 @@ class PlayerUpdate:
     animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
     idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
                                                     animation_speeds)
-   
-   
+    
     def update_player(self) -> None:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -84,7 +84,7 @@ class PlayerUpdate:
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + self.offset_x, UniversalVariables.player_y + self.offset_y)
-        self.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
+        UniversalVariables.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
         player_rect = pygame.Rect(player_position_adjusted[0] + RenderPictures.player_hitbox_offset_x, player_position_adjusted[1] + RenderPictures.player_hitbox_offset_y, UniversalVariables.player_width, UniversalVariables.player_height)
@@ -97,7 +97,7 @@ class PlayerUpdate:
             self.h_pressed = False
 
         if (ObjectManagement.hitbox_count % 2) != 0:
-            pygame.draw.rect(self.screen, (255, 0, 0), player_rect, 2)
+            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), player_rect, 2)
 
 
     def render_HUD(self) -> None:
@@ -109,29 +109,29 @@ class PlayerUpdate:
         
         # Renderib stamina-bari
         if StaminaComponent.stamina_bar_decay < 50:
-            pygame.draw.rect(self.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
-            pygame.draw.rect(self.screen, '#4169E1', stamina_rect, 0, 7)
-            pygame.draw.rect(self.screen, 'black', stamina_bar_border, 2, 7)
+            pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
+            pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
+            pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 2, 7)
 
         # Renderib health-bari
-        pygame.draw.rect(self.screen, '#F7F7F6', health_bar_bg, 0, 7)
-        pygame.draw.rect(self.screen, '#FF6666', health_rect, 0, 7)
-        pygame.draw.rect(self.screen, 'black', health_bar_border, 2, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', health_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#FF6666', health_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', health_bar_border, 2, 7)
         
         # Renderib food-bari
-        pygame.draw.rect(self.screen, '#F7F7F6', food_bar_bg, 0, 7)
-        pygame.draw.rect(self.screen, '#C8AE7D', food_rect, 0, 7)
-        pygame.draw.rect(self.screen, 'black', food_bar_border, 2, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', food_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 2, 7)
 
         # Health bari keskele icon (Heart.png)
         heart_icon = pygame.image.load('images/Heart.png')
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
-        self.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
+        UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
         
         # Food bari keskele icon (Food.png)
         food_icon = pygame.image.load('images/Food.png')
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
-        self.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
+        UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
 
     def render_general(self) -> None:
@@ -143,11 +143,11 @@ class PlayerUpdate:
         if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
-        self.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
+        UniversalVariables.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
 
         # Uuendab displaid ja fps cap 60
         fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (0, 0, 0))
-        self.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
+        UniversalVariables.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
 
         pygame.display.update()
 
