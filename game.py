@@ -28,21 +28,10 @@ class Game:
     clock = pygame.time.Clock()  # fps
     font = pygame.font.SysFont("Verdana", 20)  # font
 
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.game_paused = True
-                if event.key == pygame.K_SPACE:
-                    self.game_paused = False
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-    font = pygame.font.SysFont("Verdana", 20)  # font
-    # ******************** Menu ******************** #
+    # ******************** MENU ******************** #
     screen_x = UniversalVariables.screen_x
     screen = UniversalVariables.screen
+
     menu_state = "main"
     game_paused = False
 
@@ -57,14 +46,21 @@ class Game:
 
     def run(self) -> None:
         while True:
-            self.screen.fill((0, 50, 0))  # Fill with a background color (black in this case)
-            #print(UniversalVariables.terrain_data)
-            self.handle_events()  # Paneb mängu õigesti kinni
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE and self.game_paused == False:
+                        self.game_paused = True
+                    elif event.key == pygame.K_ESCAPE and self.game_paused == True:
+                        self.game_paused = False
+                        self.menu_state = "main"
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
+            self.screen.fill((79, 68, 65))  # Fill with a background color (black in this case)
 
             # Vaatab kas mäng on pausi peale pandud või mitte
-            # check if game is paused
-            if self.game_paused == True:
-                # check menu state
+            if self.game_paused == True:  
                 if self.menu_state == "main":
                     # draw pause screen buttons
                     if self.resume_button.draw(self.screen):
@@ -74,6 +70,7 @@ class Game:
                     if self. quit_button.draw(self.screen):
                         pygame.quit()
                         sys.exit()
+
                 # check if the options menu is open
                 if self.menu_state == "options":
                     # draw the different options buttons
@@ -89,10 +86,8 @@ class Game:
                 pygame.display.update()
 
             else:
-                self.handle_events()  # Paneb mängu õigesti kinni
                 PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                 Camera.box_target_camera(self)  # Kaamera
-
 
                 StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
