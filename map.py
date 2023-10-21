@@ -1,6 +1,3 @@
-import numpy as np
-from perlin_noise import PerlinNoise
-
 class MapData:
 
     def glade_creation():

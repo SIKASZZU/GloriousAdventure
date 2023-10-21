@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from variables import UniversalVariables
 
 class MazeGenerator:
     def __init__(self, width, height, cell_size):

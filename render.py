@@ -1,8 +1,9 @@
 import pygame
 import random
+
 from items import items_list
-from images import ground_images, water_images
 from variables import UniversalVariables
+from images import ground_images, water_images
 
 
 class RenderPictures:
@@ -27,8 +28,8 @@ class RenderPictures:
             self.row: list[tuple[int, int], ...] = []
 
             for j in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
-                terrain_x: int = j * UniversalVariables.block_size + self.offset_x
-                terrain_y: int = i * UniversalVariables.block_size + self.offset_y
+                terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
+                terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
                 # Salvestab koordinaadid listi, et neid saaks hiljem kasutada object list renderis
                 try: self.row.append((j, i)),

@@ -1,6 +1,6 @@
 import pygame
 from items import items_list
-from images import ground_images, water_images, item_images
+from images import item_images
 from inventory import Inventory
 from variables import UniversalVariables
 
@@ -95,8 +95,8 @@ class ObjectManagement:
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
             object_image = None
 
-            terrain_x: int = (collision_box_x - collision_box_offset_x) + self.offset_x
-            terrain_y: int = (collision_box_y - collision_box_offset_y) + self.offset_y
+            terrain_x: int = (collision_box_x - collision_box_offset_x) + UniversalVariables.offset_x
+            terrain_y: int = (collision_box_y - collision_box_offset_y) + UniversalVariables.offset_y
             
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
@@ -129,8 +129,8 @@ class ObjectManagement:
         """ Renderib hitboxi objektitele. """
 
         collision_box_color: str = 'green'
-        collision_box_x += self.offset_x
-        collision_box_y += self.offset_y
+        collision_box_x += UniversalVariables.offset_x
+        collision_box_y += UniversalVariables.offset_y
 
         # Teeb antud asjadest hitboxi ja visualiseerib seda
         obj_collision_box = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)

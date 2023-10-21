@@ -1,15 +1,9 @@
 import pygame
+from variables import UniversalVariables
 
 class Camera:
 
-    # need v6iks nahhuj siit saada. Game classi ei saa importida - circular porno
-    screen_x: int = 1000
-    screen_y: int = 750
-    screen = pygame.display.set_mode((screen_x, screen_y))
-
-
-    offset_x: int = 0
-    offset_y: int = 0
+    screen = UniversalVariables.screen
     camera_borders = {'left': 250, 'right': 250, 'top': 200, 'bottom': 200}
     l: int = camera_borders['left']
     t: int = camera_borders['top']
@@ -32,6 +26,6 @@ class Camera:
         if self.player_rect.bottom > Camera.camera_rect.bottom:
             Camera.camera_rect.bottom = self.player_rect.bottom
 
-        self.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
-        self.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
+        UniversalVariables.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
+        UniversalVariables.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
         

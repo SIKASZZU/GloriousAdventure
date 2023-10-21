@@ -1,6 +1,6 @@
 import pygame
 import time
-import random
+
 from HUD import HUD_class
 from variables import UniversalVariables
 

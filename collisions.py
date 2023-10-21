@@ -1,8 +1,9 @@
 import pygame
+
 from items import items_list
-from objects import ObjectManagement
-from render import RenderPictures
 from components import player
+from render import RenderPictures
+from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
 

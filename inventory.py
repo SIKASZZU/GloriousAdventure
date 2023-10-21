@@ -1,4 +1,5 @@
 import pygame
+
 import images
 from camera import Camera
 from variables import UniversalVariables
@@ -68,17 +69,17 @@ class Inventory:
         total_cols = 3  # Max: 9
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
-        rect_x = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2 + self.offset_x
-        rect_y = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4 + self.offset_y
+        rect_x = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2 + UniversalVariables.offset_x
+        rect_y = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4 + UniversalVariables.offset_y
 
         right_side = UniversalVariables.screen.get_size()[0] - (Camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6 # 1000 - (100 * 2) = 800
         left_side = Camera.camera_borders['left'] * 2 # 100
 
         if rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + self.offset_x
+            rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + UniversalVariables.offset_x
 
         elif rect_x >= left_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
-            rect_x = UniversalVariables.player_x + UniversalVariables.block_size * 2 / 2 + self.offset_x
+            rect_x = UniversalVariables.player_x + UniversalVariables.block_size * 2 / 2 + UniversalVariables.offset_x
 
         for rows in range(total_rows):
             for cols in range(total_cols):

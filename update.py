@@ -1,14 +1,15 @@
 import pygame
 import math
-from inventory import Inventory
+
 from HUD import HUD_class
-from components import StaminaComponent
 from components import player
-from variables import UniversalVariables
+from inventory import Inventory
 from render import RenderPictures
-from objects import ObjectManagement
 from sprite import AnimationManager
+from objects import ObjectManagement
 from sprite import load_sprite_sheets
+from components import StaminaComponent
+from variables import UniversalVariables
 
 
 class PlayerUpdate:
@@ -83,7 +84,7 @@ class PlayerUpdate:
         keys = pygame.key.get_pressed()
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + self.offset_x, UniversalVariables.player_y + self.offset_y)
+        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x, UniversalVariables.player_y + UniversalVariables.offset_y)
         UniversalVariables.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
