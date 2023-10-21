@@ -39,6 +39,7 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
+    font = pygame.font.SysFont("Verdana", 20)  # font
     # ******************** Menu ******************** #
     screen_x = UniversalVariables.screen_x
     screen = UniversalVariables.screen
@@ -57,7 +58,7 @@ class Game:
     def run(self) -> None:
         while True:
             self.screen.fill((0, 50, 0))  # Fill with a background color (black in this case)
-
+            #print(UniversalVariables.terrain_data)
             self.handle_events()  # Paneb mängu õigesti kinni
 
             # Vaatab kas mäng on pausi peale pandud või mitte
@@ -91,6 +92,7 @@ class Game:
                 self.handle_events()  # Paneb mängu õigesti kinni
                 PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                 Camera.box_target_camera(self)  # Kaamera
+
 
                 StaminaComponent.stamina_bar_update(self)  # Stamina bar
 

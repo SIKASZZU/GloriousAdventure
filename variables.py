@@ -3,7 +3,6 @@ import pygame
 
 from map import MapData
 
-
 class UniversalVariables:
     # ******************** PLAYER ******************** #
     player_x: int = random.randint(400, 400)
