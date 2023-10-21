@@ -1,9 +1,9 @@
 # Itemite list !!!
     * Item interaction box       - Failis collision.py,   Collisions.check_collisions(self)
 
-    * Pildi suurus / asukoht     - Failis objects.py,     Object_Management.place_and_render_object(self)
+    * Pildi suurus / asukoht     - Failis objects.py,     ObjectManagement.place_and_render_object(self)
 
-    * Hitboxide suurus           - Failis render.py,      Render_Checker.object_list_creation(self)
+    * Hitboxide suurus           - Failis render.py,      RenderPictures.object_list_creation(self)
 
 # Add objects:
     # Earthworm

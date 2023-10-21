@@ -1,5 +1,17 @@
 import pygame
 
+# Menu pildid
+menu_images = {
+    "pause_background": pygame.image.load("images/Menu_buttons/pause_background.png").convert_alpha(),
+    "resume_img": pygame.image.load("images/Menu_buttons/button_resume.png").convert_alpha(),
+    "options_img": pygame.image.load("images/Menu_buttons/button_options.png").convert_alpha(),
+    "quit_img": pygame.image.load("images/Menu_buttons/button_quit.png").convert_alpha(),
+    "video_img": pygame.image.load('images/Menu_buttons/button_video.png').convert_alpha(),
+    "audio_img":  pygame.image.load('images/Menu_buttons/button_audio.png').convert_alpha(),
+    "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
+    "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
+}
+
 # Itemite pildid
 item_images = {
     "Tree": pygame.image.load("images/Tree.PNG"),

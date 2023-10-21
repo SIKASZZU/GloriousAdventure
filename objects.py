@@ -1,14 +1,15 @@
 import pygame
 from items import items_list
-from images import ground_images, water_images, item_images
+from images import item_images
 from inventory import Inventory
+from variables import UniversalVariables
 
-class Object_Management:
+class ObjectManagement:
     
     hitbox_count: int = 0
 
     # x, y, ID
-    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_hit_box: tuple[int, ...], object_id: int = None) -> None:
+    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_collision_box: tuple[int, ...], object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
 
@@ -18,18 +19,18 @@ class Object_Management:
                 if object_id == item_data["ID"]:
                     if item_data["Breakable"] != True: pass
                     else:
-                        grid_col: int = int(terrain_x // self.block_size)
-                        grid_row: int = int(terrain_y // self.block_size)
+                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
+                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
                         try:
                             # Kontrollib kas jääb mapi sissse
-                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                            if 0 <= grid_row < len(UniversalVariables.terrain_data) and 0 <= grid_col < len(UniversalVariables.terrain_data[0]):
                             
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 7: self.terrain_data[grid_row][grid_col] = 107
-                                else: self.terrain_data[grid_row][grid_col] = 1
-                                Object_Management.add_object_to_inv(self, object_id, obj_hit_box)
+                                if object_id == 7: UniversalVariables.terrain_data[grid_row][grid_col] = 107
+                                else: UniversalVariables.terrain_data[grid_row][grid_col] = 1
+                                ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
 
                             else:
                                 print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
@@ -46,7 +47,7 @@ class Object_Management:
     # 4   - objecti ID
     # 80  - hitboxi offset x
     # 40  - hitboxi offset y
-    def add_object_to_inv(self, object_id: int, obj_hit_box: tuple[int, ...]) -> None:
+    def add_object_to_inv(self, object_id: int, obj_collision_box: tuple[int, ...]) -> None:
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
         # Hoiab leitud esemeid koos kogusega: test_count = {"Test0": 2, "Test1": 4, "Test2": 6}
@@ -78,8 +79,8 @@ class Object_Management:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
                             Inventory.inventory[item_data["Name"]] = 1
 
-                        index = self.hit_boxes.index(obj_hit_box)
-                        self.hit_boxes.pop(index)
+                        index = UniversalVariables.collision_boxes.index(obj_collision_box)
+                        UniversalVariables.collision_boxes.pop(index)
 
         except RuntimeError as e: print("\nError in file: objects.py, add_object_to_inv", e)
 
@@ -91,11 +92,11 @@ class Object_Management:
 
         interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
-        for hit_box_x, hit_box_y, hit_box_width, hit_box_height, object_id, hit_box_offset_x, hit_box_offset_y in self.hit_boxes:
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
             object_image = None
 
-            terrain_x: int = (hit_box_x - hit_box_offset_x) + self.offset_x
-            terrain_y: int = (hit_box_y - hit_box_offset_y) + self.offset_y
+            terrain_x: int = (collision_box_x - collision_box_offset_x) + UniversalVariables.offset_x
+            terrain_y: int = (collision_box_y - collision_box_offset_y) + UniversalVariables.offset_y
             
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
@@ -108,32 +109,32 @@ class Object_Management:
             if object_image:
                 position: tuple = (terrain_x, terrain_y)
                 scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
-                self.screen.blit(scaled_object_image, position)
+                UniversalVariables.screen.blit(scaled_object_image, position)
             else: pass
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
 
             # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
             if keys[pygame.K_h] and not self.h_pressed:
                 self.h_pressed = True
-                Object_Management.hitbox_count += 1
+                ObjectManagement.hitbox_count += 1
             elif not keys[pygame.K_h]:
                 self.h_pressed = False
 
-            if (Object_Management.hitbox_count % 2) != 0:
-                Object_Management.place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-                pygame.draw.rect(self.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
+            if (ObjectManagement.hitbox_count % 2) != 0:
+                ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+                pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
-    def place_and_render_hitbox(self, hit_box_x, hit_box_y, hit_box_width, hit_box_height) -> None:
+    def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height) -> None:
         """ Renderib hitboxi objektitele. """
 
-        hit_box_color: str = 'green'
-        hit_box_x += self.offset_x
-        hit_box_y += self.offset_y
+        collision_box_color: str = 'green'
+        collision_box_x += UniversalVariables.offset_x
+        collision_box_y += UniversalVariables.offset_y
 
         # Teeb antud asjadest hitboxi ja visualiseerib seda
-        obj_hit_box = pygame.Rect(hit_box_x, hit_box_y, hit_box_width, hit_box_height)
-        pygame.draw.rect(self.screen, hit_box_color, obj_hit_box, 2)
+        obj_collision_box = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+        pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)
 
 
 

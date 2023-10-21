@@ -1,109 +1,116 @@
 # Pythoni inbuilt/downloaded files
 import pygame
 import sys
-import random
 
 # Oma enda failid
-from sprite import load_sprite_sheets, AnimationManager
-from game_settings import player_stats
-from stamina import StaminaComponent
-from map import Map_information  # map_data_generator
-from render import Render_Checker  # map_render, object_list_creation
-from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 from camera import Camera  # box_target_camera
-from objects import Object_Management
-from update import Game_update  # update_player, render_player
 from inventory import Inventory
+from update import PlayerUpdate  # update_player, render_player
+from render import RenderPictures  # map_render
+from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from objects import ObjectManagement
+from render import CreateCollisionBoxes  # object_list_creation
+from components import StaminaComponent
 
-clock = pygame.time.Clock()
+from variables import UniversalVariables
+from images import menu_images
+from button import Button
 
 
 class Game:
+    pygame.init()
+    pygame.display.set_caption("Glorious Adventure - BETA")
 
-    @staticmethod
-    def handle_events():
+    # ******************** PLAYER ******************** #
+    player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
+
+    # ******************** FPS, FONT ******************** #
+    clock = pygame.time.Clock()  # fps
+    font = pygame.font.SysFont("Verdana", 20)  # font
+
+    def handle_events(self):
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.game_paused = True
+                if event.key == pygame.K_SPACE:
+                    self.game_paused = False
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-    pygame.init()
-    pygame.display.set_caption("Glorious Adventure - BETA")
+    # ******************** Menu ******************** #
+    screen_x = UniversalVariables.screen_x
+    screen = UniversalVariables.screen
+    menu_state = "main"
+    game_paused = False
 
-    # ******** Map data stuff ******** #
-    terrain_data = Map_information.glade_creation()
-    
-    # universal sitt - peab mingisse faili minema
-    block_size: int = 100
-    hit_boxes: list = []
-    screen_x: int = 1000
-    screen_y: int = 750
-    screen = pygame.display.set_mode((screen_x, screen_y))
-    player = player_stats  # load in game_settings
-    # universal sitt l6ppeb siin, muud pole testinud
-    
-    # ******** FPS counter ******** #
-    clock = pygame.time.Clock()
-    font = pygame.font.SysFont("Verdana", 20)
+    resume_button = Button(screen_x / 2 - 100, 175, menu_images["resume_img"], 1)
+    options_button = Button(screen_x / 2 - 106, 300, menu_images["options_img"], 1)
+    quit_button = Button(screen_x / 2 - 69, 425, menu_images["quit_img"], 1)
 
-    # ******** Player stuff ******** #
-    
-    player_height = block_size * 0.65
-    player_width = block_size * 0.45
-
-
-    player_x: int = random.randint(400, 400)
-    player_y: int = random.randint(400, 400)
-
-    # ******** Animation stuff ******** #
-    sprite_sheets, animations = load_sprite_sheets([
-        'images/Player/Left.png',
-        'images/Player/Right.png',
-        'images/Player/Up.png',
-        'images/Player/Down.png'
-    ])
-
-    sprite_sheets_idle, animations_idle = load_sprite_sheets([
-        'images/Player/Idle_Left.png',
-        'images/Player/Idle_Right.png',
-        'images/Player/Idle_Up.png',
-        'images/Player/Idle_Down.png'
-    ])
-
-    animation_speeds = [10, 10, 10, 10]
-
-    # Teeb idle ja mitte idle animatsioone
-    animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
-    idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
-                                                    animation_speeds)
-
+    video_button = Button(screen_x / 2 - 178, 125, menu_images["video_img"], 1)
+    audio_button = Button(screen_x / 2 - 179, 250, menu_images["audio_img"], 1)
+    keys_button = Button(screen_x / 2 - 159, 375, menu_images["keys_img"], 1)
+    back_button = Button(screen_x / 2 - 72, 500, menu_images["back_img"], 1)
 
     def run(self) -> None:
         while True:
-            #print(self.terrain_data)
+            self.screen.fill((0, 50, 0))  # Fill with a background color (black in this case)
+
             self.handle_events()  # Paneb mängu õigesti kinni
-            Game_update.update_player(self)  # Uuendab mängija asukohta, ja muid asju
-            Camera.box_target_camera(self)  # Kaamera
 
-            StaminaComponent.stamina_bar_update(self)  # Stamina bar
+            # Vaatab kas mäng on pausi peale pandud või mitte
+            # check if game is paused
+            if self.game_paused == True:
+                # check menu state
+                if self.menu_state == "main":
+                    # draw pause screen buttons
+                    if self.resume_button.draw(self.screen):
+                        self.game_paused = False
+                    if self.options_button.draw(self.screen):
+                        self.menu_state = "options"
+                    if self. quit_button.draw(self.screen):
+                        pygame.quit()
+                        sys.exit()
+                # check if the options menu is open
+                if self.menu_state == "options":
+                    # draw the different options buttons
+                    if self.video_button.draw(self.screen):
+                        print("Video Settings")
+                    if self.audio_button.draw(self.screen):
+                        print("Audio Settings")
+                    if self.keys_button.draw(self.screen):
+                        print("Change Key Bindings")
+                    if self.back_button.draw(self.screen):
+                        self.menu_state = "main"
 
-            # collision things
-            Collisions.collison_terrain(self)
-            Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+                pygame.display.update()
 
-            Render_Checker.object_list_creation(self)  # Creatib self.hit_boxes
-            Render_Checker.map_render(self)  # Renderib terraini
-            
-            if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
-                Object_Management.place_and_render_object(self)  # Renderib objektid
-                Game_update.render_player(self)  # Renderib playeri (+ tema recti)
-            else:  # self.render_after == False
-                Game_update.render_player(self)
-                Object_Management.place_and_render_object(self)  # Renderib objektid
+            else:
+                self.handle_events()  # Paneb mängu õigesti kinni
+                PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
+                Camera.box_target_camera(self)  # Kaamera
 
-            Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
-            Game_update.render_hud(self)  # Render HUD_class (health- ,food- ,stamina bar)
-            Game_update.render(self)  # inventory, fps counteri
+                StaminaComponent.stamina_bar_update(self)  # Stamina bar
+
+                # collision things
+                Collisions.collison_terrain(self)
+                Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+
+                CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
+                RenderPictures.map_render(self)  # Renderib terraini
+
+                if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+                    ObjectManagement.place_and_render_object(self)  # Renderib objektid
+                    PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
+                else:  # self.render_after == False
+                    PlayerUpdate.render_player(self)
+                    ObjectManagement.place_and_render_object(self)  # Renderib objektid
+
+                Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
+                PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
+                PlayerUpdate.render_general(self)  # inventory, fps counteri
 
 if __name__ == "__main__":
     game = Game()
