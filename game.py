@@ -3,6 +3,7 @@ import pygame
 import sys
 
 # Oma enda failid
+from menu import Menu
 from camera import Camera  # box_target_camera
 from inventory import Inventory
 from update import PlayerUpdate  # update_player, render_player
@@ -11,15 +12,14 @@ from collisions import Collisions  # check_collisions, collison_terrain, collisi
 from objects import ObjectManagement
 from render import CreateCollisionBoxes  # object_list_creation
 from components import StaminaComponent
-
 from variables import UniversalVariables
-from images import menu_images
-from button import Button
-
 
 class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
+
+
+    screen = UniversalVariables.screen
 
     # ******************** PLAYER ******************** #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
@@ -29,63 +29,26 @@ class Game:
     font = pygame.font.SysFont("Verdana", 20)  # font
 
     # ******************** MENU ******************** #
-    screen_x = UniversalVariables.screen_x
-    screen = UniversalVariables.screen
-
     menu_state = "main"
     game_paused = False
-
-    resume_button = Button(screen_x / 2 - 100, 175, menu_images["resume_img"], 1)
-    options_button = Button(screen_x / 2 - 106, 300, menu_images["options_img"], 1)
-    quit_button = Button(screen_x / 2 - 69, 425, menu_images["quit_img"], 1)
-
-    video_button = Button(screen_x / 2 - 178, 125, menu_images["video_img"], 1)
-    audio_button = Button(screen_x / 2 - 179, 250, menu_images["audio_img"], 1)
-    keys_button = Button(screen_x / 2 - 159, 375, menu_images["keys_img"], 1)
-    back_button = Button(screen_x / 2 - 72, 500, menu_images["back_img"], 1)
 
     def run(self) -> None:
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE and self.game_paused == False:
-                        self.game_paused = True
-                    elif event.key == pygame.K_ESCAPE and self.game_paused == True:
-                        self.game_paused = False
-                        self.menu_state = "main"
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    if self.game_paused == False: 
+                        self.game_paused = True
+                    else:
+                        self.game_paused = False
+                        self.menu_state = "main"
             
             self.screen.fill((79, 68, 65))  # Fill with a background color (black in this case)
 
             # Vaatab kas mäng on pausi peale pandud või mitte
-            if self.game_paused == True:  
-                if self.menu_state == "main":
-                    # draw pause screen buttons
-                    if self.resume_button.draw(self.screen):
-                        self.game_paused = False
-                    if self.options_button.draw(self.screen):
-                        self.menu_state = "options"
-                    if self. quit_button.draw(self.screen):
-                        pygame.quit()
-                        sys.exit()
-
-                # check if the options menu is open
-                if self.menu_state == "options":
-                    # draw the different options buttons
-                    if self.video_button.draw(self.screen):
-                        print("Video Settings")
-                    if self.audio_button.draw(self.screen):
-                        print("Audio Settings")
-                    if self.keys_button.draw(self.screen):
-                        print("Change Key Bindings")
-                    if self.back_button.draw(self.screen):
-                        self.menu_state = "main"
-
-                pygame.display.update()
-
-            else:
+            if self.game_paused != True:
                 PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                 Camera.box_target_camera(self)  # Kaamera
 
@@ -108,6 +71,9 @@ class Game:
                 Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
                 PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                 PlayerUpdate.render_general(self)  # inventory, fps counteri
+            else:
+                Menu.settings_menu(self)
+                pygame.display.update()
 
 if __name__ == "__main__":
     game = Game()

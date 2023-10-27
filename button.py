@@ -18,6 +18,7 @@ class Button():
 
         # check mouseover and clicked conditions
         if self.rect.collidepoint(pos):
+            print(self.clicked, "self.clicked")
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 action = True
