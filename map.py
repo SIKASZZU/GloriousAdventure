@@ -18,28 +18,18 @@ class MapData:
         # Initialize the wave function
         width = MapData.width
         height = MapData.height
+        
+        ### TODO: Kui tahta muuta maze kuju, siis muuta wave_function
+            # Hetkel lihtsalt randomly genereerib ruute :D
         wave_function = np.random.choice([99, 1], size=(width, height), p=[0.3, 0.7])
-        #print(wave_function)
 
-        ### Kuidas teada, kuhu maze tekib olenevalt kuidas appendida
-
-        #if position == "above":
-        #    return maze_list + map_data
-        #elif position == "below":
-        #    return map_data + maze_list
-        #elif position == "left":
-        #    return [new_row + original_row for new_row, original_row in zip(maze_list, map_data)]
-        #elif position == "right":
-        #    return [original_row + new_row for original_row, new_row in zip(map_data, maze_list)]
-
-        ###
-        map_data = np.concatenate((wave_function, map_data), axis=0)  # Concatenate above
-        #map_data = wave_function + map_data
+        map_data = np.concatenate((wave_function, map_data), axis=0)  # Säilitab teatud data kuju, kui concatenateida
         print(map_data)
         
         map_data[0, :] = 99
-        map_data[-1, :] = 99
         map_data[:, -1] = 99
         map_data[:, 0] = 99
         return map_data
-MapData.glade_creation()
+    
+if __name__ == "__main__":
+    MapData.glade_creation()

@@ -14,6 +14,10 @@
 # Savepoint
     # Save progress
 
+# Vision systeem
+    # Et ei näe läbi blokkide
+    # Soovitan teha mingi itemi dictionarisse variable, mis kontrollib seda
+
 # Craftimine
     # Craftib nupp võiks olla kuskil inventory kõravl.
         # Klikkides seda, avaneb mingi menyy, kus kirjas kõik craftitav.
