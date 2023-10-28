@@ -4,6 +4,7 @@ import sys
 
 # Oma enda failid
 from menu import Menu
+from vision import Vision
 from camera import Camera  # box_target_camera
 from inventory import Inventory
 from update import PlayerUpdate  # update_player, render_player
@@ -71,6 +72,7 @@ class Game:
                 Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
                 PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                 PlayerUpdate.render_general(self)  # inventory, fps counteri
+                #Vision.find_walls()  # eksperiment
             else:
                 Menu.settings_menu(self)
                 pygame.display.update()
