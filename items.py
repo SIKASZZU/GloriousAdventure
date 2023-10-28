@@ -2,7 +2,7 @@ from variables import UniversalVariables
 
 block_size = UniversalVariables.block_size
 
-# hitbox: [offset_x, offset_y, width, height]
+# Collision_box: [offset_x, offset_y, width, height]
 items_list = [
     {
         "Type": "Object",
@@ -10,6 +10,7 @@ items_list = [
         "ID": 4,
         "HP": 5,
         "Breakable": True,
+        "Block_vision": False,
         "Collision_box": [0.85, 0.85, 0.35, 0.7],
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
@@ -21,6 +22,7 @@ items_list = [
         "ID": 2,
         "HP": 5,
         "Breakable": True,
+        "Block_vision": False,
         "Collision_box": [0.3, 0.25, 0.5, 0.4],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 0.8),
@@ -31,6 +33,7 @@ items_list = [
         "Name": "Flower",
         "ID": 5,
         "Breakable": True,
+        "Block_vision": False,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
@@ -41,6 +44,7 @@ items_list = [
         "Name": "Mushroom",
         "ID": 6,
         "Breakable": True,
+        "Block_vision": False,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.3),
         "Object_height": int(block_size * 0.3),
@@ -51,6 +55,7 @@ items_list = [
         "Name": "Wheat",
         "ID": 7,
         "Breakable": True,
+        "Block_vision": False,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
@@ -61,6 +66,7 @@ items_list = [
         "Name": "Wall",
         "ID": 99,
         "Breakable": False,
+        "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
