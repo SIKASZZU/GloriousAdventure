@@ -1,9 +1,11 @@
 # Pythoni inbuilt/downloaded files
+import numpy as np
 import pygame
 import sys
 
 # Oma enda failid
 from menu import Menu
+#from vision import LightSource
 from camera import Camera  # box_target_camera
 from inventory import Inventory
 from update import PlayerUpdate  # update_player, render_player
@@ -14,12 +16,10 @@ from render import CreateCollisionBoxes  # object_list_creation
 from components import StaminaComponent
 from variables import UniversalVariables
 
+
 class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
-
-
-    screen = UniversalVariables.screen
 
     # ******************** PLAYER ******************** #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
@@ -29,6 +29,7 @@ class Game:
     font = pygame.font.SysFont("Verdana", 20)  # font
 
     # ******************** MENU ******************** #
+    screen = UniversalVariables.screen
     menu_state = "main"
     game_paused = False
 
@@ -61,6 +62,8 @@ class Game:
                 CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
                 RenderPictures.map_render(self)  # Renderib terraini
 
+                # Update the position of the light_source with the mouse position.
+
                 if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                     ObjectManagement.place_and_render_object(self)  # Renderib objektid
                     PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
@@ -69,6 +72,7 @@ class Game:
                     ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
                 Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
+                #light_source.x, light_source.y = UniversalVariables.player_x, UniversalVariables.player_y
                 PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                 PlayerUpdate.render_general(self)  # inventory, fps counteri
             else:
