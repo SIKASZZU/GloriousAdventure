@@ -19,9 +19,9 @@ class UniversalVariables:
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision
-    full_map_data = MapData.glade_creation()  # map
-    terrain_data = full_map_data[0]  # sest nyyd glade_creation returnib glade informationi ka.
-    glade_data = full_map_data[1]
+    full_map_data = MapData.map_creation()  # map data
+    terrain_data = full_map_data
+    glade_data = MapData.glade_creation()  # glade data
 
     # ******************** OFFSET ******************** #
     offset_x: int = 0
