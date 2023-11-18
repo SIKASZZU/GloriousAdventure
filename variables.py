@@ -23,6 +23,6 @@ class UniversalVariables:
     terrain_data = full_map_data
     glade_data = MapData.glade_creation()  # glade data
 
-    # offset
+    # ******************** OFFSET ******************** #
     offset_x: int = 0
     offset_y: int = 0

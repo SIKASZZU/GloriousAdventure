@@ -75,6 +75,7 @@ class Game:
                 #light_source.x, light_source.y = UniversalVariables.player_x, UniversalVariables.player_y
                 PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                 PlayerUpdate.render_general(self)  # inventory, fps counteri
+                #Vision.find_walls()  # eksperiment
             else:
                 Menu.settings_menu(self)
                 pygame.display.update()
