@@ -27,7 +27,8 @@ class MapData:
         height = MapData.height
         
         ### TODO: Kui tahta muuta maze kuju, siis muuta maze_data. Hetkel genereerib lihtsalt random ruute
-        maze_data = np.random.choice([99, 1], size=(width, height), p=[0.3, 0.7])
+        ### TODO: Mazei põrand oleks stone, mitte terrain.
+        maze_data = np.random.choice([99, 98], size=(width, height), p=[0.3, 0.7])
         
         return maze_data
     
