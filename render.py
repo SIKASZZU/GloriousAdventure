@@ -51,13 +51,18 @@ class RenderPictures:
                     if image:
                         UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
                     
-                    if terrain_value == 7 or terrain_value == 107:
+                    if terrain_value == 7 or terrain_value == 107:  # Wheat ja Wheati background
                         wheat_bg_image = pygame.image.load("images/Wheat_background.png")
                         UniversalVariables.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
 
-                    if terrain_value == 99:
+                    if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, 'black', wall)
+                        pygame.draw.rect(UniversalVariables.screen, '#212529', wall)
+                        #pygame.draw.rect(UniversalVariables.screen, '#343a40', wall)
+                    
+                    if terrain_value == 98:  # mazei p6rand 
+                        floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
+                        pygame.draw.rect(UniversalVariables.screen, '#6c757d', floor)
     
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
