@@ -62,8 +62,6 @@ class Game:
                 CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
                 RenderPictures.map_render(self)  # Renderib terraini
 
-                # Update the position of the light_source with the mouse position.
-
                 if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                     ObjectManagement.place_and_render_object(self)  # Renderib objektid
                     PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
