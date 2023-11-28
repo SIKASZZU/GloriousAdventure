@@ -38,7 +38,7 @@ class Collisions:
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
             if self.player_rect.colliderect(collision_object_rect):
-                print(obj_collision_box)
+                #print(obj_collision_box)
 
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
