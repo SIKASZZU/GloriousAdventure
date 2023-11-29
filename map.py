@@ -41,6 +41,8 @@ class MapData:
         maze_data = MapData.maze_creation()
         glade_data = MapData.glade_creation()
 
+        map_data = maze_data + glade_data
+
         if not map_data:  # list is empty
             map_data = glade_data
         else: pass
@@ -54,11 +56,23 @@ class MapData:
         if MapData.maze_count == 1:  # add new maze to: bottom
             new_map_data = map_data + maze_data
 
-        if MapData.maze_count == 2:  # add new maze to: left
-            new_map_data = [new_row + original_row for new_row, original_row in zip(maze_data, map_data)]
+        elif MapData.maze_count == 2:  # add new maze to: left
+            new_map_data = []
+            for maze_row, map_row in zip(maze_data, map_data):
+                new_row = maze_row + map_row
+                new_map_data.append(new_row)
 
-        if MapData.maze_count == 3:  # add new maze to: right
-            new_map_data = [original_row + new_row for original_row, new_row in zip(glade_data, map_data)]
+            # If there are extra rows in map_data that are not covered by maze_data
+            remaining_rows = len(map_data) - len(maze_data)
+            if remaining_rows > 0:
+                new_map_data.extend(map_data[-remaining_rows:])
+
+        elif MapData.maze_count == 3:  # add new maze to: right
+            new_map_data = []
+            for glade_row, map_row in zip(glade_data, map_data):
+                new_row = glade_row + map_row
+                new_map_data.append(new_row)
+
         map_data = new_map_data
         print(f'\nprocess: {maze_count}, mapdata RESULT: {map_data}')
 
