@@ -41,7 +41,7 @@ class ObjectManagement:
     
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
-    # 240 - U
+    # 240 - Y
     # 50  - hitboxi laius
     # 130 - hitboxi pikkus
     # 4   - objecti ID
