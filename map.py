@@ -91,7 +91,7 @@ class MapData:
         print(f'\nprocess: {maze_count}, mapdata RESULT: {map_data}')
 
         ### TODO: Error props, kui map_data list on juba maze_data + glade_data. 
-            # Error tuleneb sellest, et need listid pole sama dimensioonidega. Yks on suurem kui teine.
+        ### TODO: Listid pole sama dimensioonidega. Yks on suurem kui teine.
 
         ### TODO: K6igile mazecountidel on erinev, kuhu sein peaks tekkima.
         # Muudab maze 22red seinteks.
@@ -100,6 +100,10 @@ class MapData:
         #map_data[:, 0] = 99  # vasak kylg
         #map_data[-1, :] = 99  # alumine kylg  # vist ei t66ta
 
+
+        ### TODO: Generate a maze until a valid path is found.
+        ### TODO: Use the pathfinding algorithm to ensure there's a valid path through the maze.
+        ### TODO: Return the maze data with a valid path.
 
 
         # PATH FINDER
