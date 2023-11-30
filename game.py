@@ -21,7 +21,7 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
 
-    # ******************** PLAYER ******************** #
+    # ******************** PLAYER *******ds************* #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
 
     # ******************** FPS, FONT ******************** #

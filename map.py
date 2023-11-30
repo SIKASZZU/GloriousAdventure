@@ -3,11 +3,12 @@ import numpy as np
 class MapData:
     width = 40
     height = 40
-    maze_count = 2
+    maze_count = 3
 
     map_data = []
     maze_data = []
     glade_data = []
+    maze_fill = np.full((width, height), 98)  # test
 
     # Create glade
     def glade_creation():
@@ -30,7 +31,6 @@ class MapData:
         maze_data = MapData.maze_data
         
         ### TODO: Kui tahta muuta maze kuju, siis muuta maze_data. Hetkel genereerib lihtsalt random ruute
-        ### TODO: Mazei põrand oleks stone, mitte terrain.
         maze_data_np_array = np.random.choice([99, 98], size=(width, height), p=[0.35, 0.65])
         maze_data = maze_data_np_array.tolist()
         return maze_data  # type = list
@@ -38,10 +38,15 @@ class MapData:
     def map_creation():
         map_data = MapData.map_data
         maze_count = MapData.maze_count
+
+        maze_fill = MapData.maze_fill
+        maze_data = maze_fill.tolist()
+
         maze_data = MapData.maze_creation()
         glade_data = MapData.glade_creation()
+        maze_start = MapData.maze_creation()
 
-        map_data = maze_data + glade_data
+        map_data = maze_start + glade_data
 
         if not map_data:  # list is empty
             map_data = glade_data
@@ -50,27 +55,36 @@ class MapData:
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
         print(f'process: {maze_count},\n {map_data} \n\n {maze_data}')
         
-        if MapData.maze_count == 0:  # add new maze to: top
+        if maze_count == 0:  # add new maze to: top
             new_map_data = maze_data + map_data
 
-        if MapData.maze_count == 1:  # add new maze to: bottom
+        elif maze_count == 1:  # add new maze to: bottom
             new_map_data = map_data + maze_data
 
-        elif MapData.maze_count == 2:  # add new maze to: left
+        elif maze_count == 2:  # add new maze to: left
             new_map_data = []
             for maze_row, map_row in zip(maze_data, map_data):
                 new_row = maze_row + map_row
                 new_map_data.append(new_row)
-
-            # If there are extra rows in map_data that are not covered by maze_data
-            remaining_rows = len(map_data) - len(maze_data)
-            if remaining_rows > 0:
-                new_map_data.extend(map_data[-remaining_rows:])
-
-        elif MapData.maze_count == 3:  # add new maze to: right
+    
+        elif maze_count == 3:  # add new maze to: right
             new_map_data = []
-            for glade_row, map_row in zip(glade_data, map_data):
-                new_row = glade_row + map_row
+            for maze_row, map_row in zip(maze_data, map_data):
+                new_row = map_row + maze_row
+                new_map_data.append(new_row)
+
+        # If there are extra rows in map_data that are not covered by maze_data
+        remaining_rows_count = len(map_data) - len(maze_data)
+        maze_fill = MapData.maze_fill
+        maze_fill = maze_fill.tolist()
+    
+        ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
+            # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
+        if remaining_rows_count != 0:
+            remaining_rows = map_data[len(maze_data):]
+            for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
+                if maze_count == 2: new_row = maze_fill_row + remaining_row
+                if maze_count == 3: new_row = remaining_row + maze_fill_row
                 new_map_data.append(new_row)
 
         map_data = new_map_data
