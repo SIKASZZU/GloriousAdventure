@@ -54,6 +54,7 @@ class RenderPictures:
                     if terrain_value == 7 or terrain_value == 107:  # Wheat ja Wheati background
                         wheat_bg_image = pygame.image.load("images/Wheat_background.png")
                         UniversalVariables.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
+                        ### TODO: ta ei tee seda pilti blocki suuruseks.
 
                     if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
