@@ -3,7 +3,7 @@ import numpy as np
 class MapData:
     width = 40
     height = 40
-    maze_count = 3
+    maze_count = 3  # 0 ylesse, 1 alla, 2 vasakule, 3 paremale
 
     map_data = []
     maze_data = []
@@ -99,6 +99,74 @@ class MapData:
         #map_data[:, -1] = 99  # parem kylg
         #map_data[:, 0] = 99  # vasak kylg
         #map_data[-1, :] = 99  # alumine kylg  # vist ei t66ta
+
+
+
+        # PATH FINDER
+        # from collections import deque
+
+        # directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+        # def is_valid(x, y, maze):
+        #     return 0 <= x < len(map_data) and 0 <= y < len(map_data[x]) and maze[x][y] != '*'
+
+        # def find_path_bfs(maze, start, end):
+        #     queue = deque([(start, [])])
+        #     visited = set()
+
+        #     while queue:
+        #         (x, y), path = queue.popleft()
+
+        #         if (x, y) == end:
+        #             return path
+
+        #         if (x, y) not in visited:
+        #             visited.add((x, y))
+
+        #             for dx, dy in directions:
+        #                 new_x, new_y = x + dx, y + dy
+        #                 if (new_x, new_y) not in visited:
+        #                     if is_valid(new_x, new_y, maze):
+        #                         new_path = path + [(new_x, new_y)]
+        #                         queue.append(((new_x, new_y), new_path))
+
+        #     return None
+
+        # start_pos = None
+        # end_pos = None
+
+        # with open("cave_maps/cave300x300.txt") as f:
+        #     map_data = [l.strip() for l in f.readlines() if len(l) > 1]
+
+        # def search_bfs(map):
+        #     for i in range(len(map)):
+        #         for j in range(len(map[i])):
+        #             if map[i][j] == 's':   ## start on block 100
+        #                 start_pos = (i, j)
+        #             elif map[i][j] == 'D':
+        #                 end_pos = (i, j)
+        #     path = find_path_bfs(map, start_pos, end_pos)
+
+        #     if path is not None:
+        #         for i in range(len(map)):
+        #             row = ""
+        #             for j in range(len(map[i])):
+        #                 if map[i][j] == "D":
+        #                     row += "D"
+        #                 elif (i, j) in path:
+        #                     row += "."
+        #                 else:
+        #                     row += map[i][j]
+        #             print(row)
+        #     else:
+        #         print("No path found")
+
+        # # search_bfs(map_data)
+        # search_bfs(map_data)
+
+
+
+
 
         MapData.map_data = map_data
         return MapData.map_data
