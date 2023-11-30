@@ -29,11 +29,16 @@ class MapData:
         width = MapData.width
         height = MapData.height
         maze_data = MapData.maze_data
-        
+
         ### TODO: Kui tahta muuta maze kuju, siis muuta maze_data. Hetkel genereerib lihtsalt random ruute
         maze_data_np_array = np.random.choice([99, 98], size=(width, height), p=[0.35, 0.65])
-        maze_data = maze_data_np_array.tolist()
-        return maze_data  # type = list
+
+        maze_data_np_array[0, :] = 99  # Top wall
+        maze_data_np_array[-1, :] = 99  # Bottom wall
+        maze_data_np_array[:, 0] = 99  # Left wall
+        maze_data_np_array[:, -1] = 99  # Right wall
+
+        return maze_data_np_array.tolist()
     
     def map_creation():
         map_data = MapData.map_data
@@ -94,11 +99,6 @@ class MapData:
         ### TODO: Listid pole sama dimensioonidega. Yks on suurem kui teine.
 
         ### TODO: K6igile mazecountidel on erinev, kuhu sein peaks tekkima.
-        # Muudab maze 22red seinteks.
-        #map_data[0, :] = 99  # top
-        #map_data[:, -1] = 99  # parem kylg
-        #map_data[:, 0] = 99  # vasak kylg
-        #map_data[-1, :] = 99  # alumine kylg  # vist ei t66ta
 
 
         ### TODO: Generate a maze until a valid path is found.
