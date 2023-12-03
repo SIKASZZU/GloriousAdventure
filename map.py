@@ -118,68 +118,74 @@ class MapData:
 
         # PATH FINDER
         # from collections import deque
-
-        # directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
-        # def is_valid(x, y, maze):
-        #     return 0 <= x < len(map_data) and 0 <= y < len(map_data[x]) and maze[x][y] != '*'
-
-        # def find_path_bfs(maze, start, end):
-        #     queue = deque([(start, [])])
+        #
+        # def is_valid_move(maze, row, col):
+        #     rows = len(maze)
+        #     cols = len(maze[0])
+        #     return 0 <= row < rows and 0 <= col < cols and maze[row][col] != 99  # Check boundaries and walls
+        #
+        # def bfs(maze, start_row, start_col):
+        #     rows = len(maze)
+        #     cols = len(maze[0])
         #     visited = set()
-
+        #     queue = deque([(start_row, start_col)])
+        #
         #     while queue:
-        #         (x, y), path = queue.popleft()
-
-        #         if (x, y) == end:
-        #             return path
-
-        #         if (x, y) not in visited:
-        #             visited.add((x, y))
-
-        #             for dx, dy in directions:
-        #                 new_x, new_y = x + dx, y + dy
-        #                 if (new_x, new_y) not in visited:
-        #                     if is_valid(new_x, new_y, maze):
-        #                         new_path = path + [(new_x, new_y)]
-        #                         queue.append(((new_x, new_y), new_path))
-
-        #     return None
-
-        # start_pos = None
-        # end_pos = None
-
-        # with open("cave_maps/cave300x300.txt") as f:
-        #     map_data = [l.strip() for l in f.readlines() if len(l) > 1]
-
-        # def search_bfs(map):
-        #     for i in range(len(map)):
-        #         for j in range(len(map[i])):
-        #             if map[i][j] == 's':   ## start on block 100
-        #                 start_pos = (i, j)
-        #             elif map[i][j] == 'D':
-        #                 end_pos = (i, j)
-        #     path = find_path_bfs(map, start_pos, end_pos)
-
-        #     if path is not None:
-        #         for i in range(len(map)):
-        #             row = ""
-        #             for j in range(len(map[i])):
-        #                 if map[i][j] == "D":
-        #                     row += "D"
-        #                 elif (i, j) in path:
-        #                     row += "."
-        #                 else:
-        #                     row += map[i][j]
-        #             print(row)
-        #     else:
-        #         print("No path found")
-
-        # # search_bfs(map_data)
-        # search_bfs(map_data)
+        #         current_row, current_col = queue.popleft()
+        #         visited.add((current_row, current_col))
+        #
+        #         # Check if current position is an end point
+        #         if maze[current_row][current_col] == 100:
+        #             maze[current_row][current_col] = 0  # Mark it as visited
+        #
+        #         # Define possible movements (up, down, left, right)
+        #         moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        #
+        #         for move in moves:
+        #             new_row = current_row + move[0]
+        #             new_col = current_col + move[1]
+        #
+        #             if is_valid_move(maze, new_row, new_col) and (new_row, new_col) not in visited:
+        #                 queue.append((new_row, new_col))
+        #
+        # def solve_maze(maze):
+        #     start_row, start_col = None, None
+        #
+        #     # Finding the starting point
+        #     for i in range(len(maze)):
+        #         for j in range(len(maze[0])):
+        #             if maze[i][j] == 101:
+        #                 start_row, start_col = i, j
+        #                 break
+        #
+        #     if start_row is None or start_col is None:
+        #         print("Start point not found!")
+        #         return
+        #
+        #     bfs(maze, start_row, start_col)
+        #
+        #     # Check if all end points are visited
+        #     for i in range(len(maze)):
+        #         for j in range(len(maze[0])):
+        #             if maze[i][j] == 100:
+        #                 print("Not all end points are reachable.")
+        #                 return
+        #
+        #     print("All end points are reachable!")
+        #
+        # # Your maze data
+        # maze = [
+        #     # Your maze data here
+        #     # Add other rows as needed
+        # ]
+        #
+        # solve_maze(maze)
 
         MapData.map_data = map_data
         return MapData.map_data
 
 if __name__ == "__main__":
     MapData.map_creation()
+    print(MapData.map_data)
+    print(MapData.map_data)
+    print(MapData.map_data)
