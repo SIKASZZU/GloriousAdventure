@@ -3,12 +3,14 @@ import numpy as np
 class MapData:
     width = 40
     height = 40
-    maze_count = 3  # 0 ylesse, 1 alla, 2 vasakule, 3 paremale
+    maze_count = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
     map_data = []
     maze_data = []
     glade_data = []
-    maze_fill = np.full((width, height), 98)  # test
+    new_map_data = []
+    new_row = []
+    maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
 
     # Create glade
     def glade_creation():
@@ -51,6 +53,9 @@ class MapData:
         glade_data = MapData.glade_creation()
         maze_start = MapData.maze_creation()
 
+        new_map_data = MapData.new_map_data
+        new_row = MapData.new_row
+
         map_data = maze_start + glade_data
 
         if not map_data:  # list is empty
@@ -60,23 +65,25 @@ class MapData:
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
         print(f'process: {maze_count},\n {map_data} \n\n {maze_data}')
         
-        if maze_count == 0:  # add new maze to: top
+        if maze_count == 1:  # add new maze to: top
             new_map_data = maze_data + map_data
 
-        elif maze_count == 1:  # add new maze to: bottom
+        elif maze_count == 2:  # add new maze to: bottom
             new_map_data = map_data + maze_data
 
-        elif maze_count == 2:  # add new maze to: left
+        elif maze_count == 3:  # add new maze to: left
             new_map_data = []
             for maze_row, map_row in zip(maze_data, map_data):
                 new_row = maze_row + map_row
                 new_map_data.append(new_row)
     
-        elif maze_count == 3:  # add new maze to: right
+        elif maze_count == 4:  # add new maze to: right
             new_map_data = []
             for maze_row, map_row in zip(maze_data, map_data):
                 new_row = map_row + maze_row
                 new_map_data.append(new_row)
+
+        else: print(f'maze_count:{maze_count}; no new maze appended')
 
         # If there are extra rows in map_data that are not covered by maze_data
         remaining_rows_count = len(map_data) - len(maze_data)
@@ -92,7 +99,9 @@ class MapData:
                 if maze_count == 3: new_row = remaining_row + maze_fill_row
                 new_map_data.append(new_row)
 
-        map_data = new_map_data
+        if maze_count != 0:
+            map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_count = 0 on valge map
+
         print(f'\nprocess: {maze_count}, mapdata RESULT: {map_data}')
 
         ### TODO: Error props, kui map_data list on juba maze_data + glade_data. 
@@ -167,10 +176,6 @@ class MapData:
 
         # # search_bfs(map_data)
         # search_bfs(map_data)
-
-
-
-
 
         MapData.map_data = map_data
         return MapData.map_data
