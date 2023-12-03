@@ -2,7 +2,7 @@ import pygame
 
 # Itemite pildid
 item_images = {
-    "Tree": pygame.image.load("images/Tree.PNG"),
+    "Tree": pygame.image.load("images/Oak_Tree.PNG"),
     "Stone": pygame.image.load("images/Stone.PNG"),
     "Rock": pygame.image.load("images/Rock.PNG"),
     "Water": pygame.image.load("images/Water.PNG"),

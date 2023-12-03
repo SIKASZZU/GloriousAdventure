@@ -3,26 +3,16 @@ from variables import UniversalVariables
 block_size = UniversalVariables.block_size
 
 # Collision_box: [offset_x, offset_y, width, height]
+# Recipe: {"Item name": Amount needed}
+# Amount: Amount receive
+
 items_list = [
-    {
-        "Type": "Object",
-        "Name": "Tree",
-        "ID": 4,
-        "HP": 5,
-        "Breakable": True,
-        "Block_vision": False,
-        "Collision_box": [0.85, 0.85, 0.35, 0.7],
-        "Object_width": int(block_size * 2),
-        "Object_height": int(block_size * 2),
-        "Render_when": block_size * 0.8
-        },
     {
         "Type": "Object",
         "Name": "Rock",
         "ID": 2,
         "HP": 5,
         "Breakable": True,
-        "Block_vision": False,
         "Collision_box": [0.3, 0.25, 0.5, 0.4],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 0.8),
@@ -30,10 +20,21 @@ items_list = [
         },
     {
         "Type": "Object",
-        "Name": "Flower",
-        "ID": 5,
+        "Name": "Oak_Tree",
+        "ID": 4,
+        "HP": 5,
         "Breakable": True,
-        "Block_vision": False,
+        "Collision_box": [0.85, 0.85, 0.35, 0.7],
+        "Object_width": int(block_size * 2),
+        "Object_height": int(block_size * 2),
+        "Render_when": block_size * 0.8
+        },
+    {
+        "Type": "Object",
+        "Name": "Flower",
+        "ID": 6,
+        "Breakable": True,
+        "Placeable": True,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
@@ -44,7 +45,7 @@ items_list = [
         "Name": "Mushroom",
         "ID": 6,
         "Breakable": True,
-        "Block_vision": False,
+        "Placeable": True,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.3),
         "Object_height": int(block_size * 0.3),
@@ -55,12 +56,92 @@ items_list = [
         "Name": "Wheat",
         "ID": 7,
         "Breakable": True,
-        "Block_vision": False,
         "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * .2)
         },
+
+    # Items
+
+    {
+        "Type": "Item",
+        "Name": "Oak_Wood",
+        "ID": 20,
+        "Placeable": True,
+    },
+    {
+        "Type": "Item",
+        "Name": "Oak_Planks",
+        "ID": 21,
+        "Recipe": {"Oak_Wood": 2},
+        "Amount": 4,
+        "Placeable": True,
+    },
+    {
+        "Type": "Item",
+        "Name": "Stick",
+        "ID": 22,
+        "Recipe": {"Oak_Wood": 2},
+        "Amount": 4,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Wood_Pickaxe",
+        "ID": 23,
+        "Recipe": {"Stick": 2, "Oak_Planks": 3},
+        "Amount": 1,
+        "Durability": 128,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Wood_Axe",
+        "ID": 24,
+        "Recipe": {"Stick": 2, "Oak_Planks": 3},
+        "Amount": 1,
+        "Durability": 128,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Wood_Shovel",
+        "ID": 25,
+        "Recipe": {"Stick": 2, "Oak_Planks": 2},
+        "Amount": 1,
+        "Durability": 128,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Rock_Shard",
+        "ID": 26,
+        "Recipe": {"Rock": 2},
+        "Amount": 1,
+        "Durability": 128,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Small_Rock_Sword",
+        "ID": 27,
+        "Recipe": {"Stick": 2, "Coal": 1},
+        "Amount": 1,
+        "Durability": 256,
+    },
+    {
+        "Type": "Item",
+        "Name": "Coal",
+        "ID": 28,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Torch",
+        "ID": 29,
+        "Recipe": {"Stick": 2, "Coal": 1},
+        "Amount": 4,
+        "Durability": 256,
+        "Placeable": True,
+    },
+
+    # Unbreakable Blocks - Items
+
     {
         "Type": "Object",
         "Name": "Wall",
