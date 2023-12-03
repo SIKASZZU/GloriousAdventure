@@ -63,7 +63,7 @@ class MapData:
         else: pass
 
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        print(f'process: {maze_count},\n {map_data} \n\n {maze_data}')
+        print(f'maze_count: {maze_count},\n {map_data} \n\n {maze_data}')
         
         if maze_count == 1:  # add new maze to: top
             new_map_data = maze_data + map_data
@@ -83,7 +83,7 @@ class MapData:
                 new_row = map_row + maze_row
                 new_map_data.append(new_row)
 
-        else: print(f'maze_count:{maze_count}; no new maze appended')
+        else: print(f'maze_count: {maze_count}; no new maze appended')
 
         # If there are extra rows in map_data that are not covered by maze_data
         remaining_rows_count = len(map_data) - len(maze_data)
@@ -95,24 +95,25 @@ class MapData:
         if remaining_rows_count != 0:
             remaining_rows = map_data[len(maze_data):]
             for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
-                if maze_count == 2: new_row = maze_fill_row + remaining_row
-                if maze_count == 3: new_row = remaining_row + maze_fill_row
+                if maze_count == 3: new_row = maze_fill_row + remaining_row
+                if maze_count == 4: new_row = remaining_row + maze_fill_row
                 new_map_data.append(new_row)
 
         if maze_count != 0:
             map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_count = 0 on valge map
 
-        print(f'\nprocess: {maze_count}, mapdata RESULT: {map_data}')
+        print(f'\nmaze_count: {maze_count}')
 
-        ### TODO: Error props, kui map_data list on juba maze_data + glade_data. 
         ### TODO: Listid pole sama dimensioonidega. Yks on suurem kui teine.
 
         ### TODO: K6igile mazecountidel on erinev, kuhu sein peaks tekkima.
 
-
         ### TODO: Generate a maze until a valid path is found.
         ### TODO: Use the pathfinding algorithm to ensure there's a valid path through the maze.
         ### TODO: Return the maze data with a valid path.
+
+
+        #https://medium.com/@msgold/using-python-to-create-and-solve-mazes-672285723c96
 
 
         # PATH FINDER
