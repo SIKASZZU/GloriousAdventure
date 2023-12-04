@@ -32,11 +32,6 @@ def craft_item(item_name, inventory, shift_pressed=False):
                 else:
                     print(f"Crafted {craftable_times} {item_name}(s)!")
                 return craftable_times
-            else:
-                print(f"Not enough {item_name}.")
-                return 0
-    print(f"{item_name} recipe not found.")
-    return 0
 
 
 if __name__ == "__main__":  ### TODO: Et see vaataks invi ja võtaks sealt itemeid ära ja lisaks
