@@ -130,7 +130,7 @@ items_list = [
         "Name": "Oak_Planks",
         "ID": 21,
         "Recipes": [
-            {"Recipe": {"Oak_Wood": 1}, "Amount": 2},
+            {"Recipe": {"Oak_Wood": 1}, "Amount": 2},  ### TODO: SEE KASUTAB SELLE ITEMI IGAT RETSEPTI EHK SIIS PRAEGU SIIN TA CRAFTIB OAK WOODIST JA OAK TREEST EHK SIIS ÜHE CLICKIGA SAAB 6 ÄRA VAJA FIXIDA
             {"Recipe": {"Oak_Tree": 1}, "Amount": 4},
         ],
         "Placeable": True,
