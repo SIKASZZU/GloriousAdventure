@@ -51,7 +51,7 @@ class Collisions:
         Collisions.collision_hitbox(self)
 
 
-    def collision_hitbox(self):
+    def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for \
                 collision_box_x, collision_box_y, \
