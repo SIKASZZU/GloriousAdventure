@@ -70,6 +70,10 @@ class Game:
                     ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
                 Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
+
+                if Inventory.render_inv:
+                    Inventory.render_craftable_items(self)
+
                 #light_source.x, light_source.y = UniversalVariables.player_x, UniversalVariables.player_y
                 PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                 PlayerUpdate.render_general(self)  # inventory, fps counteri

@@ -43,7 +43,7 @@ item_images = {
     "Wood_Pickaxe": pygame.image.load   ("images/Flower.PNG"),  # ("images/Wood_Pickaxe.PNG"),
     "Wood_Axe": pygame.image.load       ("images/Flower.PNG"),  # ("images/Wood_Axe.PNG"),
     "Wood_Shovel": pygame.image.load    ("images/Flower.PNG"),  # ("images/Wood_Shovel.PNG"),
-    "Rock_Shard": pygame.image.load     ("images/Flower.PNG"),  # ("images/Small_Rock_Sword.PNG"),
+    "Stone_Shard": pygame.image.load("images/Stone_Shard.PNG"),
     "Coal": pygame.image.load           ("images/Flower.PNG"),  # ("images/Coal.PNG"),
     "Torch": pygame.image.load          ("images/Flower.PNG"),  # ("images/Torch.PNG"),
     # "": pygame.image.load("images/.PNG"),

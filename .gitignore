@@ -2,3 +2,4 @@ __pycache__/
 *.log
 .idea/
 game_settings.py
+test.py

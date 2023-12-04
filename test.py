@@ -1,83 +1,49 @@
-import pygame
-import random
-from variables import UniversalVariables
+import numpy as np
 
-class MazeGenerator:
-    def __init__(self, width, height, cell_size):
-        self.WIDTH = width
-        self.HEIGHT = height
-        self.CELL_SIZE = cell_size
-        self.GRID_WIDTH = self.WIDTH // self.CELL_SIZE
-        self.GRID_HEIGHT = self.HEIGHT // self.CELL_SIZE
+class MapData:
+    width = 40
+    height = 40
+    map_data = []
 
-        # Colors
-        self.WHITE = (50, 50, 50)
-        self.BLACK = (0, 0, 0)
-        self.RED = (255, 0, 0)
-        self.GREEN = (0, 255, 0)
+    # Create Glade
+    @staticmethod
+    def create_glade():
+        glade_data = np.full((10, 10), 99)  # Example smaller glade (Modify as needed)
+        return glade_data
 
-        # Initialize Pygame
-        pygame.init()
-        UniversalVariables.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Maze Generator")
+    # Create Maze
+    @staticmethod
+    def create_maze():
+        maze_data = np.full((20, 20), 98)  # Example larger maze (Modify as needed)
+        return maze_data
 
-        # Create a grid
-        self.grid = [[1 for _ in range(self.GRID_WIDTH)] for _ in range(self.GRID_HEIGHT)]
+    # Create Boss
+    @staticmethod
+    def create_boss():
+        boss_data = np.full((8, 8), 97)  # Example smaller boss area (Modify as needed)
+        return boss_data
 
-        # Generate the maze
-        self.generate_maze()
+    @staticmethod
+    def map_creation():
+        glade_data = MapData.create_glade()
+        maze_data = MapData.create_maze()
+        boss_data = MapData.create_boss()
 
-        # Set starting and finishing points
-        self.start_x, self.start_y = 1, 1
-        self.finish_x, self.finish_y = self.GRID_WIDTH - 2, self.GRID_HEIGHT - 2
+        # Initialize map with default value 100 (empty space)
+        MapData.map_data = np.full((MapData.width, MapData.height), 100)
 
-    def generate_maze(self):
-        self._recursive_backtracking(0, 0)
+        # Place Glade in the map (Modify as per your requirement)
+        MapData.map_data[:glade_data.shape[0], :glade_data.shape[1]] = glade_data
 
-    def _recursive_backtracking(self, x, y):
-        self.grid[y][x] = 0
-        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        random.shuffle(directions)
+        # Place Maze in the map (Modify as per your requirement)
+        MapData.map_data[5:25, 5:25] = maze_data[:20, :20]
 
-        for dx, dy in directions:
-            new_x, new_y = x + 2 * dx, y + 2 * dy
-            if 0 <= new_x < self.GRID_WIDTH and 0 <= new_y < self.GRID_HEIGHT and self.grid[new_y][new_x]:
-                self.grid[y + dy][x + dx] = 0
-                self._recursive_backtracking(new_x, new_y)
+        # Place Boss in the map (Modify as per your requirement)
+        MapData.map_data[10:18, 10:18] = boss_data
 
-    def draw_maze(self):
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            UniversalVariables.screen.fill(self.WHITE)
-
-            for y in range(self.GRID_HEIGHT):
-                for x in range(self.GRID_WIDTH):
-                    if self.grid[y][x]:
-                        pygame.draw.rect(UniversalVariables.screen, self.BLACK,
-                                         (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
-
-            # Draw the starting point (red dot)
-            pygame.draw.circle(UniversalVariables.screen, self.RED, (
-                self.start_x * self.CELL_SIZE + self.CELL_SIZE // 2,
-                self.start_y * self.CELL_SIZE + self.CELL_SIZE // 2),
-                               self.CELL_SIZE // 3)
-
-            # Draw the finishing point (green dot)
-            pygame.draw.circle(UniversalVariables.screen, self.GREEN, (
-                self.finish_x * self.CELL_SIZE + self.CELL_SIZE // 2,
-                self.finish_y * self.CELL_SIZE + self.CELL_SIZE // 2),
-                               self.CELL_SIZE // 3)
-
-            pygame.display.flip()
-
-        # Quit Pygame
-        pygame.quit()
+        return MapData.map_data
 
 
 if __name__ == "__main__":
-    maze = MazeGenerator(1920, 1080, 40)
-    maze.draw_maze()
+    map = MapData.map_creation()
+    print(np.array(map))  # Print the generated map
