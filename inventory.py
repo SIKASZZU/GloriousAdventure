@@ -24,19 +24,19 @@ class Inventory:
 
         if (Inventory.inv_count % 2) != 0:
             mouse_state: Tuple[bool, bool, bool] = pygame.mouse.get_pressed()
-            if mouse_state[0]:  # Check if the player clicks the left mouse button.
+            if mouse_state[0]:  # Kontrollib vasaku clicki vajutamist
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 clicked_inventory_item = False
 
-                # Check if the click is within the inventory display
+                # Vaatab kas click on recti sees
                 for index, rect in enumerate(Inventory.inventory_display_rects):
                     if rect.collidepoint(mouse_x, mouse_y):
                         Inventory.check_slot(self, index)
                         clicked_inventory_item = True
 
                 if not clicked_inventory_item:
-                    # Check if the click is within the crafting display
-                    Inventory.calculate_craftable_items(self)  # Check craftable items
+                    # Vaatab kas vajutati craftimise peale
+                    Inventory.calculate_craftable_items(self)
                     Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
     def handle_crafting_click(self, x: int, y: int) -> None:
@@ -54,19 +54,18 @@ class Inventory:
                     Inventory.add_item(self, crafted_item)
 
     def check_slot(self, index: int) -> None:
-        """ Vaatab, mis toimub inventory valitud slotis. """
-        
+        """Checks what's in the inventory's selected slot."""
+
         try:
-            if index != Inventory.last_clicked_slot:  # Kontrollib, kas viimane klikk oli samale slotile v6i ei.
+            if index != Inventory.last_clicked_slot:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
-                print(f'Inventory slot {index + 1} slot contains: {item} : {value}')
-            else: 
-                pass  # pst, v6iks PASSi asemel olla: print(f'Already selected slot nr {index + 1}')
-        except IndexError: 
+                print(f'Inventory slot {index + 1} contains: {item} : {value}')
+            else:
+                print(f'Already selected slot nr {index + 1}')  # Changed from pass to the desired print statement
+        except IndexError:
             print(f'Nothing in slot nr {index + 1}')
-        Inventory.last_clicked_slot = index  # Uuendab viimasena klikitud slotti
-
+        Inventory.last_clicked_slot = index  # Updates the last clicked slot
 
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
