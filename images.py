@@ -1,5 +1,21 @@
 import pygame
 
+
+### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
+### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
+### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
+### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
+### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
+
+# Näiteks midagi sellist
+
+# item_images = {}
+# image_names = ["Oak_Tree", "Stone", "Rock", "Water", "Flower", "Mushroom", "Wheat"]
+#
+# for name in image_names:
+#     item_images[name] = pygame.image.load(f"images/{name}.PNG")
+
+
 # Menu pildid
 menu_images = {
     "pause_background": pygame.image.load("images/Menu_buttons/pause_background.png").convert_alpha(),
@@ -14,13 +30,23 @@ menu_images = {
 
 # Itemite pildid
 item_images = {
-    "Tree": pygame.image.load("images/Oak_Tree.PNG"),
+    "Oak_Tree": pygame.image.load("images/Oak_Tree.PNG"),
     "Stone": pygame.image.load("images/Stone.PNG"),
     "Rock": pygame.image.load("images/Rock.PNG"),
     "Water": pygame.image.load("images/Water.PNG"),
     "Flower": pygame.image.load("images/Flower.PNG"),
     "Mushroom": pygame.image.load("images/Mushroom.PNG"),
-    "Wheat": pygame.image.load("images/Wheat.PNG")
+    "Wheat": pygame.image.load("images/Wheat.PNG"),
+    "Oak_Wood": pygame.image.load       ("images/Flower.PNG"),  # ("images/Oak_Wood.PNG"),
+    "Oak_Planks": pygame.image.load     ("images/Flower.PNG"),  # ("images/Oak_Planks.PNG"),
+    "Stick": pygame.image.load          ("images/Flower.PNG"),  # ("images/Stick.PNG"),
+    "Wood_Pickaxe": pygame.image.load   ("images/Flower.PNG"),  # ("images/Wood_Pickaxe.PNG"),
+    "Wood_Axe": pygame.image.load       ("images/Flower.PNG"),  # ("images/Wood_Axe.PNG"),
+    "Wood_Shovel": pygame.image.load    ("images/Flower.PNG"),  # ("images/Wood_Shovel.PNG"),
+    "Rock_Shard": pygame.image.load     ("images/Flower.PNG"),  # ("images/Small_Rock_Sword.PNG"),
+    "Coal": pygame.image.load           ("images/Flower.PNG"),  # ("images/Coal.PNG"),
+    "Torch": pygame.image.load          ("images/Flower.PNG"),  # ("images/Torch.PNG"),
+    # "": pygame.image.load("images/.PNG"),
 }
 
 # Maa pildid
