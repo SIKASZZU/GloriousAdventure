@@ -1,3 +1,5 @@
+import random
+
 from variables import UniversalVariables
 
 block_size = UniversalVariables.block_size
@@ -6,13 +8,22 @@ block_size = UniversalVariables.block_size
 # Recipe: {"Item name": Amount needed}
 # Amount: Amount receive
 
+### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
+### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
+### TODO: Copy-pastesin seda allapoole kaa
+
 items_list = [
     {
         "Type": "Object",
         "Name": "Rock",
         "ID": 2,
         "HP": 5,
+
+        ### TODO: Muudaks selle selliseks????
         "Breakable": True,
+        # "Breakable": ("Stone", random.randint(1, 5)),
+        ### TODO: Ehk siis selle True asemel on see item ja kogus mida sa saad objecti lõhkudes
+
         "Collision_box": [0.3, 0.25, 0.5, 0.4],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 0.8),
@@ -64,11 +75,15 @@ items_list = [
 
     # Items
 
+### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
+### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
+
     {
         "Type": "Item",
         "Name": "Oak_Wood",
         "ID": 20,
         "Placeable": True,
+        "Breakable": True,
     },
     {
         "Type": "Item",
@@ -77,70 +92,82 @@ items_list = [
         "Recipe": {"Oak_Wood": 2},
         "Amount": 4,
         "Placeable": True,
-    },
+        "Breakable": True,
+        },
     {
         "Type": "Item",
         "Name": "Stick",
         "ID": 22,
         "Recipe": {"Oak_Wood": 2},
         "Amount": 4,
+        },
+    {
+        "Type": "Item",
+        "Name": "Stone",
+        "ID": 23,
+        "Placeable": True,
+        "Breakable": True,
     },
     {
         "Type": "Tool",
         "Name": "Wood_Pickaxe",
-        "ID": 23,
-        "Recipe": {"Stick": 2, "Oak_Planks": 3},
-        "Amount": 1,
-        "Durability": 128,
-    },
-    {
-        "Type": "Tool",
-        "Name": "Wood_Axe",
         "ID": 24,
         "Recipe": {"Stick": 2, "Oak_Planks": 3},
         "Amount": 1,
         "Durability": 128,
-    },
+        },
+    {
+        "Type": "Tool",
+        "Name": "Wood_Axe",
+        "ID": 25,
+        "Recipe": {"Stick": 2, "Oak_Planks": 3},
+        "Amount": 1,
+        "Durability": 128,
+        },
     {
         "Type": "Tool",
         "Name": "Wood_Shovel",
-        "ID": 25,
+        "ID": 26,
         "Recipe": {"Stick": 2, "Oak_Planks": 2},
         "Amount": 1,
         "Durability": 128,
-    },
+        },
     {
         "Type": "Tool",
-        "Name": "Rock_Shard",
-        "ID": 26,
-        "Recipe": {"Rock": 2},
+        "Name": "Stone_Shard",
+        "ID": 27,
+        "Recipe": {"Rock": 2},  # Tuleb Stone'iks ära muuta
         "Amount": 1,
         "Durability": 128,
-    },
+        },
     {
         "Type": "Tool",
         "Name": "Small_Rock_Sword",
-        "ID": 27,
+        "ID": 28,
         "Recipe": {"Stick": 2, "Coal": 1},
         "Amount": 1,
         "Durability": 256,
-    },
+        },
     {
         "Type": "Item",
         "Name": "Coal",
-        "ID": 28,
-    },
+        "ID": 29,
+        },
     {
         "Type": "Tool",
         "Name": "Torch",
-        "ID": 29,
+        "ID": 30,
         "Recipe": {"Stick": 2, "Coal": 1},
         "Amount": 4,
         "Durability": 256,
         "Placeable": True,
+        "Breakable": True,
     },
 
     # Unbreakable Blocks - Items
+
+### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
+### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
         "Type": "Object",
