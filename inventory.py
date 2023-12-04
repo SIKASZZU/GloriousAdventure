@@ -16,31 +16,42 @@ class Inventory:
 
     render_inv: bool = False  # Inventory renderminmine
     tab_pressed: bool = False  # Keep track of whether Tab was pressed
-
+    check_slot_delay: int = 0
     craftable_items = {}
 
     def handle_mouse_click(self) -> None:
-        """Inventory specific function. Handles both inventory item clicks and crafting item clicks."""
-
+        """ Lubab invis ja craftimises clicke kasutada
+        ja lisab ka viite CHECK_DELAY_THRESHOLD  """
+        CHECK_DELAY_THRESHOLD = 180  # Threshold slotide clickimiseks
         if (Inventory.inv_count % 2) != 0:
             mouse_state: Tuple[bool, bool, bool] = pygame.mouse.get_pressed()
-            if mouse_state[0]:  # Kontrollib vasaku clicki vajutamist
+            if mouse_state[0]:  # Vaatab kas keegi on hiire vasakut clicki vajutanud
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                clicked_inventory_item = False
+                current_time = pygame.time.get_ticks()
+                if current_time - Inventory.check_slot_delay >= CHECK_DELAY_THRESHOLD:
+                    Inventory.check_slot_delay = current_time  # Uuendab viimast check_slot_delay
+                    clicked_inventory_item = False
+                    last_clicked_index = Inventory.last_clicked_slot  # Jätab viimase clicki aja meelde
 
-                # Vaatab kas click on recti sees
-                for index, rect in enumerate(Inventory.inventory_display_rects):
-                    if rect.collidepoint(mouse_x, mouse_y):
-                        Inventory.check_slot(self, index)
-                        clicked_inventory_item = True
+                    # Vaatab kas click oli invis sees või mitte
+                    for index, rect in enumerate(Inventory.inventory_display_rects):
+                        if rect.collidepoint(mouse_x, mouse_y):
+                            if index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
+                                Inventory.check_slot(self, index)
+                            else:
+                                print(f'Already selected slot nr {index + 1}')
+                            clicked_inventory_item = True
+                            break  # Exitib loopist kui keegi clickib
 
-                if not clicked_inventory_item:
-                    # Vaatab kas vajutati craftimise peale
-                    Inventory.calculate_craftable_items(self)
-                    Inventory.handle_crafting_click(self, mouse_x, mouse_y)
+                    if not clicked_inventory_item:
+                        # Vaatab kas click on craftimis rectis
+                        Inventory.calculate_craftable_items(self)
+                        Inventory.handle_crafting_click(self, mouse_x, mouse_y)
+
+                    Inventory.last_clicked_slot = index  # Uuendab last_clicked_slot
 
     def handle_crafting_click(self, x: int, y: int) -> None:
-        """Handles clicks on craftable items in the crafting display."""
+        """ Lubab hiit kasutades craftida """
 
         for item_name, rect in Inventory.craftable_items_display_rects.items():
             if rect.collidepoint(x, y):
