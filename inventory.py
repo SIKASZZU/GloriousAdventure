@@ -185,7 +185,7 @@ class Inventory:
         rect_x: int = 100
         rect_y: int = 100
 
-        craftable_items = list(self.craftable_items.keys())  # Extract craftable item names
+        craftable_items = list(self.craftable_items.keys())  # Extractib craftitud itemite nimed
 
         for index, craftable_item in enumerate(craftable_items):
             rows = index // max_cols
@@ -242,25 +242,24 @@ class Inventory:
             UniversalVariables.screen.blit(text, text_rect)
 
     def craft_item(self, item_name):
-        """Craft an item and update the inventory accordingly"""
+        """ Craftib itemi vastavalt playeri invile """
 
-        # Retrieve the item details from items_list
         crafted_item = next((item for item in items_list if item["Name"] == item_name), None)
 
         if crafted_item:
             recipe = crafted_item.get("Recipe", {})
             amount = crafted_item.get("Amount", 1)
 
-            # Check if the player has all the required items for the recipe
+            # Vaatab kas materjale on piisavalt, et midagi craftida
             can_craft = all(
                 Inventory.inventory.get(required_item, 0) >= required_amount for required_item, required_amount in
                 recipe.items()
             )
 
             if can_craft:
-                # Remove the recipe items from the inventory
+                # Võtab vajalikud itemid craftimiseks invist ära
                 for required_item, required_amount in recipe.items():
                     Inventory.inventory[required_item] -= required_amount
 
-                # Add the crafted item to the inventory
+                # Lisab craftitud itemi invi
                 Inventory.inventory[item_name] = Inventory.inventory.get(item_name, 0) + amount
