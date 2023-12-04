@@ -144,7 +144,7 @@ class PlayerUpdate:
         if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
         hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
-        UniversalVariables.screen.blit(hitbox_text, (50, 100))  # Adjust the position as needed
+        UniversalVariables.screen.blit(hitbox_text, (800, 10))  # Adjust the position as needed
 
         # Uuendab displaid ja fps cap 60
         fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (0, 0, 0))

@@ -81,7 +81,6 @@ class ObjectManagement:
 
                         index = UniversalVariables.collision_boxes.index(obj_collision_box)
                         UniversalVariables.collision_boxes.pop(index)
-                        Inventory.calculate_craftable_items(self)  # Kontrollib itemeid mida saab craftida
 
         except RuntimeError as e: print("\nError in file: objects.py, add_object_to_inv", e)
 

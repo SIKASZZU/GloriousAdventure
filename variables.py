@@ -7,8 +7,8 @@ class UniversalVariables:
     # ******************** PLAYER ******************** #
     
     ### TODO: Oleneb, palju maze on addinud ja kuhu siis arvutab gladei asukoha ning spawnib player sinna
-    player_x: int = random.randint(400, 400)
-    player_y: int = random.randint(400, 400)
+    player_x: int = random.randint(900, 900)
+    player_y: int = random.randint(6800, 6800)
 
     block_size: int = 100
     player_height = block_size * 0.65
