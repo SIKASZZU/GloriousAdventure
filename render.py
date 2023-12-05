@@ -3,7 +3,7 @@ import random
 
 from items import items_list
 from variables import UniversalVariables
-from images import ground_images, water_images
+from images import ground_images, water_images, ImageLoader
 
 
 class RenderPictures:
@@ -40,30 +40,29 @@ class RenderPictures:
                     terrain_value = UniversalVariables.terrain_data[i][j]
 
                     if terrain_value != 0 and (i, j) not in RenderPictures.generated_ground_images:
-                        ground_image_name = f"Ground_{random.randint(0, 19)}"
+                        ground_image_name = f"Ground_{random.randint(0, 19)}"   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
                         RenderPictures.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (UniversalVariables.block_size, UniversalVariables.block_size))
 
                     if terrain_value == 0 and (i, j) not in RenderPictures.generated_water_images:
-                        generated_water_images = f"Water_{random.randint(0, 0)}"
+                        generated_water_images = f"Water_{random.randint(0, 0)}"   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
                         RenderPictures.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (UniversalVariables.block_size, UniversalVariables.block_size))
 
                     image = RenderPictures.generated_ground_images.get((i, j)) if terrain_value != 0 else RenderPictures.generated_water_images.get((i, j))
                     if image:
                         UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
-                    
-                    if terrain_value == 7 or terrain_value == 107:  # Wheat ja Wheati background
-                        wheat_bg_image = pygame.image.load("images/Wheat_background.png")
-                        UniversalVariables.screen.blit(wheat_bg_image, (terrain_x, terrain_y))
-                        ### TODO: ta ei tee seda pilti blocki suuruseks.
+
+                    if terrain_value == 7 or terrain_value == 107:                                     ### TODO: Siin midagi jamasti - images - load_image()
+                        farmland_image = ImageLoader.load_object_image(self, "Farmland")                      ### TODO: Siin midagi jamasti - images - load_image()
+                        if farmland_image:                                                             ### TODO: Siin midagi jamasti - images - load_image()
+                            UniversalVariables.screen.blit(farmland_image, (terrain_x, terrain_y))     ### TODO: Siin midagi jamasti - images - load_image()
 
                     if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#212529', wall)
-                        #pygame.draw.rect(UniversalVariables.screen, '#343a40', wall)
-                    
+                        pygame.draw.rect(UniversalVariables.screen, '#212529', wall)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+
                     if terrain_value == 98:  # mazei p6rand 
                         floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#6c757d', floor)
+                        pygame.draw.rect(UniversalVariables.screen, '#6c757d', floor)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
     
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
