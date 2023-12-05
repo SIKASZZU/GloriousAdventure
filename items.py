@@ -57,6 +57,14 @@ items_list = [
         },
     {
         "Type": "Object",
+        "Name": "Farmland",
+        "ID": 3,
+        "Collision_box": [0, 0, 0, 0],
+        "Object_width": int(block_size * 0.5),
+        "Object_height": int(block_size * 0.5),
+        },
+    {
+        "Type": "Object",
         "Name": "Oak_Tree",
         "ID": 4,
         "HP": 5,
@@ -122,8 +130,8 @@ items_list = [
         ],
         "Amount": 4,
         "ID": 20,
-        "Placeable": True,
-        "Breakable": True,
+        # "Placeable": True,
+        # "Breakable": True,
     },
     {
         "Type": "Item",
@@ -131,18 +139,18 @@ items_list = [
         "ID": 21,
         "Recipes": [
             {"Recipe": {"Oak_Wood": 1}, "Amount": 2},  ### TODO: SEE KASUTAB SELLE ITEMI IGAT RETSEPTI EHK SIIS PRAEGU SIIN TA CRAFTIB OAK WOODIST JA OAK TREEST EHK SIIS ÜHE CLICKIGA SAAB 6 ÄRA VAJA FIXIDA
-            {"Recipe": {"Oak_Tree": 1}, "Amount": 4},
+            # {"Recipe": {"Oak_Tree": 1}, "Amount": 4},
         ],
-        "Placeable": True,
-        "Breakable": True,
+        # "Placeable": True,
+        # "Breakable": True,
         },
     {
         "Type": "Item",
         "Name": "Stick",
         "ID": 22,
         "Recipes": [
-            {"Recipe": {"Oak_Tree": 1}, "Amount": 8},
-            {"Recipe": {"Oak_Wood": 1}, "Amount": 4},
+            # {"Recipe": {"Oak_Tree": 1}, "Amount": 8},
+            # {"Recipe": {"Oak_Wood": 1}, "Amount": 4},
             {"Recipe": {"Oak_Planks": 1}, "Amount": 2},
         ],
         },
@@ -150,8 +158,8 @@ items_list = [
         "Type": "Item",
         "Name": "Stone",
         "ID": 23,
-        "Placeable": True,
-        "Breakable": True,
+        # "Placeable": True,
+        # "Breakable": True,
     },
     {
         "Type": "Tool",
@@ -211,8 +219,8 @@ items_list = [
             {"Recipe": {"Stick": 2, "Coal": 1}, "Amount": 4},
         ],
         "Durability": 256,
-        "Placeable": True,
-        "Breakable": True,
+        # "Placeable": True,
+        # "Breakable": True,
     },
 
     # Unbreakable Blocks - Items

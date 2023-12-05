@@ -1,5 +1,6 @@
 import pygame
 
+from images import ImageLoader
 import images
 from camera import Camera
 from variables import UniversalVariables
@@ -149,7 +150,8 @@ class Inventory:
             pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect)
 
             if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
-                item_image = images.item_images.get(item_name)
+                item_image = ImageLoader.load_item_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+
                 if item_image is not None:
                     # Resize itemi inventory
                     item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
@@ -235,20 +237,34 @@ class Inventory:
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
             pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
 
-            item_image = pygame.image.load(f"images/Items/{item_name}.PNG")  ### TODO: Enne seda peame preloadima
-                                                                             # TODO: muidu võtab palju peformanci alla.
-                                                                             # TODO: Kõikide piltidega nii tegema.
+            for item in items_list:
+                name = item.get("Name")
+                if name == item_name:
+                    if item.get("Type") == "Object":
+                        object_image = ImageLoader.load_object_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+
+
+                    elif item.get("Type") == ("Item"):
+                        object_image = ImageLoader.load_item_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+
+
+                    elif item.get("Type") == ("Tool"):
+                        object_image = ImageLoader.load_tool_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                    else:
+                        pass
+                else:
+                    pass
 
             # Muudab pildi suurust vastavalt inventory sloti suurusele
-            if item_image is not None:
+            if object_image is not None:
                 # Resize itemi inventory
-                item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
+                object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
 
                 # Paneb itembi invi boxi keskele
-                item_image_rect = item_image.get_rect(center=item_rect.center)
+                item_image_rect = object_image.get_rect(center=item_rect.center)
 
                 # Displayb resized itemit
-                UniversalVariables.screen.blit(item_image, item_image_rect.topleft)
+                UniversalVariables.screen.blit(object_image, item_image_rect.topleft)
 
             # font, numbrid itemite loetlemiseks
             font = pygame.font.Font(None, 20)

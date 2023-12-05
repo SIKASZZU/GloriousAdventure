@@ -1,6 +1,6 @@
 import pygame
 from items import items_list
-from images import item_images
+from images import ImageLoader
 from inventory import Inventory
 from variables import UniversalVariables
 
@@ -93,16 +93,20 @@ class ObjectManagement:
         interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
-            object_image = None
-
             terrain_x: int = (collision_box_x - collision_box_offset_x) + UniversalVariables.offset_x
             terrain_y: int = (collision_box_y - collision_box_offset_y) + UniversalVariables.offset_y
-            
+            object_image = None
+            object_width = 0
+            object_height = 0
+
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
-                    object_image = item_images.get(item.get("Name"))
+                    object_image_name = item.get("Name")
                     object_width = item.get("Object_width")
                     object_height = item.get("Object_height")
+
+                    # Load object image using ItemLoader
+                    object_image = ImageLoader.load_object_image(self, object_image_name)   ### TODO: SIIN KA MIDAGI VALESTI IMAGE
 
                     interaction_boxes[object_id] = (object_image, object_width, object_height)
 
@@ -110,7 +114,9 @@ class ObjectManagement:
                 position: tuple = (terrain_x, terrain_y)
                 scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
                 UniversalVariables.screen.blit(scaled_object_image, position)
-            else: pass
+
+            else:
+                pass
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
 
             # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
