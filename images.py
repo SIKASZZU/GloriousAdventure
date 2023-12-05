@@ -1,19 +1,18 @@
 import pygame
 
-
-### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
-### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
-### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
-### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
-### TODO: Kirjutada kood selle asemel, et kõik pildid välja kirjutada!
-
-# Näiteks midagi sellist
+### TODO: Hetkel on lic nii tehtud, et ta tuleb listi juurde ja loadib.
+### TODO: Kui me preloadime imageid siis see võtab vähem ruumi ja  peformancei.
 
 # item_images = {}
-# image_names = ["Oak_Tree", "Stone", "Rock", "Water", "Flower", "Mushroom", "Wheat"]
+# image_names = ["Oak_Tree", "Stone", "Rock", "Monke", "Flower", "Mushroom", "Wheat"]
 #
-# for name in image_names:
-#     item_images[name] = pygame.image.load(f"images/{name}.PNG")
+# try:
+#     for name in image_names:
+#         item_images[name] = pygame.image.load(f"images/Items/{name}.PNG")
+#         print(f"images/{name}.PNG")
+#
+# except FileNotFoundError:
+#     print(f"Error in images.py! Name: '{name.capitalize()}' not in list.")
 
 
 # Menu pildid
@@ -30,23 +29,22 @@ menu_images = {
 
 # Itemite pildid
 item_images = {
-    "Oak_Tree": pygame.image.load("images/Oak_Tree.PNG"),
-    "Stone": pygame.image.load("images/Stone.PNG"),
-    "Rock": pygame.image.load("images/Rock.PNG"),
-    "Water": pygame.image.load("images/Water.PNG"),
-    "Flower": pygame.image.load("images/Flower.PNG"),
-    "Mushroom": pygame.image.load("images/Mushroom.PNG"),
-    "Wheat": pygame.image.load("images/Wheat.PNG"),
-    "Oak_Wood": pygame.image.load("images/Oak_Wood.PNG"),
-    "Oak_Planks": pygame.image.load("images/Oak_Planks.PNG"),
-    "Stick": pygame.image.load("images/Stick.PNG"),
-    "Wood_Pickaxe": pygame.image.load("images/Wood_Pickaxe.PNG"),
-    "Wood_Axe": pygame.image.load("images/Wood_Axe.PNG"),
-    "Wood_Shovel": pygame.image.load("images/Wood_Shovel.PNG"),
-    "Stone_Shard": pygame.image.load("images/Stone_Shard.PNG"),
-    "Coal": pygame.image.load("images/Coal.PNG"),
-    "Torch": pygame.image.load("images/Torch.gif"),
-    "Small_Rock_Sword": pygame.image.load("images/Small_Rock_Sword.PNG"),
+    "Oak_Tree": pygame.image.load("images/Items/Oak_Tree.PNG"),
+    "Stone": pygame.image.load("images/Items/Stone.PNG"),
+    "Rock": pygame.image.load("images/Items/Rock.PNG"),
+    "Flower": pygame.image.load("images/Items/Flower.PNG"),
+    "Mushroom": pygame.image.load("images/Items/Mushroom.PNG"),
+    "Wheat": pygame.image.load("images/Items/Wheat.PNG"),
+    "Oak_Wood": pygame.image.load("images/Items/Oak_Wood.PNG"),
+    "Oak_Planks": pygame.image.load("images/Items/Oak_Planks.PNG"),
+    "Stick": pygame.image.load("images/Items/Stick.PNG"),
+    "Wood_Pickaxe": pygame.image.load("images/Items/Wood_Pickaxe.PNG"),
+    "Wood_Axe": pygame.image.load("images/Items/Wood_Axe.PNG"),
+    "Wood_Shovel": pygame.image.load("images/Items/Wood_Shovel.PNG"),
+    "Stone_Shard": pygame.image.load("images/Items/Stone_Shard.PNG"),
+    "Coal": pygame.image.load("images/Items/Coal.PNG"),
+    "Torch": pygame.image.load("images/Items/Torch.gif"),
+    "Small_Rock_Sword": pygame.image.load("images/Items/Small_Rock_Sword.PNG"),
     # "": pygame.image.load("images/.PNG"),
 }
 
@@ -77,3 +75,4 @@ ground_images = {
 water_images = {
     "Water_0": pygame.image.load("images/Water/Water_0.png")
 }
+
