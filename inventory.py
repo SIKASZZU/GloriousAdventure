@@ -22,7 +22,7 @@ class Inventory:
     def handle_mouse_click(self) -> None:
         """ Lubab invis ja craftimises clicke kasutada
         ja lisab ka viite CHECK_DELAY_THRESHOLD  """
-        CHECK_DELAY_THRESHOLD = 180  # Threshold slotide clickimiseks
+        CHECK_DELAY_THRESHOLD = 200  # Threshold slotide clickimiseks
         if (Inventory.inv_count % 2) != 0:
             mouse_state: Tuple[bool, bool, bool] = pygame.mouse.get_pressed()
             if mouse_state[0]:  # Vaatab kas keegi on hiire vasakut clicki vajutanud
@@ -39,7 +39,7 @@ class Inventory:
                             if index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
                                 Inventory.check_slot(self, index)
                             else:
-                                print(f'Already selected slot nr {index + 1}')
+                                print(f'Already selected slot nr {index + 1}')  ### TODO: Peaks olema check sloti all
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
 
@@ -72,11 +72,9 @@ class Inventory:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
                 print(f'Inventory slot {index + 1} contains: {item} : {value}')
-            else:
-                print(f'Already selected slot nr {index + 1}')  # Changed from pass to the desired print statement
         except IndexError:
             print(f'Nothing in slot nr {index + 1}')
-        Inventory.last_clicked_slot = index  # Updates the last clicked slot
+        Inventory.last_clicked_slot = index  # Updateb viimast clicki
 
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
@@ -237,7 +235,9 @@ class Inventory:
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
             pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
 
-            item_image = images.item_images.get(item_name)
+            item_image = pygame.image.load(f"images/Items/{item_name}.PNG")  ### TODO: Enne seda peame preloadima
+                                                                             # TODO: muidu võtab palju peformanci alla.
+                                                                             # TODO: Kõikide piltidega nii tegema.
 
             # Muudab pildi suurust vastavalt inventory sloti suurusele
             if item_image is not None:
