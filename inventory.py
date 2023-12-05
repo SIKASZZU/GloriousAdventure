@@ -8,7 +8,7 @@ from items import items_list
 
 class Inventory:
 
-    self.inventory_display_rects = []
+    inventory_display_rects = []
     craftable_items_display_rects = []
     last_clicked_slot = int  # V2hendab terminali spammi. Ei sp2mmi seda slotti, mida juba klikkis.
 
