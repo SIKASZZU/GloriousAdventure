@@ -1,57 +1,9 @@
 import pygame
 from items import items_list
-### TODO: Hetkel on lic nii tehtud, et ta tuleb listi juurde ja loadib.
-### TODO: Kui me preloadime imageid siis see võtab vähem ruumi ja  peformancei.
+
 
 class ImageLoader:
     loaded_item_images = {}
-
-    def load_image(self, item_name):
-        try:
-            if item_name not in ImageLoader.loaded_item_images:
-                for item in items_list:
-                    name = item.get("Name")
-                    if name == item_name:
-                        if item.get("Type") == "Object":
-                            ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Gui/{item_name}.PNG")
-                            print(f"images/Gui/{item_name}.PNG pre-loaded successfully.")
-
-                        elif item.get("Type") == ("Item"):
-                            ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Items/Minerals/{item_name}.PNG")  ### TODO: MUL JÄI POOLIKUKS PIDIN ÄRA MINEMA
-                            print(f"images/Items/Minerals/{item_name}.PNG pre-loaded successfully.")
-
-                        elif item.get("Type") == ("Tool"):
-                            ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Items/Tools/{item_name}.PNG")
-                            print(f"images/Items/Tools/{item_name}.PNG pre-loaded successfully.")
-
-                return ImageLoader.loaded_item_images.get(item_name)
-        except FileNotFoundError:
-            # print(f"Error: '{item_name}' image not found.")
-            return None
-
-    def load_item_image(self, item_name):
-
-        try:
-            if item_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Items/Minerals/{item_name}.PNG")
-
-                print(f"images/Items/{item_name}.PNG pre-loaded successfully.")
-            return ImageLoader.loaded_item_images[item_name]
-        except FileNotFoundError:
-            # print(f"Error: '{item_name.capitalize()}' image not found.")
-            return None
-
-    def load_tool_image(self, item_name):
-
-        try:
-            if item_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Items/Tools/{item_name}.PNG")
-
-                print(f"images/Items/{item_name}.PNG pre-loaded successfully.")
-            return ImageLoader.loaded_item_images[item_name]
-        except FileNotFoundError:
-            # print(f"Error: '{item_name.capitalize()}' image not found.")
-            return None
 
 
     def load_gui_image(self, item_name):
@@ -65,22 +17,48 @@ class ImageLoader:
                 print(f"images/Items/{item_name}.PNG pre-loaded successfully.")
             return self.loaded_item_images[item_name]
         except FileNotFoundError:
-            # print(f"Error: '{item_name.capitalize()}' image not found.")
+            print(f"Error: '{item_name.capitalize()}' image not found.")
             return None
 
 
-    def load_object_image(self, item_name):
-
-        # Mingi glitch sellega
-        self.loaded_item_images = ImageLoader.loaded_item_images
-
+    ### TODO: Ei tööta, ei tea miks
+    def load_image(self, item_name):
         try:
-            if item_name not in self.loaded_item_images:
-                self.loaded_item_images[item_name] = pygame.image.load(f"images/Objects/{item_name}.PNG")
-                print(f"images/Items/{item_name}.PNG pre-loaded successfully.")
-            return self.loaded_item_images[item_name]
+            if item_name in ImageLoader.loaded_item_images:
+                return ImageLoader.loaded_item_images.get(item_name)
+
+            for item in items_list:
+                name = item.get("Name")
+
+                if name == item_name:
+                    image_path = None
+                    item_type = item.get("Type")
+
+                    if item_type == "Ground":
+                        image_path = f"images/Objects/Ground/{item_name}.PNG"
+
+                    elif item_type == "Water":
+                        image_path = f"images/Objects/Water/{item_name}.PNG"
+
+                    elif item_type == "Object":
+                        image_path = f"images/Objects/{item_name}.PNG"
+
+                    elif item_type == "Mineral":
+                        image_path = f"images/Items/Minerals/{item_name}.PNG"
+
+                    elif item_type == "Tool":
+                        image_path = f"images/Items/Tools/{item_name}.PNG"
+
+                    if image_path:
+                        ImageLoader.loaded_item_images[item_name] = pygame.image.load(image_path)
+                        print(f"{image_path} pre-loaded successfully.")
+                        return ImageLoader.loaded_item_images[item_name]
+
+            print(f"Error: '{item_name}' image not found.")
+            return None
+
         except FileNotFoundError:
-            # print(f"Error: '{item_name.capitalize()}' image not found.")
+            print(f"Error: '{item_name}' image not found.")
             return None
 
 

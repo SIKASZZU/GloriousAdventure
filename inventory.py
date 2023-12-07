@@ -150,7 +150,7 @@ class Inventory:
             pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect)
 
             if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
-                item_image = ImageLoader.load_item_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                item_image = ImageLoader.load_image(self, item_name)
 
                 if item_image is not None:
                     # Resize itemi inventory
@@ -169,8 +169,6 @@ class Inventory:
                 UniversalVariables.screen.blit(text, text_rect)
 
 
-### TODO: Craftimise ajal clicki all ei saa hoida, clickid või hoiad all, ikka craftib ainult 1
-### TODO: kui craftimise ajal hoida shifti all ja clickida siis crafti max koguse mida saab craftida
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida
         saab craftida vastavalt invile """
@@ -237,23 +235,8 @@ class Inventory:
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
             pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
 
-            for item in items_list:
-                name = item.get("Name")
-                if name == item_name:
-                    if item.get("Type") == "Object":
-                        object_image = ImageLoader.load_object_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
-
-
-                    elif item.get("Type") == ("Item"):
-                        object_image = ImageLoader.load_item_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
-
-
-                    elif item.get("Type") == ("Tool"):
-                        object_image = ImageLoader.load_tool_image(self, item_name)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
-                    else:
-                        pass
-                else:
-                    pass
+            # Pre-loading pildi, peformance säästmiseks
+            object_image = ImageLoader.load_image(self, item_name)
 
             # Muudab pildi suurust vastavalt inventory sloti suurusele
             if object_image is not None:
@@ -272,6 +255,7 @@ class Inventory:
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
             UniversalVariables.screen.blit(text, text_rect)
 
+    ### TODO: kui craftimise ajal hoida shifti all ja clickida siis crafti max koguse mida saab craftida
     def craft_item(self, item_name):
         """ Craftib itemi ja uuendab invi """
 
