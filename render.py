@@ -40,21 +40,21 @@ class RenderPictures:
                     terrain_value = UniversalVariables.terrain_data[i][j]
 
                     if terrain_value != 0 and (i, j) not in RenderPictures.generated_ground_images:
-                        ground_image_name = f"Ground_{random.randint(0, 19)}"   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                        ground_image_name = f"Ground_{random.randint(0, 19)}"
                         RenderPictures.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (UniversalVariables.block_size, UniversalVariables.block_size))
 
                     if terrain_value == 0 and (i, j) not in RenderPictures.generated_water_images:
-                        generated_water_images = f"Water_{random.randint(0, 0)}"   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                        generated_water_images = f"Water_{random.randint(0, 0)}"
                         RenderPictures.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (UniversalVariables.block_size, UniversalVariables.block_size))
 
                     image = RenderPictures.generated_ground_images.get((i, j)) if terrain_value != 0 else RenderPictures.generated_water_images.get((i, j))
                     if image:
                         UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
 
-                    if terrain_value == 7 or terrain_value == 107:                                     ### TODO: Siin midagi jamasti - images - load_image()
-                        farmland_image = ImageLoader.load_object_image(self, "Farmland")                      ### TODO: Siin midagi jamasti - images - load_image()
-                        if farmland_image:                                                             ### TODO: Siin midagi jamasti - images - load_image()
-                            UniversalVariables.screen.blit(farmland_image, (terrain_x, terrain_y))     ### TODO: Siin midagi jamasti - images - load_image()
+                    if terrain_value == 7 or terrain_value == 107:
+                        farmland_image = ImageLoader.load_image(self, "Farmland")
+                        if farmland_image:
+                            UniversalVariables.screen.blit(farmland_image, (terrain_x, terrain_y))
 
                     if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)

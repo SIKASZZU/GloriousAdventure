@@ -123,7 +123,7 @@ items_list = [
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
-        "Type": "Item",
+        "Type": "Mineral",
         "Name": "Oak_Wood",
         "Recipes": [
             {"Recipe": {"Oak_Tree": 1}, "Amount": 2},
@@ -134,7 +134,7 @@ items_list = [
         # "Breakable": True,
     },
     {
-        "Type": "Item",
+        "Type": "Mineral",
         "Name": "Oak_Planks",
         "ID": 21,
         "Recipes": [
@@ -145,7 +145,7 @@ items_list = [
         # "Breakable": True,
         },
     {
-        "Type": "Item",
+        "Type": "Mineral",
         "Name": "Stick",
         "ID": 22,
         "Recipes": [
@@ -155,7 +155,7 @@ items_list = [
         ],
         },
     {
-        "Type": "Item",
+        "Type": "Mineral",
         "Name": "Stone",
         "ID": 23,
         # "Placeable": True,
@@ -207,7 +207,7 @@ items_list = [
         "Durability": 256,
         },
     {
-        "Type": "Item",
+        "Type": "Mineral",
         "Name": "Coal",
         "ID": 29,
         },
@@ -229,7 +229,7 @@ items_list = [
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
-        "Type": "Object",
+        "Type": "Maze_Object",
         "Name": "Wall",
         "ID": 99,
         "Breakable": False,
