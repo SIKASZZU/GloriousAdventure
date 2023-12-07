@@ -21,26 +21,36 @@ class ImageLoader:
             return None
 
 
-    ### TODO: Ei tööta, ei tea miks
+    @staticmethod
     def load_image(self, item_name):
         try:
             if item_name in ImageLoader.loaded_item_images:
-                return ImageLoader.loaded_item_images.get(item_name)
+                return ImageLoader.loaded_item_images[item_name]
+
+            image_path = None
+
+            # Peab siin ära LOADima, sest neid ei ole item_list'is
+            if item_name.startswith("Ground_"):
+                image_path = f"images/Objects/Ground/{item_name}.PNG"
+
+            elif item_name.startswith("Water_"):
+                image_path = f"images/Objects/Water/{item_name}.PNG"
+
+            if image_path:
+                loaded_image = pygame.image.load(image_path)
+                converted_image = loaded_image.convert_alpha()
+                ImageLoader.loaded_item_images[item_name] = converted_image
+                print(f"{image_path} pre-loaded successfully.")
+                return converted_image
 
             for item in items_list:
                 name = item.get("Name")
 
+                # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
                 if name == item_name:
-                    image_path = None
                     item_type = item.get("Type")
 
-                    if item_type == "Ground":
-                        image_path = f"images/Objects/Ground/{item_name}.PNG"
-
-                    elif item_type == "Water":
-                        image_path = f"images/Objects/Water/{item_name}.PNG"
-
-                    elif item_type == "Object":
+                    if item_type == "Object":
                         image_path = f"images/Objects/{item_name}.PNG"
 
                     elif item_type == "Mineral":
@@ -50,15 +60,18 @@ class ImageLoader:
                         image_path = f"images/Items/Tools/{item_name}.PNG"
 
                     if image_path:
-                        ImageLoader.loaded_item_images[item_name] = pygame.image.load(image_path)
+                        loaded_image = pygame.image.load(image_path)
+                        converted_image = loaded_image.convert_alpha()
+                        ImageLoader.loaded_item_images[item_name] = converted_image
                         print(f"{image_path} pre-loaded successfully.")
-                        return ImageLoader.loaded_item_images[item_name]
+                        return converted_image
 
-            print(f"Error: '{item_name}' image not found.")
+
+            #print(f"Error: '{item_name}' image not found.")
             return None
 
         except FileNotFoundError:
-            print(f"Error: '{item_name}' image not found.")
+            print(f"Error: '{image_path}' image not found.")
             return None
 
 
@@ -72,30 +85,6 @@ menu_images = {
     "audio_img":  pygame.image.load('images/Menu_buttons/button_audio.png').convert_alpha(),
     "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
     "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
-}
-
-# Maa pildid
-ground_images = {
-    "Ground_0": pygame.image.load("images/Objects/Ground/Ground_0.png"),
-    "Ground_1": pygame.image.load("images/Objects/Ground/Ground_1.png"),
-    "Ground_2": pygame.image.load("images/Objects/Ground/Ground_2.png"),
-    "Ground_3": pygame.image.load("images/Objects/Ground/Ground_3.png"),
-    "Ground_4": pygame.image.load("images/Objects/Ground/Ground_4.png"),
-    "Ground_5": pygame.image.load("images/Objects/Ground/Ground_5.png"),
-    "Ground_6": pygame.image.load("images/Objects/Ground/Ground_6.png"),
-    "Ground_7": pygame.image.load("images/Objects/Ground/Ground_7.png"),
-    "Ground_8": pygame.image.load("images/Objects/Ground/Ground_8.png"),
-    "Ground_9": pygame.image.load("images/Objects/Ground/Ground_9.png"),
-    "Ground_10": pygame.image.load("images/Objects/Ground/Ground_10.png"),
-    "Ground_11": pygame.image.load("images/Objects/Ground/Ground_11.png"),
-    "Ground_12": pygame.image.load("images/Objects/Ground/Ground_12.png"),
-    "Ground_13": pygame.image.load("images/Objects/Ground/Ground_13.png"),
-    "Ground_14": pygame.image.load("images/Objects/Ground/Ground_14.png"),
-    "Ground_15": pygame.image.load("images/Objects/Ground/Ground_15.png"),
-    "Ground_16": pygame.image.load("images/Objects/Ground/Ground_16.png"),
-    "Ground_17": pygame.image.load("images/Objects/Ground/Ground_17.png"),
-    "Ground_18": pygame.image.load("images/Objects/Ground/Ground_18.png"),
-    "Ground_19": pygame.image.load("images/Objects/Ground/Ground_19.png"),
 }
 
 water_images = {
