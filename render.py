@@ -3,7 +3,7 @@ import random
 
 from items import items_list
 from variables import UniversalVariables
-from images import ground_images, water_images, ImageLoader
+from images import water_images, ImageLoader
 
 
 class RenderPictures:
@@ -11,11 +11,11 @@ class RenderPictures:
     render_terrain_data: list = []
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
-    
+
     # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
     player_hitbox_offset_x = 29
     player_hitbox_offset_y = 22
-    
+
     def map_render(self) -> None:
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
@@ -39,31 +39,27 @@ class RenderPictures:
                 if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
                     terrain_value = UniversalVariables.terrain_data[i][j]
 
-                    if terrain_value != 0 and (i, j) not in RenderPictures.generated_ground_images:
-                        ground_image_name = f"Ground_{random.randint(0, 19)}"
-                        RenderPictures.generated_ground_images[(i, j)] = pygame.transform.scale(ground_images.get(ground_image_name), (UniversalVariables.block_size, UniversalVariables.block_size))
+                    image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                    image = ImageLoader.load_image(self, image_name)
 
-                    if terrain_value == 0 and (i, j) not in RenderPictures.generated_water_images:
-                        generated_water_images = f"Water_{random.randint(0, 0)}"
-                        RenderPictures.generated_water_images[(i, j)] = pygame.transform.scale(water_images.get(generated_water_images), (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                    image = RenderPictures.generated_ground_images.get((i, j)) if terrain_value != 0 else RenderPictures.generated_water_images.get((i, j))
                     if image:
-                        UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
+                        scaled_image = pygame.transform.scale(image, (
+                        UniversalVariables.block_size, UniversalVariables.block_size))
+                        UniversalVariables.screen.blit(scaled_image, (terrain_x, terrain_y))
 
                     if terrain_value == 7 or terrain_value == 107:
-                        farmland_image = ImageLoader.load_image(self, "Farmland")
-                        if farmland_image:
-                            UniversalVariables.screen.blit(farmland_image, (terrain_x, terrain_y))
+                        image = ImageLoader.load_image(self, "Farmland")
+                        if image:
+                            UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
 
                     if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
                         pygame.draw.rect(UniversalVariables.screen, '#212529', wall)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
 
-                    if terrain_value == 98:  # mazei p6rand 
+                    if terrain_value == 98:  # mazei p6rand
                         floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
                         pygame.draw.rect(UniversalVariables.screen, '#6c757d', floor)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
-    
+
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
 
@@ -74,7 +70,7 @@ class CreateCollisionBoxes:
 
     def object_list_creation(self) -> None:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
-        
+
         CreateCollisionBoxes.terrain_data_minerals: int = 0
         UniversalVariables.collision_boxes: list = []
         CreateCollisionBoxes.display_collision_box_decay: int = 0
@@ -131,8 +127,8 @@ class CreateCollisionBoxes:
                     except Exception as e: print(f'Error: {e}, render.py @ if UniversalVariables.terrain_data[y][x] in object_collision_boxes:')
         # Create a dictionary to map each id to its sort order
         id_sort_order = {6: 1, # First to be rendered
-                        5: 2, 
-                        2: 3, 
+                        5: 2,
+                        2: 3,
                         4: 4,
                         7: 5}  # Last to be rendered
 
