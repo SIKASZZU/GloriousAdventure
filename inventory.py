@@ -1,7 +1,6 @@
 import pygame
 
 from images import ImageLoader
-import images
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
@@ -25,7 +24,7 @@ class Inventory:
         ja lisab ka viite CHECK_DELAY_THRESHOLD  """
         CHECK_DELAY_THRESHOLD = 200  # Threshold slotide clickimiseks
         if (Inventory.inv_count % 2) != 0:
-            mouse_state: Tuple[bool, bool, bool] = pygame.mouse.get_pressed()
+            mouse_state: tuple[bool, bool, bool] = pygame.mouse.get_pressed()
             if mouse_state[0]:  # Vaatab kas keegi on hiire vasakut clicki vajutanud
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 current_time = pygame.time.get_ticks()
