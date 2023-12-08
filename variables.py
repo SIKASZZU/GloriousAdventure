@@ -5,14 +5,16 @@ from map import MapData
 
 class UniversalVariables:
     # ******************** PLAYER ******************** #
-    
-    ### TODO: Oleneb, palju maze on addinud ja kuhu siis arvutab gladei asukoha ning spawnib player sinna
-    player_x: int = random.randint(900, 900)
-    player_y: int = random.randint(6800, 6800)
 
     block_size: int = 100
     player_height = block_size * 0.65
     player_width = block_size * 0.45
+
+
+    player_hitbox_offset_x = 0.29 * block_size
+    player_hitbox_offset_y = 0.22 * block_size
+    player_x: int = random.randint(9 * block_size, 9 * block_size)
+    player_y: int = random.randint(68 * block_size, 68 * block_size)
 
     # ******************** SCREEN ******************** #
     screen_x: int = 1000
@@ -21,8 +23,7 @@ class UniversalVariables:
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision
-    full_map_data = MapData.map_creation()  # map data
-    terrain_data = full_map_data
+    terrain_data = MapData.map_creation()  # map data
     glade_data = MapData.glade_creation()  # glade data
 
     # ******************** OFFSET ******************** #
