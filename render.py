@@ -38,15 +38,15 @@ class RenderPictures:
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                     image = ImageLoader.load_image(self, image_name)
 
+                    # Loadib Wheat'i ja Farmland'i
+                    if terrain_value == 7 or terrain_value == 107:
+                        image = ImageLoader.load_image(self, "Farmland")
+
+                    # Visualiseerib pilte
                     if image:
                         scaled_image = pygame.transform.scale(image, (
                         UniversalVariables.block_size, UniversalVariables.block_size))
                         UniversalVariables.screen.blit(scaled_image, (terrain_x, terrain_y))
-
-                    if terrain_value == 7 or terrain_value == 107:
-                        image = ImageLoader.load_image(self, "Farmland")
-                        if image:
-                            UniversalVariables.screen.blit(image, (terrain_x, terrain_y))
 
                     if terrain_value == 99:  # mazei sein
                         wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)

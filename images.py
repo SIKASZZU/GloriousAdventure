@@ -37,9 +37,9 @@ class ImageLoader:
                 image_path = f"images/Objects/Water/{item_name}.PNG"
 
             if image_path:
-                loaded_image = pygame.image.load(image_path)
-                converted_image = loaded_image.convert_alpha()
-                ImageLoader.loaded_item_images[item_name] = converted_image
+                loaded_image = pygame.image.load(image_path)  # Loadib pathi
+                converted_image = loaded_image.convert_alpha()  # Convertib õigesse formaati
+                ImageLoader.loaded_item_images[item_name] = converted_image  # Salvestab õige formaadiga pildi listi
                 print(f"{image_path} pre-loaded successfully.")
                 return converted_image
 
@@ -67,7 +67,7 @@ class ImageLoader:
                         return converted_image
 
 
-            #print(f"Error: '{item_name}' image not found.")
+            print(f"Error: '{item_name}' image not found.")
             return None
 
         except FileNotFoundError:
@@ -86,8 +86,3 @@ menu_images = {
     "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
     "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
 }
-
-water_images = {
-    "Water_0": pygame.image.load("images/Objects/Water/Water_0.png")
-}
-
