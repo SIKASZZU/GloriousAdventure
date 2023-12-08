@@ -3,7 +3,7 @@ import random
 
 from items import items_list
 from variables import UniversalVariables
-from images import water_images, ImageLoader
+from images import ImageLoader
 
 
 class RenderPictures:
@@ -12,18 +12,14 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
-    # Muudab player hitboxi asukoha õigeks, punane kast, 09.10.2023 see oli update.py line 79
-    player_hitbox_offset_x = 29
-    player_hitbox_offset_y = 22
-
     def map_render(self) -> None:
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // 200
 
-        player_grid_row = int((UniversalVariables.player_x + RenderPictures.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
-        player_grid_col = int((UniversalVariables.player_y + RenderPictures.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
+        player_grid_row = int((UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
+        player_grid_col = int((UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
         for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range):
             self.row: list[tuple[int, int], ...] = []
 
