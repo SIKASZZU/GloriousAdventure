@@ -56,10 +56,8 @@ class MapData:
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
 
-        map_data = maze_start + glade_data
-
         if not map_data:  # list is empty
-            map_data = glade_data
+            map_data = maze_start + glade_data
         else: pass
 
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
