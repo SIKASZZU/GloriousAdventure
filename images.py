@@ -13,13 +13,15 @@ menu_images = {
     "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
 }
 
+from typing import Dict, Optional
+import pygame
 
 class ImageLoader:
-    loaded_item_images = {}
+    loaded_item_images: Dict[str, pygame.Surface] = {}
 
     @staticmethod
     ### TODO: Tuleks panna load_image funci sisse
-    def load_gui_image(self, item_name):
+    def load_gui_image(item_name: str) -> Optional[pygame.Surface]:
         """ Renderib Gui pildid """
 
         try:
@@ -31,9 +33,8 @@ class ImageLoader:
             print(f"Error: '{item_name.capitalize()}' image not found.")
             return None
 
-
     @staticmethod
-    def load_image(self, item_name):
+    def load_image(item_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
         alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
 
@@ -51,9 +52,9 @@ class ImageLoader:
                 image_path = f"images/Objects/Water/{item_name}.PNG"
 
             if image_path:
-                loaded_image = pygame.image.load(image_path)  # Loadib pathi
-                converted_image = loaded_image.convert_alpha()  # Convertib õigesse formaati
-                ImageLoader.loaded_item_images[item_name] = converted_image  # Salvestab õige formaadiga pildi listi
+                loaded_image = pygame.image.load(image_path)
+                converted_image = loaded_image.convert_alpha()
+                ImageLoader.loaded_item_images[item_name] = converted_image
                 print(f"{image_path} pre-loaded successfully.")
                 return converted_image
 
@@ -66,10 +67,8 @@ class ImageLoader:
 
                     if item_type == "Object":
                         image_path = f"images/Objects/{item_name}.PNG"
-
                     elif item_type == "Mineral":
                         image_path = f"images/Items/Minerals/{item_name}.PNG"
-
                     elif item_type == "Tool":
                         image_path = f"images/Items/Tools/{item_name}.PNG"
 
@@ -79,7 +78,6 @@ class ImageLoader:
                         ImageLoader.loaded_item_images[item_name] = converted_image
                         print(f"{image_path} pre-loaded successfully.")
                         return converted_image
-
 
             print(f"Error: '{item_name}' image not found.")
             return None
