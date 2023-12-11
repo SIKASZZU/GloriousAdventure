@@ -1,21 +1,32 @@
 import pygame
 from items import items_list
 
+# Menu pildid
+menu_images = {
+    "pause_background": pygame.image.load("images/Menu_buttons/pause_background.png").convert_alpha(),
+    "resume_img": pygame.image.load("images/Menu_buttons/button_resume.png").convert_alpha(),
+    "options_img": pygame.image.load("images/Menu_buttons/button_options.png").convert_alpha(),
+    "quit_img": pygame.image.load("images/Menu_buttons/button_quit.png").convert_alpha(),
+    "video_img": pygame.image.load('images/Menu_buttons/button_video.png').convert_alpha(),
+    "audio_img":  pygame.image.load('images/Menu_buttons/button_audio.png').convert_alpha(),
+    "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
+    "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
+}
+
 
 class ImageLoader:
     loaded_item_images = {}
 
-
+    @staticmethod
+    ### TODO: Tuleks panna load_image funci sisse
     def load_gui_image(self, item_name):
-
-        # Mingi glitch sellega
-        self.loaded_item_images = ImageLoader.loaded_item_images
+        """ Renderib Gui pildid """
 
         try:
-            if item_name not in self.loaded_item_images:
-                self.loaded_item_images[item_name] = pygame.image.load(f"images/Gui/{item_name}.PNG")
-                print(f"images/Items/{item_name}.PNG pre-loaded successfully.")
-            return self.loaded_item_images[item_name]
+            if item_name not in ImageLoader.loaded_item_images:
+                ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Gui/{item_name}.PNG")
+                print(f"images/Gui/{item_name}.PNG pre-loaded successfully.")
+            return ImageLoader.loaded_item_images[item_name]
         except FileNotFoundError:
             print(f"Error: '{item_name.capitalize()}' image not found.")
             return None
@@ -23,6 +34,9 @@ class ImageLoader:
 
     @staticmethod
     def load_image(self, item_name):
+        """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
+        alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
+
         try:
             if item_name in ImageLoader.loaded_item_images:
                 return ImageLoader.loaded_item_images[item_name]
@@ -73,16 +87,3 @@ class ImageLoader:
         except FileNotFoundError:
             print(f"Error: '{image_path}' image not found.")
             return None
-
-
-# Menu pildid
-menu_images = {
-    "pause_background": pygame.image.load("images/Menu_buttons/pause_background.png").convert_alpha(),
-    "resume_img": pygame.image.load("images/Menu_buttons/button_resume.png").convert_alpha(),
-    "options_img": pygame.image.load("images/Menu_buttons/button_options.png").convert_alpha(),
-    "quit_img": pygame.image.load("images/Menu_buttons/button_quit.png").convert_alpha(),
-    "video_img": pygame.image.load('images/Menu_buttons/button_video.png').convert_alpha(),
-    "audio_img":  pygame.image.load('images/Menu_buttons/button_audio.png').convert_alpha(),
-    "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
-    "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
-}
