@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import functools
 
 class MapData:
     width = 40
@@ -29,6 +30,8 @@ class MapData:
 
     ### TODO: mazei uks või algus oleks alati ühes teatud kohas. Gladei ava juures!
     # Generate maze using recursive backtracking algorithm
+    @staticmethod
+    @functools.lru_cache(maxsize=None)  # None - unlimited cache
     def maze_creation2():
         width = MapData.width
         height = MapData.height

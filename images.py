@@ -1,5 +1,6 @@
 import pygame
 from items import items_list
+from variables import memoize, log_calls_with_location
 
 # Menu pildid
 menu_images = {
@@ -16,9 +17,11 @@ menu_images = {
 from typing import Dict, Optional
 import pygame
 
+
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
 
+    @memoize
     @staticmethod
     ### TODO: Tuleks panna load_image funci sisse
     def load_gui_image(item_name: str) -> Optional[pygame.Surface]:
@@ -28,11 +31,14 @@ class ImageLoader:
             if item_name not in ImageLoader.loaded_item_images:
                 ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Gui/{item_name}.PNG")
                 print(f"images/Gui/{item_name}.PNG pre-loaded successfully.")
+
             return ImageLoader.loaded_item_images[item_name]
+
         except FileNotFoundError:
             print(f"Error: '{item_name.capitalize()}' image not found.")
             return None
 
+    @memoize
     @staticmethod
     def load_image(item_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"

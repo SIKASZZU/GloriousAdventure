@@ -106,7 +106,7 @@ class ObjectManagement:
                     object_height = item.get("Object_height")
 
                     # Load object image using ItemLoader
-                    object_image = ImageLoader.load_image(self, object_image_name)   ### TODO: SIIN KA MIDAGI VALESTI IMAGE
+                    object_image = ImageLoader.load_image(object_image_name)   ### TODO: SIIN KA MIDAGI VALESTI IMAGE
 
                     interaction_boxes[object_id] = (object_image, object_width, object_height)
 
