@@ -5,6 +5,8 @@ from items import items_list
 from variables import UniversalVariables
 from images import ImageLoader
 
+import time
+
 
 class RenderPictures:
     render_range: int = 0
@@ -12,6 +14,7 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
+    @staticmethod
     def map_render(self) -> None:
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
@@ -36,11 +39,11 @@ class RenderPictures:
                     terrain_value = UniversalVariables.terrain_data[i][j]
 
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
-                    image = ImageLoader.load_image(self, image_name)
+                    image = ImageLoader.load_image(image_name)
 
                     # Loadib Wheat'i ja Farmland'i
                     if terrain_value == 7 or terrain_value == 107:
-                        image = ImageLoader.load_image(self, "Farmland")
+                        image = ImageLoader.load_image("Farmland")
 
                     # Visualiseerib pilte
                     if image:
@@ -59,10 +62,13 @@ class RenderPictures:
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
 
-
 class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
     display_collision_box_decay: int = 0
+
+    def __init__(self):
+        self.terrain_data_minerals = 0
+        self.display_collision_box_decay = 0
 
     def object_list_creation(self) -> None:
         """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """

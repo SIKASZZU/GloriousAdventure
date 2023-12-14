@@ -3,6 +3,8 @@ import numpy as np
 import pygame
 import sys
 
+from map import MapData
+
 # Oma enda failid
 from menu import Menu
 #from vision import LightSource

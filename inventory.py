@@ -4,6 +4,8 @@ from images import ImageLoader
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
+from variables import log_calls_with_location, memoize, log_execution_time
+
 
 class Inventory:
 
@@ -91,6 +93,7 @@ class Inventory:
 
         elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
 
+    @memoize
     def calculate_inventory(self) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
@@ -130,6 +133,7 @@ class Inventory:
         itemid ja nende kogused """
 
         Inventory.calculate_inventory(self)
+        Inventory.calculate_craftable_items(self)
 
         # Tekitab semi-transparent recti
         overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)
@@ -149,7 +153,7 @@ class Inventory:
             pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect)
 
             if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
-                item_image = ImageLoader.load_image(self, item_name)
+                item_image = ImageLoader.load_image(item_name)
 
                 if item_image is not None:
                     # Resize itemi inventory
@@ -167,7 +171,6 @@ class Inventory:
                 text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
                 UniversalVariables.screen.blit(text, text_rect)
 
-
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida
         saab craftida vastavalt invile """
@@ -182,8 +185,8 @@ class Inventory:
                     required_items = recipe.get("Recipe", {})
 
                     for required_item, required_amount in required_items.items():
-                        if required_item not in Inventory.inventory or Inventory.inventory[
-                            required_item] < required_amount:
+                        if required_item not in Inventory.inventory or \
+                                Inventory.inventory[required_item] < required_amount:
                             can_craft = False
                             break
 
@@ -213,46 +216,47 @@ class Inventory:
         """ Renderib itemeid, mida saab
         craftida ja reageerib clickidele """
 
-        Inventory.calculate_craftable_items(self)
-
         Inventory.craftable_items_display_rects = self.craftable_items_display_rects
 
-        # Tekitab semi-transparent recti
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
-                                 pygame.SRCALPHA)
-        overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
+        # Kui craftable itemeid pole siis tuleb funcist välja
+        if Inventory.craftable_items_display_rects.__len__() != 0:
 
-        # Mustad boxid itemite ümber
-        for rect in Inventory.craftable_items_display_rects.values():  # Use self here to refer to the instance variable
-            # Invi hall taust
-            pygame.draw.rect(overlay, (177, 177, 177), rect)  # Teeb inventory läbipaistvaks
-            pygame.draw.rect(overlay, 'black', rect, 2)
+            # Tekitab semi-transparent recti
+            overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+                                     pygame.SRCALPHA)
+            overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
 
-        # Visualiseerib invi
-        UniversalVariables.screen.blit(overlay, (0, 0))
-        for item_name, rect in Inventory.craftable_items_display_rects.items():
-            item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
+            # Mustad boxid itemite ümber
+            for rect in Inventory.craftable_items_display_rects.values():  # Use self here to refer to the instance variable
+                # Invi hall taust
+                pygame.draw.rect(overlay, (177, 177, 177), rect)  # Teeb inventory läbipaistvaks
+                pygame.draw.rect(overlay, 'black', rect, 2)
 
-            # Pre-loading pildi, peformance säästmiseks
-            object_image = ImageLoader.load_image(self, item_name)
+            # Visualiseerib invi
+            UniversalVariables.screen.blit(overlay, (0, 0))
+            for item_name, rect in Inventory.craftable_items_display_rects.items():
+                item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
+                pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
 
-            # Muudab pildi suurust vastavalt inventory sloti suurusele
-            if object_image is not None:
-                # Resize itemi inventory
-                object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
+                # Pre-loading pildi, peformance säästmiseks
+                object_image = ImageLoader.load_image(item_name)
 
-                # Paneb itembi invi boxi keskele
-                item_image_rect = object_image.get_rect(center=item_rect.center)
+                # Muudab pildi suurust vastavalt inventory sloti suurusele
+                if object_image is not None:
+                    # Resize itemi inventory
+                    object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
 
-                # Displayb resized itemit
-                UniversalVariables.screen.blit(object_image, item_image_rect.topleft)
+                    # Paneb itembi invi boxi keskele
+                    item_image_rect = object_image.get_rect(center=item_rect.center)
 
-            # font, numbrid itemite loetlemiseks
-            font = pygame.font.Font(None, 20)
-            text = font.render(str(self.craftable_items[item_name]), True, 'Black')  # Display craftable amounts
-            text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
-            UniversalVariables.screen.blit(text, text_rect)
+                    # Displayb resized itemit
+                    UniversalVariables.screen.blit(object_image, item_image_rect.topleft)
+
+                # font, numbrid itemite loetlemiseks
+                font = pygame.font.Font(None, 20)
+                text = font.render(str(self.craftable_items[item_name]), True, 'Black')  # Display craftable amounts
+                text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
+                UniversalVariables.screen.blit(text, text_rect)
 
     ### TODO: kui craftimise ajal hoida shifti all ja clickida siis crafti max koguse mida saab craftida
     def craft_item(self, item_name):
@@ -283,3 +287,4 @@ class Inventory:
 
             # Lisab craftitud itemi invi
             Inventory.inventory[item_name] = Inventory.inventory.get(item_name, 0) + amount
+
