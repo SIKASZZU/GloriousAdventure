@@ -29,7 +29,7 @@ class PlayerUpdate:
     animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
     idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
                                                     animation_speeds)
-    
+
     def update_player(self) -> None:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
@@ -158,4 +158,4 @@ class PlayerUpdate:
         pygame.display.update()
 
         # Limit the frame rate to 60 FPS
-        self.clock.tick(544)
+        self.clock.tick(1000)

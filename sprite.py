@@ -2,6 +2,8 @@ import pygame
 from variables import UniversalVariables
 
 
+### TODO: Kõik ümber teha, liiga raske animatsioone lisada, lic teha func mis teeb selle kergeks
+
 def load_sprite_sheets(image_filenames):
     sprite_sheets = [pygame.image.load(filename).convert_alpha() for filename in image_filenames]
     animations = [[(0, 0, 130, 130)] * len(sprite_sheets) for _ in range(len(sprite_sheets))]

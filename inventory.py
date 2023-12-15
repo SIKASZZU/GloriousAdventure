@@ -4,8 +4,13 @@ from images import ImageLoader
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
-from variables import log_calls_with_location, memoize, log_execution_time
+from variables import Decorators
 
+def craftable_items_manager(func):
+    def wrapper(self, *args, **kwargs):
+        Inventory.calculate_craftable_items(self)
+        func(self, *args, **kwargs)
+    return wrapper
 
 class Inventory:
 
@@ -47,7 +52,6 @@ class Inventory:
 
                     if not clicked_inventory_item:
                         # Vaatab kas click on craftimis rectis
-                        Inventory.calculate_craftable_items(self)
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
                     Inventory.last_clicked_slot = index  # Uuendab last_clicked_slot
@@ -129,7 +133,6 @@ class Inventory:
         itemid ja nende kogused """
 
         Inventory.calculate_inventory(self)
-        Inventory.calculate_craftable_items(self)
 
         # Tekitab semi-transparent recti
         overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)
@@ -189,7 +192,7 @@ class Inventory:
                     if can_craft:
                         self.craftable_items[item["Name"]] = recipe.get("Amount", 1)
 
-        self.craftable_items_display_rects = {}
+        Inventory.craftable_items_display_rects = {}
 
         rect_width: int = UniversalVariables.block_size / 2
         rect_height: int = UniversalVariables.block_size / 2
@@ -206,13 +209,11 @@ class Inventory:
             cols = index % max_cols
 
             rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
-            self.craftable_items_display_rects[craftable_item] = rect
-
+            Inventory.craftable_items_display_rects[craftable_item] = rect
+    @craftable_items_manager
     def render_craftable_items(self):
         """ Renderib itemeid, mida saab
         craftida ja reageerib clickidele """
-
-        Inventory.craftable_items_display_rects = self.craftable_items_display_rects
 
         # Kui craftable itemeid pole siis tuleb funcist välja
         if Inventory.craftable_items_display_rects.__len__() != 0:
@@ -254,7 +255,6 @@ class Inventory:
                 text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
                 UniversalVariables.screen.blit(text, text_rect)
 
-    ### TODO: kui craftimise ajal hoida shifti all ja clickida siis crafti max koguse mida saab craftida
     def craft_item(self, item_name):
         """ Craftib itemi ja uuendab invi """
 
