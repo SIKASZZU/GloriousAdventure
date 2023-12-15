@@ -2,7 +2,7 @@ import pygame
 from variables import UniversalVariables
 
 
-### TODO: Kõik ümber teha, liiga raske animatsioone lisada, lic teha func mis teeb selle kergeks
+### TODO: Kõik ümber teha, liiga raske animatsioone lisada, lic teha func millega on kegem animatsioone teha
 
 def load_sprite_sheets(image_filenames):
     sprite_sheets = [pygame.image.load(filename).convert_alpha() for filename in image_filenames]
