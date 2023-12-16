@@ -22,42 +22,42 @@ class ImageLoader:
 
     @staticmethod
     ### TODO: Tuleks panna load_image funci sisse
-    def load_gui_image(item_name: str) -> Optional[pygame.Surface]:
+    def load_gui_image(image_name: str) -> Optional[pygame.Surface]:
         """ Renderib Gui pildid """
 
         try:
-            if item_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[item_name] = pygame.image.load(f"images/Gui/{item_name}.PNG")
-                print(f"images/Gui/{item_name}.PNG pre-loaded successfully.")
+            if image_name not in ImageLoader.loaded_item_images:
+                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Gui/{image_name}.PNG")
+                print(f"images/Gui/{image_name}.PNG pre-loaded successfully.")
 
-            return ImageLoader.loaded_item_images[item_name]
+            return ImageLoader.loaded_item_images[image_name]
 
         except FileNotFoundError:
-            print(f"Error: '{item_name.capitalize()}' image not found.")
+            print(f"Error: '{image_name.capitalize()}' image not found.")
             return None
 
     @staticmethod
-    def load_image(item_name: str) -> Optional[pygame.Surface]:
+    def load_image(image_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
         alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
 
         try:
-            if item_name in ImageLoader.loaded_item_images:
-                return ImageLoader.loaded_item_images[item_name]
+            if image_name in ImageLoader.loaded_item_images:
+                return ImageLoader.loaded_item_images[image_name]
 
             image_path = None
 
             # Peab siin ära LOADima, sest neid ei ole item_list'is
-            if item_name.startswith("Ground_"):
-                image_path = f"images/Objects/Ground/{item_name}.PNG"
+            if image_name.startswith("Ground_"):
+                image_path = f"images/Objects/Ground/{image_name}.PNG"
 
-            elif item_name.startswith("Water_"):
-                image_path = f"images/Objects/Water/{item_name}.PNG"
+            elif image_name.startswith("Water_"):
+                image_path = f"images/Objects/Water/{image_name}.PNG"
 
             if image_path:
                 loaded_image = pygame.image.load(image_path)
                 converted_image = loaded_image.convert_alpha()
-                ImageLoader.loaded_item_images[item_name] = converted_image
+                ImageLoader.loaded_item_images[image_name] = converted_image
                 print(f"{image_path} pre-loaded successfully.")
                 return converted_image
 
@@ -65,24 +65,24 @@ class ImageLoader:
                 name = item.get("Name")
 
                 # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
-                if name == item_name:
+                if name == image_name:
                     item_type = item.get("Type")
 
                     if item_type == "Object":
-                        image_path = f"images/Objects/{item_name}.PNG"
+                        image_path = f"images/Objects/{image_name}.PNG"
                     elif item_type == "Mineral":
-                        image_path = f"images/Items/Minerals/{item_name}.PNG"
+                        image_path = f"images/Items/Minerals/{image_name}.PNG"
                     elif item_type == "Tool":
-                        image_path = f"images/Items/Tools/{item_name}.PNG"
+                        image_path = f"images/Items/Tools/{image_name}.PNG"
 
                     if image_path:
                         loaded_image = pygame.image.load(image_path)
                         converted_image = loaded_image.convert_alpha()
-                        ImageLoader.loaded_item_images[item_name] = converted_image
+                        ImageLoader.loaded_item_images[image_name] = converted_image
                         print(f"{image_path} pre-loaded successfully.")
                         return converted_image
 
-            print(f"Error: '{item_name}' image not found.")
+            print(f"Error: '{image_name}' image not found.")
             return None
 
         except FileNotFoundError:
