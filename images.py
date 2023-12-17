@@ -1,6 +1,5 @@
 import pygame
 from items import items_list
-from variables import Decorators
 
 # Menu pildid
 menu_images = {
@@ -21,7 +20,6 @@ import pygame
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
 
-    @Decorators.memoize
     @staticmethod
     ### TODO: Tuleks panna load_image funci sisse
     def load_gui_image(item_name: str) -> Optional[pygame.Surface]:
@@ -38,7 +36,6 @@ class ImageLoader:
             print(f"Error: '{item_name.capitalize()}' image not found.")
             return None
 
-    @Decorators.memoize
     @staticmethod
     def load_image(item_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
