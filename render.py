@@ -127,7 +127,8 @@ class CreateCollisionBoxes:
                                     CreateCollisionBoxes.terrain_data_minerals += 1
                                 CreateCollisionBoxes.display_collision_box_decay += 1
                     except Exception as e: print(f'Error: {e}, render.py @ if UniversalVariables.terrain_data[y][x] in object_collision_boxes:')
-        # Create a dictionary to map each id to its sort order
+        
+        # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
         id_sort_order = {6: 1, # First to be rendered
                         5: 2,
                         2: 3,

@@ -129,7 +129,6 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 2, 7)
 
-
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
@@ -139,6 +138,7 @@ class PlayerUpdate:
         food_icon = ImageLoader.load_gui_image("Food")
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
+
 
     def render_general(self) -> None:
         """ See peaks olema alati kõige peal. 
@@ -158,4 +158,4 @@ class PlayerUpdate:
         pygame.display.update()
 
         # Limit the frame rate to 60 FPS
-        self.clock.tick(1000)
+        self.clock.tick(60)
