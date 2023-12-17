@@ -36,10 +36,11 @@ class ImageLoader:
             return None
 
     @staticmethod
-    @Decorators.memoize
     def load_image(image_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
-        alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
+        järgi ning salvestab need vahemällu edaspidiseks kasutamiseks.
+
+                     SEE FUNC EI VISUALISEERI PILTE !!!! """
 
         try:
             if image_name in ImageLoader.loaded_item_images:
