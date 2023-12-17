@@ -97,6 +97,9 @@ class Inventory:
 
         elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
 
+
+
+    ### TODO: VÕTAB LIIGA PALJU RAMMI
     def calculate_inventory(self) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
@@ -127,6 +130,9 @@ class Inventory:
                 rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
                 Inventory.inventory_display_rects.append(rect)
 
+
+
+    ### TODO: VÕTAB LIIGA PALJU RAMMI
     def render_inventory(self) -> None:
         """ Callib calculate_inventory,
         renderib invi, invis olevad

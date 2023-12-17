@@ -11,6 +11,7 @@ import time
 class RenderPictures:
     render_range: int = 0
     render_terrain_data: list = []
+    occupied_positions: dict = {}
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
@@ -21,18 +22,23 @@ class RenderPictures:
 
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // 200
 
-        player_grid_row = int((UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
-        player_grid_col = int((UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
+        player_grid_row = int((
+                                          UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
+        player_grid_col = int((
+                                          UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
         for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
+            for j in range(player_grid_row - RenderPictures.render_range,
+                           player_grid_row + RenderPictures.render_range + 1):
                 terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
                 # Salvestab koordinaadid listi, et neid saaks hiljem kasutada object list renderis
-                try: self.row.append((j, i)),
-                except IndexError: pass
+                try:
+                    self.row.append((j, i)),
+                except IndexError:
+                    pass
 
                 # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
                 if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
@@ -47,20 +53,43 @@ class RenderPictures:
 
                     # Visualiseerib pilte
                     if image:
-                        scaled_image = pygame.transform.scale(image, (
-                        UniversalVariables.block_size, UniversalVariables.block_size))
-                        UniversalVariables.screen.blit(scaled_image, (terrain_x, terrain_y))
+                        terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
+                        terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
+                        position = (i, j)  # Using grid indices directly for the position
+
+                        if position not in RenderPictures.occupied_positions:
+
+                            scaled_image = pygame.transform.scale\
+                                    (
+                                    image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                )
+
+                            UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
+                            RenderPictures.occupied_positions[position] = scaled_image
+                        else:
+                            saved_image = RenderPictures.occupied_positions[position]
+                            scaled_saved_image = pygame.transform.scale\
+                                    (
+                                    saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                )
+
+                            UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
 
                     if terrain_value == 99:  # mazei sein
-                        wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#212529', wall)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                        wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size,
+                                           UniversalVariables.block_size)
+                        pygame.draw.rect(UniversalVariables.screen, '#212529',
+                                         wall)  ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
 
                     if terrain_value == 98:  # mazei p6rand
-                        floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size, UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#6c757d', floor)   ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                        floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size,
+                                            UniversalVariables.block_size)
+                        pygame.draw.rect(UniversalVariables.screen, '#6c757d',
+                                         floor)  ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
 
             # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
             RenderPictures.render_terrain_data.append(self.row)
+
 
 class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
@@ -80,11 +109,11 @@ class CreateCollisionBoxes:
         # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
         object_collision_boxes = {}
         # object_collision_boxes = {
-                                # 4: [0.85, 0.85, 0.35, 0.7],
-                                # 2: [0.3, 0.25, 0.5, 0.4],
-                                # 5: [0, 0, 0, 0],
-                                # 6: [0, 0, 0, 0]
-                                # }
+        # 4: [0.85, 0.85, 0.35, 0.7],
+        # 2: [0.3, 0.25, 0.5, 0.4],
+        # 5: [0, 0, 0, 0],
+        # 6: [0, 0, 0, 0]
+        # }
 
         # Lisab listi ID, collision_box'i
         for item in items_list:
@@ -119,21 +148,25 @@ class CreateCollisionBoxes:
 
                             if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
                                 new_object: tuple[int, ...] = (
-                                collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x,
-                                collision_box_offset_y)
+                                    collision_box_x, collision_box_y, collision_box_width, collision_box_height,
+                                    object_id, collision_box_offset_x,
+                                    collision_box_offset_y)
 
                                 if new_object not in UniversalVariables.collision_boxes:
                                     UniversalVariables.collision_boxes.append(new_object)
                                     CreateCollisionBoxes.terrain_data_minerals += 1
                                 CreateCollisionBoxes.display_collision_box_decay += 1
-                    except Exception as e: print(f'Error: {e}, render.py @ if UniversalVariables.terrain_data[y][x] in object_collision_boxes:')
-        
+                    except Exception as e:
+                        print(
+                            f'Error: {e}, render.py @ if UniversalVariables.terrain_data[y][x] in object_collision_boxes:')
+
         # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
-        id_sort_order = {6: 1, # First to be rendered
-                        5: 2,
-                        2: 3,
-                        4: 4,
-                        7: 5}  # Last to be rendered
+        id_sort_order = {6: 1,  # First to be rendered
+                         5: 2,
+                         2: 3,
+                         4: 4,
+                         7: 5}  # Last to be rendered
 
         # Sort the collision_boxes list based on the custom sort order
-        UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+        UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,
+                                                    key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
