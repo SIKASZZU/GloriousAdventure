@@ -1,6 +1,7 @@
 import pygame
 from items import items_list
 from typing import Dict, Optional
+from variables import Decorators
 
 # Menu pildid
 menu_images = {
@@ -35,6 +36,7 @@ class ImageLoader:
             return None
 
     @staticmethod
+    @Decorators.memoize
     def load_image(image_name: str) -> Optional[pygame.Surface]:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
         alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
