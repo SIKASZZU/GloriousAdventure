@@ -67,7 +67,6 @@ class Decorators:
 
             return func(*args, **kwargs)
         return wrapper
-
 class UniversalVariables:
     # ******************** PLAYER ******************** #
 
