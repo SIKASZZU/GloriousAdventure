@@ -1,5 +1,6 @@
 import pygame
 from items import items_list
+from typing import Dict, Optional
 
 # Menu pildid
 menu_images = {
@@ -12,9 +13,6 @@ menu_images = {
     "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
     "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
 }
-
-from typing import Dict, Optional
-import pygame
 
 
 class ImageLoader:
@@ -41,9 +39,7 @@ class ImageLoader:
         """ load_image meetod laeb pildid nende "Item" - "Name" ja "Type"
         alusel, salvestades need vahemällu edaspidiseks kasutamiseks. """
 
-        try: 
-            # see pede munk, ei liigu mitte kunagi siia statementi sisse
-            print('loaded_item_images', ImageLoader.loaded_item_images)
+        try:
             if image_name in ImageLoader.loaded_item_images:
                 return ImageLoader.loaded_item_images[image_name]
             else:
