@@ -68,12 +68,12 @@ class Decorators:
             return func(*args, **kwargs)
         return wrapper
 class UniversalVariables:
-    # ******************** PLAYER ******************** #
 
     block_size: int = 100
-    player_height = block_size * 0.65
-    player_width = block_size * 0.45
 
+    # ******************** PLAYER ******************** #
+    player_height: int = block_size * 0.65
+    player_width: int = block_size * 0.45
 
     player_hitbox_offset_x = 0.29 * block_size
     player_hitbox_offset_y = 0.22 * block_size

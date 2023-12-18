@@ -53,41 +53,31 @@ class RenderPictures:
 
                     # Visualiseerib pilte
                     if image:
-                        terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
-                        terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
-                        position = (i, j)  # Using grid indices directly for the position
-
-                        if position not in RenderPictures.occupied_positions:
-
-                            scaled_image = pygame.transform.scale\
-                                    (
-                                    image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                )
-
-                            UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
-                            RenderPictures.occupied_positions[position] = scaled_image
+                        if terrain_value == 98 or terrain_value == 99:
+                            pass
                         else:
-                            saved_image = RenderPictures.occupied_positions[position]
-                            scaled_saved_image = pygame.transform.scale\
-                                    (
-                                    saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                )
+                            terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
+                            terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
+                            position = (i, j)  # Using grid indices directly for the position
 
-                            UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
+                            if position not in RenderPictures.occupied_positions:
 
-                    if terrain_value == 99:  # mazei sein
-                        wall = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size,
-                                           UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#212529',
-                                         wall)  ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                                scaled_image = pygame.transform.scale\
+                                        (
+                                        image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                    )
 
-                    if terrain_value == 98:  # mazei p6rand
-                        floor = pygame.Rect(terrain_x, terrain_y, UniversalVariables.block_size,
-                                            UniversalVariables.block_size)
-                        pygame.draw.rect(UniversalVariables.screen, '#6c757d',
-                                         floor)  ### TODO: IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA IMAGE PASK VAJA TEHA KORDA
+                                UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
+                                RenderPictures.occupied_positions[position] = scaled_image
+                            else:
+                                saved_image = RenderPictures.occupied_positions[position]
+                                scaled_saved_image = pygame.transform.scale\
+                                        (
+                                        saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                    )
 
-            # Teeb chunki render range laiuselt - test_list = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
+                                UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
+
             RenderPictures.render_terrain_data.append(self.row)
 
 
