@@ -230,30 +230,20 @@ items_list = [
 
     {
         "Type": "Object",
-        "Name": "Maze_Ground",
-        "ID": 98,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Wall",
+        "Name": "Wall",
         "ID": 99,
         "Breakable": False,
         "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
-        "Render_when": 0
+        "Render_when": (block_size * 1)
         },
 ]
 
 # Testida asju mis on seotud ainult item'ga
 if __name__ == "__main__":
-    item_name_to_find = "Rock"
+    item_name_to_find = "Stone"
     item_value_to_find = "Collision_box"
 
     # Otsib listist itemi nime ja otsitavad valued
