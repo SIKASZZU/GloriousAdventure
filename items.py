@@ -229,21 +229,31 @@ items_list = [
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
-        "Type": "Maze_Object",
-        "Name": "Wall",
+        "Type": "Object",
+        "Name": "Maze_Ground",
+        "ID": 98,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Wall",
         "ID": 99,
         "Breakable": False,
         "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
-        "Render_when": (block_size * 1)
+        "Render_when": 0
         },
 ]
 
 # Testida asju mis on seotud ainult item'ga
 if __name__ == "__main__":
-    item_name_to_find = "Stone"
+    item_name_to_find = "Rock"
     item_value_to_find = "Collision_box"
 
     # Otsib listist itemi nime ja otsitavad valued
