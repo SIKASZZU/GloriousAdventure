@@ -229,7 +229,7 @@ items_list = [
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
-        "Type": "Maze_Object",
+        "Type": "Object",
         "Name": "Wall",
         "ID": 99,
         "Breakable": False,
