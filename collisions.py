@@ -38,15 +38,16 @@ class Collisions:
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
             if self.player_rect.colliderect(collision_object_rect):
-                #print(obj_collision_box)
-
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
 
-                if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
+                if object_id == 99 or object_id == 98:
                     Collisions.render_after = True
-                else: 
-                    Collisions.render_after = False
+                else:
+                    if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
+                        Collisions.render_after = True
+                    else: 
+                        Collisions.render_after = False
 
         Collisions.collision_hitbox(self)
 
