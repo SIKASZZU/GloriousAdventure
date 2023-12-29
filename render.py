@@ -20,12 +20,10 @@ class RenderPictures:
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
-        RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // 200
+        RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size * 2)
 
-        player_grid_row = int((
-                                          UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
-        player_grid_col = int((
-                                          UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
+        player_grid_row = int(( UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
+        player_grid_col = int((UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
         for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range):
             self.row: list[tuple[int, int], ...] = []
 
