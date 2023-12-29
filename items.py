@@ -32,7 +32,6 @@ Collision_box: [offset_x, offset_y, width, height]
 
 ### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
-### TODO: Copy-pastesin seda allapoole kaa
 
 items_list = [
     {
@@ -40,17 +39,11 @@ items_list = [
         "Name": "Rock",
         "ID": 2,
         "HP": 5,
-
-        ### TODO: Muudaks selle selliseks????
         "Breakable": True,
         # "Breakable": [
         #     {"hardness": "Wood"},
         #     {"amount": ("Stone", random.randint(1, 5))},
         # ],
-        ### TODO: Ehk siis selle True asemel on see item ja kogus mida sa saad objecti lõhkudes
-        ### TODO: Kui "Breakable" ei ole dictis siis seda itemit ei saa lõhkuda
-
-        "Collision_box": [0.3, 0.25, 0.5, 0.4],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 0.8),
         "Render_when": -(block_size * 0.1)
@@ -68,18 +61,11 @@ items_list = [
         "Name": "Oak_Tree",
         "ID": 4,
         "HP": 5,
-
-        ### TODO: Muudaks selle selliseks????
-
         "Breakable": True,
         # "Breakable": [
         #     {"hardness": "None"},
         #     {"amount": ("Oak_Wood", random.randint(1, 3))},
         # ],
-        ### TODO: Ehk siis selle True asemel on see item ja kogus mida sa saad objecti lõhkudes
-        ### TODO: Kui "Breakable" ei ole dictis siis seda itemit ei saa lõhkuda
-
-        "Collision_box": [0.85, 0.85, 0.35, 0.7],
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
         "Render_when": block_size * 0.8
@@ -118,9 +104,6 @@ items_list = [
         },
 
     # Items
-
-### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
-### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
     {
         "Type": "Mineral",

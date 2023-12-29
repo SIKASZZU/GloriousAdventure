@@ -104,6 +104,8 @@ class ObjectManagement:
                     object_image_name = item.get("Name")
                     object_width = item.get("Object_width")
                     object_height = item.get("Object_height")
+                    object_breakable = item.get("Breakable")
+
 
                     # Load object image using ItemLoader
                     object_image = ImageLoader.load_image(object_image_name)   ### TODO: SIIN KA MIDAGI VALESTI IMAGE
@@ -128,7 +130,8 @@ class ObjectManagement:
 
             if (ObjectManagement.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-                pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
+                if object_breakable:
+                    pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height) -> None:
