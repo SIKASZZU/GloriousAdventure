@@ -48,27 +48,41 @@ class Menu:
     def load_and_resize_image(image_path):
         original_image = pygame.image.load(image_path).convert_alpha()
         width, height = original_image.get_width(), original_image.get_height()
-        resized_image = pygame.transform.scale(original_image, (width // 2, height // 2))
+        resized_image = pygame.transform.scale(original_image, (width * 2, height * 2))
         return resized_image
 
     menu_images = {
         "Play": load_and_resize_image("images/Menu_buttons/Play.png"),
         "Settings": load_and_resize_image("images/Menu_buttons/Settings.png"),
-        "Store": load_and_resize_image("images/Menu_buttons/Store_Right.png"),
+        "Store": load_and_resize_image("images/Menu_buttons/Store.png"),
         "Quit": load_and_resize_image("images/Menu_buttons/Quit.png"),
-        "Pause": load_and_resize_image("images/Menu_buttons/Pause.png")
+        "Graphics": load_and_resize_image("images/Menu_buttons/Graphics.png"),
+        "Audio": load_and_resize_image("images/Menu_buttons/Audio.png"),
+        "Controls": load_and_resize_image("images/Menu_buttons/Controls.png"),
+        "Back": load_and_resize_image("images/Menu_buttons/Back.png"),
     }
 
-    play_button = Button(screen_x // 2 - 176 // 2, 225, menu_images["Play"], 1)
-    settings_button = Button(screen_x // 2 - 256 // 2, 350, menu_images["Settings"], 1)
-    store_button = Button(screen_x - 165, screen_y - block_size * 1.5, menu_images["Store"], 1)
-    quit_button = Button(screen_x // 2 - 179 // 2, 475, menu_images["Quit"], 1)
+    # Main menu
+    play_button = Button(screen_x // 2 - menu_images["Play"].get_width() // 2, screen_y // 3, menu_images["Play"], 1)
+    settings_button = Button(screen_x // 2 - menu_images["Settings"].get_width() // 2, screen_y // 2, menu_images["Settings"], 1)
+    quit_button = Button(screen_x // 2 - menu_images["Quit"].get_width() // 2, screen_y // 1.5, menu_images["Quit"], 1)
+    store_button = Button(screen_x - menu_images["Store"].get_width() / 1.3, screen_y - menu_images["Store"].get_height() * 1.1, menu_images["Store"], 1)
+
+    # Settings menu
+    graphics_button = Button(screen_x // 2 - menu_images["Graphics"].get_width() // 2, screen_y // 6, menu_images["Graphics"], 1)
+    audio_button = Button(screen_x // 2 - menu_images["Audio"].get_width() // 2, screen_y // 3, menu_images["Audio"], 1)
+    controls_button = Button(screen_x // 2 - menu_images["Controls"].get_width() // 2, screen_y // 2, menu_images["Controls"], 1)
+    back_button = Button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 1.5, menu_images["Back"], 1)
 
     def menu(self):
-        if self.game_menu_state == "main":
+        """ See FUNC seadistab 'Main Menu'd.
+        Täpsemalt: Siit saab muuta nuppude
+        funktsioone ja ülejäänud menu loogikat. """
 
-            if Menu.play_button.draw(self.screen):  # Play
-                self.game_state = False  # Paneb mängu tööle
+        # See on mängu main menu
+        if self.game_menu_state == "main":
+            if Menu.play_button.draw(self.screen):
+                self.game_state = False  # Start the game
 
             if Menu.settings_button.draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
@@ -76,31 +90,43 @@ class Menu:
             if Menu.store_button.draw(self.screen):  # Store
                 self.game_menu_state = "store"
 
-            if Menu.quit_button.draw(self.screen):  # Quit
+            if Menu.quit_button.draw(self.screen):  # Paneb mängu kinni
                 pygame.quit()
                 sys.exit()
 
-        # Kui menu pealt mingi settingutesse
-        if self.game_menu_state == "settings":
-            if Menu.quit_button.draw(self.screen):
+        # Kui mingi settingutesse
+        elif self.game_menu_state == "settings":
+            if Menu.graphics_button.draw(self.screen):  # Graphics
+                self.game_menu_state = "graphics"
+
+            if Menu.audio_button.draw(self.screen):  # Audio
+                self.game_menu_state = "audio"
+
+            if Menu.controls_button.draw(self.screen):  # Controls
+                self.game_menu_state = "controls"
+
+            if Menu.back_button.draw(self.screen):  # Tagasi Main Menu'sse
                 self.game_menu_state = "main"
 
-            # if Menu.graphics_button.draw(self.screen):  # Graphics
-            #     self.game_menu_state = "graphics"
-            #
-            # if Menu.audio_button.draw(self.screen):  # Audio
-            #     self.game_menu_state = "audio"
-            #
-            # if Menu.controls_button.draw(self.screen):  # Controls
-            #     self.game_menu_state = "controls"
-            #
-            # if Menu.back_button.draw(self.screen):  # Back to Settings
-            #     self.game_menu_state = "settings"
-
-        if self.game_menu_state == "store":
-            if Menu.quit_button.draw(self.screen):
+        # Kui mingi store'i
+        elif self.game_menu_state == "store":
+            if Menu.back_button.draw(self.screen):  # Tagasi Main Menu'sse
                 self.game_menu_state = "main"
 
+        # Kui mingi settings - graphics
+        elif self.game_menu_state == "graphics":
+            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+                self.game_menu_state = "settings"
+
+        # Kui mingi settings - audio
+        elif self.game_menu_state == "audio":
+            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+                self.game_menu_state = "settings"
+
+        # Kui mingi settings - controls
+        elif self.game_menu_state == "controls":
+            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+                self.game_menu_state = "settings"
 
 class PauseMenu:
     game_paused: bool

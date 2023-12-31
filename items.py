@@ -84,7 +84,7 @@ items_list = [
     {
         "Type": "Object",
         "Name": "Mushroom",
-        "ID": 6,
+        "ID": 8,
         "Breakable": True,
         "Placeable": True,
         "Collision_box": [0, 0, 0, 0],
