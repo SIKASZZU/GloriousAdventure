@@ -4,7 +4,7 @@ import random
 from items import items_list
 from variables import UniversalVariables
 from images import ImageLoader
-
+from camera import Camera
 import time
 
 
@@ -20,15 +20,18 @@ class RenderPictures:
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
-        RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size * 2)
+        RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
+                UniversalVariables.block_size) // 6
 
-        player_grid_row = int(( UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x + UniversalVariables.player_width / 2) // UniversalVariables.block_size)
-        player_grid_col = int((UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y + UniversalVariables.player_height / 2) // UniversalVariables.block_size)
-        for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range):
+        # TODO: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse
+        # Use the camera's position to determine the render range
+        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 4
+        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
+
+        for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(player_grid_row - RenderPictures.render_range,
-                           player_grid_row + RenderPictures.render_range + 1):
+            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range + 9):
                 terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
