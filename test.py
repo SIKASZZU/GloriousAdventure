@@ -93,3 +93,39 @@ while running:
 
 # Quit Pygame properly
 pygame.quit()
+
+
+import pygame
+import os
+
+# Initialize Pygame
+pygame.init()
+
+# Set window size
+window_width = 800
+window_height = 600
+window = pygame.display.set_mode((window_width, window_height))
+pygame.display.set_caption("Image Blitting and Resizing")
+
+# Load image
+image_path = "images/Main_Menu.jpg"  # Replace with your image path
+if not os.path.exists(image_path):
+    raise FileNotFoundError(f"Image not found at {image_path}")
+original_image = pygame.image.load(image_path).convert()  # Load and convert for better performance
+
+# Resize image to fit window
+image = pygame.transform.scale(original_image, (window_width, window_height))
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Blit the image onto the screen
+    window.blit(image, (0, 0))
+
+    # Update the display
+    pygame.display.update()
+
+pygame.quit()

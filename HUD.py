@@ -1,10 +1,10 @@
 import pygame
-
+from variables import UniversalVariables
 class HUD_class:
     
     # need v6iks nahhuj siit saada. Game classi ei saa importida - circular porno
-    screen_x: int = 1000
-    screen_y: int = 750
+    screen_x: int = UniversalVariables.screen_x
+    screen_y: int = UniversalVariables.screen_y
     screen = pygame.display.set_mode((screen_x, screen_y))
 
     # Kuna need muutuvad stamina.py-s, siis t6mbasin need variablid siia.

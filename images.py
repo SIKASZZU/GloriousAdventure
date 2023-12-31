@@ -4,8 +4,7 @@ from typing import Dict, Optional
 from variables import Decorators
 
 # Menu pildid
-menu_images = {
-    "pause_background": pygame.image.load("images/Menu_buttons/pause_background.png").convert_alpha(),
+pause_menu_images = {
     "resume_img": pygame.image.load("images/Menu_buttons/button_resume.png").convert_alpha(),
     "options_img": pygame.image.load("images/Menu_buttons/button_options.png").convert_alpha(),
     "quit_img": pygame.image.load("images/Menu_buttons/button_quit.png").convert_alpha(),
