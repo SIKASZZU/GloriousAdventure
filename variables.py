@@ -69,12 +69,12 @@ class Decorators:
         return wrapper
 class UniversalVariables:
     # ******************** SCREEN ******************** #
-    screen_x: int = 1000
-    screen_y: int = 750
+    screen_x: int = 1920
+    screen_y: int = 1080
 
     screen = pygame.display.set_mode((screen_x, screen_y))
 
-    block_size: int = screen_x // 15
+    block_size: int = screen_x // 18
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65

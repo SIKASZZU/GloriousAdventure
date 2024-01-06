@@ -35,15 +35,8 @@ class Game:
     # ******************** MENU ******************** #
     screen = UniversalVariables.screen
 
-    image = "images/Main_Menu.jpg"
-    original_image = pygame.image.load(image).convert()
-    main_menu_image = pygame.transform.scale(original_image, (UniversalVariables.screen_x, UniversalVariables.screen_y))
-
     game_menu_state = "main"
     pause_menu_state = "main"
-
-    game_state = True
-    game_paused = False
 
     def run(self) -> None:
         while True:
@@ -51,26 +44,24 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    if self.game_paused == False: 
-                        self.game_paused = True
-                    else:
-                        self.game_paused = False
-                        self.pause_menu_state = "main"
+                if not Menu.game_state:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                        if PauseMenu.game_paused == False:
+                            PauseMenu.game_paused = True
+                        else:
+                            PauseMenu.game_paused = False
+                            self.pause_menu_state = "main"
 
             # Vaatab kas mäng on tööle pandud või mitte
-            if self.game_state:
-                self.screen.blit(self.main_menu_image, (0, 0))
-                Menu.menu(self)
+            if Menu.game_state:
+                Menu.main_menu(self)
                 pygame.display.update()
 
             # Kui mäng pandakse tööle
-            if not self.game_state:
-
-                self.screen.fill((79, 68, 65))  # Fill with a background color (black in this case)
+            if not Menu.game_state:
 
                 # Vaatab kas mäng on pausi peale pandud või mitte
-                if not self.game_paused:
+                if not PauseMenu.game_paused:
                     PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                     Camera.box_target_camera(self)  # Kaamera
 

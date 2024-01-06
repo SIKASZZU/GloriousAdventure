@@ -46,7 +46,7 @@ class Inventory:
                             if index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
                                 Inventory.check_slot(self, index)
                             else:
-                                print(f'Already selected slot nr {index + 1}')  ### TODO: Peaks olema check sloti all
+                                print(f'Already selected slot nr {index + 1}')
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
 
@@ -98,8 +98,7 @@ class Inventory:
         elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
 
 
-
-    ### TODO: VÕTAB LIIGA PALJU RAMMI
+    # TODO : invi on vaja optimatiseerida
     def calculate_inventory(self) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
@@ -109,8 +108,6 @@ class Inventory:
         rect_height: int = UniversalVariables.block_size / 2
         total_rows: int = 6  # Max: 9
         total_cols: int = 3  # Max: 9
-
-        ### TODO: Kui inv on PAREMAL siis see on playerist kaugemal - Vaata seda valget boxi playeri ümber
 
         # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
         rect_x: int = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2 + UniversalVariables.offset_x
@@ -132,13 +129,12 @@ class Inventory:
 
 
 
-    ### TODO: VÕTAB LIIGA PALJU RAMMI
     def render_inventory(self) -> None:
         """ Callib calculate_inventory,
         renderib invi, invis olevad
         itemid ja nende kogused """
-
-        Inventory.calculate_inventory(self)
+        if not Inventory.inventory_display_rects:
+            Inventory.calculate_inventory(self)
 
         # Tekitab semi-transparent recti
         overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)

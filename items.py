@@ -52,7 +52,6 @@ items_list = [
         "Type": "Object",
         "Name": "Farmland",
         "ID": 3,
-        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
         },
@@ -76,7 +75,6 @@ items_list = [
         "ID": 6,
         "Breakable": True,
         "Placeable": True,
-        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
         "Render_when": -(block_size * 0.23)
@@ -87,7 +85,6 @@ items_list = [
         "ID": 8,
         "Breakable": True,
         "Placeable": True,
-        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 0.3),
         "Object_height": int(block_size * 0.3),
         "Render_when": -(block_size * 0.45)
@@ -97,9 +94,18 @@ items_list = [
         "Name": "Wheat",
         "ID": 7,
         "Breakable": True,
-        "Collision_box": [0, 0, 0, 0],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
+        "Render_when": (block_size * .2)
+        },
+
+    {
+        "Type": "Object",
+        "Name": "Big_Bush",
+        "ID": 9,
+        "Breakable": True,
+        "Object_width": int(block_size * .7),
+        "Object_height": int(block_size * .7),
         "Render_when": (block_size * .2)
         },
 

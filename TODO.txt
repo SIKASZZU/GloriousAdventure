@@ -1,10 +1,3 @@
-# Itemite list !!!
-    * Item interaction box       - Failis collision.py,   Collisions.check_collisions(self)
-
-    * Pildi suurus / asukoht     - Failis objects.py,     ObjectManagement.place_and_render_object(self)
-
-    * Hitboxide suurus           - Failis render.py,      RenderPictures.object_list_creation(self)
-
 # Add objects:
     # Earthworm
 
@@ -41,5 +34,7 @@
 
 # probleemid
     # Kui 2 collion boxi on samal joonel ja sa yritad mööda minna siis glithib
-    # Wheatil pole hitboxe
+    # Render chunk - window size muutmisega läheb perse
+    # health ja hungeri pildid ei muutu kui window size muuta
+    # Inventory tuleb uuesti teha - midagi väga perses ei tööta ilusti
 

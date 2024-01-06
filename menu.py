@@ -2,171 +2,279 @@ import pygame
 import sys
 
 from variables import UniversalVariables
-from images import pause_menu_images
 
 
-class Button:
-    def __init__(self, x, y, image, scale):
-        width = image.get_width()
-        height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+class GameButton:
+    def __init__(self, x: float, y: float, image: 'pygame.Surface', scale: float):
+        self.image = self._scale_image(image, scale)
+        self.rect = self.image.get_rect(topleft=(x, y))
 
-    clicked = False  # Kui see on self.clicked, siis tekib mitu inputi
+    clicked: bool = False
 
-    def draw(self, surface):
-        action = False
-        # get mouse position
-        pos = pygame.mouse.get_pos()
+    def draw(self, surface: 'pygame.Surface') -> bool:
+        action: bool = False
+        pos: tuple[int, int] = pygame.mouse.get_pos()
 
-        # check mouseover and clicked conditions
         if self.rect.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1 and not Button.clicked:
-                Button.clicked = True
+            if pygame.mouse.get_pressed()[0] == 1 and not GameButton.clicked:
+                GameButton.clicked = True
                 action = True
 
         if pygame.mouse.get_pressed()[0] == 0:
-            Button.clicked = False
+            GameButton.clicked = False
 
-        surface.blit(self.image, (self.rect.x, self.rect.y))
-
+        surface.blit(self.image, self.rect.topleft)
         return action
+
+    @staticmethod
+    def _scale_image(image: 'pygame.Surface', scale: float) -> 'pygame.Surface':
+        width, height = image.get_width(), image.get_height()
+        return pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+
+
+def load_and_resize_image(image_path: str) -> 'pygame.Surface':
+    original_image = pygame.image.load(image_path).convert_alpha()
+    width, height = original_image.get_width(), original_image.get_height()
+    resized_image = pygame.transform.scale(original_image, (width * 2, height * 2))
+    return resized_image
+
+
+menu_images = {
+    "Play": load_and_resize_image("images/Menu_buttons/Play.png"),
+    "Settings": load_and_resize_image("images/Menu_buttons/Settings.png"),
+    "Store": load_and_resize_image("images/Menu_buttons/Store.png"),
+    "Quit": load_and_resize_image("images/Menu_buttons/Quit.png"),
+    "Graphics": load_and_resize_image("images/Menu_buttons/Graphics.png"),
+    "Audio": load_and_resize_image("images/Menu_buttons/Audio.png"),
+    "Controls": load_and_resize_image("images/Menu_buttons/Controls.png"),
+    "Back": load_and_resize_image("images/Menu_buttons/Back.png"),
+    "Resume": load_and_resize_image("images/Menu_buttons/Resume.png"),
+    "Save_&_Menu": load_and_resize_image("images/Menu_buttons/Save_&_Menu.png"),
+    "Save_&_Quit": load_and_resize_image("images/Menu_buttons/Save_&_Quit.png"),
+}
+
+
+def create_button(x: float, y: float, image: 'pygame.Surface', multiplier: float = None) -> GameButton:
+    if not multiplier:
+        multiplier = 1
+    button = GameButton(x, y, image, multiplier)
+    return button
 
 
 class Menu:
-    game_state: bool
-    settings_category: bool
+    game_state: bool = True
     game_menu_state: str
 
     screen = UniversalVariables.screen
     screen_x: int = UniversalVariables.screen_x
     screen_y: int = UniversalVariables.screen_y
-    block_size: int = UniversalVariables.block_size
 
-    @staticmethod
-    def load_and_resize_image(image_path):
-        original_image = pygame.image.load(image_path).convert_alpha()
-        width, height = original_image.get_width(), original_image.get_height()
-        resized_image = pygame.transform.scale(original_image, (width * 2, height * 2))
-        return resized_image
+    image = "images/Main_Menu.jpg"
+    original_image = pygame.image.load(image).convert()
+    main_menu_image = pygame.transform.scale(original_image, (UniversalVariables.screen_x, UniversalVariables.screen_y))
 
-    menu_images = {
-        "Play": load_and_resize_image("images/Menu_buttons/Play.png"),
-        "Settings": load_and_resize_image("images/Menu_buttons/Settings.png"),
-        "Store": load_and_resize_image("images/Menu_buttons/Store.png"),
-        "Quit": load_and_resize_image("images/Menu_buttons/Quit.png"),
-        "Graphics": load_and_resize_image("images/Menu_buttons/Graphics.png"),
-        "Audio": load_and_resize_image("images/Menu_buttons/Audio.png"),
-        "Controls": load_and_resize_image("images/Menu_buttons/Controls.png"),
-        "Back": load_and_resize_image("images/Menu_buttons/Back.png"),
-    }
+    main_main = [
+        create_button(screen_x // 2 - menu_images["Play"].get_width() // 2, screen_y // 3, menu_images["Play"], 1),
+        create_button(screen_x // 2 - menu_images["Settings"].get_width() // 2, screen_y // 2, menu_images["Settings"], 1),
+        create_button(screen_x - menu_images["Store"].get_width() // 1.3, screen_y // 1.1, menu_images["Store"], 1),
+        create_button(screen_x // 2 - menu_images["Quit"].get_width() // 2, screen_y // 1.5, menu_images["Quit"], 1),
+    ]
 
-    # Main menu
-    play_button = Button(screen_x // 2 - menu_images["Play"].get_width() // 2, screen_y // 3, menu_images["Play"], 1)
-    settings_button = Button(screen_x // 2 - menu_images["Settings"].get_width() // 2, screen_y // 2, menu_images["Settings"], 1)
-    quit_button = Button(screen_x // 2 - menu_images["Quit"].get_width() // 2, screen_y // 1.5, menu_images["Quit"], 1)
-    store_button = Button(screen_x - menu_images["Store"].get_width() / 1.3, screen_y - menu_images["Store"].get_height() * 1.1, menu_images["Store"], 1)
+    main_settings = [
+        create_button(screen_x // 2 - menu_images["Graphics"].get_width() // 2, screen_y // 6, menu_images["Graphics"], 1),
+        create_button(screen_x // 2 - menu_images["Audio"].get_width() // 2, screen_y // 3, menu_images["Audio"], 1),
+        create_button(screen_x // 2 - menu_images["Controls"].get_width() // 2, screen_y // 2, menu_images["Controls"], 1),
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 1.5, menu_images["Back"], 1),
+    ]
 
-    # Settings menu
-    graphics_button = Button(screen_x // 2 - menu_images["Graphics"].get_width() // 2, screen_y // 6, menu_images["Graphics"], 1)
-    audio_button = Button(screen_x // 2 - menu_images["Audio"].get_width() // 2, screen_y // 3, menu_images["Audio"], 1)
-    controls_button = Button(screen_x // 2 - menu_images["Controls"].get_width() // 2, screen_y // 2, menu_images["Controls"], 1)
-    back_button = Button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 1.5, menu_images["Back"], 1)
+    main_store = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 6, menu_images["Back"], 1),
+    ]
 
-    def menu(self):
+    main_graphics = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 6, menu_images["Back"], 1),
+    ]
+
+    main_audio = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 3, menu_images["Back"], 1),
+    ]
+
+    main_controls = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 2, menu_images["Back"], 1),
+    ]
+
+    def main_menu(self) -> None:
         """ See FUNC seadistab 'Main Menu'd.
         Täpsemalt: Siit saab muuta nuppude
         funktsioone ja ülejäänud menu loogikat. """
 
-        # See on mängu main menu
-        if self.game_menu_state == "main":
-            if Menu.play_button.draw(self.screen):
-                self.game_state = False  # Start the game
+        self.screen.blit(Menu.main_menu_image, (0, 0))
 
-            if Menu.settings_button.draw(self.screen):  # Settings
+        if self.game_menu_state == "main":
+            if Menu.main_main[0].draw(self.screen):  # Main menu
+                Menu.game_state = False  # Paneb mängu tööle
+
+            if Menu.main_main[1].draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
 
-            if Menu.store_button.draw(self.screen):  # Store
+            if Menu.main_main[2].draw(self.screen):  # Store
                 self.game_menu_state = "store"
 
-            if Menu.quit_button.draw(self.screen):  # Paneb mängu kinni
+            if Menu.main_main[3].draw(self.screen):  # Quit
                 pygame.quit()
                 sys.exit()
 
-        # Kui mingi settingutesse
+        # Sub-Menu -- Main / Store
+        elif self.game_menu_state == "store":
+            if Menu.main_store[0].draw(self.screen):  # Main menu
+                self.game_menu_state = "main"
+
+        # Sub-Menu -- Main / Settings
         elif self.game_menu_state == "settings":
-            if Menu.graphics_button.draw(self.screen):  # Graphics
+            if Menu.main_settings[0].draw(self.screen):  # Graphics
                 self.game_menu_state = "graphics"
 
-            if Menu.audio_button.draw(self.screen):  # Audio
+            if Menu.main_settings[1].draw(self.screen):  # Audio
                 self.game_menu_state = "audio"
 
-            if Menu.controls_button.draw(self.screen):  # Controls
+            if Menu.main_settings[2].draw(self.screen):  # Controls
                 self.game_menu_state = "controls"
 
-            if Menu.back_button.draw(self.screen):  # Tagasi Main Menu'sse
+            if Menu.main_settings[3].draw(self.screen):  # Main menu
                 self.game_menu_state = "main"
 
-        # Kui mingi store'i
-        elif self.game_menu_state == "store":
-            if Menu.back_button.draw(self.screen):  # Tagasi Main Menu'sse
-                self.game_menu_state = "main"
-
-        # Kui mingi settings - graphics
+        # Sub-Menu -- Main / Settings / Graphics
         elif self.game_menu_state == "graphics":
-            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+            if Menu.main_graphics[0].draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
 
-        # Kui mingi settings - audio
+        # Sub-Menu -- Main / Settings / Audio
         elif self.game_menu_state == "audio":
-            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+            if Menu.main_audio[0].draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
 
-        # Kui mingi settings - controls
+        # Sub-Menu -- Main / Settings / Controls
         elif self.game_menu_state == "controls":
-            if Menu.back_button.draw(self.screen):  # Tagasi Settings'utesse
+            if Menu.main_controls[0].draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
+
 
 class PauseMenu:
-    game_paused: bool
-    game_state: bool
+    game_paused = False
+    screenshot = None
     pause_menu_state: str
 
     screen = UniversalVariables.screen
-    screen_x = UniversalVariables.screen_x
-    resume_button = Button(screen_x / 2 - 100, 175, pause_menu_images["resume_img"], 1)
-    options_button = Button(screen_x / 2 - 106, 300, pause_menu_images["options_img"], 1)
-    video_button = Button(screen_x / 2 - 178, 125, pause_menu_images["video_img"], 1)
-    audio_button = Button(screen_x / 2 - 179, 250, pause_menu_images["audio_img"], 1)
-    keys_button = Button(screen_x / 2 - 159, 375, pause_menu_images["keys_img"], 1)
-    back_button = Button(screen_x / 2 - 72, 500, pause_menu_images["back_img"], 1)
-    quit_button = Button(screen_x / 2 - 69, 425, pause_menu_images["quit_img"], 1)
+    screen_x: int = UniversalVariables.screen_x
+    screen_y: int = UniversalVariables.screen_y
 
-    def settings_menu(self):
+    # Semi-transparent hall pilt
+    semi_transparent_color = pygame.Surface((screen_x, screen_y), pygame.SRCALPHA)
+    transparency_level = 150  # 0 - 255 // väiksem seda paremini läbi näha
+    semi_transparent_color.fill((20, 20, 20, transparency_level))
+
+    pause_main = [
+        create_button(screen_x // 2 - menu_images["Resume"].get_width() // 2, screen_y // 6, menu_images["Resume"], 1),
+        create_button(screen_x // 2 - menu_images["Settings"].get_width() // 2, screen_y // 3, menu_images["Settings"], 1),
+        create_button(screen_x // 2 - menu_images["Save_&_Menu"].get_width() // 2, screen_y // 2, menu_images["Save_&_Menu"], 1),
+        create_button(screen_x // 2 - menu_images["Save_&_Quit"].get_width() // 2, screen_y // 1.5, menu_images["Save_&_Quit"], 1),
+    ]
+
+    pause_settings = [
+        create_button(screen_x // 2 - menu_images["Graphics"].get_width() // 2, screen_y // 6, menu_images["Graphics"], 1),
+        create_button(screen_x // 2 - menu_images["Audio"].get_width() // 2, screen_y // 3, menu_images["Audio"], 1),
+        create_button(screen_x // 2 - menu_images["Controls"].get_width() // 2, screen_y // 2, menu_images["Controls"], 1),
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 1.5, menu_images["Back"], 1),
+    ]
+
+    pause_graphics = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 6, menu_images["Back"], 1),
+    ]
+
+    pause_audio = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 3, menu_images["Back"], 1),
+
+    ]
+
+    pause_controls = [
+        create_button(screen_x // 2 - menu_images["Back"].get_width() // 2, screen_y // 2, menu_images["Back"], 1),
+
+    ]
+
+    def settings_menu(self) -> None:
+        """ See FUNC seadistab 'Pause Menu'd.
+        Täpsemalt: Siit saab muuta nuppude
+        funktsioone ja ülejäänud menu loogikat. """
         if self.pause_menu_state == "main":
 
-            if PauseMenu.resume_button.draw(self.screen):
-                self.game_paused = False
-            if PauseMenu.options_button.draw(self.screen):
-                self.pause_menu_state = "options"
-            if PauseMenu.quit_button.draw(self.screen):
+            # Kaotab muud buttonid ära
+            if not PauseMenu.screenshot:
+                PauseMenu.screenshot = pygame.display.get_surface().copy()
+            self.screen.blit(PauseMenu.screenshot, (0, 0))
+            self.screen.blit(PauseMenu.semi_transparent_color, (0, 0))
+
+            if PauseMenu.pause_main[0].draw(self.screen):  # Resume
+                PauseMenu.game_paused = False
+
+            if PauseMenu.pause_main[1].draw(self.screen):  # Settings
+                self.pause_menu_state = "settings"
+
+            if PauseMenu.pause_main[2].draw(self.screen):  # Save & Menu
+
+                # TODO: Save game
+                # Player data - cords, inv, stats(health,hunger, ...)
+                # World data - Glade, Maze, placed blocks, Time, Weather, ...
+                # Entity data
+
+                PauseMenu.game_paused = False
+                Menu.game_state = True
+
+            if PauseMenu.pause_main[3].draw(self.screen):  # Save & Quit
+                # TODO: Save game
+                # Player data - coords, inv, stats(health,hunger, ...)
+                # World data - Glade, Maze, placed blocks, Time, Weather, ...
+                # Entity data
+
                 pygame.quit()
                 sys.exit()
 
-        # TODO: Tuleb main menuga samasuguseks teha
-        if self.pause_menu_state == "options":
+        # Sub-Menu -- Main / Settings
+        elif self.pause_menu_state == "settings":
+            self.screen.blit(PauseMenu.screenshot, (0, 0))
+            self.screen.blit(PauseMenu.semi_transparent_color, (0, 0))
 
-            if PauseMenu.video_button.draw(self.screen):    # See tuleb ära muuta
-                print("Video Settings")
-            if PauseMenu.audio_button.draw(self.screen):    # See tuleb ära muuta
-                print("Audio Settings")
-            if PauseMenu.keys_button.draw(self.screen):     # See tuleb ära muuta
-                print("Change Key Bindings")
+            if PauseMenu.pause_settings[0].draw(self.screen):  # Graphics
+                self.pause_menu_state = "graphics"
 
-            # if PauseMenu.save_button.draw(self.screen):   # Save game
-            #     self.game_state = True                    # Save game
-            #     self.game_paused = False                  # Save game
+            if PauseMenu.pause_settings[1].draw(self.screen):  # Audio
+                self.pause_menu_state = "audio"
 
-            if PauseMenu.back_button.draw(self.screen):
+            if PauseMenu.pause_settings[2].draw(self.screen):  # Controls
+                self.pause_menu_state = "controls"
+
+            if PauseMenu.pause_settings[3].draw(self.screen):  # Main menu
                 self.pause_menu_state = "main"
+
+        # Sub-Menu -- Main / Settings / Graphics
+        elif self.pause_menu_state == "graphics":
+            self.screen.blit(PauseMenu.screenshot, (0, 0))
+            self.screen.blit(PauseMenu.semi_transparent_color, (0, 0))
+
+            if PauseMenu.pause_graphics[0].draw(self.screen):  # Settings
+                self.pause_menu_state = "settings"
+
+        # Sub-Menu -- Main / Settings / Audio
+        elif self.pause_menu_state == "audio":
+            self.screen.blit(PauseMenu.screenshot, (0, 0))
+            self.screen.blit(PauseMenu.semi_transparent_color, (0, 0))
+
+            if PauseMenu.pause_audio[0].draw(self.screen):  # Settings
+                self.pause_menu_state = "settings"
+
+        # Sub-Menu -- Main / Settings / Controls
+        elif self.pause_menu_state == "controls":
+            self.screen.blit(PauseMenu.screenshot, (0, 0))
+            self.screen.blit(PauseMenu.semi_transparent_color, (0, 0))
+
+            if PauseMenu.pause_controls[0].draw(self.screen):  # Settings
+                self.pause_menu_state = "settings"

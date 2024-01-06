@@ -3,29 +3,16 @@ from items import items_list
 from typing import Dict, Optional
 from variables import Decorators
 
-# Menu pildid
-pause_menu_images = {
-    "resume_img": pygame.image.load("images/Menu_buttons/button_resume.png").convert_alpha(),
-    "options_img": pygame.image.load("images/Menu_buttons/button_options.png").convert_alpha(),
-    "quit_img": pygame.image.load("images/Menu_buttons/button_quit.png").convert_alpha(),
-    "video_img": pygame.image.load('images/Menu_buttons/button_video.png').convert_alpha(),
-    "audio_img":  pygame.image.load('images/Menu_buttons/button_audio.png').convert_alpha(),
-    "keys_img": pygame.image.load('images/Menu_buttons/button_keys.png').convert_alpha(),
-    "back_img": pygame.image.load('images/Menu_buttons/button_back.png').convert_alpha()
-}
-
-
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
 
     @staticmethod
-    ### TODO: Tuleks panna load_image funci sisse
     def load_gui_image(image_name: str) -> Optional[pygame.Surface]:
         """ Renderib Gui pildid """
 
         try:
             if image_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Gui/{image_name}.PNG")
+                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.PNG")
                 print(f"images/Gui/{image_name}.PNG pre-loaded successfully.")
 
             return ImageLoader.loaded_item_images[image_name]
