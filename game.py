@@ -51,6 +51,8 @@ class Game:
                         else:
                             PauseMenu.game_paused = False
                             self.pause_menu_state = "main"
+                            PauseMenu.screenshot = None
+
 
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
