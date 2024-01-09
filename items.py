@@ -238,6 +238,27 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": 0
         },
+    {
+        "Type": "Object",
+        "Name": "Maze_Start",
+        "ID": 96,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_End",
+        "ID": 97,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
 ]
 
 # Testida asju mis on seotud ainult item'ga

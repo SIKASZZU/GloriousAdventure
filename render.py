@@ -54,7 +54,7 @@ class RenderPictures:
 
                     # Visualiseerib pilte
                     if image:
-                        if terrain_value == 98 or terrain_value == 99:
+                        if terrain_value == 98 or terrain_value == 99 or terrain_value == 100 or terrain_value == 101:
                             pass
                         else:
                             terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x

@@ -75,6 +75,10 @@ class Game:
                     Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
                     CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
+
+                    # if door_open:
+                    #      callib maze genni sinna samma doori taha
+
                     RenderPictures.map_render(self)  # Renderib terraini
 
                     if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.

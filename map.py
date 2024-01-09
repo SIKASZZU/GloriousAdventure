@@ -1,6 +1,7 @@
 import numpy as np
 from skimage.transform import resize
-
+from collections import deque
+import random
 class MapData:
     width = 40
     height = 40
@@ -17,6 +18,9 @@ class MapData:
     maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
+    puzzle_pices: list[tuple, tuple, tuple] = []
+    create_save_puzzle = None
+    converted_maze = []
     # Create glade
     def glade_creation():
         glade_data = []
@@ -33,7 +37,8 @@ class MapData:
 
     def maze_generation(shape, res):
         def f(t):
-            return 1*t**7 - 5*t**0 + 1*t**1
+            # return 1*t**7 - 5*t**0 + 1*t**1
+            return 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
 
         grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
         grid = grid / res
@@ -84,8 +89,8 @@ class MapData:
         elif start_side == 'right':
             start_0 = ((size // 2), size-1)
             start_1 = ((size // 2) - 1, size-1)
-        maze[start_0] = '7'
-        maze[start_1] = '7'
+        maze[start_0] = "96"
+        maze[start_1] = "96"
 
 
         # Set the end points on the remaining three sides
@@ -104,18 +109,92 @@ class MapData:
             elif side == 'right':
                 end_0 = ((size // 2), size-1)
                 end_1 = ((size // 2) - 1, size-1)
-            maze[end_0] = '7'
-            maze[end_1] = '7'
+            maze[end_0] = "97"
+            maze[end_1] = "97"
 
         # convert <class 'numpy.ndarray'> to list
-        converted_maze = []
+        MapData.converted_maze = []
         for row in maze:
             row_integers = row.astype(int)
             row_list = row_integers.tolist()
-            converted_maze.append(row_list)
+            MapData.converted_maze.append(row_list)
+        MapData.puzzle_pices = []
+        for i in range(3):
+            xxxx = random.randint(3, (size - 3))
+            yyyy = random.randint(3, (size - 3))
+            MapData.converted_maze[xxxx][yyyy] = 7
+            if not (xxxx, yyyy) in MapData.puzzle_pices:
+                MapData.puzzle_pices.append((xxxx, yyyy))
 
-        print('mazetype', type(converted_maze))
-        return converted_maze
+
+        MapData.search_paths(MapData.converted_maze)
+        if MapData.create_save_puzzle:
+            return MapData.converted_maze
+
+
+    def is_valid(x, y, maze):
+        return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
+
+    def find_path_bfs(maze, start, end):
+        queue = deque([(start, [])])
+        visited = set()
+        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+        while queue:
+            (x, y), path = queue.popleft()
+            if (x, y) == end:
+                return path
+
+            if (x, y) not in visited:
+                visited.add((x, y))
+                for dx, dy in directions:
+                    new_x, new_y = x + dx, y + dy
+                    if MapData.is_valid(new_x, new_y, maze):
+                        new_path = path + [(new_x, new_y)]
+                        queue.append(((new_x, new_y), new_path))
+
+        return None
+
+    def search_paths(maze):
+        special_positions = []
+
+        # y, x
+        start_positions = [(38, 19), (38, 20)]
+
+        end_positions = [(19, 38), (20, 38),
+                         (1, 19), (1, 20),
+                         ]
+
+        for i in range(len(maze)):
+            for j in range(len(maze[i])):
+                if maze[i][j] == 7:
+                    special_positions.append((i, j))
+
+        print(special_positions)
+
+        # Check paths from each start to each end and special positions
+        for start in start_positions:
+            for end in end_positions + special_positions:
+                path = MapData.find_path_bfs(maze, start, end)
+                if path is None:
+                    print(f"No path found from {start} to {end}")
+                    MapData.create_save_puzzle = False
+
+                else:
+                    for i in range(len(maze)):
+                        for j in range(len(maze[i])):
+                            if maze[i][j] == 7:
+                                for (x, y) in path:
+                                    MapData.converted_maze[x][y] = 1
+                    for (x, y) in start_positions + end_positions:
+                        MapData.converted_maze[x][y] = 2
+                    MapData.create_save_puzzle = True
+
+
+        if MapData.create_save_puzzle == False:
+            maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
+            MapData.search_paths(maze)
+
 
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
@@ -131,7 +210,6 @@ class MapData:
         start_side = MapData.start_side
         maze_start = MapData.create_maze_with_perlin_noise(start_side)
         glade_data = MapData.glade_creation()
-        maze_data = MapData.create_maze_with_perlin_noise(start_side)
 
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
@@ -187,5 +265,7 @@ class MapData:
         return MapData.map_data
 
 if __name__ == "__main__":
-    # MapData.map_creation()
-    MapData.create_maze_with_perlin_noise(MapData.start_side)
+    maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
+    MapData.search_paths(maze)
+    create_save_puzzle = None
+
