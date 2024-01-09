@@ -215,6 +215,7 @@ class PauseMenu:
 
             if PauseMenu.pause_main[0].draw(self.screen):  # Resume
                 PauseMenu.game_paused = False
+                PauseMenu.screenshot = None
 
             if PauseMenu.pause_main[1].draw(self.screen):  # Settings
                 self.pause_menu_state = "settings"

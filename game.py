@@ -49,6 +49,7 @@ class Game:
                         if PauseMenu.game_paused == False:
                             PauseMenu.game_paused = True
                         else:
+                            PauseMenu.screenshot = None
                             PauseMenu.game_paused = False
                             self.pause_menu_state = "main"
 
