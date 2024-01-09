@@ -251,7 +251,7 @@ def generate_perlin_noise_2d(shape, res):
     Generate a 2D numpy array of perlin noise.
     """
     def f(t):
-        return 6*t**5 - 15*t**4 + 10*t**3
+        return 1*t**7 - 5*t**0 + 1*t**1
 
     grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
     grid = grid / res
@@ -281,36 +281,36 @@ def generate_perlin_noise_2d(shape, res):
 def create_maze_with_perlin_noise(size, resolution, start_side):
     noise = generate_perlin_noise_2d((size, size), resolution)
     noise_resized = resize(noise, (size, size), mode='reflect')
-    maze = np.where(noise_resized > np.percentile(noise_resized, 75), '*', ' ')  # threshold adjusted to create more walls
+    maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
     # Ensure outer walls
-    maze[0, :] = maze[-1, :] = '*'
-    maze[:, 0] = maze[:, -1] = '*'
+    maze[0, :] = maze[-1, :] = '99'
+    maze[:, 0] = maze[:, -1] = '99'
 
     # Set the start point
     if start_side == 'top':
-        start = (0, random.randint(1, size-2))
+        start = (0, (size // 2))
     elif start_side == 'bottom':
-        start = (size-1, random.randint(1, size-2))
+        start = (size-1, (size // 2))
     elif start_side == 'left':
-        start = (random.randint(1, size-2), 0)
+        start = ((size // 2), 0)
     elif start_side == 'right':
-        start = (random.randint(1, size-2), size-1)
-    maze[start] = 'S'
+        start = ((size // 2), size-1)
+    maze[start] = '21'
 
     # Set the end points on the remaining three sides
     sides = ['top', 'bottom', 'left', 'right']
     sides.remove(start_side)
     for side in sides:
         if side == 'top':
-            end = (0, random.randint(1, size-2))
+            end = (0, (size // 2))
         elif side == 'bottom':
-            end = (size-1, random.randint(1, size-2))
+            end = (size-1, (size // 2))
         elif side == 'left':
-            end = (random.randint(1, size-2), 0)
+            end = ((size // 2), 0)
         elif side == 'right':
-            end = (random.randint(1, size-2), size-1)
-        maze[end] = 'E'
+            end = ((size // 2), size-1)
+        maze[end] = '7'
 
     return maze
 
@@ -323,4 +323,4 @@ maze = create_maze_with_perlin_noise(maze_size, resolution, start_side)
 
 # Display the maze as text
 for row in maze:
-    print(' '.join(row))
+    print(', '.join(row))
