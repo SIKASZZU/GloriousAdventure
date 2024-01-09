@@ -32,39 +32,48 @@ class MapData:
     # Generate maze using recursive backtracking algorithm
     @staticmethod
     @functools.lru_cache(maxsize=None)  # None - unlimited cache
-    def maze_creation2():
-        width = MapData.width
-        height = MapData.height
+    def maze_generation():
+        size = 40
+        maze = [[99] * size for _ in range(size)]
 
-        maze = [[99] * width for _ in range(height)]
-        stack = [(1, 1)]
+        def dfs(row, col):
+            maze[row][col] = 98  # Mark the current cell as a pathway
 
-        while stack:
-            x, y = stack[-1]
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+            random.shuffle(directions)
 
-            neighbors = [(x + dx, y + dy) for dx, dy in [(0, -2), (2, 0), (0, 2), (-2, 0)]]
-            random.shuffle(neighbors)
+            for dr, dc in directions:
+                new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
+                if 0 <= new_row < size and 0 <= new_col < size and maze[new_row][new_col] == 99:
+                    maze[row + dr][col + dc] = 98  # Mark the cell between current and next cell as a pathway
+                    dfs(new_row, new_col)
 
-            found = False
-            for nx, ny in neighbors:
-                if 0 < nx < width and 0 < ny < height and maze[ny][nx] == 99:
-                    maze[(ny + y) // 2][(nx + x) // 2] = 98
-                    maze[ny][nx] = 98
-                    stack.append((nx, ny))
-                    found = True
-                    break
+        # Set player starting position at the bottom middle
+        player_position = (size - 1, size // 2)
 
-            if not found:
-                stack.pop()
+        # Generate pathways from player position
+        dfs(player_position[0], player_position[1])
 
+        # Create openings in the outer walls at exit positions
+        exits = [
+            (0, size // 2),          # Top side, middle of the wall
+            (size // 2, 0),          # Left side, middle of the wall
+            (size // 2, size - 1),   # Right side, middle of the wall
+            (size - 1, size // 2)    # Bottom side, middle of the wall (entrance)
+        ]
+        for row, col in exits:
+            maze[row][col] = 0
 
-        ### TODO: TypeError: list indices must be integers or slices, not tuple
-        #maze[0, :] = 99  # Top wall
-        #maze[-1, :] = 99  # Bottom wall
-        #maze[:, 0] = 99  # Left wall
-        #maze[:, -1] = 99  # Right wall
+        # Create fewer walls within the maze to make it more navigable
+        for _ in range(size * size // 100):  # Adjust the density of walls based on preference
+            row, col = random.randint(1, size - 2), random.randint(1, size - 2)
+            maze[row][col] = 99
 
         return maze
+
+    # print("\nPlayer starting position:", player_position)
+    # print("Exit positions:", exits)
+
 
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle. ss ei pea mingi pathfinderi tegema.
@@ -77,9 +86,9 @@ class MapData:
         maze_fill = MapData.maze_fill
         maze_data = maze_fill.tolist()
 
-        maze_start = MapData.maze_creation2()
+        maze_start = MapData.maze_generation()
         glade_data = MapData.glade_creation()
-        maze_data = MapData.maze_creation2()
+        maze_data = MapData.maze_generation()
 
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
@@ -140,4 +149,4 @@ class MapData:
 
 if __name__ == "__main__":
     MapData.map_creation()
-    MapData.maze_creation2()
+    MapData.maze_generation()
