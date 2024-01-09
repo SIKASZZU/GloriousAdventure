@@ -73,28 +73,39 @@ class MapData:
 
         # Set the start point
         if start_side == 'top':
-            start = (0, (size // 2))
+            start_0 = (0, (size // 2))
+            start_1 = (0, (size // 2) - 1)
         elif start_side == 'bottom':
-            start = (size-1, (size // 2))
+            start_0 = (size-1, (size // 2))
+            start_1 = (size-1, (size // 2) - 1)
         elif start_side == 'left':
-            start = ((size // 2), 0)
+            start_0 = ((size // 2), 0)
+            start_1 = ((size // 2) - 1, 0)
         elif start_side == 'right':
-            start = ((size // 2), size-1)
-        maze[start] = '7'
+            start_0 = ((size // 2), size-1)
+            start_1 = ((size // 2) - 1, size-1)
+        maze[start_0] = '7'
+        maze[start_1] = '7'
+
 
         # Set the end points on the remaining three sides
         sides = ['top', 'bottom', 'left', 'right']
         sides.remove(start_side)
         for side in sides:
             if side == 'top':
-                end = (0, (size // 2))
+                end_0 = (0, (size // 2))
+                end_1 = (0, (size // 2) - 1)
             elif side == 'bottom':
-                end = (size-1, (size // 2))
+                end_0 = (size-1, (size // 2))
+                end_1 = (size-1, (size // 2) - 1)
             elif side == 'left':
-                end = ((size // 2), 0)
+                end_0 = ((size // 2), 0)
+                end_1 = ((size // 2) - 1, 0)
             elif side == 'right':
-                end = ((size // 2), size-1)
-            maze[end] = '7'
+                end_0 = ((size // 2), size-1)
+                end_1 = ((size // 2) - 1, size-1)
+            maze[end_0] = '7'
+            maze[end_1] = '7'
 
         # convert <class 'numpy.ndarray'> to list
         converted_maze = []
