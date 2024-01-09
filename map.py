@@ -1,6 +1,6 @@
 import numpy as np
-import random
-import functools
+from scipy.ndimage import gaussian_filter
+from skimage.transform import resize
 
 class MapData:
     width = 40
@@ -13,6 +13,10 @@ class MapData:
     new_map_data = []
     new_row = []
     maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
+
+    start_side = 'bottom'
+    maze_size = 40
+    resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
     # Create glade
     def glade_creation():
@@ -28,55 +32,83 @@ class MapData:
         
         return glade_data
 
-    ### TODO: mazei uks või algus oleks alati ühes teatud kohas. Gladei ava juures!
-    # Generate maze using recursive backtracking algorithm
-    @staticmethod
-    @functools.lru_cache(maxsize=None)  # None - unlimited cache
-    def maze_generation():
-        size = 40
-        maze = [[99] * size for _ in range(size)]
+    def maze_generation(shape, res):
+        def f(t):
+            return 1*t**7 - 5*t**0 + 1*t**1
 
-        def dfs(row, col):
-            maze[row][col] = 98  # Mark the current cell as a pathway
+        grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
+        grid = grid / res
 
-            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
-            random.shuffle(directions)
+        gradients = np.random.rand(res[0] + 1, res[1] + 1, 2)
+        gradients /= np.linalg.norm(gradients, axis=2, keepdims=True)
 
-            for dr, dc in directions:
-                new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
-                if 0 <= new_row < size and 0 <= new_col < size and maze[new_row][new_col] == 99:
-                    maze[row + dr][col + dc] = 98  # Mark the cell between current and next cell as a pathway
-                    dfs(new_row, new_col)
+        g00 = gradients[:-1,:-1]
+        g10 = gradients[1:,:-1]
+        g01 = gradients[:-1,1:]
+        g11 = gradients[1:,1:]
 
-        # Set player starting position at the bottom middle
-        player_position = (size - 1, size // 2)
+        t = grid - grid.astype(int)
+        fade_t = f(t)
 
-        # Generate pathways from player position
-        dfs(player_position[0], player_position[1])
+        n00 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1])) * g00, axis=2)
+        n10 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1])) * g10, axis=2)
+        n01 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1] - 1)) * g01, axis=2)
+        n11 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1] - 1)) * g11, axis=2)
 
-        # Create openings in the outer walls at exit positions
-        exits = [
-            (0, size // 2),          # Top side, middle of the wall
-            (size // 2, 0),          # Left side, middle of the wall
-            (size // 2, size - 1),   # Right side, middle of the wall
-            (size - 1, size // 2)    # Bottom side, middle of the wall (entrance)
-        ]
-        for row, col in exits:
-            maze[row][col] = 0
+        n0 = n00 * (1 - fade_t[:,:,0]) + n10 * fade_t[:,:,0]
+        n1 = n01 * (1 - fade_t[:,:,0]) + n11 * fade_t[:,:,0]
 
-        # Create fewer walls within the maze to make it more navigable
-        for _ in range(size * size // 100):  # Adjust the density of walls based on preference
-            row, col = random.randint(1, size - 2), random.randint(1, size - 2)
-            maze[row][col] = 99
+        noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
+        return noise
 
-        return maze
+    def create_maze_with_perlin_noise(start_side):
+        size = MapData.maze_size 
+        resolution = MapData.resolution 
+        noise = MapData.maze_generation((size, size), resolution)
+        noise_resized = resize(noise, (size, size), mode='reflect')
+        maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
-    # print("\nPlayer starting position:", player_position)
-    # print("Exit positions:", exits)
+        # Ensure outer walls
+        maze[0, :] = maze[-1, :] = '99'
+        maze[:, 0] = maze[:, -1] = '99'
 
+        # Set the start point
+        if start_side == 'top':
+            start = (0, (size // 2))
+        elif start_side == 'bottom':
+            start = (size-1, (size // 2))
+        elif start_side == 'left':
+            start = ((size // 2), 0)
+        elif start_side == 'right':
+            start = ((size // 2), size-1)
+        maze[start] = '7'
+
+        # Set the end points on the remaining three sides
+        sides = ['top', 'bottom', 'left', 'right']
+        sides.remove(start_side)
+        for side in sides:
+            if side == 'top':
+                end = (0, (size // 2))
+            elif side == 'bottom':
+                end = (size-1, (size // 2))
+            elif side == 'left':
+                end = ((size // 2), 0)
+            elif side == 'right':
+                end = ((size // 2), size-1)
+            maze[end] = '7'
+
+        # convert <class 'numpy.ndarray'> to list
+        converted_maze = []
+        for row in maze:
+            row_integers = row.astype(int)
+            row_list = row_integers.tolist()
+            converted_maze.append(row_list)
+
+        print('mazetype', type(converted_maze))
+        return converted_maze
 
     def spawn_puzzle():
-        ... ### TODO: Pst lambine ruut, nr 98, on puzzle. ss ei pea mingi pathfinderi tegema.
+        ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
     def map_creation():
         map_data = MapData.map_data
@@ -86,9 +118,10 @@ class MapData:
         maze_fill = MapData.maze_fill
         maze_data = maze_fill.tolist()
 
-        maze_start = MapData.maze_generation()
+        start_side = MapData.start_side
+        maze_start = MapData.create_maze_with_perlin_noise(start_side)
         glade_data = MapData.glade_creation()
-        maze_data = MapData.maze_generation()
+        maze_data = MapData.create_maze_with_perlin_noise(start_side)
 
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
@@ -140,13 +173,9 @@ class MapData:
 
         print(f'\nmaze_location: {maze_location}')
 
-        ### TODO: Listid pole sama dimensioonidega. Yks on suurem kui teine.
-
-        ### TODO: K6igile mazecountidel on erinev, kuhu sein peaks tekkima.
-
         MapData.map_data = map_data
         return MapData.map_data
 
 if __name__ == "__main__":
-    MapData.map_creation()
-    MapData.maze_generation()
+    # MapData.map_creation()
+    MapData.create_maze_with_perlin_noise(MapData.start_side)
