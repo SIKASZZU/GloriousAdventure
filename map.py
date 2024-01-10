@@ -18,7 +18,7 @@ class MapData:
     maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
-    puzzle_pices: list[tuple, tuple, tuple] = []
+    puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
     # Create glade
@@ -38,7 +38,7 @@ class MapData:
     def maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
-            return 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
+            return 1*t**7 - 5*t**0 + 1*t**1
 
         grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
         grid = grid / res
@@ -72,7 +72,18 @@ class MapData:
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
+        # outer walls one block in must be pathway, value 98.
+        # BEFORE ensuring outer walls
+        for row in range(size):
+            maze[row][1] = 98
+            maze[row][size - 2] = 98
+
+        for col in range(size):
+            maze[1][col] = 98
+            maze[size - 2][col] = 98
+
         # Ensure outer walls
+        # AFTER outer wall one block must be pathway
         maze[0, :] = maze[-1, :] = '99'
         maze[:, 0] = maze[:, -1] = '99'
 
@@ -91,7 +102,6 @@ class MapData:
             start_1 = ((size // 2) - 1, size-1)
         maze[start_0] = "96"
         maze[start_1] = "96"
-
 
         # Set the end points on the remaining three sides
         sides = ['top', 'bottom', 'left', 'right']
@@ -112,20 +122,21 @@ class MapData:
             maze[end_0] = "97"
             maze[end_1] = "97"
 
-        # convert <class 'numpy.ndarray'> to list
+        # muudab maze datat, et string -> int -> list
         MapData.converted_maze = []
         for row in maze:
             row_integers = row.astype(int)
             row_list = row_integers.tolist()
             MapData.converted_maze.append(row_list)
-        MapData.puzzle_pices = []
+
+        # Maze's puzzle pieces
+        MapData.puzzle_pieces = []
         for i in range(3):
             xxxx = random.randint(3, (size - 3))
             yyyy = random.randint(3, (size - 3))
             MapData.converted_maze[xxxx][yyyy] = 7
-            if not (xxxx, yyyy) in MapData.puzzle_pices:
-                MapData.puzzle_pices.append((xxxx, yyyy))
-
+            if not (xxxx, yyyy) in MapData.puzzle_pieces:
+                MapData.puzzle_pieces.append((xxxx, yyyy))
 
         MapData.search_paths(MapData.converted_maze)
         if MapData.create_save_puzzle:
@@ -134,6 +145,7 @@ class MapData:
 
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
+
 
     def find_path_bfs(maze, start, end):
         queue = deque([(start, [])])
@@ -154,6 +166,7 @@ class MapData:
                         queue.append(((new_x, new_y), new_path))
 
         return None
+
 
     def search_paths(maze):
         special_positions = []
@@ -198,6 +211,7 @@ class MapData:
 
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
+
 
     def map_creation():
         map_data = MapData.map_data
