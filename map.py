@@ -5,14 +5,17 @@ import random
 class MapData:
     width = 40
     height = 40
-    maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+    maze_location = 4  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
     map_data = []
     maze_data = []
-    glade_data = []
-    new_map_data = []
+    glade_data = []  # map creationi juures vaja
+    new_map_data = []  # map creationi juures vaja
     new_row = []
+
+
     maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
+    new_maze_data = []  # Loob uue mazei selle lisamiseks
 
     start_side = 'bottom'
     maze_size = 40
@@ -214,49 +217,50 @@ class MapData:
 
 
     def map_creation():
-        map_data = MapData.map_data
-        maze_location = MapData.maze_location
+        map_data = MapData.map_data  # current map data
+        maze_location = MapData.maze_location  # kust player uue mazei avab
+        start_side = MapData.start_side  # kust kohast player alustab
 
         # support mazeid
         maze_fill = MapData.maze_fill
-        maze_data = maze_fill.tolist()
+        new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
 
-        start_side = MapData.start_side
         maze_start = MapData.create_maze_with_perlin_noise(start_side)
         glade_data = MapData.glade_creation()
 
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
 
+        # alguses, kui map datat pole veel olemas
         if not map_data:  # list is empty
             map_data = maze_start + glade_data
         else: pass
 
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        print(f'maze_location: {maze_location},\n {map_data} \n\n {maze_data}')
+        print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
         
         if maze_location == 1:  # add new maze to: top
-            new_map_data = maze_data + map_data
+            new_map_data = new_maze_data + map_data
 
         elif maze_location == 2:  # add new maze to: bottom
-            new_map_data = map_data + maze_data
+            new_map_data = map_data + new_maze_data
 
         elif maze_location == 3:  # add new maze to: left
             new_map_data = []
-            for maze_row, map_row in zip(maze_data, map_data):
+            for maze_row, map_row in zip(new_maze_data, map_data):
                 new_row = maze_row + map_row
                 new_map_data.append(new_row)
     
         elif maze_location == 4:  # add new maze to: right
             new_map_data = []
-            for maze_row, map_row in zip(maze_data, map_data):
+            for maze_row, map_row in zip(new_maze_data, map_data):
                 new_row = map_row + maze_row
                 new_map_data.append(new_row)
 
         else: print(f'maze_location: {maze_location}; no new maze appended')
 
-        # If there are extra rows in map_data that are not covered by maze_data
-        remaining_rows_count = len(map_data) - len(maze_data)
+        # If there are extra rows in map_data that are not covered by new_maze_data
+        remaining_rows_count = len(map_data) - len(new_maze_data)
         maze_fill = MapData.maze_fill
         maze_fill = maze_fill.tolist()
     
@@ -264,7 +268,7 @@ class MapData:
             # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
 
         if remaining_rows_count != 0:
-            remaining_rows = map_data[len(maze_data):]
+            remaining_rows = map_data[len(new_maze_data):]
             for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
                 if maze_location == 3: new_row = maze_fill_row + remaining_row
                 if maze_location == 4: new_row = remaining_row + maze_fill_row
