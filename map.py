@@ -237,7 +237,7 @@ class MapData:
         else: pass
 
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
+        #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
         
         if maze_location == 1:  # add new maze to: top
             new_map_data = new_maze_data + map_data
@@ -277,7 +277,7 @@ class MapData:
         if maze_location != 0:
             map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
 
-        print(f'\nmaze_location: {maze_location}')
+        #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
         return MapData.map_data
