@@ -2,10 +2,13 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
+
+
 class MapData:
     width = 40
     height = 40
-    maze_location = 4  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+    maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+    start_side = 'bottom'
 
     map_data = []
     maze_data = []
@@ -13,17 +16,16 @@ class MapData:
     new_map_data = []  # map creationi juures vaja
     new_row = []
 
-
     maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
     new_maze_data = []  # Loob uue mazei selle lisamiseks
-
-    start_side = 'bottom'
     maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
     puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
+    
+    
     # Create glade
     def glade_creation():
         glade_data = []
@@ -186,7 +188,7 @@ class MapData:
                 if maze[i][j] == 7:
                     special_positions.append((i, j))
 
-        print(special_positions)
+        print('special_positions', special_positions)
 
         # Check paths from each start to each end and special positions
         for start in start_positions:
@@ -216,10 +218,8 @@ class MapData:
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
 
-    def map_creation():
+    def map_creation(maze_location = 0, start_side = 'bottom'):
         map_data = MapData.map_data  # current map data
-        maze_location = MapData.maze_location  # kust player uue mazei avab
-        start_side = MapData.start_side  # kust kohast player alustab
 
         # support mazeid
         maze_fill = MapData.maze_fill
@@ -280,10 +280,34 @@ class MapData:
         #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
-        return MapData.map_data
+        return MapData.make_self(MapData.map_data)
+    
+    def make_self(self, selfless_data):
+        self.terrain_data = selfless_data
+
+
+    def spawn_maze_at_location(start_side):
+        
+
+        start_side = "left"  # if playerx < 1800, left
+        if start_side == 'left':
+            location = 4
+        else:
+            print('bug')
+        MapData.map_creation(location, start_side)
+
+
+        ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
 if __name__ == "__main__":
-    maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
-    MapData.search_paths(maze)
-    create_save_puzzle = None
+    # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
+    maze_location = 1
 
+    terrain_data = MapData.map_creation()  # map data
+    glade_data = MapData.glade_creation()  # glade data
+    print('terraindata\n', terrain_data, '\n')
+    
+    
+    
+    
+    print()

@@ -35,6 +35,8 @@ class Game:
     # ******************** MENU ******************** #
     screen = UniversalVariables.screen
 
+    terrain_data = UniversalVariables.terrain_data
+
     game_menu_state = "main"
     pause_menu_state = "main"
 

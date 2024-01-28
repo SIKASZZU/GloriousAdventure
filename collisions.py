@@ -1,5 +1,6 @@
 import pygame
 
+from map import MapData
 from items import items_list
 from components import player
 from render import RenderPictures
@@ -11,12 +12,19 @@ from components import StaminaComponent
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
-    
+
+    def calculate_player_location(self):
+
+        print(f'playerX: {self.player_rect[0]}, playerY: {self.player_rect[1]}')
+
+
+
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
+        maze_endpoint_list = []
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
@@ -43,6 +51,15 @@ class Collisions:
 
                 if object_id == 99 or object_id == 98:
                     Collisions.render_after = True
+
+                if object_id == 97:
+                    if keys[pygame.K_l]:
+                        # Collisions.calculate_player_location(self)  # arvutab maze locationi
+                        ### location ja start side on samad asjad, lihtsalt framed teisiti
+                        
+                        location = 4
+                        MapData.spawn_maze_at_location(location)
+
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True

@@ -40,10 +40,10 @@ class RenderPictures:
                     self.row.append((j, i)),
                 except IndexError:
                     pass
-
+                    
                 # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
-                if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
-                    terrain_value = UniversalVariables.terrain_data[i][j]
+                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                    terrain_value = self.terrain_data[i][j]
 
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                     image = ImageLoader.load_image(image_name)
