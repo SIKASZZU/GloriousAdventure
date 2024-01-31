@@ -2,21 +2,9 @@ from map import MapData
 
 class NewMaze:
     def spawn_maze_at_location(self, location):
-        if location == 4:
-            start_side = 'left'
-        else:
-            print('bug')
-
-
-        ### l2him door
-
-
-        # arvutab locationi j2rgi 2ra, kus asub start position
-        # if playerx < 1800, left
-            # location = UniversalVariables.location
-        # start_side = UniversalVariables.start_side
-
-
-
+        placements = {4: 'left', 3: 'right', 2: 'bottom', 1: 'top'}
+        if location in placements:  #  location on key ; placements[location] annab value
+            start_side = placements[location]
+        else: print('mapupdate.py error, location not in placements')
 
         self.terrain_data = MapData.map_creation(location, start_side)
