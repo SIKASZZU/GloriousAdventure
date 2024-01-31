@@ -60,7 +60,8 @@ class Collisions:
                         open_doors = {95: 91, 97: 93, 94: 90, 96: 92}
                         object_id = open_doors[object_id]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
-                        self.terrain_data[grid_x][grid_y] = object_id
+
+                        self.terrain_data[grid_y][grid_x] = object_id
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
