@@ -94,39 +94,49 @@ class MapData:
         maze[:, 0] = maze[:, -1] = '99'
 
         # Set the start point
-        if start_side == 'top':
-            start_0 = (0, (size // 2))
-            start_1 = (0, (size // 2) - 1)
-        elif start_side == 'bottom':
-            start_0 = (size-1, (size // 2))
-            start_1 = (size-1, (size // 2) - 1)
-        elif start_side == 'left':
+        if start_side == 'left':
             start_0 = ((size // 2), 0)
             start_1 = ((size // 2) - 1, 0)
+            maze[start_0], maze[start_1] = "90", "90"
+        elif start_side == 'top':
+            start_0 = (0, (size // 2))
+            start_1 = (0, (size // 2) - 1)
+            maze[start_0], maze[start_1]= "91", "91"
+
         elif start_side == 'right':
             start_0 = ((size // 2), size-1)
             start_1 = ((size // 2) - 1, size-1)
-        maze[start_0] = "96"
-        maze[start_1] = "96"
+            maze[start_0], maze[start_1]= "92", "92"
+
+        elif start_side == 'bottom':
+            start_0 = (size-1, (size // 2))
+            start_1 = (size-1, (size // 2) - 1)
+            maze[start_0], maze[start_1] = "93", "93"
 
         # Set the end points on the remaining three sides
         sides = ['top', 'bottom', 'left', 'right']
         sides.remove(start_side)
         for side in sides:
-            if side == 'top':
-                end_0 = (0, (size // 2))
-                end_1 = (0, (size // 2) - 1)
-            elif side == 'bottom':
-                end_0 = (size-1, (size // 2))
-                end_1 = (size-1, (size // 2) - 1)
-            elif side == 'left':
+
+            if side == 'left':
                 end_0 = ((size // 2), 0)
                 end_1 = ((size // 2) - 1, 0)
+                maze[end_0], maze[end_1] = "94", "94"
+
+            elif side == 'top':
+                end_0 = (0, (size // 2))
+                end_1 = (0, (size // 2) - 1)
+                maze[end_0], maze[end_1] = "95", "95"
+
             elif side == 'right':
                 end_0 = ((size // 2), size-1)
                 end_1 = ((size // 2) - 1, size-1)
-            maze[end_0] = "97"
-            maze[end_1] = "97"
+                maze[end_0], maze[end_1] = "96", "96"
+
+            elif side == 'bottom':
+                end_0 = (size-1, (size // 2))
+                end_1 = (size-1, (size // 2) - 1)
+                maze[end_0], maze[end_1] = "97", "97"
 
         # muudab maze datat, et string -> int -> list
         MapData.converted_maze = []
@@ -298,8 +308,6 @@ class MapData:
         print()
         print_data_by_lines(map_data)
         return MapData.map_data
-
-        ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
 if __name__ == "__main__":
     # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
