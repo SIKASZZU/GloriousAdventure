@@ -6,7 +6,7 @@ from render import RenderPictures
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
-from mapupdate import test
+from mapupdate import NewMaze
 
 
 class Collisions:
@@ -53,17 +53,11 @@ class Collisions:
                     Collisions.render_after = True
 
                 if object_id == 97:
-
-
                     if keys[pygame.K_l] and Collisions.keylock == 0:
                         Collisions.keylock += 1
-                        # Collisions.calculate_player_location(self)  # arvutab maze locationi
-                        ### location ja start side on samad asjad, lihtsalt framed teisiti
-                        
+                        # mingi variable, mille abiga saab teada, kus player asub    
                         location = 4
-                        test.spawn_maze_at_location(self, location)
-
-
+                        NewMaze.spawn_maze_at_location(self, location)
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True

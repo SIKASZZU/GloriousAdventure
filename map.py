@@ -228,7 +228,6 @@ class MapData:
             maze_location = location
             start_side = start_side_new
 
-
         print('repetitionlock count:', MapData.repetition_lock)
         print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
 
