@@ -217,7 +217,7 @@ items_list = [
 ### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
-    {
+{
         "Type": "Object",
         "Name": "Maze_Ground",
         "ID": 98,
@@ -240,8 +240,8 @@ items_list = [
         },
     {
         "Type": "Object",
-        "Name": "Maze_Start",
-        "ID": 96,
+        "Name": "Maze_Start_Left",
+        "ID": 90,
         "Breakable": False,
         "Block_vision": True,
         "Object_width": int(block_size * 1),
@@ -250,8 +250,38 @@ items_list = [
         },
     {
         "Type": "Object",
-        "Name": "Maze_End",
-        "ID": 97,
+        "Name": "Maze_Start_Top",
+        "ID": 9,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Start_Right",
+        "ID": 92,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Start_Bottom",
+        "ID": 93,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_End_Left",
+        "ID": 94,
         "Breakable": False,
         "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
@@ -259,6 +289,39 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": 0
         },
+    {
+        "Type": "Object",
+        "Name": "Maze_End_Top",
+        "ID": 95,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_End_Right",
+        "ID": 96,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_End_Bottom",
+        "ID": 97,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        }
 ]
 
 # Testida asju mis on seotud ainult item'ga
