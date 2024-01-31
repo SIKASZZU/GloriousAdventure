@@ -61,7 +61,14 @@ class Collisions:
                         object_id = open_doors[object_id]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
-                        self.terrain_data[grid_y][grid_x] = object_id
+                        j = (grid_y // 39) * 39
+                        i = (grid_x // 39) * 39
+
+                        Collisions.update_terrain(self, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
+                        Collisions.update_terrain(self, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                        if location == 1:
+                            UniversalVariables.player_y += 39 * UniversalVariables.block_size
+
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
@@ -69,6 +76,26 @@ class Collisions:
                         Collisions.render_after = False
 
         Collisions.collision_hitbox(self)
+
+    def update_terrain(self, coordinate, grid_other, object_id, grid_main):
+
+        if coordinate == 0:
+            if grid_main == 19:
+                coordinate += 19
+                self.terrain_data[coordinate][grid_other] = object_id
+                self.terrain_data[coordinate + 1][grid_other] = object_id
+            else:
+                coordinate += 20
+                self.terrain_data[coordinate][grid_other] = object_id
+                self.terrain_data[coordinate - 1][grid_other] = object_id
+
+        else:
+            if (coordinate // (coordinate // 39) - 20) == 19:
+                self.terrain_data[coordinate][grid_other] = object_id
+                self.terrain_data[coordinate + 1][grid_other] = object_id
+            else:
+                self.terrain_data[coordinate][grid_other] = object_id
+                self.terrain_data[coordinate - 1][grid_other] = object_id
 
 
     def collision_hitbox(self) -> None:
