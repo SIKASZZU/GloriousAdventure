@@ -2,25 +2,31 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
+from printingdata import print_data_by_lines
+
 class MapData:
     width = 40
     height = 40
     maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+    start_side = 'bottom'
 
     map_data = []
     maze_data = []
-    glade_data = []
-    new_map_data = []
+    glade_data = []  # map creationi juures vaja
+    new_map_data = []  # map creationi juures vaja
     new_row = []
-    maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
 
-    start_side = 'bottom'
+    maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
+    new_maze_data = []  # Loob uue mazei selle lisamiseks
     maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
-    puzzle_pices: list[tuple, tuple, tuple] = []
+    puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
+    
+    repetition_lock = 0
+
     # Create glade
     def glade_creation():
         glade_data = []
@@ -38,7 +44,7 @@ class MapData:
     def maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
-            return 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
+            return 1*t**7 - 5*t**0 + 1*t**1
 
         grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
         grid = grid / res
@@ -72,7 +78,18 @@ class MapData:
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
+        # outer walls one block in must be pathway, value 98.
+        # BEFORE ensuring outer walls
+        for row in range(size):
+            maze[row][1] = 98
+            maze[row][size - 2] = 98
+
+        for col in range(size):
+            maze[1][col] = 98
+            maze[size - 2][col] = 98
+
         # Ensure outer walls
+        # AFTER outer wall one block must be pathway
         maze[0, :] = maze[-1, :] = '99'
         maze[:, 0] = maze[:, -1] = '99'
 
@@ -91,7 +108,6 @@ class MapData:
             start_1 = ((size // 2) - 1, size-1)
         maze[start_0] = "96"
         maze[start_1] = "96"
-
 
         # Set the end points on the remaining three sides
         sides = ['top', 'bottom', 'left', 'right']
@@ -112,20 +128,21 @@ class MapData:
             maze[end_0] = "97"
             maze[end_1] = "97"
 
-        # convert <class 'numpy.ndarray'> to list
+        # muudab maze datat, et string -> int -> list
         MapData.converted_maze = []
         for row in maze:
             row_integers = row.astype(int)
             row_list = row_integers.tolist()
             MapData.converted_maze.append(row_list)
-        MapData.puzzle_pices = []
+
+        # Maze's puzzle pieces
+        MapData.puzzle_pieces = []
         for i in range(3):
             xxxx = random.randint(3, (size - 3))
             yyyy = random.randint(3, (size - 3))
             MapData.converted_maze[xxxx][yyyy] = 7
-            if not (xxxx, yyyy) in MapData.puzzle_pices:
-                MapData.puzzle_pices.append((xxxx, yyyy))
-
+            if not (xxxx, yyyy) in MapData.puzzle_pieces:
+                MapData.puzzle_pieces.append((xxxx, yyyy))
 
         MapData.search_paths(MapData.converted_maze)
         if MapData.create_save_puzzle:
@@ -134,6 +151,7 @@ class MapData:
 
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
+
 
     def find_path_bfs(maze, start, end):
         queue = deque([(start, [])])
@@ -155,6 +173,7 @@ class MapData:
 
         return None
 
+
     def search_paths(maze):
         special_positions = []
 
@@ -169,8 +188,6 @@ class MapData:
             for j in range(len(maze[i])):
                 if maze[i][j] == 7:
                     special_positions.append((i, j))
-
-        print(special_positions)
 
         # Check paths from each start to each end and special positions
         for start in start_positions:
@@ -199,50 +216,65 @@ class MapData:
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
-    def map_creation():
-        map_data = MapData.map_data
-        maze_location = MapData.maze_location
 
-        # support mazeid
+    def map_creation(location = 0, start_side_new = 'bottom'):
+        MapData.repetition_lock += 1
+        # lisada +1 mingi sitt systeem, et kui terrain_data hakatakse variables kutsuma, siis siin m6tleb valja kas see on esimen ekord v6i teine.
+        
+        if MapData.repetition_lock == 1:
+            maze_location = 0
+            start_side = 'bottom'
+        elif MapData.repetition_lock >= 2:
+            maze_location = location
+            start_side = start_side_new
+
+        # print('repetitionlock count:', MapData.repetition_lock)
+        # print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
+
+        map_data = MapData.map_data  # current map data
+
+        # support mazes
         maze_fill = MapData.maze_fill
-        maze_data = maze_fill.tolist()
+        new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
 
-        start_side = MapData.start_side
+        # starting mazes
         maze_start = MapData.create_maze_with_perlin_noise(start_side)
         glade_data = MapData.glade_creation()
 
+        # new map craetion
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
 
-        if not map_data:  # list is empty
+        # alguses, kui map datat pole veel olemas
+        if not map_data:  # list is empty   ### TODO: saab ymber kirjutada repitition lockiga
             map_data = maze_start + glade_data
         else: pass
 
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        print(f'maze_location: {maze_location},\n {map_data} \n\n {maze_data}')
+        #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
         
         if maze_location == 1:  # add new maze to: top
-            new_map_data = maze_data + map_data
+            new_map_data = new_maze_data + map_data
 
         elif maze_location == 2:  # add new maze to: bottom
-            new_map_data = map_data + maze_data
+            new_map_data = map_data + new_maze_data
 
         elif maze_location == 3:  # add new maze to: left
             new_map_data = []
-            for maze_row, map_row in zip(maze_data, map_data):
+            for maze_row, map_row in zip(new_maze_data, map_data):
                 new_row = maze_row + map_row
                 new_map_data.append(new_row)
     
         elif maze_location == 4:  # add new maze to: right
             new_map_data = []
-            for maze_row, map_row in zip(maze_data, map_data):
+            for maze_row, map_row in zip(new_maze_data, map_data):
                 new_row = map_row + maze_row
                 new_map_data.append(new_row)
 
         else: print(f'maze_location: {maze_location}; no new maze appended')
 
-        # If there are extra rows in map_data that are not covered by maze_data
-        remaining_rows_count = len(map_data) - len(maze_data)
+        # If there are extra rows in map_data that are not covered by new_maze_data
+        remaining_rows_count = len(map_data) - len(new_maze_data)
         maze_fill = MapData.maze_fill
         maze_fill = maze_fill.tolist()
     
@@ -250,7 +282,7 @@ class MapData:
             # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
 
         if remaining_rows_count != 0:
-            remaining_rows = map_data[len(maze_data):]
+            remaining_rows = map_data[len(new_maze_data):]
             for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
                 if maze_location == 3: new_row = maze_fill_row + remaining_row
                 if maze_location == 4: new_row = remaining_row + maze_fill_row
@@ -259,13 +291,19 @@ class MapData:
         if maze_location != 0:
             map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
 
-        print(f'\nmaze_location: {maze_location}')
+        #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
+        #print()
+        #print_data_by_lines(map_data)
         return MapData.map_data
 
-if __name__ == "__main__":
-    maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
-    MapData.search_paths(maze)
-    create_save_puzzle = None
+        ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
+if __name__ == "__main__":
+    # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
+    maze_location = 1
+
+    terrain_data = MapData.map_creation()  # map data
+    glade_data = MapData.glade_creation()  # glade data
+    print('terraindata\n', terrain_data, '\n')

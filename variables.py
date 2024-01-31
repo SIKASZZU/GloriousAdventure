@@ -67,14 +67,16 @@ class Decorators:
 
             return func(*args, **kwargs)
         return wrapper
+    
+
 class UniversalVariables:
     # ******************** SCREEN ******************** #
-    screen_x: int = 1000
-    screen_y: int = 750
+    screen_x: int = 1650
+    screen_y: int = 1020
 
     screen = pygame.display.set_mode((screen_x, screen_y))
 
-    block_size: int = screen_x // 80
+    block_size: int = screen_x // 85
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
@@ -87,8 +89,6 @@ class UniversalVariables:
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision
-    terrain_data = MapData.map_creation()  # map data
-    glade_data = MapData.glade_creation()  # glade data
 
     # ******************** OFFSET ******************** #
     offset_x: int = 0

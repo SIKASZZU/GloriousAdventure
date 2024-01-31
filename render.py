@@ -7,7 +7,6 @@ from images import ImageLoader
 from camera import Camera
 import time
 
-
 class RenderPictures:
     render_range: int = 0
     render_terrain_data: list = []
@@ -17,11 +16,12 @@ class RenderPictures:
 
     @staticmethod
     def map_render(self) -> None:
+
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
-                UniversalVariables.block_size) // 6
+                UniversalVariables.block_size) // 4
 
         # TODO: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
@@ -41,9 +41,9 @@ class RenderPictures:
                 except IndexError:
                     pass
 
-                # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
-                if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
-                    terrain_value = UniversalVariables.terrain_data[i][j]
+                # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
+                    terrain_value = self.terrain_data[i][j]
 
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                     image = ImageLoader.load_image(image_name)
@@ -115,13 +115,13 @@ class CreateCollisionBoxes:
 
         for row in RenderPictures.render_terrain_data:
             for x, y in row:
-                if 0 <= y < len(UniversalVariables.terrain_data) and 0 <= x < len(UniversalVariables.terrain_data[0]):
+                if 0 <= y < len(self.terrain_data) and 0 <= x < len(self.terrain_data[0]):
                     try:
                         # Vaatab kas itemi ID on dict'is:    object_collision_boxes = {}
-                        if UniversalVariables.terrain_data[y][x] in object_collision_boxes:
+                        if self.terrain_data[y][x] in object_collision_boxes:
                             terrain_x: int = x * UniversalVariables.block_size
                             terrain_y: int = y * UniversalVariables.block_size
-                            object_id: int = UniversalVariables.terrain_data[y][x]
+                            object_id: int = self.terrain_data[y][x]
 
                             # Võtab õige itemi collision_box'i
                             collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
@@ -149,7 +149,7 @@ class CreateCollisionBoxes:
                                 CreateCollisionBoxes.display_collision_box_decay += 1
                     except Exception as e:
                         print(
-                            f'Error: {e}, render.py @ if UniversalVariables.terrain_data[y][x] in object_collision_boxes:')
+                            f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
 
         # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
         id_sort_order = {6: 1,  # First to be rendered

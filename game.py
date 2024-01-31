@@ -38,6 +38,16 @@ class Game:
     game_menu_state = "main"
     pause_menu_state = "main"
 
+    def __init__(self):
+        glade_data = None
+        self.terrain_data = None
+
+        if not glade_data:
+            glade_data = MapData.glade_creation()  # glade data
+
+        if not self.terrain_data:
+            self.terrain_data = MapData.map_creation()
+
     def run(self) -> None:
         while True:
             for event in pygame.event.get():
@@ -65,6 +75,7 @@ class Game:
 
                 # Vaatab kas mäng on pausi peale pandud või mitte
                 if not PauseMenu.game_paused:
+                    UniversalVariables()
                     PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                     Camera.box_target_camera(self)  # Kaamera
 
@@ -75,13 +86,10 @@ class Game:
                     Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
                     CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
-
-                    # if door_open:
-                    #      callib maze genni sinna samma doori taha
-
                     RenderPictures.map_render(self)  # Renderib terraini
 
-                    if Collisions.render_after == True:  # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+                    # Renderib objectid peale playerit. Illusioon et player on objecti taga.
+                    if Collisions.render_after == True: 
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
                         PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
                     else:  # self.render_after == False

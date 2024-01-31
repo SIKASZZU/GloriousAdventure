@@ -6,17 +6,25 @@ from render import RenderPictures
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
+from mapupdate import test
 
 
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
-    
+    keylock = 0
+    def calculate_player_location(self):
+
+        print(f'playerX: {self.player_rect[0]}, playerY: {self.player_rect[1]}')
+
+
+
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
+        maze_endpoint_list = []
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
@@ -43,6 +51,16 @@ class Collisions:
 
                 if object_id == 99 or object_id == 98:
                     Collisions.render_after = True
+
+                if object_id == 97:
+                    if keys[pygame.K_l]:# and Collisions.keylock == 0:
+                        Collisions.keylock += 1
+                        # Collisions.calculate_player_location(self)  # arvutab maze locationi
+                        ### location ja start side on samad asjad, lihtsalt framed teisiti
+                        
+                        location = 4
+                        test.spawn_maze_at_location(self, location)
+
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
@@ -114,10 +132,10 @@ class Collisions:
                         keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_s]
-                    # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
-                    if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
+                    # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
-                        in_water = UniversalVariables.terrain_data[i][j] == 0
+                        in_water = self.terrain_data[i][j] == 0
                         
                         if in_water != True:
                             # Player asub maal

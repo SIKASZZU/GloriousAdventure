@@ -24,12 +24,12 @@ class ObjectManagement:
 
                         try:
                             # Kontrollib kas jääb mapi sissse
-                            if 0 <= grid_row < len(UniversalVariables.terrain_data) and 0 <= grid_col < len(UniversalVariables.terrain_data[0]):
+                            if 0 <= grid_row < len(terrain_data) and 0 <= grid_col < len(terrain_data[0]):
                             
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 7: UniversalVariables.terrain_data[grid_row][grid_col] = 107
-                                else: UniversalVariables.terrain_data[grid_row][grid_col] = 1
+                                if object_id == 7: terrain_data[grid_row][grid_col] = 107
+                                else: terrain_data[grid_row][grid_col] = 1
                                 ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
 
                             else:
