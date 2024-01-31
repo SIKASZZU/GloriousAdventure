@@ -75,7 +75,7 @@ class Game:
                     Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
 
                     CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
-                    RenderPictures..(self)  # Renderib terraini
+                    RenderPictures.map_render(self)  # Renderib terraini
 
                     # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                     if Collisions.render_after == True: 
