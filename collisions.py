@@ -7,24 +7,22 @@ from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
 from mapupdate import NewMaze
+import random
 
 
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock = 0
-    def calculate_player_location(self):
-
-        print(f'playerX: {self.player_rect[0]}, playerY: {self.player_rect[1]}')
-
-
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
         # Object id, pilt, ja pildi suurus
         interaction_boxes = {}
-        maze_endpoint_list = []
+
+        # Store information about the closest object_id 97
+        closest_object_97 = None
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
@@ -52,12 +50,17 @@ class Collisions:
                 if object_id == 99 or object_id == 98:
                     Collisions.render_after = True
 
-                if object_id == 97:
+                if object_id in [94, 95, 96, 97]:
+                    ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                     if keys[pygame.K_l] and Collisions.keylock == 0:
                         Collisions.keylock += 1
-                        # mingi variable, mille abiga saab teada, kus player asub    
-                        location = 4
+                        locations = {95: 1, 97: 2, 94: 3, 96: 4}
+                        location = locations[object_id]
                         NewMaze.spawn_maze_at_location(self, location)
+                        open_doors = {95: 91, 97: 93, 94: 90, 96: 92}
+                        object_id = open_doors[object_id]
+                        grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+                        self.terrain_data[grid_x][grid_y] = object_id
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
