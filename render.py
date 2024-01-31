@@ -45,6 +45,7 @@ class RenderPictures:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
 
+
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                     image = ImageLoader.load_image(image_name)
 
@@ -122,6 +123,7 @@ class CreateCollisionBoxes:
                             terrain_x: int = x * UniversalVariables.block_size
                             terrain_y: int = y * UniversalVariables.block_size
                             object_id: int = self.terrain_data[y][x]
+
 
                             # Võtab õige itemi collision_box'i
                             collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])

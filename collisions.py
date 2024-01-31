@@ -53,13 +53,16 @@ class Collisions:
                     Collisions.render_after = True
 
                 if object_id == 97:
-                    if keys[pygame.K_l]:# and Collisions.keylock == 0:
+
+
+                    if keys[pygame.K_l] and Collisions.keylock == 0:
                         Collisions.keylock += 1
                         # Collisions.calculate_player_location(self)  # arvutab maze locationi
                         ### location ja start side on samad asjad, lihtsalt framed teisiti
                         
                         location = 4
                         test.spawn_maze_at_location(self, location)
+
 
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
@@ -136,6 +139,7 @@ class Collisions:
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
                         in_water = self.terrain_data[i][j] == 0
+
                         
                         if in_water != True:
                             # Player asub maal

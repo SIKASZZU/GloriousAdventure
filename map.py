@@ -228,8 +228,9 @@ class MapData:
             maze_location = location
             start_side = start_side_new
 
-        # print('repetitionlock count:', MapData.repetition_lock)
-        # print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
+
+        print('repetitionlock count:', MapData.repetition_lock)
+        print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
 
         map_data = MapData.map_data  # current map data
 
@@ -294,8 +295,9 @@ class MapData:
         #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
-        #print()
-        #print_data_by_lines(map_data)
+
+        print()
+        print_data_by_lines(map_data)
         return MapData.map_data
 
         ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
