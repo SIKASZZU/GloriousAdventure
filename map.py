@@ -189,8 +189,6 @@ class MapData:
                 if maze[i][j] == 7:
                     special_positions.append((i, j))
 
-        print('special_positions', special_positions)
-
         # Check paths from each start to each end and special positions
         for start in start_positions:
             for end in end_positions + special_positions:
@@ -227,9 +225,9 @@ class MapData:
             maze_location = 0
             start_side = 'bottom'
         elif MapData.repetition_lock >= 2:
-            
             maze_location = location
             start_side = start_side_new
+
         print('repetitionlock count:', MapData.repetition_lock)
         print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
 
@@ -298,7 +296,6 @@ class MapData:
         MapData.map_data = map_data
         print()
         print_data_by_lines(map_data)
-        print()
         return MapData.map_data
 
         ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale

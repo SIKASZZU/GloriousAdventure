@@ -76,7 +76,7 @@ class UniversalVariables:
 
     screen = pygame.display.set_mode((screen_x, screen_y))
 
-    block_size: int = screen_x // 25
+    block_size: int = screen_x // 85
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
@@ -89,9 +89,7 @@ class UniversalVariables:
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision
-    location = 4
-    start_side = 'left'
-    terrain_data = MapData.map_creation()
+
     glade_data = MapData.glade_creation()  # glade data
 
     # ******************** OFFSET ******************** #

@@ -1,12 +1,13 @@
 import pygame
 
-from mapupdate import UpdateMapData
+from mapupdate import terrain_data
 from items import items_list
 from components import player
 from render import RenderPictures
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
+from mapupdate import terrain_data, spawn_maze_at_location
 
 
 class Collisions:
@@ -59,7 +60,7 @@ class Collisions:
                         ### location ja start side on samad asjad, lihtsalt framed teisiti
                         
                         location = 4
-                        UpdateMapData.spawn_maze_at_location(location)
+                        spawn_maze_at_location(location)
 
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
@@ -132,10 +133,10 @@ class Collisions:
                         keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
                         keys[pygame.K_LSHIFT] and keys[pygame.K_s]
-                    # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
-                    if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
+                    # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                    if 0 <= i < len(terrain_data) and 0 <= j < len(terrain_data[i]):
 
-                        in_water = UniversalVariables.terrain_data[i][j] == 0
+                        in_water = terrain_data[i][j] == 0
                         
                         if in_water != True:
                             # Player asub maal
