@@ -1,6 +1,6 @@
 import pygame
 
-from map import MapData
+from mapupdate import UpdateMapData
 from items import items_list
 from components import player
 from render import RenderPictures
@@ -12,7 +12,7 @@ from components import StaminaComponent
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
-
+    keylock = 0
     def calculate_player_location(self):
 
         print(f'playerX: {self.player_rect[0]}, playerY: {self.player_rect[1]}')
@@ -53,12 +53,13 @@ class Collisions:
                     Collisions.render_after = True
 
                 if object_id == 97:
-                    if keys[pygame.K_l]:
+                    if keys[pygame.K_l] and Collisions.keylock == 0:
+                        Collisions.keylock += 1
                         # Collisions.calculate_player_location(self)  # arvutab maze locationi
                         ### location ja start side on samad asjad, lihtsalt framed teisiti
                         
                         location = 4
-                        MapData.spawn_maze_at_location(location)
+                        UpdateMapData.spawn_maze_at_location(location)
 
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:

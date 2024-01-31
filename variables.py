@@ -67,10 +67,12 @@ class Decorators:
 
             return func(*args, **kwargs)
         return wrapper
+    
+
 class UniversalVariables:
     # ******************** SCREEN ******************** #
-    screen_x: int = 1000
-    screen_y: int = 750
+    screen_x: int = 1650
+    screen_y: int = 1020
 
     screen = pygame.display.set_mode((screen_x, screen_y))
 
@@ -89,8 +91,7 @@ class UniversalVariables:
     collision_boxes: list = []  # collision
     location = 4
     start_side = 'left'
-    terrain_data = MapData.map_creation(self)  # map data
-    # terrain_data = MapData.map_creation(location, start_side)  # map data
+    terrain_data = MapData.map_creation()
     glade_data = MapData.glade_creation()  # glade data
 
     # ******************** OFFSET ******************** #

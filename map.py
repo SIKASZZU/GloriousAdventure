@@ -2,7 +2,7 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
-
+from printingdata import print_data_by_lines
 
 class MapData:
     width = 40
@@ -25,7 +25,8 @@ class MapData:
     create_save_puzzle = None
     converted_maze = []
     
-    
+    repetition_lock = 0
+
     # Create glade
     def glade_creation():
         glade_data = []
@@ -218,21 +219,36 @@ class MapData:
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
 
-    def map_creation(maze_location = 0, start_side = 'bottom'):
+    def map_creation(location = 0, start_side_new = 'bottom'):
+        MapData.repetition_lock += 1
+        # lisada +1 mingi sitt systeem, et kui terrain_data hakatakse variables kutsuma, siis siin m6tleb valja kas see on esimen ekord v6i teine.
+        
+        if MapData.repetition_lock == 1:
+            maze_location = 0
+            start_side = 'bottom'
+        elif MapData.repetition_lock >= 2:
+            
+            maze_location = location
+            start_side = start_side_new
+        print('repetitionlock count:', MapData.repetition_lock)
+        print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
+
         map_data = MapData.map_data  # current map data
 
-        # support mazeid
+        # support mazes
         maze_fill = MapData.maze_fill
         new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
 
+        # starting mazes
         maze_start = MapData.create_maze_with_perlin_noise(start_side)
         glade_data = MapData.glade_creation()
 
+        # new map craetion
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
 
         # alguses, kui map datat pole veel olemas
-        if not map_data:  # list is empty
+        if not map_data:  # list is empty   ### TODO: saab ymber kirjutada repitition lockiga
             map_data = maze_start + glade_data
         else: pass
 
@@ -280,22 +296,10 @@ class MapData:
         #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
-        return MapData.make_self(MapData.map_data)
-    
-    def make_self(self, selfless_data):
-        self.terrain_data = selfless_data
-
-
-    def spawn_maze_at_location(start_side):
-        
-
-        start_side = "left"  # if playerx < 1800, left
-        if start_side == 'left':
-            location = 4
-        else:
-            print('bug')
-        MapData.map_creation(location, start_side)
-
+        print()
+        print_data_by_lines(map_data)
+        print()
+        return MapData.map_data
 
         ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
@@ -306,8 +310,3 @@ if __name__ == "__main__":
     terrain_data = MapData.map_creation()  # map data
     glade_data = MapData.glade_creation()  # glade data
     print('terraindata\n', terrain_data, '\n')
-    
-    
-    
-    
-    print()

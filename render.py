@@ -17,11 +17,13 @@ class RenderPictures:
 
     @staticmethod
     def map_render(self) -> None:
+        print('UniversalVariables.terrain_data', UniversalVariables.terrain_data)
+
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
-                UniversalVariables.block_size) // 6
+                UniversalVariables.block_size) // 4
 
         # TODO: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
@@ -42,8 +44,8 @@ class RenderPictures:
                     pass
                     
                 # Kontrollib kas terrain block jääb faili UniversalVariables.terrain_data piiridesse
-                if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-                    terrain_value = self.terrain_data[i][j]
+                if 0 <= i < len(UniversalVariables.terrain_data) and 0 <= j < len(UniversalVariables.terrain_data[i]):
+                    terrain_value = UniversalVariables.terrain_data[i][j]
 
                     image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                     image = ImageLoader.load_image(image_name)
