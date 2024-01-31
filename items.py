@@ -251,7 +251,7 @@ items_list = [
     {
         "Type": "Object",
         "Name": "Maze_Start_Top",
-        "ID": 9,
+        "ID": 91,
         "Breakable": False,
         "Block_vision": True,
         "Object_width": int(block_size * 1),
