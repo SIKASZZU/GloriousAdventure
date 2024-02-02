@@ -57,17 +57,23 @@ class Collisions:
                         locations = {95: 1, 97: 2, 94: 3, 96: 4}
                         location = locations[object_id]
                         NewMaze.spawn_maze_at_location(self, location)
-                        open_doors = {95: 91, 97: 93, 94: 90, 96: 92}
-                        object_id = open_doors[object_id]
+                        open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
+                        object_id = open_doors[location]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
                         j = (grid_y // 39) * 39
                         i = (grid_x // 39) * 39
+                        if location == 1 or location == 2:
+                            Collisions.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
 
-                        Collisions.update_terrain(self, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
-                        Collisions.update_terrain(self, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                        else:
+                            Collisions.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+
                         if location == 1:
                             UniversalVariables.player_y += 39 * UniversalVariables.block_size
+
+                        if location == 3:
+                            UniversalVariables.player_x += 39 * UniversalVariables.block_size
 
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
@@ -77,25 +83,48 @@ class Collisions:
 
         Collisions.collision_hitbox(self)
 
-    def update_terrain(self, coordinate, grid_other, object_id, grid_main):
+    def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
+        ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
 
-        if coordinate == 0:
+        if location == 3:
+            if grid_main == 19:
+                coordinate += 19
+                self.terrain_data[coordinate][grid_other + 40] = object_id
+                self.terrain_data[coordinate + 1][grid_other + 40] = object_id
+
+            else:
+                coordinate += 20
+                self.terrain_data[coordinate][grid_other + 40] = object_id
+                self.terrain_data[coordinate - 1][grid_other + 40] = object_id
+
+        if location == 4:
             if grid_main == 19:
                 coordinate += 19
                 self.terrain_data[coordinate][grid_other] = object_id
                 self.terrain_data[coordinate + 1][grid_other] = object_id
+
             else:
                 coordinate += 20
                 self.terrain_data[coordinate][grid_other] = object_id
                 self.terrain_data[coordinate - 1][grid_other] = object_id
 
-        else:
-            if (coordinate // (coordinate // 39) - 20) == 19:
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate + 1][grid_other] = object_id
-            else:
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate - 1][grid_other] = object_id
+        if location == 1:
+             if grid_main == 19:
+                 self.terrain_data[coordinate + 40][grid_other + 19] = object_id
+                 self.terrain_data[coordinate + 40][grid_other + 20] = object_id
+
+             else:
+                 self.terrain_data[coordinate][grid_other + 19] = object_id
+                 self.terrain_data[coordinate][grid_other + 20] = object_id
+
+        if location == 1:
+             if grid_main == 19:
+                 self.terrain_data[coordinate][grid_other + 19] = object_id
+                 self.terrain_data[coordinate][grid_other + 20] = object_id
+
+             else:
+                 self.terrain_data[coordinate][grid_other + 19] = object_id
+                 self.terrain_data[coordinate][grid_other + 20] = object_id
 
 
     def collision_hitbox(self) -> None:
