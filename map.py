@@ -16,7 +16,7 @@ class MapData:
     new_map_data = []  # map creationi juures vaja
     new_row = []
 
-    maze_fill = np.full((width, height), 98)  # filler maze, et zipping ilusti tootaks.
+    maze_fill = np.full((width, height), None)  # filler maze, et zipping ilusti tootaks.
     new_maze_data = []  # Loob uue mazei selle lisamiseks
     maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
@@ -191,12 +191,13 @@ class MapData:
         start_positions = [(38, 19), (38, 20)]
 
         end_positions = [(19, 38), (20, 38),
-                         (1, 19), (1, 20),
-                         ]
+                        (1, 19), (1, 20),
+                        (19, 1), (20, 1),
+                        (38, 19), (38, 20)]
 
         for i in range(len(maze)):
             for j in range(len(maze[i])):
-                if maze[i][j] == 7:
+                if maze[i][j] == 9:
                     special_positions.append((i, j))
 
         # Check paths from each start to each end and special positions
@@ -208,11 +209,11 @@ class MapData:
                     MapData.create_save_puzzle = False
 
                 else:
-                    for i in range(len(maze)):
-                        for j in range(len(maze[i])):
-                            if maze[i][j] == 7:
-                                for (x, y) in path:
-                                    MapData.converted_maze[x][y] = 1
+                    # for i in range(len(maze)):
+                    #     for j in range(len(maze[i])):
+                    #         if maze[i][j] == 7:
+                    #             for (x, y) in path:
+                    #                 MapData.converted_maze[x][y] = 1
                     for (x, y) in start_positions + end_positions:
                         MapData.converted_maze[x][y] = 2
                     MapData.create_save_puzzle = True
@@ -287,7 +288,8 @@ class MapData:
         remaining_rows_count = len(map_data) - len(new_maze_data)
         maze_fill = MapData.maze_fill
         maze_fill = maze_fill.tolist()
-    
+        print(maze_fill)
+
         ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
             # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
 

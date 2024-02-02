@@ -54,6 +54,7 @@ class Collisions:
                     ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                     if keys[pygame.K_l] and Collisions.keylock == 0:
                         Collisions.keylock += 1
+                        print(Collisions.keylock)
                         locations = {95: 1, 97: 2, 94: 3, 96: 4}
                         location = locations[object_id]
                         NewMaze.spawn_maze_at_location(self, location)
@@ -80,7 +81,7 @@ class Collisions:
                         Collisions.render_after = True
                     else: 
                         Collisions.render_after = False
-
+                Collisions.keylock = 0
         Collisions.collision_hitbox(self)
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):

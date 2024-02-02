@@ -44,41 +44,41 @@ class RenderPictures:
                 # Kontrollib kas terrain block jääb faili terrain_data piiridesse
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
+                    if terrain_value == None: pass
+                    else: 
+                        image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                        image = ImageLoader.load_image(image_name)
 
+                        # Loadib Wheat'i ja Farmland'i
+                        if terrain_value == 7 or terrain_value == 107:
+                            image = ImageLoader.load_image("Farmland")
 
-                    image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
-                    image = ImageLoader.load_image(image_name)
-
-                    # Loadib Wheat'i ja Farmland'i
-                    if terrain_value == 7 or terrain_value == 107:
-                        image = ImageLoader.load_image("Farmland")
-
-                    # Visualiseerib pilte
-                    if image:
-                        if terrain_value == 98 or terrain_value == 99 or terrain_value == 100 or terrain_value == 101:
-                            pass
-                        else:
-                            terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
-                            terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
-                            position = (i, j)  # Using grid indices directly for the position
-
-                            if position not in RenderPictures.occupied_positions:
-
-                                scaled_image = pygame.transform.scale\
-                                        (
-                                        image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                    )
-
-                                UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
-                                RenderPictures.occupied_positions[position] = scaled_image
+                        # Visualiseerib pilte
+                        if image:
+                            if terrain_value == 98 or terrain_value == 99 or terrain_value == 100 or terrain_value == 101:
+                                pass
                             else:
-                                saved_image = RenderPictures.occupied_positions[position]
-                                scaled_saved_image = pygame.transform.scale\
-                                        (
-                                        saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                    )
+                                terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
+                                terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
+                                position = (i, j)  # Using grid indices directly for the position
 
-                                UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
+                                if position not in RenderPictures.occupied_positions:
+
+                                    scaled_image = pygame.transform.scale\
+                                            (
+                                            image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                        )
+
+                                    UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
+                                    RenderPictures.occupied_positions[position] = scaled_image
+                                else:
+                                    saved_image = RenderPictures.occupied_positions[position]
+                                    scaled_saved_image = pygame.transform.scale\
+                                            (
+                                            saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                                        )
+
+                                    UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
 
             RenderPictures.render_terrain_data.append(self.row)
 

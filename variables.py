@@ -76,7 +76,7 @@ class UniversalVariables:
 
     screen = pygame.display.set_mode((screen_x, screen_y))
 
-    block_size: int = screen_x // 25
+    block_size: int = screen_x // 100
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
