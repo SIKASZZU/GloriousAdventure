@@ -304,9 +304,6 @@ class MapData:
         #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
-
-        print()
-        print_data_by_lines(map_data)
         return MapData.map_data
 
 if __name__ == "__main__":

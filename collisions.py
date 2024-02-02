@@ -117,7 +117,7 @@ class Collisions:
                  self.terrain_data[coordinate][grid_other + 19] = object_id
                  self.terrain_data[coordinate][grid_other + 20] = object_id
 
-        if location == 1:
+        if location == 2:
              if grid_main == 19:
                  self.terrain_data[coordinate][grid_other + 19] = object_id
                  self.terrain_data[coordinate][grid_other + 20] = object_id
