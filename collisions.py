@@ -8,13 +8,16 @@ from variables import UniversalVariables
 from components import StaminaComponent
 from mapupdate import NewMaze
 import random
-
+from map import MapData
 
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock = 0
-
+    map_list = [
+        ["maze"],
+        ["glade"],
+    ]
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
@@ -83,10 +86,29 @@ class Collisions:
                         Collisions.render_after = False
                 Collisions.keylock = 0
         Collisions.collision_hitbox(self)
+    def add_maze_to_specific_position(map_list, row_index, col_index):
+        # Calculate the new length after adding "maze" to the specified position
+        new_length = col_index + 1
+
+        # Check if the specified position is within bounds
+        if row_index < len(map_list):
+            for row in map_list:
+                while len(row) < new_length:
+                    row.append('place')
+
+            if map_list[row_index][col_index] == 'place':
+                map_list[row_index][col_index] = 'maze'
+            elif map_list[row_index][col_index] == 'maze':
+                print("Cannot add 'maze' at this position, it's already occupied by 'maze'")
+            else:
+                print("Cannot add 'maze' at this position, it's occupied by 'glade'")
+        else:
+            print("Cannot add 'maze' at this position, row_index is out of bounds")
+
+        print(map_list)
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
         ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-
         if location == 3:
             if grid_main == 19:
                 coordinate += 19
@@ -99,15 +121,25 @@ class Collisions:
                 self.terrain_data[coordinate - 1][grid_other + 40] = object_id
 
         if location == 4:
+            gridx, gridy = grid_main, grid_other
+            row_index = int(((gridx + 1) // 40))
+
+
             if grid_main == 19:
                 coordinate += 19
                 self.terrain_data[coordinate][grid_other] = object_id
                 self.terrain_data[coordinate + 1][grid_other] = object_id
+                col_index = ((gridy + 21) // 40)
+                print(col_index, coordinate)
 
             else:
                 coordinate += 20
                 self.terrain_data[coordinate][grid_other] = object_id
                 self.terrain_data[coordinate - 1][grid_other] = object_id
+                col_index = ((gridy + 20) // 40)
+
+            print(row_index, col_index)
+            Collisions.add_maze_to_specific_position(Collisions.map_list, int(row_index), int(col_index))
 
         if location == 1:
              if grid_main == 19:
