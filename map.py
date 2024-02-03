@@ -9,6 +9,7 @@ class MapData:
     height = 40
     maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
     start_side = 'bottom'
+    map_list = []  # Kogu mapi listina >>> values: place, glade, maze
 
     map_data = []
     maze_data = []
@@ -288,7 +289,7 @@ class MapData:
         remaining_rows_count = len(map_data) - len(new_maze_data)
         maze_fill = MapData.maze_fill
         maze_fill = maze_fill.tolist()
-        print(maze_fill)
+        # print(maze_fill)
 
         ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
             # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
@@ -307,6 +308,7 @@ class MapData:
 
         MapData.map_data = map_data
         return MapData.map_data
+
 
 if __name__ == "__main__":
     # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)

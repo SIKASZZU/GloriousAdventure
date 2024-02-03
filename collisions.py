@@ -8,13 +8,16 @@ from variables import UniversalVariables
 from components import StaminaComponent
 from mapupdate import NewMaze
 import random
-
-
+from map import MapData
+from mazecalculation import AddingMazeAtPosition
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock = 0
-
+    map_list = [
+        ["maze"],
+        ["glade"],
+    ]
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
@@ -65,10 +68,10 @@ class Collisions:
                         j = (grid_y // 39) * 39
                         i = (grid_x // 39) * 39
                         if location == 1 or location == 2:
-                            Collisions.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
+                            AddingMazeAtPosition.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
 
                         else:
-                            Collisions.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
 
                         if location == 1:
                             UniversalVariables.player_y += 39 * UniversalVariables.block_size
@@ -81,52 +84,7 @@ class Collisions:
                         Collisions.render_after = True
                     else: 
                         Collisions.render_after = False
-                Collisions.keylock = 0
         Collisions.collision_hitbox(self)
-
-    def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-
-        if location == 3:
-            if grid_main == 19:
-                coordinate += 19
-                self.terrain_data[coordinate][grid_other + 40] = object_id
-                self.terrain_data[coordinate + 1][grid_other + 40] = object_id
-
-            else:
-                coordinate += 20
-                self.terrain_data[coordinate][grid_other + 40] = object_id
-                self.terrain_data[coordinate - 1][grid_other + 40] = object_id
-
-        if location == 4:
-            if grid_main == 19:
-                coordinate += 19
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate + 1][grid_other] = object_id
-
-            else:
-                coordinate += 20
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate - 1][grid_other] = object_id
-
-        if location == 1:
-             if grid_main == 19:
-                 self.terrain_data[coordinate + 40][grid_other + 19] = object_id
-                 self.terrain_data[coordinate + 40][grid_other + 20] = object_id
-
-             else:
-                 self.terrain_data[coordinate][grid_other + 19] = object_id
-                 self.terrain_data[coordinate][grid_other + 20] = object_id
-
-        if location == 2:
-             if grid_main == 19:
-                 self.terrain_data[coordinate][grid_other + 19] = object_id
-                 self.terrain_data[coordinate][grid_other + 20] = object_id
-
-             else:
-                 self.terrain_data[coordinate][grid_other + 19] = object_id
-                 self.terrain_data[coordinate][grid_other + 20] = object_id
-
 
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
