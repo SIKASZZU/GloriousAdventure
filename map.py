@@ -2,14 +2,13 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
-from printingdata import print_data_by_lines
 
 class MapData:
     width = 40
     height = 40
-    maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
     start_side = 'bottom'
 
+    map_list = []  # Kogu mapi listina >>> values: place, glade, maze
     map_data = []
     maze_data = []
     glade_data = []  # map creationi juures vaja
@@ -26,7 +25,7 @@ class MapData:
     converted_maze = []
     
     repetition_lock = 0
-
+    
     # Create glade
     def glade_creation():
         glade_data = []
@@ -70,6 +69,7 @@ class MapData:
 
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
+
 
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size 
@@ -288,7 +288,6 @@ class MapData:
         remaining_rows_count = len(map_data) - len(new_maze_data)
         maze_fill = MapData.maze_fill
         maze_fill = maze_fill.tolist()
-        print(maze_fill)
 
         ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
             # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
@@ -303,15 +302,47 @@ class MapData:
         if maze_location != 0:
             map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
 
-        #print(f'\nmaze_location: {maze_location}')
+        MapData.map_list_creation(location)
 
         MapData.map_data = map_data
         return MapData.map_data
 
-if __name__ == "__main__":
-    # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
-    maze_location = 1
 
-    terrain_data = MapData.map_creation()  # map data
-    glade_data = MapData.glade_creation()  # glade data
-    print('terraindata\n', terrain_data, '\n')
+    def map_list_creation(location):
+        # place, glade, maze
+
+        map_list = MapData.map_list
+
+        def add_placeholders(placeholder_location):
+            if placeholder_location == 4:  ### kui vaja lisada placeholder PAREMALE
+                for x in range(len(map_list)):
+                    map_list[x].append('place')
+                    
+
+            if placeholder_location == 3:  ### kui vaja lisada placeholder VASAKULE
+                for sublist in map_list:
+                    sublist.insert(0, 'place')
+            return map_list    
+
+
+        if location == 0:  # default, beginning map
+            map_list.insert(0, ['maze'])
+            map_list.insert(1, ['glade'])
+
+        if location == 1:
+            map_list.insert(0, ['maze'])
+
+        if location == 2:  ...
+
+        if location == 3:
+            map_list = add_placeholders(location)
+
+        if location == 4:
+            map_list = add_placeholders(location)
+            
+
+        MapData.map_list = map_list    
+        return MapData.map_list
+
+
+if __name__ == "__main__": ...
