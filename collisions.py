@@ -10,6 +10,7 @@ from mapupdate import NewMaze
 import random
 from map import MapData
 from mazecalculation import AddingMazeAtPosition
+
 class Collisions:
         
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
@@ -85,6 +86,26 @@ class Collisions:
                     else: 
                         Collisions.render_after = False
         Collisions.collision_hitbox(self)
+    def add_maze_to_specific_position(map_list, row_index, col_index):
+        # Calculate the new length after adding "maze" to the specified position
+        new_length = col_index + 1
+
+        # Check if the specified position is within bounds
+        if row_index < len(map_list):
+            for row in map_list:
+                while len(row) < new_length:
+                    row.append('place')
+
+            if map_list[row_index][col_index] == 'place':
+                map_list[row_index][col_index] = 'maze'
+            elif map_list[row_index][col_index] == 'maze':
+                print("Cannot add 'maze' at this position, it's already occupied by 'maze'")
+            else:
+                print("Cannot add 'maze' at this position, it's occupied by 'glade'")
+        else:
+            print("Cannot add 'maze' at this position, row_index is out of bounds")
+
+        print(map_list)
 
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
