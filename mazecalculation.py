@@ -111,7 +111,7 @@ class AddingMazeAtPosition:
             AddingMazeAtPosition.add_maze_to_specific_position_top(AddingMazeAtPosition.map_list, row_index, col_index)
 
         if location == 2:
-            gridx, gridy = grid_main, grid_other
+            gridx, gridy = grid_other, grid_main
             row_index = int(((gridx + 1) // 40))
 
             if grid_main == 19:

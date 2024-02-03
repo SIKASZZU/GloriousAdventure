@@ -6,10 +6,10 @@ import random
 class MapData:
     width = 40
     height = 40
+    maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
     start_side = 'bottom'
     map_list = []  # Kogu mapi listina >>> values: place, glade, maze
 
-    map_list = []  # Kogu mapi listina >>> values: place, glade, maze
     map_data = []
     maze_data = []
     glade_data = []  # map creationi juures vaja
@@ -24,9 +24,9 @@ class MapData:
     puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
-    
+
     repetition_lock = 0
-    
+
     # Create glade
     def glade_creation():
         glade_data = []
@@ -38,7 +38,7 @@ class MapData:
                     cleaned_line = cleaned_line.replace('[', '').replace(']', '')
                     row = [int(x) for x in cleaned_line.split(',') if x.strip()]
                     glade_data.append(row)
-        
+
         return glade_data
 
     def maze_generation(shape, res):
@@ -71,10 +71,9 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
-
     def create_maze_with_perlin_noise(start_side):
-        size = MapData.maze_size 
-        resolution = MapData.resolution 
+        size = MapData.maze_size
+        resolution = MapData.resolution
         noise = MapData.maze_generation((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
@@ -229,19 +228,41 @@ class MapData:
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
 
-    def add_maze():
-        maze_location = MapData.maze_location
-        start_side = MapData.start_side
+    def map_creation(location = 0, start_side_new = 'bottom'):
+        MapData.repetition_lock += 1
+        # lisada +1 mingi sitt systeem, et kui terrain_data hakatakse variables kutsuma, siis siin m6tleb valja kas see on esimen ekord v6i teine.
+
+        if MapData.repetition_lock == 1:
+            maze_location = 0
+            start_side = 'bottom'
+        elif MapData.repetition_lock >= 2:
+            maze_location = location
+            start_side = start_side_new
+
+        print('repetitionlock count:', MapData.repetition_lock)
+        print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
+
+        map_data = MapData.map_data  # current map data
 
         # support mazes
         maze_fill = MapData.maze_fill
-        maze_fill = maze_fill.tolist()  # converting np.array to list
-
-        # new map creation
         new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
+
+        # starting mazes
+        maze_start = MapData.create_maze_with_perlin_noise(start_side)
+        glade_data = MapData.glade_creation()
+
+        # new map craetion
         new_map_data = MapData.new_map_data
         new_row = MapData.new_row
 
+        # alguses, kui map datat pole veel olemas
+        if not map_data:  # list is empty   ### TODO: saab ymber kirjutada repitition lockiga
+            map_data = maze_start + glade_data
+        else: pass
+
+        # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
+        #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
 
         if maze_location == 1:  # add new maze to: top
             new_map_data = new_maze_data + map_data
@@ -254,7 +275,7 @@ class MapData:
             for maze_row, map_row in zip(new_maze_data, map_data):
                 new_row = maze_row + map_row
                 new_map_data.append(new_row)
-    
+
         elif maze_location == 4:  # add new maze to: right
             new_map_data = []
             for maze_row, map_row in zip(new_maze_data, map_data):
@@ -280,41 +301,9 @@ class MapData:
                 new_map_data.append(new_row)
 
         if maze_location != 0:
-            map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map (bug?)
+            map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
 
-
-    def map_creation(location = 0, start_side_new = 'bottom'):
-        MapData.repetition_lock += 1
-        # lisada +1 mingi sitt systeem, et kui terrain_data hakatakse variables kutsuma, siis siin m6tleb valja kas see on esimen ekord v6i teine.
-        
-        if MapData.repetition_lock == 1:
-            maze_location = 0
-            start_side = 'bottom'
-        elif MapData.repetition_lock >= 2:
-            maze_location = location
-            start_side = start_side_new
-            MapData.start_side = start_side  # overwriting purpose
-            MapData.maze_location = maze_location
-
-        print('repetitionlock count:', MapData.repetition_lock)
-        print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
-
-        map_data = MapData.map_data  # current map data
-
-        # starting mazes
-        maze_start = MapData.create_maze_with_perlin_noise(start_side)
-        glade_data = MapData.glade_creation()
-
-        # alguses, kui map datat pole veel olemas
-        if not map_data:  # list is empty   ### TODO: saab ymber kirjutada repitition lockiga
-            map_data = maze_start + glade_data
-        else: pass
-
-        # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
-
-        MapData.add_maze()
-        MapData.map_list_creation(location)
+        #print(f'\nmaze_location: {maze_location}')
 
         MapData.map_data = map_data
         return MapData.map_data
@@ -324,42 +313,6 @@ if __name__ == "__main__":
     # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
     maze_location = 1
 
-    def map_list_creation(location):
-        # place, glade, maze
-
-        map_list = MapData.map_list
-
-        def add_placeholders(placeholder_location):
-            if placeholder_location == 4:  ### kui vaja lisada placeholder PAREMALE
-                for x in range(len(map_list)):
-                    map_list[x].append('place')
-                    
-
-            if placeholder_location == 3:  ### kui vaja lisada placeholder VASAKULE
-                for sublist in map_list:
-                    sublist.insert(0, 'place')
-            return map_list
-
-        if location == 0:  # default, beginning map
-            map_list.insert(0, ['maze'])
-            map_list.insert(1, ['glade'])
-
-        if location == 1:
-            map_list.insert(0, ['maze'])
-
-        if location == 2:  ...
-
-        if location == 3:
-            map_list = add_placeholders(location)
-            MapData.add_maze()         
-        if location == 4:
-            map_list = add_placeholders(location)
-            MapData.add_maze()         
-
-            
-
-        MapData.map_list = map_list    
-        return MapData.map_list
-
-
-if __name__ == "__main__": ...
+    terrain_data = MapData.map_creation()  # map data
+    glade_data = MapData.glade_creation()  # glade data
+    print('terraindata\n', terrain_data, '\n')

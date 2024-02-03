@@ -50,6 +50,7 @@ class Game:
 
     def run(self) -> None:
         while True:
+            UniversalVariables.blits_sequence = []
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -64,6 +65,16 @@ class Game:
                             self.pause_menu_state = "main"
                             PauseMenu.screenshot = None
 
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 4:  # Scroll +
+                            UniversalVariables.block_size += 1  # Increase block_size
+                            print(UniversalVariables.block_size)
+
+                        elif event.button == 5:  # Scroll -
+                            UniversalVariables.block_size -= 1  # Decrease block_size
+                            if UniversalVariables.block_size < 1:  # Prevent block_size from being less than 1
+                                UniversalVariables.block_size = 1
+                            print(UniversalVariables.block_size)
 
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
@@ -78,7 +89,6 @@ class Game:
                     UniversalVariables()
                     PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
                     Camera.box_target_camera(self)  # Kaamera
-
                     StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
                     # collision things

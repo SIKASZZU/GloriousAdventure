@@ -75,8 +75,9 @@ class UniversalVariables:
     screen_y: int = 1020
 
     screen = pygame.display.set_mode((screen_x, screen_y))
+    jagatis = 100
 
-    block_size: int = screen_x // 100
+    block_size: int = screen_x // jagatis
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
@@ -93,3 +94,6 @@ class UniversalVariables:
     # ******************** OFFSET ******************** #
     offset_x: int = 0
     offset_y: int = 0
+
+
+    blits_sequence = []

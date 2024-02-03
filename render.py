@@ -68,20 +68,20 @@ class RenderPictures:
                                             (
                                             image, (UniversalVariables.block_size, UniversalVariables.block_size)
                                         )
+                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                        UniversalVariables.blits_sequence.append([scaled_image,(terrain_x, terrain_y)])
 
-                                    UniversalVariables.screen.blit(scaled_image,(terrain_x, terrain_y))
                                     RenderPictures.occupied_positions[position] = scaled_image
                                 else:
-                                    saved_image = RenderPictures.occupied_positions[position]
-                                    scaled_saved_image = pygame.transform.scale\
-                                            (
-                                            saved_image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                        )
+                                    scaled_image = RenderPictures.occupied_positions[position]
+                                    scaled_saved_image = pygame.transform.scale(scaled_image, (UniversalVariables.block_size, UniversalVariables.block_size))
 
-                                    UniversalVariables.screen.blit(scaled_saved_image,(terrain_x, terrain_y))
+                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                        UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
+
 
             RenderPictures.render_terrain_data.append(self.row)
-
+        UniversalVariables.screen.blits(UniversalVariables.blits_sequence)
 
 class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
