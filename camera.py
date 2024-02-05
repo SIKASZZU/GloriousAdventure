@@ -11,6 +11,7 @@ class Camera:
     h: int = screen.get_size()[1] - (camera_borders['top'] + camera_borders['bottom'])
     camera_rect = pygame.Rect(l, t, w, h)
 
+    @staticmethod
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
 

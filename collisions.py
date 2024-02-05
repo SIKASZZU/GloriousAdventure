@@ -11,14 +11,29 @@ import random
 from map import MapData
 from mazecalculation import AddingMazeAtPosition
 
+class CollisionGrid:
+    def __init__(self, grid_size, screen_width, screen_height):
+        self.grid_size = grid_size
+        self.columns = int(screen_width / grid_size)
+        self.rows = int(screen_height / grid_size)
+        self.grid = [[[] for _ in range(self.rows)] for _ in range(self.columns)]
+
+    def add_object_to_grid(self, obj_rect, obj_id):
+        column = int(obj_rect.x / self.grid_size)
+        row = int(obj_rect.y / self.grid_size)
+        self.grid[column][row].append(obj_id)
+
+    def get_nearby_objects(self, obj_rect):
+        column = int(obj_rect.x / self.grid_size)
+        row = int(obj_rect.y / self.grid_size)
+        return self.grid[column][row]
+
 class Collisions:
-        
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock = 0
-    map_list = [
-        ["maze"],
-        ["glade"],
-    ]
+    def __init__(self):
+        self.collision_grid = CollisionGrid(grid_size, screen_width, screen_height)
+
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 

@@ -88,13 +88,18 @@ class PlayerUpdate:
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x, UniversalVariables.player_y + UniversalVariables.offset_y)
-        UniversalVariables.screen.blit(self.frame, player_position_adjusted)  # Renderib playeri animatsioni
+
+        blit_operations = [
+            (self.frame, player_position_adjusted)
+            # Add other blit operations here if they exist in the same rendering context.
+        ]
+        UniversalVariables.screen.blits(blit_operations, doreturn=False)
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
         player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
                                   player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
                                   UniversalVariables.player_width, UniversalVariables.player_height)
-
+        self.player_rect = player_rect
         # Renderib playerile hitboxi
         if keys[pygame.K_h] and not self.h_pressed:
             self.h_pressed = True

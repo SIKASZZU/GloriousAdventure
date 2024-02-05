@@ -75,7 +75,7 @@ class UniversalVariables:
     screen_y: int = 1020
 
     screen = pygame.display.set_mode((screen_x, screen_y))
-    jagatis = 100
+    jagatis = 50
 
     block_size: int = screen_x // jagatis
 

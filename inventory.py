@@ -162,15 +162,17 @@ class Inventory:
 
                     # Paneb itembi invi boxi keskele
                     item_image_rect = item_image.get_rect(center=item_rect.center)
-
-                    # Displayb resized itemit
-                    UniversalVariables.screen.blit(item_image, item_image_rect.topleft)
-
                 # font, numbrid itemite loetlemiseks
                 font = pygame.font.Font(None, 20)
                 text = font.render(str(count), True, 'Black')
                 text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
-                UniversalVariables.screen.blit(text, text_rect)
+
+                # Displayb resized itemit
+                blit_operations = [
+                    (item_image, item_image_rect.topleft),
+                    (text, text_rect)
+                ]
+                UniversalVariables.screen.blits(blit_operations, doreturn=False)
 
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida

@@ -81,7 +81,7 @@ class RenderPictures:
 
 
             RenderPictures.render_terrain_data.append(self.row)
-        UniversalVariables.screen.blits(UniversalVariables.blits_sequence)
+        UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
 
 class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
