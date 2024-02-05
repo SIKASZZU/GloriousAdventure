@@ -97,6 +97,7 @@ class Game:
 
                     CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
                     RenderPictures.map_render(self)  # Renderib terraini
+                    MapData.map_list_to_map(self)
 
                     # Renderib objectid peale playerit. Illusioon et player on objecti taga.
                     if Collisions.render_after == True: 

@@ -2,6 +2,7 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
+from mazecalculation import AddingMazeAtPosition
 
 class MapData:
     width = 40
@@ -9,6 +10,7 @@ class MapData:
     maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
     start_side = 'bottom'
     map_list = []  # Kogu mapi listina >>> values: place, glade, maze
+    map_list_data = []
 
     map_data = []
     maze_data = []
@@ -41,6 +43,7 @@ class MapData:
 
         return glade_data
 
+
     def maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
@@ -70,6 +73,7 @@ class MapData:
 
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
+
 
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
@@ -264,6 +268,7 @@ class MapData:
         # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
         #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
 
+
         if maze_location == 1:  # add new maze to: top
             new_map_data = new_maze_data + map_data
 
@@ -284,21 +289,21 @@ class MapData:
 
         else: print(f'maze_location: {maze_location}; no new maze appended')
 
-        # If there are extra rows in map_data that are not covered by new_maze_data
-        remaining_rows_count = len(map_data) - len(new_maze_data)
-        maze_fill = MapData.maze_fill
-        maze_fill = maze_fill.tolist()
-        # print(maze_fill)
-
-        ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
-            # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
-
-        if remaining_rows_count != 0:
-            remaining_rows = map_data[len(new_maze_data):]
-            for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
-                if maze_location == 3: new_row = maze_fill_row + remaining_row
-                if maze_location == 4: new_row = remaining_row + maze_fill_row
-                new_map_data.append(new_row)
+#        # If there are extra rows in map_data that are not covered by new_maze_data
+#        remaining_rows_count = len(map_data) - len(new_maze_data)
+#        maze_fill = MapData.maze_fill
+#        maze_fill = maze_fill.tolist()
+#        # print(maze_fill)
+#
+#        ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
+#            # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
+#
+#        if remaining_rows_count != 0:
+#            remaining_rows = map_data[len(new_maze_data):]
+#            for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
+#                if maze_location == 3: new_row = maze_fill_row + remaining_row
+#                if maze_location == 4: new_row = remaining_row + maze_fill_row
+#                new_map_data.append(new_row)
 
         if maze_location != 0:
             map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
@@ -307,6 +312,24 @@ class MapData:
 
         MapData.map_data = map_data
         return MapData.map_data
+    
+
+    def map_list_to_map(self):
+        MapData.map_list_data = []
+        for row in AddingMazeAtPosition.map_list:
+            map_list_row = []
+            for item in row:
+                if item == 'place':
+                    maze_fill = MapData.maze_fill
+                    maze_fill = maze_fill.tolist()
+                    map_list_row.append(maze_fill)
+                if item == 'maze':
+                    new_maze_data = MapData.create_maze_with_perlin_noise(MapData.start_side)
+                    map_list_row.append(new_maze_data)
+                if item == 'glade':
+                    map_list_row.append(MapData.glade_creation())
+
+            MapData.map_list_data.append(map_list_row)
 
 
 if __name__ == "__main__":
