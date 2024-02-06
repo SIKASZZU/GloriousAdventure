@@ -14,7 +14,6 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
-    @staticmethod
     def map_render(self) -> None:
 
         UniversalVariables.screen.fill('white')
@@ -25,13 +24,13 @@ class RenderPictures:
 
         # TODO: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
-        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 4
-        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
+        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size)
+        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size)
 
-        for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3):
+        for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range + 9):
+            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range):
                 terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 

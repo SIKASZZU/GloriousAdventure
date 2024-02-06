@@ -303,31 +303,42 @@ class MapData:
 
         MapData.map_data = map_data
         return MapData.map_data
-    
 
-    def map_list_to_map(self, location, start_side):
-        MapData.map_list_data = []
-        for row in AddingMazeAtPosition.map_list:
-            map_list_row = []
-            for item in row:
-                if item == 'place':
-                    maze_fill = MapData.maze_fill
-                    maze_fill = maze_fill.tolist()
-                    map_list_row.append(maze_fill)
-                
-                if item == 'maze':
-                    new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
-                    map_list_row.append(new_maze_data)
-                
-                if item == 'glade':
-                    map_list_row.append(MapData.glade_creation())
+    @staticmethod
+    def get_data(item, start_side):
+        if item == 'maze':
+            return MapData.create_maze_with_perlin_noise(start_side)
+        elif item == 'glade':
+            return MapData.glade_creation()
+        elif item == 'place':
+            # Assuming 'place' is a grid of None values
+            return [[None] * 40 for _ in range(40)]
+        else:
+            # Handle other cases or raise an error
+            raise ValueError("Unknown item type")
 
-            MapData.map_list_data.append(map_list_row)
-    
-        print('MapData.map_list_data', MapData.map_list_data)    
-        return MapData.map_list_data
-    
-    
+    @staticmethod
+    def map_list_to_map(start_side):
+        new_map_data = []  # Initialize new_map_data
+
+        for sublist in AddingMazeAtPosition.map_list:
+            # Initialize a list to store combined rows of current sublist
+            combined_rows = None
+
+            for item in sublist:
+                current_data = MapData.get_data(item, start_side)
+
+                if combined_rows is None:
+                    # For the first item in the sublist, just copy the data
+                    combined_rows = current_data
+                else:
+                    # For subsequent items, add their rows to the existing rows
+                    combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
+
+            # After processing each sublist, add the combined rows to the new_map_data
+            new_map_data.extend(combined_rows)
+
+        return new_map_data
 if __name__ == "__main__":
     # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
     maze_location = 1

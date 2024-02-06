@@ -7,5 +7,5 @@ class NewMaze:
             start_side = placements[location]
         else: print('mapupdate.py error, location not in placements')
 
-        self.terrain_data = MapData.map_creation(location, start_side)
+        self.terrain_data = MapData.map_list_to_map(start_side)
 

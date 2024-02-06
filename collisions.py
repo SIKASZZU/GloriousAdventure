@@ -120,7 +120,6 @@ class Collisions:
         else:
             print("Cannot add 'maze' at this position, row_index is out of bounds")
 
-        print(map_list)
 
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte

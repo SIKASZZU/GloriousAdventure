@@ -9,6 +9,7 @@ class AddingMazeAtPosition:
     row = []
     col = []
 
+
     def add_maze_to_specific_position_top(map_list, row_index, col_index):
         max_col_index = len(map_list[0])
 
@@ -82,14 +83,14 @@ class AddingMazeAtPosition:
 
             if grid_main == 19:
                 coordinate += 19
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate + 1][grid_other] = object_id
+                # self.terrain_data[coordinate][grid_other] = object_id
+                # self.terrain_data[coordinate + 1][grid_other] = object_id
                 col_index = ((gridy + 21) // 40)
 
             else:
                 coordinate += 20
-                self.terrain_data[coordinate][grid_other] = object_id
-                self.terrain_data[coordinate - 1][grid_other] = object_id
+                # self.terrain_data[coordinate][grid_other] = object_id
+                # self.terrain_data[coordinate - 1][grid_other] = object_id
                 col_index = ((gridy + 20) // 40)
 
             AddingMazeAtPosition.add_maze_to_specific_position_right(AddingMazeAtPosition.map_list, row_index, col_index)
@@ -97,15 +98,14 @@ class AddingMazeAtPosition:
         if location == 1:
             gridx, gridy = grid_main, grid_other
             row_index = int(((gridx + 1) // 40))
-            print(row_index)
             if grid_main == 19:
-                self.terrain_data[coordinate + 40][grid_other + 19] = object_id
-                self.terrain_data[coordinate + 40][grid_other + 20] = object_id
+               # self.terrain_data[coordinate + 40][grid_other + 19] = object_id
+               # self.terrain_data[coordinate + 40][grid_other + 20] = object_id
                 col_index = ((gridy + 21) // 40)
 
             else:
-                self.terrain_data[coordinate][grid_other + 19] = object_id
-                self.terrain_data[coordinate][grid_other + 20] = object_id
+                # self.terrain_data[coordinate][grid_other + 19] = object_id
+                # self.terrain_data[coordinate][grid_other + 20] = object_id
                 col_index = ((gridy + 20) // 40)
 
             AddingMazeAtPosition.add_maze_to_specific_position_top(AddingMazeAtPosition.map_list, row_index, col_index)
@@ -115,23 +115,16 @@ class AddingMazeAtPosition:
             row_index = int(((gridx + 1) // 40))
 
             if grid_main == 19:
-                self.terrain_data[coordinate][grid_other + 19] = object_id
-                self.terrain_data[coordinate][grid_other + 20] = object_id
+                # self.terrain_data[coordinate][grid_other + 19] = object_id
+                # self.terrain_data[coordinate][grid_other + 20] = object_id
                 col_index = ((gridy + 21) // 40)
 
             else:
-                self.terrain_data[coordinate][grid_other + 19] = object_id
-                self.terrain_data[coordinate][grid_other + 20] = object_id
+                # self.terrain_data[coordinate][grid_other + 19] = object_id
+                # self.terrain_data[coordinate][grid_other + 20] = object_id
                 col_index = ((gridy + 20) // 40)
 
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(AddingMazeAtPosition.map_list, row_index, col_index)
-
-
-        print(row_index, col_index)
-        print()
-
-        for sublist in AddingMazeAtPosition.map_list:
-            print(sublist)
 
 
 if __name__ == '__main__':
