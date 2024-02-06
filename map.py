@@ -31,18 +31,9 @@ class MapData:
 
     # Create glade
     def glade_creation():
-        glade_data = []
-
         with open('glade.txt', 'r') as file:
-            for line in file:
-                cleaned_line = line.strip()
-                if cleaned_line:
-                    cleaned_line = cleaned_line.replace('[', '').replace(']', '')
-                    row = [int(x) for x in cleaned_line.split(',') if x.strip()]
-                    glade_data.append(row)
-
-        return glade_data
-
+            return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                    for line in file if line.strip()]
 
     def maze_generation(shape, res):
         def f(t):
