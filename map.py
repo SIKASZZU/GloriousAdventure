@@ -318,8 +318,9 @@ class MapData:
             raise ValueError("Unknown item type")
 
     @staticmethod
-    def map_list_to_map(start_side):
+    def map_list_to_map(start_side='bottom'):
         new_map_data = []  # Initialize new_map_data
+        print('AddingMazeAtPosition.map_list', AddingMazeAtPosition.map_list,'\n')
 
         for sublist in AddingMazeAtPosition.map_list:
             # Initialize a list to store combined rows of current sublist
@@ -339,10 +340,5 @@ class MapData:
             new_map_data.extend(combined_rows)
 
         return new_map_data
-if __name__ == "__main__":
-    # maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
-    maze_location = 1
-
-    terrain_data = MapData.map_creation()  # map data
-    glade_data = MapData.glade_creation()  # glade data
-    print('terraindata\n', terrain_data, '\n')
+if __name__ == "__main__": ...
+    

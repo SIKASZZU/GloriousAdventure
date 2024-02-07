@@ -46,8 +46,7 @@ class Game:
             glade_data = MapData.glade_creation()  # glade data
 
         if not self.terrain_data:
-            self.terrain_data = MapData.map_creation()
-
+            self.terrain_data = MapData.map_list_to_map() 
     def run(self) -> None:
         while True:
             UniversalVariables.blits_sequence = []
