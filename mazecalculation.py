@@ -65,14 +65,14 @@ class AddingMazeAtPosition:
 
             if grid_main == 19:
                 coordinate += 19
-                self.terrain_data[coordinate][grid_other + 40] = object_id
-                self.terrain_data[coordinate + 1][grid_other + 40] = object_id
+                # self.terrain_data[coordinate][grid_other + 40] = object_id
+                # self.terrain_data[coordinate + 1][grid_other + 40] = object_id
                 col_index = ((gridy + 21) // 40)
 
             else:
                 coordinate += 20
-                self.terrain_data[coordinate][grid_other + 40] = object_id
-                self.terrain_data[coordinate - 1][grid_other + 40] = object_id
+                # self.terrain_data[coordinate][grid_other + 40] = object_id
+                # self.terrain_data[coordinate - 1][grid_other + 40] = object_id
                 col_index = ((gridy + 20) // 40)
 
             AddingMazeAtPosition.add_maze_to_specific_position_left(AddingMazeAtPosition.map_list, row_index, col_index)
