@@ -73,27 +73,21 @@ class Collisions:
                     ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                     if keys[pygame.K_l] and Collisions.keylock == 0:
                         Collisions.keylock += 1
-                        print(Collisions.keylock)
                         locations = {95: 1, 97: 2, 94: 3, 96: 4}
                         location = locations[object_id]
-                        NewMaze.spawn_maze_at_location(self, location)
                         open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
                         object_id = open_doors[location]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
                         j = (grid_y // 39) * 39
                         i = (grid_x // 39) * 39
-                        if location == 1 or location == 2:
-                            AddingMazeAtPosition.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
-
-                        else:
-                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
-
-                        if location == 1:
-                            UniversalVariables.player_y += 39 * UniversalVariables.block_size
-
-                        if location == 3:
-                            UniversalVariables.player_x += 39 * UniversalVariables.block_size
+                        
+                        if location == 1 or location == 2: AddingMazeAtPosition.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
+                        else: AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                        if location == 1: UniversalVariables.player_y += 39 * UniversalVariables.block_size
+                        if location == 3: UniversalVariables.player_x += 39 * UniversalVariables.block_size
+                        
+                        if location: NewMaze.spawn_maze_at_location(self, location)
 
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:

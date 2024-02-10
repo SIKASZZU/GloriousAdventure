@@ -318,9 +318,8 @@ class MapData:
             raise ValueError("Unknown item type")
 
     @staticmethod
-    def map_list_to_map(start_side='bottom'):
+    def map_list_to_map(self, start_side='bottom'):
         new_map_data = []  # Initialize new_map_data
-        print('AddingMazeAtPosition.map_list', AddingMazeAtPosition.map_list,'\n')
 
         for sublist in AddingMazeAtPosition.map_list:
             # Initialize a list to store combined rows of current sublist
@@ -338,7 +337,12 @@ class MapData:
 
             # After processing each sublist, add the combined rows to the new_map_data
             new_map_data.extend(combined_rows)
+        print('\n\nnew_map_data', new_map_data)
+        for row in AddingMazeAtPosition.map_list:
+            print(row)
+        self.terrain_data = new_map_data
+        return self.terrain_data
+    
 
-        return new_map_data
 if __name__ == "__main__": ...
     

@@ -46,7 +46,7 @@ class Game:
             glade_data = MapData.glade_creation()  # glade data
 
         if not self.terrain_data:
-            self.terrain_data = MapData.map_list_to_map() 
+            self.terrain_data = MapData.map_list_to_map(self) 
     def run(self) -> None:
         while True:
             UniversalVariables.blits_sequence = []
@@ -114,7 +114,7 @@ class Game:
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
                     PlayerUpdate.render_general(self)  # inventory, fps counteri
                     #Vision.find_walls()  # eksperiment
-                    Collisions.keylock = 0
+                    # Collisions.keylock = 0
                 else:
                     PauseMenu.settings_menu(self)
                     pygame.display.update()
