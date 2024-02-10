@@ -304,8 +304,8 @@ class MapData:
         MapData.map_data = map_data
         return MapData.map_data
 
-    @staticmethod
     def get_data(item, start_side):
+        # Your existing method to generate data based on the item type
         if item == 'maze':
             return MapData.create_maze_with_perlin_noise(start_side)
         elif item == 'glade':
@@ -317,32 +317,62 @@ class MapData:
             # Handle other cases or raise an error
             raise ValueError("Unknown item type")
 
-    @staticmethod
+    def integrate_new_data_at(self, row_index, column_index, new_data):
+        # Ensure the new data fits within the existing terrain_data bounds
+        for i, row in enumerate(new_data):
+            # Calculate the actual row in terrain_data to modify
+            target_row = row_index + i
+            if target_row < len(self.terrain_data):
+                for j, value in enumerate(row):
+                    # Calculate the actual column in terrain_data to modify
+                    target_column = column_index + j
+                    if target_column < len(self.terrain_data[target_row]):
+                        # Replace the existing value with the new value
+                        self.terrain_data[target_row][target_column] = value
+                    else:
+                        # If the new data exceeds current row bounds, stop processing this row
+                        break
+            else:
+                # If the new data exceeds terrain_data bounds, stop processing further rows
+                break
+
     def map_list_to_map(self, start_side='bottom'):
-        new_map_data = []  # Initialize new_map_data
+        if self.terrain_data is None:
+            # If there's no existing terrain_data, generate new map data from scratch
+            new_map_data = []
+            for sublist in AddingMazeAtPosition.map_list:
+                combined_rows = None
+                for item in sublist:
+                    current_data = MapData.get_data(item, start_side)
+                    if combined_rows is None:
+                        combined_rows = current_data
+                    else:
+                        combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
 
-        for sublist in AddingMazeAtPosition.map_list:
-            # Initialize a list to store combined rows of current sublist
-            combined_rows = None
+                new_map_data.extend(combined_rows)
+            self.terrain_data = new_map_data
 
-            for item in sublist:
-                current_data = MapData.get_data(item, start_side)
+        else:
+            # Determine the current map size in terms of 40x40 blocks
+            current_blocks_row = len(self.terrain_data) // 40
+            current_blocks_col = len(self.terrain_data[0]) // 40 if self.terrain_data else 0
 
-                if combined_rows is None:
-                    # For the first item in the sublist, just copy the data
-                    combined_rows = current_data
-                else:
-                    # For subsequent items, add their rows to the existing rows
-                    combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
+            for row_index, sublist in enumerate(AddingMazeAtPosition.map_list):
+                for col_index, item in enumerate(sublist):
+                    # Generate and integrate new data only if it's beyond the current map size
+                    if row_index >= current_blocks_row or col_index >= current_blocks_col:
+                        current_data = MapData.get_data(item, start_side)
+                        # Calculate actual starting indices for the new section
+                        actual_row = row_index * 40
+                        actual_col = col_index * 40
+                        MapData.integrate_new_data_at(self, actual_row, actual_col, current_data)
 
-            # After processing each sublist, add the combined rows to the new_map_data
-            new_map_data.extend(combined_rows)
-        print('\n\nnew_map_data', new_map_data)
-        for row in AddingMazeAtPosition.map_list:
-            print(row)
-        self.terrain_data = new_map_data
+            # Debugging output to verify the map data after updates
+            print('\n\nnew_map_data', self.terrain_data)
+            for row in AddingMazeAtPosition.map_list:
+                print(row)
+
         return self.terrain_data
-    
 
 if __name__ == "__main__": ...
     
