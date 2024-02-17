@@ -149,8 +149,8 @@ class CreateCollisionBoxes:
                                     CreateCollisionBoxes.terrain_data_minerals += 1
                                 CreateCollisionBoxes.display_collision_box_decay += 1
                     except Exception as e:
-                        print(
-                            f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
+                        #print(f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
+                        pass
 
         # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
         id_sort_order = {6: 1,  # First to be rendered

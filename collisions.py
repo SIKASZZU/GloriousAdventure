@@ -75,8 +75,9 @@ class Collisions:
                         Collisions.keylock += 1
                         locations = {95: 1, 97: 2, 94: 3, 96: 4}
                         location = locations[object_id]
-                        open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
-                        object_id = open_doors[location]
+
+                        # open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
+                        # object_id = open_doors[location]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
                         j = (grid_y // 39) * 39

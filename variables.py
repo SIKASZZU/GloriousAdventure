@@ -5,9 +5,6 @@ import os
 import time
 
 from functools import wraps
-
-from map import MapData
-
 class Decorators:
     """ Neid funce tuleb kutsuda @func """
 
@@ -95,5 +92,10 @@ class UniversalVariables:
     offset_x: int = 0
     offset_y: int = 0
 
+    map_list = [
+
+        ['maze'],
+        ['glade']
+    ]
 
     blits_sequence = []
