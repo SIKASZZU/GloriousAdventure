@@ -3,6 +3,10 @@ from skimage.transform import resize
 from collections import deque
 import random
 from mazecalculation import AddingMazeAtPosition
+import copy
+
+
+from variables import Decorators
 
 class MapData:
     width = 40
@@ -11,6 +15,8 @@ class MapData:
     start_side = 'bottom'
     map_list = []  # Kogu mapi listina >>> values: place, glade, maze
     map_list_data = []
+
+    old = copy.deepcopy(AddingMazeAtPosition.map_list)  # Use deepcopy to avoid reference issues
 
     map_data = []
     maze_data = []
@@ -26,7 +32,6 @@ class MapData:
     puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
-
     repetition_lock = 0
 
     # Create glade
@@ -64,7 +69,6 @@ class MapData:
 
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
-
 
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
@@ -153,10 +157,8 @@ class MapData:
         if MapData.create_save_puzzle:
             return MapData.converted_maze
 
-
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
-
 
     def find_path_bfs(maze, start, end):
         queue = deque([(start, [])])
@@ -177,7 +179,6 @@ class MapData:
                         queue.append(((new_x, new_y), new_path))
 
         return None
-
 
     def search_paths(maze):
         special_positions = []
@@ -218,10 +219,8 @@ class MapData:
             maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
             MapData.search_paths(maze)
 
-
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
-
 
     def map_creation(location = 0, start_side_new = 'bottom'):
         MapData.repetition_lock += 1
@@ -304,6 +303,7 @@ class MapData:
         MapData.map_data = map_data
         return MapData.map_data
 
+    @staticmethod
     def get_data(item, start_side):
         # Your existing method to generate data based on the item type
         if item == 'maze':
@@ -317,26 +317,84 @@ class MapData:
             # Handle other cases or raise an error
             raise ValueError("Unknown item type")
 
-    def integrate_new_data_at(self, row_index, column_index, new_data):
-        # Ensure the new data fits within the existing terrain_data bounds
-        for i, row in enumerate(new_data):
-            # Calculate the actual row in terrain_data to modify
-            target_row = row_index + i
-            if target_row < len(self.terrain_data):
-                for j, value in enumerate(row):
-                    # Calculate the actual column in terrain_data to modify
-                    target_column = column_index + j
-                    if target_column < len(self.terrain_data[target_row]):
-                        # Replace the existing value with the new value
-                        self.terrain_data[target_row][target_column] = value
-                    else:
-                        # If the new data exceeds current row bounds, stop processing this row
-                        break
+    def integrate_new_data_at(self, row_index, column_index, new_data, start_side):
+
+        if start_side == 'bottom': pass  # Teeb maze ülesse, uks tuleb alla
+
+        if start_side == 'top': pass  # Teeb maze alla, uks tuleb ülesse
+
+        if start_side == 'right':  # Teeb maze vasakule, uks tuleb paremale
+
+            if self.terrain_data is None:
+                self.terrain_data = [[] for _ in range(row_index + len(new_data))]
             else:
-                # If the new data exceeds terrain_data bounds, stop processing further rows
-                break
+                while len(self.terrain_data) < row_index + len(new_data):
+                    self.terrain_data.append([])
+
+            for i, new_row in enumerate(new_data):
+                target_row_index = row_index + i
+                # Retrieve the existing row to preserve its data
+                existing_row = self.terrain_data[target_row_index] if target_row_index < len(self.terrain_data) else []
+
+                # Prepend new_row to the existing data
+                combined_row = new_row + existing_row
+
+                # Update the terrain data with the combined row
+                self.terrain_data[target_row_index] = combined_row
+
+
+        if start_side == 'left':  # Teeb maze paremale, uks tuleb vasakule
+            # Ensure self.terrain_data is initialized and has enough rows
+            while len(self.terrain_data) < row_index + len(new_data):
+                self.terrain_data.append([])
+
+            for i, new_row in enumerate(new_data):
+                target_row_index = row_index + i
+
+                # Ensure the target row has enough columns up to the column_index
+                if len(self.terrain_data[target_row_index]) < column_index:
+                    padding_needed = column_index - len(self.terrain_data[target_row_index])
+                    self.terrain_data[target_row_index] += [None] * padding_needed
+
+                # Integrate new_row into the existing row at the specified column_index
+                for j, value in enumerate(new_row):
+                    # Calculate the actual position for each value in new_row
+                    actual_pos = column_index + j
+
+                    # Ensure the row is long enough to accommodate the new value
+                    while len(self.terrain_data[target_row_index]) <= actual_pos:
+                        self.terrain_data[target_row_index].append(None)
+
+                    # Update the value in the terrain data
+                    self.terrain_data[target_row_index][actual_pos] = value
+
+
 
     def map_list_to_map(self, start_side='bottom'):
+        difference = []
+        new = AddingMazeAtPosition.map_list
+
+        print("Old List:", MapData.old)  # Debug print
+        print("New List:", new)  # Debug print
+
+        if MapData.old != []:
+            max_length = max(len(new), len(MapData.old))
+
+            for row_index in range(max_length):
+                if row_index >= len(MapData.old):
+                    for col_index, item in enumerate(new[row_index]):
+                        difference.append(item)
+                else:
+                    new_row = new[row_index]
+                    old_row = MapData.old[row_index] if row_index < len(MapData.old) else []
+
+                    for col_index, item in enumerate(new_row):
+                        if col_index >= len(old_row) or item not in old_row:
+                            difference.append(item)
+
+        print('Differences:', difference)  # Debug print to show found differences
+
+
         if self.terrain_data is None:
             # If there's no existing terrain_data, generate new map data from scratch
             new_map_data = []
@@ -348,9 +406,9 @@ class MapData:
                         combined_rows = current_data
                     else:
                         combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
-
                 new_map_data.extend(combined_rows)
             self.terrain_data = new_map_data
+            MapData.old = copy.deepcopy(AddingMazeAtPosition.map_list)  # Update MapData.old here if needed
 
         else:
             # Determine the current map size in terms of 40x40 blocks
@@ -358,20 +416,27 @@ class MapData:
             current_blocks_col = len(self.terrain_data[0]) // 40 if self.terrain_data else 0
 
             for row_index, sublist in enumerate(AddingMazeAtPosition.map_list):
+
                 for col_index, item in enumerate(sublist):
+                    if item == "glade":
+                        item = "place"
+
                     # Generate and integrate new data only if it's beyond the current map size
                     if row_index >= current_blocks_row or col_index >= current_blocks_col:
                         current_data = MapData.get_data(item, start_side)
                         # Calculate actual starting indices for the new section
                         actual_row = row_index * 40
                         actual_col = col_index * 40
-                        MapData.integrate_new_data_at(self, actual_row, actual_col, current_data)
+                        MapData.integrate_new_data_at(self, actual_row, actual_col, current_data, start_side)
+
 
             # Debugging output to verify the map data after updates
-            print('\n\nnew_map_data', self.terrain_data)
             for row in AddingMazeAtPosition.map_list:
                 print(row)
 
+        MapData.old = copy.deepcopy(AddingMazeAtPosition.map_list)  # Update MapData.old here if needed
+        for row in self.terrain_data:
+            print(row)
         return self.terrain_data
 
 if __name__ == "__main__": ...
