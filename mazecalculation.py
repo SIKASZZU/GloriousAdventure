@@ -38,10 +38,17 @@ class AddingMazeAtPosition:
         for row in map_list: print(row)
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index):
+        
         print(f'{row_index} row_index, {col_index} col_index')
+        
         if row_index == len(map_list):
             new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.append(new_row)
+
+            row = []
+            for i in range(40):
+                row = [None] * len(self.terrain_data[0])
+                self.terrain_data.append(row)
 
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = 'maze'
@@ -173,13 +180,15 @@ class AddingMazeAtPosition:
 
         if location == 2:
             gridx, gridy = grid_other, grid_main
-            row_index = int(((gridx + 1) // 40))
-
-            if grid_main == 19: 
-                col_index = ((gridy + 21) // 40)
-
-            else: 
-                col_index = ((gridy + 20) // 40)
+            col_index = int(((gridx + 1) // 40))
+            print('CI', col_index)
+            
+            if grid_main == 19:
+                row_index = ((gridy + 21) // 40)
+            else:
+                row_index = ((gridy + 20) // 40)
+            if row_index < 0: row_index = 0
+            print('RI', row_index)
 
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
 
