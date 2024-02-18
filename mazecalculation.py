@@ -14,19 +14,26 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = 'maze'
 
-    def add_maze_to_specific_position_bottom(map_list, row_index, col_index):
 
-        max_col_index = len(map_list[0]) - 1
+    def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index):
 
-        try:
-            if map_list[row_index][col_index] == 'place':
-                map_list[row_index][col_index] = 'maze'
-        except IndexError:
-            new_row = ['place' for _ in range(max_col_index + 1)]
+        if row_index == len(map_list):
+            new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.append(new_row)
 
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = 'maze'
+
+            new_maze = MapData.get_data('maze', 'top')
+
+            start_row = row_index *  39
+            start_col = col_index *  39
+
+            for i in range(40):
+                for j in range(40):
+                    self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
+        else:
+            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index],[col_index]}')
 
 
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index):
@@ -40,7 +47,6 @@ class AddingMazeAtPosition:
 
         # Kui col_index == 0 siis ta lisab igale row'ile place'i mis listis on.
         if col_index == 0:
-            print("col_index == 0", col_index == 0)
             for row in map_list:
                 row.insert(0, 'place')
 
@@ -65,6 +71,7 @@ class AddingMazeAtPosition:
         else:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index],[row_index]}')
 
+
     def add_maze_to_specific_position_right(self, map_list, row_index, col_index):
 
         # [
@@ -82,9 +89,6 @@ class AddingMazeAtPosition:
             for row in self.terrain_data:
                 row.extend([None] * 39)
 
-        for row in map_list:
-            print(row)
-
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = 'maze'
@@ -101,7 +105,6 @@ class AddingMazeAtPosition:
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index],[col_index]}')
-
 
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
@@ -172,17 +175,7 @@ class AddingMazeAtPosition:
                 # self.terrain_data[coordinate][grid_other + 20] = object_id
                 col_index = ((gridy + 20) // 40)
 
-            AddingMazeAtPosition.add_maze_to_specific_position_bottom(UniversalVariables.map_list, row_index, col_index)
+            AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
 
 
-if __name__ == '__main__':
-    AddingMazeAtPosition.add_maze_to_specific_position_right(UniversalVariables.map_list, 0, 0)
-
-    print()
-    print()
-    print()
-    for sublist in UniversalVariables.map_list:
-        print(sublist)
-    print()
-    print()
-    print()
+if __name__ == '__main__': ...
