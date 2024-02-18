@@ -67,13 +67,11 @@ class Game:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 4:  # Scroll +
                             UniversalVariables.block_size += 1  # Increase block_size
-                            print(UniversalVariables.block_size)
 
                         elif event.button == 5:  # Scroll -
                             UniversalVariables.block_size -= 1  # Decrease block_size
                             if UniversalVariables.block_size < 1:  # Prevent block_size from being less than 1
                                 UniversalVariables.block_size = 1
-                            print(UniversalVariables.block_size)
 
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
