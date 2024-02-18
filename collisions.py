@@ -6,9 +6,6 @@ from render import RenderPictures
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
-from mapupdate import NewMaze
-import random
-from map import MapData
 from mazecalculation import AddingMazeAtPosition
 
 class CollisionGrid:
