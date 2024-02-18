@@ -72,7 +72,7 @@ class AddingMazeAtPosition:
         print(f'{row_index} row_index, {col_index} col_index')
 
         # Kui col_index == 0 siis ta lisab igale row'ile place'i mis listis on.
-        if col_index == 0:
+        if col_index == 0 and map_list[row_index][col_index] != 'place':
             for row in map_list:
                 row.insert(0, 'place')
 
@@ -82,8 +82,8 @@ class AddingMazeAtPosition:
             UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
-        if map_list[col_index][row_index] == 'place':
-            map_list[col_index][row_index] = 'maze'
+        if map_list[row_index][col_index]== 'place':
+            map_list[row_index][col_index]= 'maze'
 
             new_maze = MapData.get_data('maze', 'right')  # uks tuleb paremale - maze tuleb vasakule
 
@@ -138,16 +138,20 @@ class AddingMazeAtPosition:
         print('i == grid_other; j == grid_main')
         if location == 3:
             gridx, gridy = grid_main, grid_other
+            print('gridx', gridx, 'gridy', gridy)
             row_index = int(((gridx + 1) // 40))
+            print('RI', row_index)
 
             if grid_main == 19:
                 coordinate += 19
-                col_index = ((gridy + 21) // 40)
+                col_index = ((gridy - 21) // 40)
 
             else:
                 coordinate += 20
-                col_index = ((gridy + 20) // 40)
-
+                col_index = ((gridy - 20) // 40)
+            print('CI', col_index)
+            if col_index < 0: col_index = 0
+            
             AddingMazeAtPosition.add_maze_to_specific_position_left(self, UniversalVariables.map_list, row_index, col_index)
 
         if location == 4:
