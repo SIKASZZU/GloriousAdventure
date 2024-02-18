@@ -38,6 +38,7 @@ class MapData:
             return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
 
+
     def maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
@@ -67,6 +68,7 @@ class MapData:
 
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
+
 
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
@@ -155,8 +157,10 @@ class MapData:
         if MapData.create_save_puzzle:
             return MapData.converted_maze
 
+
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
+
 
     def find_path_bfs(maze, start, end):
         queue = deque([(start, [])])
@@ -177,6 +181,7 @@ class MapData:
                         queue.append(((new_x, new_y), new_path))
 
         return None
+
 
     def search_paths(maze):
         special_positions = []
@@ -217,89 +222,10 @@ class MapData:
             maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
             MapData.search_paths(maze)
 
+
     def spawn_puzzle():
         ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
 
-    def map_creation(location = 0, start_side_new = 'bottom'):
-        MapData.repetition_lock += 1
-        # lisada +1 mingi sitt systeem, et kui terrain_data hakatakse variables kutsuma, siis siin m6tleb valja kas see on esimen ekord v6i teine.
-
-        if MapData.repetition_lock == 1:
-            maze_location = 0
-            start_side = 'bottom'
-        elif MapData.repetition_lock >= 2:
-            maze_location = location
-            start_side = start_side_new
-
-        print('repetitionlock count:', MapData.repetition_lock)
-        print('func map_creation maze_location', maze_location, 'start_side', start_side, 'start_side_new', start_side_new,'\n')
-
-        map_data = MapData.map_data  # current map data
-
-        # support mazes
-        maze_fill = MapData.maze_fill
-        new_maze_data = MapData.create_maze_with_perlin_noise(start_side)
-
-        # starting mazes
-        maze_start = MapData.create_maze_with_perlin_noise(start_side)
-        glade_data = MapData.glade_creation()
-
-        # new map craetion
-        new_map_data = MapData.new_map_data
-        new_row = MapData.new_row
-
-        # alguses, kui map datat pole veel olemas
-        if not map_data:  # list is empty   ### TODO: saab ymber kirjutada repitition lockiga
-            map_data = maze_start + glade_data
-        else: pass
-
-        # Lisab glade_data ja maze_data kokku ning paneb selle teatud kohta
-        #print(f'maze_location: {maze_location},\n {map_data} \n\n {new_maze_data}')
-
-
-        if maze_location == 1:  # add new maze to: top
-            new_map_data = new_maze_data + map_data
-
-        elif maze_location == 2:  # add new maze to: bottom
-            new_map_data = map_data + new_maze_data
-
-        elif maze_location == 3:  # add new maze to: left
-            new_map_data = []
-            for maze_row, map_row in zip(new_maze_data, map_data):
-                new_row = maze_row + map_row
-                new_map_data.append(new_row)
-
-        elif maze_location == 4:  # add new maze to: right
-            new_map_data = []
-            for maze_row, map_row in zip(new_maze_data, map_data):
-                new_row = map_row + maze_row
-                new_map_data.append(new_row)
-
-        else: print(f'maze_location: {maze_location}; no new maze appended')
-
-        # If there are extra rows in map_data that are not covered by new_maze_data
-        remaining_rows_count = len(map_data) - len(new_maze_data)
-        maze_fill = MapData.maze_fill
-        maze_fill = maze_fill.tolist()
-        # print(maze_fill)
-
-        ### TODO: Kui remaining_rows on negatiivne, siis tuleb lisada filler_maze yles poole
-            # kui midagi on seal olemas juba, ss fillerit ei saa lisada.
-
-        if remaining_rows_count != 0:
-            remaining_rows = map_data[len(new_maze_data):]
-            for maze_fill_row, remaining_row in zip(maze_fill, remaining_rows):
-                if maze_location == 3: new_row = maze_fill_row + remaining_row
-                if maze_location == 4: new_row = remaining_row + maze_fill_row
-                new_map_data.append(new_row)
-
-        if maze_location != 0:
-            map_data = new_map_data  # Et ei writiks koguaeg map_datat üle. Muidu maze_location = 0 on valge map
-
-        #print(f'\nmaze_location: {maze_location}')
-
-        MapData.map_data = map_data
-        return MapData.map_data
 
     @staticmethod
     def get_data(item, start_side):
@@ -319,63 +245,10 @@ class MapData:
             # Handle other cases or raise an error
             raise ValueError("Unknown item type")
 
-    def integrate_new_data_at(self, row_index, column_index, new_data, start_side):
-
-        if start_side == 'bottom': pass  # Teeb maze ülesse, uks tuleb alla
-
-        if start_side == 'top': pass  # Teeb maze alla, uks tuleb ülesse
-
-        if start_side == 'right':  # Teeb maze vasakule, uks tuleb paremale
-
-            if self.terrain_data is None:
-                self.terrain_data = [[] for _ in range(row_index + len(new_data))]
-            else:
-                while len(self.terrain_data) < row_index + len(new_data):
-                    self.terrain_data.append([])
-
-            for i, new_row in enumerate(new_data):
-                target_row_index = row_index + i
-                # Retrieve the existing row to preserve its data
-                existing_row = self.terrain_data[target_row_index] if target_row_index < len(self.terrain_data) else []
-
-                # Prepend new_row to the existing data
-                combined_row = new_row + existing_row
-
-                # Update the terrain data with the combined row
-                self.terrain_data[target_row_index] = combined_row
-
-
-        if start_side == 'left':  # Teeb maze paremale, uks tuleb vasakule
-            # Ensure self.terrain_data is initialized and has enough rows
-            while len(self.terrain_data) < row_index + len(new_data):
-                self.terrain_data.append([])
-
-            for i, new_row in enumerate(new_data):
-                target_row_index = row_index + i
-
-                # Ensure the target row has enough columns up to the column_index
-                if len(self.terrain_data[target_row_index]) < column_index:
-                    padding_needed = column_index - len(self.terrain_data[target_row_index])
-                    self.terrain_data[target_row_index] += [None] * padding_needed
-
-                # Integrate new_row into the existing row at the specified column_index
-                for j, value in enumerate(new_row):
-                    # Calculate the actual position for each value in new_row
-                    actual_pos = column_index + j
-
-                    # Ensure the row is long enough to accommodate the new value
-                    while len(self.terrain_data[target_row_index]) <= actual_pos:
-                        self.terrain_data[target_row_index].append(None)
-
-                    # Update the value in the terrain data
-                    self.terrain_data[target_row_index][actual_pos] = value
-
-
 
     def map_list_to_map(self, start_side='bottom'):
         difference = []
         new = UniversalVariables.map_list
-
 
         if MapData.old != []:
             max_length = max(len(new), len(MapData.old))
@@ -407,24 +280,6 @@ class MapData:
                 new_map_data.extend(combined_rows)
             self.terrain_data = new_map_data
             MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed
-
-        # else:
-        #     # Determine the current map size in terms of 40x40 blocks
-        #     current_blocks_row = len(self.terrain_data) // 40
-        #     current_blocks_col = len(self.terrain_data[0]) // 40 if self.terrain_data else 0
-        #
-        #     for row_index, sublist in enumerate(UniversalVariables.map_list):
-        #
-        #         for col_index, item in enumerate(sublist):
-        #             # Generate and integrate new data only if it's beyond the current map size
-        #             if row_index >= current_blocks_row or col_index >= current_blocks_col:
-        #                 current_data = MapData.get_data(item, start_side)
-        #                 # Calculate actual starting indices for the new section
-        #                 actual_row = row_index * 40
-        #                 actual_col = col_index * 40
-        #                 MapData.integrate_new_data_at(self, actual_row, actual_col, current_data, start_side)
-
-        MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed
 
         return self.terrain_data
 

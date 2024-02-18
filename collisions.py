@@ -79,42 +79,25 @@ class Collisions:
                         # open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
                         # object_id = open_doors[location]
                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
-
-                        j = (grid_y // 39) * 39
-                        i = (grid_x // 39) * 39
+                        print(f'\n{grid_x} grid_x, {grid_y} grid_y')
+                        j = (grid_y // 39) * 39  # Y koordinaat
                         
-                        if location == 1 or location == 2: AddingMazeAtPosition.update_terrain(self, location, i, grid_y, object_id, grid_x)  # Vaatab x coordinaati
-                        else: AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
-                        if location == 1: UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                        if location == 3: UniversalVariables.player_x += 39 * UniversalVariables.block_size
-                        
-                        if location: NewMaze.spawn_maze_at_location(self, location)
+                        i = (grid_x // 39) * 39  # X kooridnaat
+                        print('grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size')
+                        print(f'{i} i = (grid_x // 39) * 39, {j} j = (grid_y // 39) * 39, {grid_x} gridx, {grid_y} grid_y')
 
+
+                        if location == 1 or location == 2: 
+                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
+                        else:   # 3, 4
+                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                    
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
                     else: 
                         Collisions.render_after = False
         Collisions.collision_hitbox(self)
-    def add_maze_to_specific_position(map_list, row_index, col_index):
-        # Calculate the new length after adding "maze" to the specified position
-        new_length = col_index + 1
-
-        # Check if the specified position is within bounds
-        if row_index < len(map_list):
-            for row in map_list:
-                while len(row) < new_length:
-                    row.append('place')
-
-            if map_list[row_index][col_index] == 'place':
-                map_list[row_index][col_index] = 'maze'
-            elif map_list[row_index][col_index] == 'maze':
-                print("Cannot add 'maze' at this position, it's already occupied by 'maze'")
-            else:
-                print("Cannot add 'maze' at this position, it's occupied by 'glade'")
-        else:
-            print("Cannot add 'maze' at this position, row_index is out of bounds")
-
 
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
