@@ -24,7 +24,6 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
-            print('true 2')
             map_list[row_index][col_index] = 'maze'
 
             new_maze = MapData.get_data('maze', 'bottom')  # uks läheb alla - maze ülesse
