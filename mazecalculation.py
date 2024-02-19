@@ -9,13 +9,18 @@ class AddingMazeAtPosition:
 
         # Kui row_index on 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-        if row_index == 0 and map_list[row_index][col_index] != 'place':
+        if row_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
             new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.insert(0, new_row)
 
             for row in range(39):
                 self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
             UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+
+        # Kui valitud asukohal on glade siis annab errori
+        if map_list[row_index][col_index]== 'glade':
+            print(f'add_maze_to_specific_position_left:{[col_index],[row_index]} - location is occupied by glade!')
+            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -39,7 +44,7 @@ class AddingMazeAtPosition:
 
         # Kui row_index on võrdne mapis map_list'is olevale listide
         # arvuga siis lisab igale list'is olevale row'ile place'i.
-        if row_index == len(map_list):
+        if row_index == len(map_list) and map_list[row_index][col_index] != 'glade':
             new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.append(new_row)
 
@@ -47,6 +52,11 @@ class AddingMazeAtPosition:
             for i in range(40):
                 row = [None] * len(self.terrain_data[0])
                 self.terrain_data.append(row)
+
+        # Kui valitud asukohal on glade siis annab errori
+        if map_list[row_index][col_index]== 'glade':
+            print(f'add_maze_to_specific_position_left:{[col_index],[row_index]} - location is occupied by glade!')
+            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -69,7 +79,7 @@ class AddingMazeAtPosition:
 
         # Kui col_index == 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-        if col_index == 0 and map_list[row_index][col_index] != 'place':
+        if col_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
             for row in map_list:
                 row.insert(0, 'place')
 
@@ -77,6 +87,11 @@ class AddingMazeAtPosition:
                 for row_len in range(39):
                     row.insert(0, None)
             UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+
+        # Kui valitud asukohal on glade siis annab errori
+        if map_list[row_index][col_index]== 'glade':
+            print(f'add_maze_to_specific_position_left:{[col_index],[row_index]} - location is occupied by glade!')
+            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index]== 'place':
@@ -99,12 +114,17 @@ class AddingMazeAtPosition:
     def add_maze_to_specific_position_right(self, map_list, row_index, col_index):
 
         # Kui col_index == [list'i esimese row'i andmete kogus] siis ta lisab igale row'ile place'i mis listis on.
-        if col_index == len(map_list[0]):  # Igal row'il on sama andmete kogus
+        if col_index == len(map_list[0]) and map_list[row_index][col_index] != 'glade':  # Igal row'il on sama andmete kogus
             for row in map_list:
                 row.append('place')
 
             for row in self.terrain_data:
                 row.extend([None] * 39)
+
+        # Kui valitud asukohal on glade siis annab errori
+        if map_list[row_index][col_index]== 'glade':
+            print(f'add_maze_to_specific_position_left:{[col_index],[row_index]} - location is occupied by glade!')
+            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
