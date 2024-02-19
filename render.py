@@ -22,7 +22,7 @@ class RenderPictures:
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
                 UniversalVariables.block_size) // 4
 
-        # TODO: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
+        # FIXME: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
         camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size)
         camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size)
