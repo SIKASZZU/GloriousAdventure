@@ -11,6 +11,11 @@ class Camera:
     h: int = screen.get_size()[1] - (camera_borders['top'] + camera_borders['bottom'])
     camera_rect = pygame.Rect(l, t, w, h)
 
+    player_window_x: int = None
+    player_window_y: int = None
+    click_x: int = None
+    click_y: int = None
+
     @staticmethod
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
@@ -29,4 +34,11 @@ class Camera:
 
         UniversalVariables.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
         UniversalVariables.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
-        
+
+        Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + 250 - UniversalVariables.player_hitbox_offset_x  # Playeri x kordinaat windowi järgi
+        Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + 200 - UniversalVariables.player_hitbox_offset_y  # Playeri y kordinaat windowi järgi
+
+        if self.click_position:
+            self.click_window_x = self.click_position[0] - Camera.player_window_x
+            self.click_window_y = self.click_position[1] - Camera.player_window_y
+            Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)

@@ -28,7 +28,7 @@ class Game:
     # ******************** PLAYER *******ds************* #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
 
-    # ******************** FPS, FONT ******************** #
+    # ******************** FPS, FONT ******************** #w
     clock = pygame.time.Clock()  # fps
     font = pygame.font.SysFont("Verdana", 20)  # font
 
@@ -41,6 +41,10 @@ class Game:
     def __init__(self):
         glade_data = None
         self.terrain_data = None
+
+        self.click_position: tuple[int, int] = ()
+        self.click_window_x: int = None
+        self.click_window_y: int = None
 
         if not glade_data:
             glade_data = MapData.glade_creation()  # glade data
@@ -72,6 +76,10 @@ class Game:
                             UniversalVariables.block_size -= 1  # Decrease block_size
                             if UniversalVariables.block_size < 1:  # Prevent block_size from being less than 1
                                 UniversalVariables.block_size = 1
+
+                        # Võtab clicki positsiooni
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            self.click_position = event.pos
 
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:

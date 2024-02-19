@@ -20,7 +20,7 @@ class RenderPictures:
         RenderPictures.render_terrain_data: list = []
 
         RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
-                UniversalVariables.block_size) // 4
+                UniversalVariables.block_size) // 5
 
         # FIXME: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range

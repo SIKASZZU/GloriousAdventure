@@ -7,29 +7,12 @@ from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
 from mazecalculation import AddingMazeAtPosition
-
-class CollisionGrid:
-    def __init__(self, grid_size, screen_width, screen_height):
-        self.grid_size = grid_size
-        self.columns = int(screen_width / grid_size)
-        self.rows = int(screen_height / grid_size)
-        self.grid = [[[] for _ in range(self.rows)] for _ in range(self.columns)]
-
-    def add_object_to_grid(self, obj_rect, obj_id):
-        column = int(obj_rect.x / self.grid_size)
-        row = int(obj_rect.y / self.grid_size)
-        self.grid[column][row].append(obj_id)
-
-    def get_nearby_objects(self, obj_rect):
-        column = int(obj_rect.x / self.grid_size)
-        row = int(obj_rect.y / self.grid_size)
-        return self.grid[column][row]
+from camera import Camera
 
 class Collisions:
+
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock = 0
-    def __init__(self):
-        self.collision_grid = CollisionGrid(grid_size, screen_width, screen_height)
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -59,6 +42,30 @@ class Collisions:
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
+            # Clickides saab avada ukse - uue maze
+            if self.click_window_x and self.click_window_y:
+                if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
+
+                    # Kinniste uste ID'd
+                    if object_id in [94, 95, 96, 97]:
+
+                        if Collisions.keylock == 0:
+                            Collisions.keylock += 1
+
+                            # Sellega saab suuna kätte, '94: 3' - vasakule
+                            locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                            location = locations[object_id]
+
+                            grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+
+                            j = (grid_y // 39) * 39  # Y koordinaat
+                            i = (grid_x // 39) * 39  # X kooridnaat
+
+                            if location == 1 or location == 2:
+                                AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
+                            else:   # 3, 4
+                                AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
@@ -66,34 +73,18 @@ class Collisions:
                 if object_id == 99 or object_id == 98:
                     Collisions.render_after = True
 
-                if object_id in [94, 95, 96, 97]:
-                    ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-                    if keys[pygame.K_l] and Collisions.keylock == 0:
-                        Collisions.keylock += 1
-                        locations = {95: 1, 97: 2, 94: 3, 96: 4}
-                        location = locations[object_id]
-
-                        # open_doors = {1: 91, 2: 93, 3: 90, 4: 92}
-                        # object_id = open_doors[location]
-                        grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
-                        print(f'\n{grid_x} grid_x, {grid_y} grid_y')
-                        j = (grid_y // 39) * 39  # Y koordinaat
-                        
-                        i = (grid_x // 39) * 39  # X kooridnaat
-                        print('grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size')
-                        print(f'{i} i = (grid_x // 39) * 39, {j} j = (grid_y // 39) * 39, {grid_x} gridx, {grid_y} grid_y')
-
-
-                        if location == 1 or location == 2: 
-                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
-                        else:   # 3, 4
-                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
-                    
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
                     else: 
                         Collisions.render_after = False
+
+        # Peale checkimist clearib click x/y history ära
+        if self.click_window_x and self.click_window_y and self.click_position:
+            self.click_position: tuple[int, int] = ()
+            self.click_window_x = None
+            self.click_window_y = None
+
         Collisions.collision_hitbox(self)
 
     def collision_hitbox(self) -> None:

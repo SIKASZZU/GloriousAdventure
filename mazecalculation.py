@@ -9,7 +9,7 @@ class AddingMazeAtPosition:
 
         # Kui row_index on 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-        if row_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
+        if row_index == 0 and map_list[row_index][col_index] != 'place':
             new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.insert(0, new_row)
 
@@ -44,7 +44,7 @@ class AddingMazeAtPosition:
 
         # Kui row_index on võrdne mapis map_list'is olevale listide
         # arvuga siis lisab igale list'is olevale row'ile place'i.
-        if row_index == len(map_list) and map_list[row_index][col_index] != 'glade':
+        if row_index == len(map_list):
             new_row = ['place' for _ in range(len(map_list[0]))]
             map_list.append(new_row)
 
@@ -79,7 +79,7 @@ class AddingMazeAtPosition:
 
         # Kui col_index == 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-        if col_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
+        if col_index == 0 and map_list[row_index][col_index] != 'place':
             for row in map_list:
                 row.insert(0, 'place')
 
@@ -114,7 +114,7 @@ class AddingMazeAtPosition:
     def add_maze_to_specific_position_right(self, map_list, row_index, col_index):
 
         # Kui col_index == [list'i esimese row'i andmete kogus] siis ta lisab igale row'ile place'i mis listis on.
-        if col_index == len(map_list[0]) and map_list[row_index][col_index] != 'glade':  # Igal row'il on sama andmete kogus
+        if col_index == len(map_list[0]):  # Igal row'il on sama andmete kogus
             for row in map_list:
                 row.append('place')
 
