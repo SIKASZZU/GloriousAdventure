@@ -1,5 +1,6 @@
 from map import MapData
 from variables import UniversalVariables
+from camera import Camera
 class AddingMazeAtPosition:
     row = []
     col = []
@@ -15,7 +16,9 @@ class AddingMazeAtPosition:
 
             for row in range(39):
                 self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
+
             UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+            Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index]== 'glade':
@@ -85,7 +88,9 @@ class AddingMazeAtPosition:
             for row in self.terrain_data:
                 for row_len in range(39):
                     row.insert(0, None)
+
             UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+            Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index]== 'glade':
