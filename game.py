@@ -5,11 +5,13 @@ import numpy as np
 import pygame
 import sys
 
+import timeit
+
 from map import MapData
 
 # Oma enda failid
 from menu import Menu, PauseMenu
-#from vision import LightSource
+import vision
 from camera import Camera  # box_target_camera
 from inventory import Inventory
 from update import PlayerUpdate  # update_player, render_player
@@ -50,7 +52,8 @@ class Game:
             glade_data = MapData.glade_creation()  # glade data
 
         if not self.terrain_data:
-            self.terrain_data = MapData.map_list_to_map(self) 
+            self.terrain_data = MapData.map_list_to_map(self)
+
     def run(self) -> None:
         while True:
             UniversalVariables.blits_sequence = []
@@ -104,7 +107,7 @@ class Game:
                     RenderPictures.map_render(self)  # Renderib terraini
 
                     # Renderib objectid peale playerit. Illusioon et player on objecti taga.
-                    if Collisions.render_after == True: 
+                    if Collisions.render_after == True:
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
                         PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
                     else:  # self.render_after == False
@@ -112,6 +115,12 @@ class Game:
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
+
+                    vision.find_boxes_in_window()
+                    center = (UniversalVariables.player_x + UniversalVariables.player_width, UniversalVariables.player_y + UniversalVariables.player_height)
+
+
+                    vision.draw_light_source_and_rays(UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
 
                     if Inventory.render_inv:
                         Inventory.render_craftable_items(self)
@@ -121,6 +130,7 @@ class Game:
                     PlayerUpdate.render_general(self)  # inventory, fps counteri
                     #Vision.find_walls()  # eksperiment
                     Collisions.keylock = 0
+
                 else:
                     PauseMenu.settings_menu(self)
                     pygame.display.update()

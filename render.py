@@ -44,7 +44,7 @@ class RenderPictures:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
                     if terrain_value == None: pass
-                    else: 
+                    else:
                         image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                         image = ImageLoader.load_image(image_name)
 
@@ -110,8 +110,10 @@ class CreateCollisionBoxes:
         for item in items_list:
             if item.get("Type") == "Object":
                 id = item.get("ID")
-                collision_box = item.get("Collision_box", [0, 0, 0, 0])
-                object_collision_boxes[id] = collision_box
+                if 90 <= id:
+                    collision_box = item.get("Collision_box")
+                    object_collision_boxes[id] = collision_box
+
 
         for row in RenderPictures.render_terrain_data:
             for x, y in row:
@@ -119,35 +121,53 @@ class CreateCollisionBoxes:
                     try:
                         # Vaatab kas itemi ID on dict'is:    object_collision_boxes = {}
                         if self.terrain_data[y][x] in object_collision_boxes:
-                            terrain_x: int = x * UniversalVariables.block_size
-                            terrain_y: int = y * UniversalVariables.block_size
-                            object_id: int = self.terrain_data[y][x]
+
+                            if object_collision_boxes[self.terrain_data[y][x]] is None:
+                                terrain_x: int = x * UniversalVariables.block_size
+                                terrain_y: int = y * UniversalVariables.block_size
+                                object_id: int = self.terrain_data[y][x]
+
+                                if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
+                                    new_object: tuple[int, ...] = (
+                                        terrain_x, terrain_y, 0, 0,
+                                        object_id, 0,
+                                        0)
+
+                                    if new_object not in UniversalVariables.collision_boxes:
+                                        UniversalVariables.collision_boxes.append(new_object)
+                                        CreateCollisionBoxes.terrain_data_minerals += 1
+                                    CreateCollisionBoxes.display_collision_box_decay += 1
+
+                            else:
+                                terrain_x: int = x * UniversalVariables.block_size
+                                terrain_y: int = y * UniversalVariables.block_size
+                                object_id: int = self.terrain_data[y][x]
 
 
-                            # Võtab õige itemi collision_box'i
-                            collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
+                                # Võtab õige itemi collision_box'i
+                                collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
 
-                            # Arvutab hitboxi suuruse ja asukoha vastavalt camera / player / render offsetile
-                            collision_box_offset_x_mlp, collision_box_offset_y_mlp, collision_box_width_mlp, collision_box_height_mlp = collision_box
-                            collision_box_width = int(UniversalVariables.block_size * collision_box_width_mlp)
-                            collision_box_height = int(UniversalVariables.block_size * collision_box_height_mlp)
+                                # Arvutab hitboxi suuruse ja asukoha vastavalt camera / player / render offsetile
+                                collision_box_offset_x_mlp, collision_box_offset_y_mlp, collision_box_width_mlp, collision_box_height_mlp = collision_box
+                                collision_box_width = int(UniversalVariables.block_size * collision_box_width_mlp)
+                                collision_box_height = int(UniversalVariables.block_size * collision_box_height_mlp)
 
-                            collision_box_offset_x = int(UniversalVariables.block_size * collision_box_offset_x_mlp)
-                            collision_box_offset_y = int(UniversalVariables.block_size * collision_box_offset_y_mlp)
+                                collision_box_offset_x = int(UniversalVariables.block_size * collision_box_offset_x_mlp)
+                                collision_box_offset_y = int(UniversalVariables.block_size * collision_box_offset_y_mlp)
 
-                            collision_box_x: int = terrain_x + collision_box_offset_x
-                            collision_box_y: int = terrain_y + collision_box_offset_y
+                                collision_box_x: int = terrain_x + collision_box_offset_x
+                                collision_box_y: int = terrain_y + collision_box_offset_y
 
-                            if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
-                                new_object: tuple[int, ...] = (
-                                    collision_box_x, collision_box_y, collision_box_width, collision_box_height,
-                                    object_id, collision_box_offset_x,
-                                    collision_box_offset_y)
+                                if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
+                                    new_object: tuple[int, ...] = (
+                                        collision_box_x, collision_box_y, collision_box_width, collision_box_height,
+                                        object_id, collision_box_offset_x,
+                                        collision_box_offset_y)
 
-                                if new_object not in UniversalVariables.collision_boxes:
-                                    UniversalVariables.collision_boxes.append(new_object)
-                                    CreateCollisionBoxes.terrain_data_minerals += 1
-                                CreateCollisionBoxes.display_collision_box_decay += 1
+                                    if new_object not in UniversalVariables.collision_boxes:
+                                        UniversalVariables.collision_boxes.append(new_object)
+                                        CreateCollisionBoxes.terrain_data_minerals += 1
+                                    CreateCollisionBoxes.display_collision_box_decay += 1
                     except Exception as e:
                         #print(f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
                         pass
@@ -162,3 +182,4 @@ class CreateCollisionBoxes:
         # Sort the collision_boxes list based on the custom sort order
         UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,
                                                     key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+
