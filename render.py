@@ -24,13 +24,13 @@ class RenderPictures:
 
         # FIXME: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
-        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size)
-        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size)
+        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 4 # muudavad camera asukohta (grid - 4)
+        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1 # muudavad camera asukohta (grid - 1)
 
-        for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range):
+        for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range):
+            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range + 9):
                 terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
@@ -110,9 +110,8 @@ class CreateCollisionBoxes:
         for item in items_list:
             if item.get("Type") == "Object":
                 id = item.get("ID")
-                if 90 <= id:
-                    collision_box = item.get("Collision_box")
-                    object_collision_boxes[id] = collision_box
+                collision_box = item.get("Collision_box")
+                object_collision_boxes[id] = collision_box
 
 
         for row in RenderPictures.render_terrain_data:

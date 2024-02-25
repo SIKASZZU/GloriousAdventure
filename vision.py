@@ -13,7 +13,17 @@ def find_boxes_in_window():
     # Need boxid on render rangei sees
     for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id, offset_x, offset_y
         if vision_blocking_box[2] != 0 or vision_blocking_box[3] != 0: # width, height == 0: pass
-            wall = ((vision_blocking_box[0], vision_blocking_box[1]),(vision_blocking_box[0] + vision_blocking_box[3], vision_blocking_box[1] + vision_blocking_box[4]))
+
+            x = vision_blocking_box[0] + UniversalVariables.offset_x
+            y = vision_blocking_box[1] + UniversalVariables.offset_y
+            top_left = (x, y)
+
+            x = vision_blocking_box[0] + vision_blocking_box[2] + UniversalVariables.offset_x
+            y = vision_blocking_box[1] + vision_blocking_box[3] + UniversalVariables.offset_y
+            bottom_right = (x, y)
+
+
+            wall = (top_left, bottom_right)
             if wall not in UniversalVariables.walls:
                 UniversalVariables.walls.append(wall)
 
@@ -54,7 +64,7 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 def draw_light_source_and_rays(screen, position, light_range):
     light_source = position
-    for angle in range(0, 360, 10):
+    for angle in range(0, 360, 5):
         rad_angle = math.radians(angle)
         ray_dir = (math.cos(rad_angle), math.sin(rad_angle))
         ray_end = (light_source[0] + ray_dir[0] * light_range, light_source[1] + ray_dir[1] * light_range)
@@ -75,6 +85,6 @@ def draw_light_source_and_rays(screen, position, light_range):
                         closest_intersection = intersection
 
         if closest_intersection:
-            pygame.draw.line(screen, pygame.Color('black'), light_source, closest_intersection, 1)
+            pygame.draw.line(screen, pygame.Color('black'), light_source, closest_intersection, 3)
         else:
-            pygame.draw.line(screen, pygame.Color('black'), light_source, ray_end, 1)
+            pygame.draw.line(screen, pygame.Color('gray'), light_source, ray_end, 3)

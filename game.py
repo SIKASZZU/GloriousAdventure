@@ -117,10 +117,8 @@ class Game:
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
 
                     vision.find_boxes_in_window()
-                    center = (UniversalVariables.player_x + UniversalVariables.player_width, UniversalVariables.player_y + UniversalVariables.player_height)
-
-
                     vision.draw_light_source_and_rays(UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+                    # vision.draw_walls(UniversalVariables.screen)  # drawib vision boxid / sama mis collision boxid
 
                     if Inventory.render_inv:
                         Inventory.render_craftable_items(self)

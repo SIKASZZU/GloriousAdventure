@@ -72,7 +72,7 @@ class UniversalVariables:
     screen_y: int = 1020
 
     screen = pygame.display.set_mode((screen_x, screen_y))
-    jagatis = 10
+    jagatis = 15
 
     block_size: int = screen_x // jagatis
 
@@ -89,7 +89,7 @@ class UniversalVariables:
     collision_boxes: list = []  # collision
 
     # ******************** VISION ******************** #
-    light_range = 300
+    light_range = 420
     walls = []  # Collision boxide seinad
 
     # ******************** OFFSET ******************** #
