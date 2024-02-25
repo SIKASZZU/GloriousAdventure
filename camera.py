@@ -4,7 +4,7 @@ from variables import UniversalVariables
 class Camera:
 
     screen = UniversalVariables.screen
-    camera_borders = {'left': 250, 'right': 250, 'top': 200, 'bottom': 200}
+    camera_borders = {'left': 450, 'right': 450, 'top': 450, 'bottom': 450}    
     l: int = camera_borders['left']
     t: int = camera_borders['top']
     w: int = screen.get_size()[0] - (camera_borders['left'] + camera_borders['right'])

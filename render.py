@@ -24,13 +24,13 @@ class RenderPictures:
 
         # FIXME: See tuleb ära muuta !! - - - - Window size muutes läheb renderimine perse  -- - - - Size Ratio
         # Use the camera's position to determine the render range
-        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 4 # muudavad camera asukohta (grid - 4)
-        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1 # muudavad camera asukohta (grid - 1)
+        camera_grid_row = int((self.player_rect.left + self.player_rect.width / 2) // UniversalVariables.block_size) - 1
+        camera_grid_col = int((self.player_rect.top + self.player_rect.height / 2) // UniversalVariables.block_size) - 1
 
         for i in range(camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3):
             self.row: list[tuple[int, int], ...] = []
 
-            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range + 9):
+            for j in range(camera_grid_row - RenderPictures.render_range, camera_grid_row + RenderPictures.render_range + 3):
                 terrain_x: int = j * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
