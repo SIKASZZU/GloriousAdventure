@@ -62,6 +62,23 @@ def get_line_segment_intersection(p0, p1, p2, p3):
     return None  # No collision
 
 
+def draw_shadows(screen, visible_points):
+    # Create a surface to represent the shadow mask
+    shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
+
+    # Fill the shadow mask with black color with some transparency
+    shadow_mask.fill((0, 0, 0, 255))  # Adjust the alpha value as needed for the darkness of shadows
+
+    # Create a list of vertices for the visibility polygon
+    vertices = [(int(x), int(y)) for x, y in visible_points]
+
+    # Draw the visibility polygon onto the shadow mask
+    pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # Use transparent color (0, 0, 0, 0) to punch holes
+
+    # Blit the shadow mask onto the screen
+    screen.blit(shadow_mask, (0, 0))
+
+
 def draw_light_source_and_rays(screen, position, light_range):
     light_source = position
     visible_points = []
@@ -128,4 +145,6 @@ def draw_light_source_and_rays(screen, position, light_range):
     pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1)  # Outline for visibility
 
     # Optionally, fill the polygon for better visual effect
-    pygame.draw.polygon(screen, pygame.Color(255, 255, 0, 50), visible_points, 0)
+    # pygame.draw.polygon(screen, pygame.Color(255, 255, 0, 50), visible_points, 0)
+
+    draw_shadows(screen, visible_points)
