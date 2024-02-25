@@ -64,27 +64,68 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 def draw_light_source_and_rays(screen, position, light_range):
     light_source = position
+    visible_points = []
+    corners_to_check = set()
+
+    # Helper function to check direct visibility of a corner and its distance
+    def is_corner_visible_and_within_range(corner):
+        direct_ray_end = corner
+        distance = math.hypot(corner[0] - light_source[0], corner[1] - light_source[1])
+        if distance > light_range:
+            return False  # Corner is beyond the light range
+
+        for wall in UniversalVariables.walls:
+            corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
+                       (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
+            segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
+            for seg_start, seg_end in segments:
+                if seg_start == corner or seg_end == corner:
+                    continue  # Skip the segment that includes the corner itself
+                intersection = get_line_segment_intersection(light_source, direct_ray_end, seg_start, seg_end)
+                if intersection:
+                    # Check if intersection is closer to the light source than the corner
+                    if math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < distance:
+                        return False  # Corner is not visible because another wall blocks the view
+        return True
+
+    # Step 1: Cast Rays in All Directions
     for angle in range(0, 360, 5):
         rad_angle = math.radians(angle)
-        ray_dir = (math.cos(rad_angle), math.sin(rad_angle))
-        ray_end = (light_source[0] + ray_dir[0] * light_range, light_source[1] + ray_dir[1] * light_range)
+        ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
+                   light_source[1] + math.sin(rad_angle) * light_range)
 
         closest_intersection = None
         for wall in UniversalVariables.walls:
-            # Convert the rectangle wall to its four edges
-            corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]), (wall[1][0], wall[1][1]),
-                       (wall[0][0], wall[1][1])]
-            segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
+            corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
+                       (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
+            for corner in corners:
+                corners_to_check.add(corner)
 
+            segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
             for seg_start, seg_end in segments:
                 intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
                 if intersection:
-                    if not closest_intersection or math.hypot(intersection[0] - light_source[0],
-                                                              intersection[1] - light_source[1]) < math.hypot(
-                            closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
+                    if closest_intersection is None or \
+                            math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
+                            math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
                         closest_intersection = intersection
 
+        # Ensure that the intersection point is within the light range
         if closest_intersection:
-            pygame.draw.line(screen, pygame.Color('black'), light_source, closest_intersection, 3)
+            distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
+            if distance_to_intersection <= light_range:
+                visible_points.append(closest_intersection)
         else:
-            pygame.draw.line(screen, pygame.Color('gray'), light_source, ray_end, 3)
+            visible_points.append(ray_end)
+
+    # Step 2: Check and Cast Rays Only to Visible Corners Within Light Range
+    for corner in corners_to_check:
+        if is_corner_visible_and_within_range(corner):
+            visible_points.append(corner)
+
+    # Step 3: Combine Rays to Form Visibility Polygon
+    visible_points = sorted(visible_points, key=lambda x: math.atan2(x[1] - light_source[1], x[0] - light_source[0]))
+    pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1)  # Outline for visibility
+
+    # Optionally, fill the polygon for better visual effect
+    pygame.draw.polygon(screen, pygame.Color(255, 255, 0, 50), visible_points, 0)
