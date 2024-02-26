@@ -63,17 +63,23 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 
 def draw_shadows(screen, visible_points):
-    # Create a surface to represent the shadow mask
+    ### Shadow 
     shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
+    shadow_mask.fill((0, 0, 0, 255))  # Neljas number on shadowi tumedus, max 255
 
-    # Fill the shadow mask with black color with some transparency
-    shadow_mask.fill((0, 0, 0, 255))  # Adjust the alpha value as needed for the darkness of shadows
-
-    # Create a list of vertices for the visibility polygon
     vertices = [(int(x), int(y)) for x, y in visible_points]
+    pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
 
-    # Draw the visibility polygon onto the shadow mask
-    pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # Use transparent color (0, 0, 0, 0) to punch holes
+    # Get the squares hit by light rays
+    squares_hit = set()
+    for wall in UniversalVariables.walls:
+        for point in visible_points:
+            if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
+                squares_hit.add(wall)
+
+    # Highlightib wallid, mis saavad rayga pihta 
+    for square in squares_hit:
+        pygame.draw.rect(shadow_mask, (0, 0, 0, 55), pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
 
     # Blit the shadow mask onto the screen
     screen.blit(shadow_mask, (0, 0))
