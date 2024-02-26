@@ -121,13 +121,6 @@ class ObjectManagement:
                 pass
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
 
-            # Kui vajutad "h" siis tulevad hitboxid visuaalselt nähtavale
-            if keys[pygame.K_h] and not self.h_pressed:
-                self.h_pressed = True
-                ObjectManagement.hitbox_count += 1
-            elif not keys[pygame.K_h]:
-                self.h_pressed = False
-
             if (ObjectManagement.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
                 if object_breakable:

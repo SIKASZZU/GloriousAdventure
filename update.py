@@ -1,6 +1,7 @@
 import pygame
 import math
 
+import vision
 from images import ImageLoader
 from HUD import HUD_class
 from components import player
@@ -84,7 +85,6 @@ class PlayerUpdate:
 
     def render_player(self) -> None:
         """ Renderib ainult playeri. """
-        keys = pygame.key.get_pressed()
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
         player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x, UniversalVariables.player_y + UniversalVariables.offset_y)
@@ -100,15 +100,10 @@ class PlayerUpdate:
                                   player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
                                   UniversalVariables.player_width, UniversalVariables.player_height)
         self.player_rect = player_rect
-        # Renderib playerile hitboxi
-        if keys[pygame.K_h] and not self.h_pressed:
-            self.h_pressed = True
-            ObjectManagement.hitbox_count += 1
-        elif not keys[pygame.K_h]:
-            self.h_pressed = False
 
+        # renderib playeri hitboxi
         if (ObjectManagement.hitbox_count % 2) != 0:
-            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), player_rect, 2)
+            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
 
     def render_HUD(self) -> None:
@@ -145,19 +140,38 @@ class PlayerUpdate:
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
 
+    def check_pressed_keys(self):
+        keys = pygame.key.get_pressed()
+
+        # H key, HITBOX KEY
+        if keys[pygame.K_h] and not self.h_pressed:
+            self.h_pressed = True
+            ObjectManagement.hitbox_count += 1
+        elif not keys[pygame.K_h]: self.h_pressed = False
+
+        # J KEY, LIGHT ON/OFF KEY
+        if keys[pygame.K_j] and not self.j_pressed:
+            self.j_pressed = True
+            vision.vision_count += 1
+        elif not keys[pygame.K_j]: self.j_pressed = False
+
+
     def render_general(self) -> None:
         """ See peaks olema alati kõige peal. 
-            Renderib inventory, fps ja hitbox show text.
+            Renderib inventory, fps ja textid.
             pygame.display_update() ja sätestab fps limiidi (60). """
 
         Inventory.call_inventory(self)
         if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
 
-        hitbox_text = self.font.render("H - Show hitboxes", True, (155, 5, 5))
+        hitbox_text = self.font.render("H - Show hitboxes", True, (100, 255, 100))
         UniversalVariables.screen.blit(hitbox_text, (800, 10))  # Adjust the position as needed
 
+        lightswitch_text = self.font.render(" J - Switch light", True, (100, 255, 100))
+        UniversalVariables.screen.blit(lightswitch_text, (800, 30))  # Adjust the position as needed
+
         # Uuendab displaid ja fps cap 60
-        fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (0, 255, 255))
+        fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (100, 255, 100))
         UniversalVariables.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
 
         pygame.display.update()

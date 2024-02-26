@@ -6,6 +6,7 @@ import math
 drawing_wall = False
 start_wall_pos = None
 light_range = UniversalVariables.light_range  # Range of the light source
+vision_count: int = 0
 
 def find_boxes_in_window():
     UniversalVariables.walls = []
@@ -63,9 +64,18 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 
 def draw_shadows(screen, visible_points):
+    shadow_color = 0
+    walls_hit_by_ray_color = 0
+
+    # kas J - Light ON/OFF key on pressed
+    if (vision_count % 2) != 0:
+        shadow_color = 255
+        walls_hit_by_ray_color = 150
+
+
     ### Shadow 
     shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
-    shadow_mask.fill((0, 0, 0, 255))  # Neljas number on shadowi tumedus, max 255
+    shadow_mask.fill((0, 0, 0, shadow_color))  # Neljas number on shadowi tumedus, max 255
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
@@ -79,7 +89,8 @@ def draw_shadows(screen, visible_points):
 
     # Highlightib wallid, mis saavad rayga pihta 
     for square in squares_hit:
-        pygame.draw.rect(shadow_mask, (0, 0, 0, 55), pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
+        pygame.draw.rect(shadow_mask, (0, 0, 0, walls_hit_by_ray_color), \
+                         pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
 
     # Blit the shadow mask onto the screen
     screen.blit(shadow_mask, (0, 0))

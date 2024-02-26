@@ -118,15 +118,13 @@ class Game:
 
                     vision.find_boxes_in_window()
                     vision.draw_light_source_and_rays(UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
-                    # vision.draw_walls(UniversalVariables.screen)  # drawib vision boxid / sama mis collision boxid
 
                     if Inventory.render_inv:
                         Inventory.render_craftable_items(self)
 
-                    #light_source.x, light_source.y = UniversalVariables.player_x, UniversalVariables.player_y
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
+                    PlayerUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
                     PlayerUpdate.render_general(self)  # inventory, fps counteri
-                    #Vision.find_walls()  # eksperiment
                     Collisions.keylock = 0
 
                 else:
