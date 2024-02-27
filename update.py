@@ -185,30 +185,31 @@ class EssentsialsUpdate:
             vision.vision_count += 1
         elif not keys[pygame.K_j]: self.j_pressed = False
 
+    def render_gui_text(self, text, position, color=(100, 255, 100)):
+        """Utility function to render text on the screen."""
+        text_surface = self.font.render(text, True, color)
+        UniversalVariables.screen.blit(text_surface, position)
 
-    def render_general(self) -> None:
-        """ See peaks viimasena gameis callitud. 
-            Renderib inventory, fps ja textid.
-            pygame.display_update() ja sätestab fps limiidi (60). """
-
+    def render_general(self):
         Inventory.call_inventory(self)
-        if Inventory.render_inv: Inventory.render_inventory(self)  # renderib inventory
+        if Inventory.render_inv:
+            Inventory.render_inventory(self)  # Render inventory
 
-        hitbox_text = self.font.render("H - Show hitboxes", True, (100, 255, 100))
-        UniversalVariables.screen.blit(hitbox_text, (800, 10))  # Adjust the position as needed
+        ui_elements = [
+            ("H - Show hitboxes", (800, 10),),  # Example with specified position and color
+            ("J - Switch light", (800, 35),),  # Example with specified position and color
+            (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
+            (f"{EssentsialsUpdate.calculate_time()}", (5, 30)),  # Time display
 
-        lightswitch_text = self.font.render(" J - Switch light", True, (100, 255, 100))
-        UniversalVariables.screen.blit(lightswitch_text, (800, 30))  # Adjust the position as needed
+        ]
 
-        # Uuendab displaid ja fps cap 60
-        fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (100, 255, 100))
-        UniversalVariables.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
+        for element in ui_elements:
+            text = element[0]
+            position = element[1] if len(element) > 1 else None
+            color = element[2] if len(element) > 2 else (100, 255, 100)  # Default color white if not specified
 
-        hours, minutes = EssentsialsUpdate.calculate_time()
-        time_clock_text = self.font.render(f"{hours}:{minutes}", True, (100, 255, 100))
-        UniversalVariables.screen.blit(time_clock_text, (5, 25))  # Adjust the position as needed
+            # Call the improved render_text function with the specified parameters
+            EssentsialsUpdate.render_gui_text(self, text, position=position, color=color)
 
         pygame.display.update()
-
-        # Limit the frame rate to 60 FPS
         self.clock.tick(60)

@@ -69,7 +69,7 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
-
+    @staticmethod
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
         resolution = MapData.resolution
@@ -147,11 +147,12 @@ class MapData:
         # Maze's puzzle pieces
         MapData.puzzle_pieces = []
         for i in range(3):
-            xxxx = random.randint(3, (size - 3))
-            yyyy = random.randint(3, (size - 3))
-            MapData.converted_maze[xxxx][yyyy] = 7
-            if not (xxxx, yyyy) in MapData.puzzle_pieces:
-                MapData.puzzle_pieces.append((xxxx, yyyy))
+            puzzle_x = random.randint(3, (size - 3))
+            puzzle_y = random.randint(3, (size - 3))
+            MapData.converted_maze[puzzle_x][puzzle_y] = 7  # FIXME: see ära muuta
+
+            if not (puzzle_x, puzzle_y) in MapData.puzzle_pieces:
+                MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
 
         MapData.search_paths(MapData.converted_maze)
         if MapData.create_save_puzzle:

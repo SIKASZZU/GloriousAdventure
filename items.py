@@ -321,6 +321,14 @@ items_list = [
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Puzzle_Piece",
+        "ID": 89,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
         }
 ]
 
