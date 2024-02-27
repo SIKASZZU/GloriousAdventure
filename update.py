@@ -1,6 +1,7 @@
 import pygame
 import math
 
+import time
 import vision
 from images import ImageLoader
 from HUD import HUD_class
@@ -140,6 +141,35 @@ class PlayerUpdate:
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
 
+class EssentsialsUpdate:
+        
+    game_start_clock = (9, 00)
+    time_update: int = 0
+
+    # Function to calculate in-game time
+    def calculate_time():
+        minute_timer = 100  # mida väiksem,seda kiiremini aeg mängus möödub
+        time = EssentsialsUpdate.game_start_clock  # (9, 00)
+        hours = time[0]
+        minutes = time[1]
+        
+        if 60 <= minutes:
+            hours += 1
+            minutes = 00
+        if 24 <= hours:
+            hours = 0
+            minutes = 0
+
+        if minute_timer <= EssentsialsUpdate.time_update:
+            minutes += 1
+            EssentsialsUpdate.time_update = 0
+        EssentsialsUpdate.time_update += 1
+
+        EssentsialsUpdate.game_start_clock = (hours, minutes)
+
+        return hours, minutes
+
+
     def check_pressed_keys(self):
         keys = pygame.key.get_pressed()
 
@@ -157,7 +187,7 @@ class PlayerUpdate:
 
 
     def render_general(self) -> None:
-        """ See peaks olema alati kõige peal. 
+        """ See peaks viimasena gameis callitud. 
             Renderib inventory, fps ja textid.
             pygame.display_update() ja sätestab fps limiidi (60). """
 
@@ -173,6 +203,10 @@ class PlayerUpdate:
         # Uuendab displaid ja fps cap 60
         fps_text = self.font.render(f"{int(self.clock.get_fps())}", True, (100, 255, 100))
         UniversalVariables.screen.blit(fps_text, (5, 5))  # Adjust the position as needed
+
+        hours, minutes = EssentsialsUpdate.calculate_time()
+        time_clock_text = self.font.render(f"{hours}:{minutes}", True, (100, 255, 100))
+        UniversalVariables.screen.blit(time_clock_text, (5, 25))  # Adjust the position as needed
 
         pygame.display.update()
 

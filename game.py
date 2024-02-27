@@ -1,26 +1,22 @@
 # Pythoni inbuilt/downloaded files
-import time
-
-import numpy as np
 import pygame
 import sys
 
-import timeit
-
-from map import MapData
 
 # Oma enda failid
-from menu import Menu, PauseMenu
-import vision
-from camera import Camera  # box_target_camera
-from inventory import Inventory
-from update import PlayerUpdate  # update_player, render_player
-from render import RenderPictures  # map_render
-from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
-from objects import ObjectManagement
-from render import CreateCollisionBoxes  # object_list_creation
-from components import StaminaComponent
 from variables import UniversalVariables
+from camera import Camera  # box_target_camera
+from render import RenderPictures  # map_render
+from map import MapData  # glade_creation, map_list_to_map
+from components import StaminaComponent  # stamina_bar_update
+from objects import ObjectManagement  # place_and_render_object
+from render import CreateCollisionBoxes  # object_list_creation
+import vision  # find_boxes_in_window, draw_light_source_and_rays
+from menu import Menu, PauseMenu  # main_menu, PauseMenu: settings_menu
+from update import EssentsialsUpdate  # check_pressed_keys, render_general
+from update import PlayerUpdate  # update_player, render_player, render_HUD
+from inventory import Inventory  # handle_mouse_click, render_craftable_items
+from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 
 
 class Game:
@@ -123,8 +119,8 @@ class Game:
                         Inventory.render_craftable_items(self)
 
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
-                    PlayerUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
-                    PlayerUpdate.render_general(self)  # inventory, fps counteri
+                    EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
+                    EssentsialsUpdate.render_general(self)  # inventory, fps counteri
                     Collisions.keylock = 0
 
                 else:
