@@ -144,11 +144,13 @@ class EssentsialsUpdate:
     game_start_clock = (9, 0)
     time_update: int = 0
     game_day_count = 0
+    day_night_text = 'Day'
 
     # Function to calculate in-game time
     def calculate_time():
-        game_minute_lenght = 100  # mida väiksem,seda kiiremini aeg mängus möödub
-        
+        game_minute_lenght = 1  # mida väiksem,seda kiiremini aeg mängus möödub
+        day_night_text = EssentsialsUpdate.day_night_text
+
         time = EssentsialsUpdate.game_start_clock  # (9, 0)
         days = EssentsialsUpdate.game_day_count
         hours = time[0]
@@ -172,6 +174,12 @@ class EssentsialsUpdate:
         EssentsialsUpdate.time_update += 1
         EssentsialsUpdate.game_day_count = days
         EssentsialsUpdate.game_start_clock = (hours, minutes)
+
+        # Update day, night text next to game_day_count
+        if 23 >= hours < 8: day_night_text = 'Night'
+        else: day_night_text = 'Day'
+        EssentsialsUpdate.day_night_text = day_night_text
+        
         return hours, minutes, days
 
 
@@ -206,7 +214,7 @@ class EssentsialsUpdate:
             ("J - Switch light", (800, 35)),  # Example with specified position and color
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
             (f"Hr/Min {EssentsialsUpdate.calculate_time()[0]}:{EssentsialsUpdate.calculate_time()[1]}", (5, 35)),  # Time display
-            (f"Day {EssentsialsUpdate.calculate_time()[2]}", (5, 65)),  # Time display
+            (f"{EssentsialsUpdate.day_night_text} {EssentsialsUpdate.calculate_time()[2]}", (5, 65)),  # Time display
             ]
 
         for element in ui_elements:
