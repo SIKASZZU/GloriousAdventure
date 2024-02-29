@@ -78,10 +78,10 @@ class UniversalVariables:
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
-    player_width: int = block_size * 0.45
+    player_width: int = block_size * 0.65
 
-    player_hitbox_offset_x = 0.29 * block_size
-    player_hitbox_offset_y = 0.22 * block_size
+    player_hitbox_offset_x = 0.29 * player_width
+    player_hitbox_offset_y = 0.22 * player_height
     player_x: int = random.randint(3 * block_size, 3 * block_size)
     player_y: int = random.randint(25 * block_size, 25 * block_size)
 

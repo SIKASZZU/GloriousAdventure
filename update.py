@@ -97,7 +97,7 @@ class PlayerUpdate:
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
         player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
                                   player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
-                                  UniversalVariables.player_width, UniversalVariables.player_height)
+                                  UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
         self.player_rect = player_rect
 
         # renderib playeri hitboxi
