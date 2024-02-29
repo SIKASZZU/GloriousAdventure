@@ -29,16 +29,6 @@ def find_boxes_in_window():
                 UniversalVariables.walls.append(wall)
 
 
-def add_wall(start, end):
-    UniversalVariables.walls.append((start, end))
-
-
-def draw_walls(screen):
-    for wall in UniversalVariables.walls:
-        pygame.draw.rect(screen, pygame.Color('white'),
-                         pygame.Rect(wall[0], (wall[1][0] - wall[0][0], wall[1][1] - wall[0][1])), 1)
-
-
 def get_line_segment_intersection(p0, p1, p2, p3):
     """
     Returns the point of intersection between two line segments if it exists.
