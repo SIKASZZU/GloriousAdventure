@@ -39,6 +39,9 @@ from collisions import Collisions  # check_collisions, collison_terrain, collisi
     # m6te selles, et kui enemy on kuskil, ss ta ei kuuleks
     # mingi indikaator v6i heli tuleks kui enemy l2hedal
 
+# for lolz
+### TODO: aeg m66dub 66sel aeglasemini sest inimene sellises reaalsuses tunneks aega aeglasemini kui tegelikult
+
 
 class Game:
     pygame.init()
@@ -134,7 +137,7 @@ class Game:
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
 
                     vision.find_boxes_in_window()
-                    vision.draw_light_source_and_rays(UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+                    vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
 
                     if Inventory.render_inv:
                         Inventory.render_craftable_items(self)

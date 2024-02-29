@@ -7,6 +7,7 @@ drawing_wall = False
 start_wall_pos = None
 light_range = UniversalVariables.light_range  # Range of the light source
 vision_count: int = 0
+transparent_boxes = []
 
 def find_boxes_in_window():
     UniversalVariables.walls = []
@@ -27,6 +28,8 @@ def find_boxes_in_window():
             wall = (top_left, bottom_right)
             if wall not in UniversalVariables.walls:
                 UniversalVariables.walls.append(wall)
+        else:
+            transparent_boxes.append(vision_blocking_box)  # box, millel puudub collision, puudub shadow.
 
 
 def get_line_segment_intersection(p0, p1, p2, p3):
@@ -53,19 +56,27 @@ def get_line_segment_intersection(p0, p1, p2, p3):
     return None  # No collision
 
 
-def draw_shadows(screen, visible_points):
+def draw_shadows(self, screen, visible_points):
     shadow_color = 0
     walls_hit_by_ray_color = 0
+    BLOCK_SIZE = UniversalVariables.block_size
 
     # kas J - Light ON/OFF key on pressed
     if (vision_count % 2) != 0:
         shadow_color = 255
         walls_hit_by_ray_color = 150
 
-
-    ### Shadow 
+    ### Shadow maze blockidele
     shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
-    shadow_mask.fill((0, 0, 0, shadow_color))  # Neljas number on shadowi tumedus, max 255
+    for wall in UniversalVariables.walls:
+        pygame.draw.rect(shadow_mask, (0, 0, 0, shadow_color), \
+                            pygame.Rect(wall[0], (wall[1][0] - wall[0][0], wall[1][1] - wall[0][1])))
+    
+    for y in range(len(self.terrain_data)):
+        for x in range(len(self.terrain_data[y])):
+            if self.terrain_data[y][x] == 98:
+                pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x, y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
+                pygame.draw.rect(shadow_mask, (0, 0, 0, shadow_color), pathway_rect)
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
@@ -86,7 +97,7 @@ def draw_shadows(screen, visible_points):
     screen.blit(shadow_mask, (0, 0))
 
 
-def draw_light_source_and_rays(screen, position, light_range):
+def draw_light_source_and_rays(self, screen, position, light_range):
     light_source = position
     visible_points = []
     corners_to_check = set()
@@ -154,4 +165,4 @@ def draw_light_source_and_rays(screen, position, light_range):
     # Optionally, fill the polygon for better visual effect
     # pygame.draw.polygon(screen, pygame.Color(255, 255, 0, 50), visible_points, 0)
 
-    draw_shadows(screen, visible_points)
+    draw_shadows(self, screen, visible_points)
