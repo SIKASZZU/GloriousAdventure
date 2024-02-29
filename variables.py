@@ -76,6 +76,7 @@ class UniversalVariables:
 
     block_size: int = screen_x // jagatis
 
+    prev_block_size: int = 0
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65

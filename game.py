@@ -91,7 +91,10 @@ class Game:
                             self.pause_menu_state = "main"
                             PauseMenu.screenshot = None
 
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Võtab clicki positsiooni
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        self.click_position = event.pos
+
                         if event.button == 4:  # Scroll +
                             UniversalVariables.block_size += 1  # Increase block_size
 
@@ -111,6 +114,7 @@ class Game:
 
                             UniversalVariables.player_hitbox_offset_x = 0.29 * UniversalVariables.player_height
                             UniversalVariables.player_hitbox_offset_y = 0.22 * UniversalVariables.player_width
+
 
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
