@@ -1,13 +1,11 @@
 import pygame
 import math
 
-import time
 import vision
 from images import ImageLoader
 from HUD import HUD_class
 from components import player
 from inventory import Inventory
-from render import RenderPictures
 from sprite import AnimationManager
 from objects import ObjectManagement
 from sprite import load_sprite_sheets
@@ -143,31 +141,38 @@ class PlayerUpdate:
 
 class EssentsialsUpdate:
         
-    game_start_clock = (9, 00)
+    game_start_clock = (9, 0)
     time_update: int = 0
+    game_day_count = 0
 
     # Function to calculate in-game time
     def calculate_time():
-        minute_timer = 100  # mida väiksem,seda kiiremini aeg mängus möödub
-        time = EssentsialsUpdate.game_start_clock  # (9, 00)
+        game_minute_lenght = 100  # mida väiksem,seda kiiremini aeg mängus möödub
+        
+        time = EssentsialsUpdate.game_start_clock  # (9, 0)
+        days = EssentsialsUpdate.game_day_count
         hours = time[0]
         minutes = time[1]
+
+        # Check if new minute should be added to game's time
+        if game_minute_lenght <= EssentsialsUpdate.time_update:
+            minutes += 1
+            EssentsialsUpdate.time_update = 0
         
+        # Update minutes -> hours, hours -> reset hours, minutes & add days
         if 60 <= minutes:
             hours += 1
-            minutes = 00
+            minutes = 0
         if 24 <= hours:
             hours = 0
             minutes = 0
+            days += 1
 
-        if minute_timer <= EssentsialsUpdate.time_update:
-            minutes += 1
-            EssentsialsUpdate.time_update = 0
+        # Update variables
         EssentsialsUpdate.time_update += 1
-
+        EssentsialsUpdate.game_day_count = days
         EssentsialsUpdate.game_start_clock = (hours, minutes)
-
-        return hours, minutes
+        return hours, minutes, days
 
 
     def check_pressed_keys(self):
@@ -185,23 +190,24 @@ class EssentsialsUpdate:
             vision.vision_count += 1
         elif not keys[pygame.K_j]: self.j_pressed = False
 
+
     def render_gui_text(self, text, position, color=(100, 255, 100)):
         """Utility function to render text on the screen."""
         text_surface = self.font.render(text, True, color)
         UniversalVariables.screen.blit(text_surface, position)
 
+
     def render_general(self):
         Inventory.call_inventory(self)
-        if Inventory.render_inv:
-            Inventory.render_inventory(self)  # Render inventory
+        if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
         ui_elements = [
-            ("H - Show hitboxes", (800, 10),),  # Example with specified position and color
-            ("J - Switch light", (800, 35),),  # Example with specified position and color
+            ("H - Show hitboxes", (800, 5)),  # Example with specified position and color
+            ("J - Switch light", (800, 35)),  # Example with specified position and color
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
-            (f"{EssentsialsUpdate.calculate_time()}", (5, 30)),  # Time display
-
-        ]
+            (f"Hr/Min {EssentsialsUpdate.calculate_time()[0]}:{EssentsialsUpdate.calculate_time()[1]}", (5, 35)),  # Time display
+            (f"Day {EssentsialsUpdate.calculate_time()[2]}", (5, 65)),  # Time display
+            ]
 
         for element in ui_elements:
             text = element[0]
