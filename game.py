@@ -19,6 +19,27 @@ from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 
 
+### TODO: Kui kell on mingi t2pne aeg, l2hevad mzei uksed kinni, mis on gladei juures
+
+### TODO: monsterite tegemine, enemy
+
+### TODO: fix maze kivid, terrain background, pathfinder thing
+
+### TODO: lisada vilja asemel maze'is mingi võtmed
+
+### TODO: kui kolm võtit on käes, siis saab alles avada ukse
+    # avades ukse võtab playerilt kõik kolm võtit ära
+
+### TODO: Mingid lambised juhtivad tekstid ekraanile
+    # Esimese võtme leidmisel näiteks "Hmm, what can this be used for? What sort of a door needs this?"
+    # Kui leiab ukse ja üritab avada "There are three keyholes"
+    # vb midagi kui esimest korda mazei enterib "What a cold and eerie place. I better escape this place"
+
+### TODO: Jooksmise asemel luuramine, aeglasem speed. 
+    # m6te selles, et kui enemy on kuskil, ss ta ei kuuleks
+    # mingi indikaator v6i heli tuleks kui enemy l2hedal
+
+
 class Game:
     pygame.init()
     pygame.display.set_caption("Glorious Adventure - BETA")
