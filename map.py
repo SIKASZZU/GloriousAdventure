@@ -209,24 +209,11 @@ class MapData:
                     MapData.create_save_puzzle = False
 
                 else:
-                    # for i in range(len(maze)):
-                    #     for j in range(len(maze[i])):
-                    #         if maze[i][j] == 7:
-                    #             for (x, y) in path:
-                    #                 MapData.converted_maze[x][y] = 1
-                    for (x, y) in start_positions + end_positions:
-                        MapData.converted_maze[x][y] = 2
                     MapData.create_save_puzzle = True
-
 
         if MapData.create_save_puzzle == False:
             maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
             MapData.search_paths(maze)
-
-
-    def spawn_puzzle():
-        ... ### TODO: Pst lambine ruut, nr 98, on puzzle.
-
 
     @staticmethod
     def get_data(item, start_side):
