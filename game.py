@@ -19,11 +19,11 @@ from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 
 
+### TODO: hitboxid on paremal ja all collectimisel perses
+
 ### TODO: Kui kell on mingi t2pne aeg, l2hevad mzei uksed kinni, mis on gladei juures
 
 ### TODO: monsterite tegemine, enemy
-
-### TODO: fix maze kivid, terrain background, pathfinder thing
 
 ### TODO: lisada vilja asemel maze'is mingi võtmed
 

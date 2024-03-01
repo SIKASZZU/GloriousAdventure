@@ -17,11 +17,7 @@ class Collisions:
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
-        # Object id, pilt, ja pildi suurus
-        interaction_boxes = {}
-
-        # Store information about the closest object_id 97
-        closest_object_97 = None
+        interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
@@ -86,6 +82,7 @@ class Collisions:
             self.click_window_y = None
 
         Collisions.collision_hitbox(self)
+
 
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte

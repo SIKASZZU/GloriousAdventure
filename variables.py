@@ -73,10 +73,9 @@ class UniversalVariables:
 
     screen = pygame.display.set_mode((screen_x, screen_y))
     jagatis = 15
-
     block_size: int = screen_x // jagatis
-
     prev_block_size: int = 0
+
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
@@ -84,7 +83,7 @@ class UniversalVariables:
     player_hitbox_offset_x = 0.29 * player_width
     player_hitbox_offset_y = 0.22 * player_height
     player_x: int = random.randint(3 * block_size, 3 * block_size)
-    player_y: int = random.randint(25 * block_size, 25 * block_size)
+    player_y: int = random.randint(45 * block_size, 45 * block_size)
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision
@@ -97,14 +96,8 @@ class UniversalVariables:
     offset_x: int = 0
     offset_y: int = 0
 
-    map_list = [
-
-        ['maze'],
-        ['glade']
-    ]
-
+    map_list = [['maze'], ['glade']]
     blits_sequence = []
-
     screen_x_08 = screen_x * 0.8
     screen_y_08 = screen_y * 0.8
 

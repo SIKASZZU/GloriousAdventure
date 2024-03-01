@@ -71,7 +71,7 @@ class PlayerUpdate:
         UniversalVariables.player_y: int = new_player_y
         self.player_rect = pygame.Rect(UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x,
                                        UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
-                                       UniversalVariables.player_width, UniversalVariables.player_height)
+                                       (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
