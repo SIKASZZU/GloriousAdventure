@@ -110,15 +110,19 @@ class ObjectManagement:
 
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
-                    object_image_name = item.get("Name")
-                    object_width = item.get("Object_width")
-                    object_height = item.get("Object_height")
-                    object_breakable = item.get("Breakable")
+                    object_breakable = None
+                    if item.get("Name") == "Maze_Wall": pass
+                    else:
+                        object_image_name = item.get("Name")
+                        object_width = item.get("Object_width")
+                        object_height = item.get("Object_height")
+                        object_breakable = item.get("Breakable")
 
-                    # Load the image
-                    object_image = ImageLoader.load_image(object_image_name)
+                        # Load the image
 
-                    interaction_boxes[object_id] = (object_image, object_width, object_height)
+                        object_image = ImageLoader.load_image(object_image_name)
+
+                        interaction_boxes[object_id] = (object_image, object_width, object_height)
 
             if object_image:
                 position: tuple = (terrain_x, terrain_y)
