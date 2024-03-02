@@ -91,6 +91,7 @@ class UniversalVariables:
     # ******************** VISION ******************** #
     light_range = 420
     walls = []  # Collision boxide seinad
+    last_input = str
 
     # ******************** OFFSET ******************** #
     offset_x: int = 0

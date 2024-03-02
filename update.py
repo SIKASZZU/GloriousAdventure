@@ -45,12 +45,20 @@ class PlayerUpdate:
 
         if keys[pygame.K_d]:
             self.animation_index = 1  # Right animation
-        elif keys[pygame.K_a]:
+            UniversalVariables.last_input = 'd'
+        if keys[pygame.K_a]:
             self.animation_index = 0  # Left animation
-        elif keys[pygame.K_s]:
+            UniversalVariables.last_input = 'a'
+        if keys[pygame.K_s]:
             self.animation_index = 3  # Down animation
-        elif keys[pygame.K_w]:
+            UniversalVariables.last_input = 's'
+            if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
+            if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
+        if keys[pygame.K_w]:
             self.animation_index = 2  # Up animation
+            UniversalVariables.last_input = 'w'
+            if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
+            if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
 
         x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
         y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
