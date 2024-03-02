@@ -123,8 +123,35 @@ def draw_light_source_and_rays(self, screen, position, light_range):
                         return False  # Corner is not visible because another wall blocks the view
         return True
 
+    # seda funci pole vaja, aga fancy on. Saaks niisama settida v22rtused.
+    def combine_ranges(range1, range2):
+        combined_range = range(min(range1.start, range2.start), max(range1.stop, range2.stop))
+        return combined_range
+
+    # Define angle ranges based on the player's last input
+    # Kui player vajutab kahte nuppu alla, suureneb vision cone
+    if UniversalVariables.last_input == 'wa':
+        angles = combine_ranges(range(135, 45), range(135, 315))  # tra, need numbrid on forcefully pandud. Teised on 6iged juba by god
+    elif UniversalVariables.last_input == 'wd':
+        angles = combine_ranges(range(-135, -45), range(-45, 45))
+    elif UniversalVariables.last_input == 'sa':
+        angles = combine_ranges(range(45, 135), range(135, 225))
+    elif UniversalVariables.last_input == 'sd':
+        angles = combine_ranges(range(45, 135), range(-45, 45))
+
+    # Kui player vajutab ainult yhte movement nuppu
+    elif UniversalVariables.last_input == 'w':
+        angles = range(-155, -25)
+    elif UniversalVariables.last_input == 's':
+        angles = range(25, 155)
+    elif UniversalVariables.last_input == 'a':
+        angles = range(125, 245)
+    elif UniversalVariables.last_input == 'd':
+        angles = range(-65, 65)
+    else:
+        angles = range(0, 360)
     # Step 1: Cast Rays in All Directions
-    for angle in range(0, 360, 5):
+    for angle in range(angles.start, angles.stop, 5):
         rad_angle = math.radians(angle)
         ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
                    light_source[1] + math.sin(rad_angle) * light_range)
@@ -153,16 +180,15 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         else:
             visible_points.append(ray_end)
 
-    # Step 2: Check and Cast Rays Only to Visible Corners Within Light Range
-    for corner in corners_to_check:
-        if is_corner_visible_and_within_range(corner):
-            visible_points.append(corner)
+    # # Step 2: Check and Cast Rays Only to Visible Corners Within Light Range
+    # for corner in corners_to_check:
+    #     if is_corner_visible_and_within_range(corner):
+    #         visible_points.append(corner)
 
-    # Step 3: Combine Rays to Form Visibility Polygon
-    visible_points = sorted(visible_points, key=lambda x: math.atan2(x[1] - light_source[1], x[0] - light_source[0]))
-    pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1)  # Outline for visibility
+    visible_points.insert(0, light_source)
+    visible_points.append(light_source)
 
-    # Optionally, fill the polygon for better visual effect
-    # pygame.draw.polygon(screen, pygame.Color(255, 255, 0, 50), visible_points, 0)
+    # Step 3: Create a polygon to display as the vision system
+    pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1) # Outline for visibility
 
     draw_shadows(self, screen, visible_points)
