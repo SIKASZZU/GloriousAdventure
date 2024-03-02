@@ -101,45 +101,71 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     light_source = position
     visible_points = []
     corners_to_check = set()
+    vision_step = 5
 
-    # Helper function to check direct visibility of a corner and its distance
-    def is_corner_visible_and_within_range(corner):
-        direct_ray_end = corner
-        distance = math.hypot(corner[0] - light_source[0], corner[1] - light_source[1])
-        if distance > light_range:
-            return False  # Corner is beyond the light range
+    # Define OPPOSITE angle ranges based on the player's last input
+    if UniversalVariables.last_input == 'wa':
+        opposite_angle = range(-50, 140)
+    elif UniversalVariables.last_input == 'wd':
+        opposite_angle = range(40, 230)
+    elif UniversalVariables.last_input == 'sa':
+        opposite_angle = range(-140, 50)
+    elif UniversalVariables.last_input == 'sd':
+        opposite_angle = range(130, 320)
+    elif UniversalVariables.last_input == 'w':
+        opposite_angle = range(-30, 210)
+    elif UniversalVariables.last_input == 's':
+        opposite_angle = range(-210, 30)
+    elif UniversalVariables.last_input == 'a':
+        opposite_angle = range(240, 490)
+    elif UniversalVariables.last_input == 'd':
+        opposite_angle = range(60, 300)
+    else:
+        opposite_angle = range(0, 360)
 
+    # Step 1: Cast Rays in the opposite direction of the player's last move
+    for angle in range(opposite_angle.start, opposite_angle.stop, vision_step):
+        rad_angle = math.radians(angle)
+        ray_end = (light_source[0] + math.cos(rad_angle) * (light_range / 2),
+                   light_source[1] + math.sin(rad_angle) * (light_range / 2))
+
+        closest_intersection = None
         for wall in UniversalVariables.walls:
             corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
                        (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
+            for corner in corners:
+                corners_to_check.add(corner)
+
             segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
             for seg_start, seg_end in segments:
-                if seg_start == corner or seg_end == corner:
-                    continue  # Skip the segment that includes the corner itself
-                intersection = get_line_segment_intersection(light_source, direct_ray_end, seg_start, seg_end)
+                intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
                 if intersection:
-                    # Check if intersection is closer to the light source than the corner
-                    if math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < distance:
-                        return False  # Corner is not visible because another wall blocks the view
-        return True
+                    if closest_intersection is None or \
+                            math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
+                            math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
+                        closest_intersection = intersection
 
-    # seda funci pole vaja, aga fancy on. Saaks niisama settida v22rtused.
-    def combine_ranges(range1, range2):
-        combined_range = range(min(range1.start, range2.start), max(range1.stop, range2.stop))
-        return combined_range
+        # Ensure that the intersection point is within the light range
+        if closest_intersection:
+            distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
+            if distance_to_intersection <= light_range:
+                visible_points.append(closest_intersection)
+        else:
+            visible_points.append(ray_end)
 
+    visible_points.insert(0, light_source)
+    visible_points.append(light_source)
+
+    # Step 2: Draw the cone as per the existing code
     # Define angle ranges based on the player's last input
-    # Kui player vajutab kahte nuppu alla, suureneb vision cone
     if UniversalVariables.last_input == 'wa':
-        angles = combine_ranges(range(135, 45), range(135, 315))  # tra, need numbrid on forcefully pandud. Teised on 6iged juba by god
+        angles = range(135, 315)
     elif UniversalVariables.last_input == 'wd':
-        angles = combine_ranges(range(-135, -45), range(-45, 45))
+        angles = range(-135, 45)
     elif UniversalVariables.last_input == 'sa':
-        angles = combine_ranges(range(45, 135), range(135, 225))
+        angles = range(45, 225)
     elif UniversalVariables.last_input == 'sd':
-        angles = combine_ranges(range(45, 135), range(-45, 45))
-
-    # Kui player vajutab ainult yhte movement nuppu
+        angles = range(-45, 135)
     elif UniversalVariables.last_input == 'w':
         angles = range(-155, -25)
     elif UniversalVariables.last_input == 's':
@@ -150,8 +176,9 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         angles = range(-65, 65)
     else:
         angles = range(0, 360)
-    # Step 1: Cast Rays in All Directions
-    for angle in range(angles.start, angles.stop, 5):
+
+    # Cast rays and draw the vision cone
+    for angle in range(angles.start, angles.stop, vision_step):
         rad_angle = math.radians(angle)
         ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
                    light_source[1] + math.sin(rad_angle) * light_range)
@@ -180,15 +207,11 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         else:
             visible_points.append(ray_end)
 
-    # # Step 2: Check and Cast Rays Only to Visible Corners Within Light Range
-    # for corner in corners_to_check:
-    #     if is_corner_visible_and_within_range(corner):
-    #         visible_points.append(corner)
-
     visible_points.insert(0, light_source)
     visible_points.append(light_source)
 
-    # Step 3: Create a polygon to display as the vision system
+    # Step 3: Create a polygon to display as the smaller circle
     pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1) # Outline for visibility
 
+    # Step 4: Draw shadows and walls as per the existing code
     draw_shadows(self, screen, visible_points)
