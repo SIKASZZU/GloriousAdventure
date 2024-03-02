@@ -14,6 +14,41 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
+    def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image) -> None:
+        """
+
+        Teisendab pildi jadaks, kui esemel on mitu erinevat pilti, ja jaotab need positsioonide vahel laiali.
+
+        Args:
+            terrain_x (int): Grid X * block size + offset.
+            terrain_y (int): Grid Y * block size + offset.
+            position (tuple[int, int]): (Grid X, Grid Y).
+            image: Pilt, mida töödeldakse.
+
+        Returns:
+            None
+
+        """
+
+        if image:
+            if position not in RenderPictures.occupied_positions:
+
+                scaled_image = pygame.transform.scale \
+                        (
+                        image, (UniversalVariables.block_size, UniversalVariables.block_size)
+                    )
+                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                    UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
+
+                RenderPictures.occupied_positions[position] = scaled_image
+            else:
+                scaled_image = RenderPictures.occupied_positions[position]
+                scaled_saved_image = pygame.transform.scale(scaled_image, (
+                UniversalVariables.block_size, UniversalVariables.block_size))
+
+                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                    UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
+
     def map_render(self) -> None:
 
         UniversalVariables.screen.fill('white')
@@ -44,6 +79,14 @@ class RenderPictures:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
                     if terrain_value == None: pass
+
+                    if terrain_value == 99:
+                        image_name = "Maze_Wall_" + str(random.randint(0, 4))
+                        image = ImageLoader.load_image(image_name)
+
+                        position = (i, j)  # Using grid indices directly for the position
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image)
+
                     else:
                         image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                         image = ImageLoader.load_image(image_name)
@@ -52,32 +95,8 @@ class RenderPictures:
                         if terrain_value == 7 or terrain_value == 107:
                             image = ImageLoader.load_image("Farmland")
 
-                        # Visualiseerib pilte
-                        if image:
-                            if terrain_value == 98 or terrain_value == 99 or terrain_value == 100 or terrain_value == 101:
-                                pass
-                            else:
-                                terrain_x = (j * UniversalVariables.block_size) + UniversalVariables.offset_x
-                                terrain_y = (i * UniversalVariables.block_size) + UniversalVariables.offset_y
-                                position = (i, j)  # Using grid indices directly for the position
-
-                                if position not in RenderPictures.occupied_positions:
-
-                                    scaled_image = pygame.transform.scale\
-                                            (
-                                            image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                                        )
-                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_image,(terrain_x, terrain_y)])
-
-                                    RenderPictures.occupied_positions[position] = scaled_image
-                                else:
-                                    scaled_image = RenderPictures.occupied_positions[position]
-                                    scaled_saved_image = pygame.transform.scale(scaled_image, (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
-
+                        position = (i, j)  # Using grid indices directly for the position
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image)
 
             RenderPictures.render_terrain_data.append(self.row)
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
