@@ -14,9 +14,9 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
-    def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image) -> None:
+    def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
+                          terrain_value) -> None:
         """
-
         Teisendab pildi jadaks, kui esemel on mitu erinevat pilti, ja jaotab need positsioonide vahel laiali.
 
         Args:
@@ -24,33 +24,37 @@ class RenderPictures:
             terrain_y (int): Grid Y * block size + offset.
             position (tuple[int, int]): (Grid X, Grid Y).
             image: Pilt, mida töödeldakse.
+            terrain_value: Väärtus, mis määrab maastiku tüübi.
 
         Returns:
             None
-
         """
 
         if image:
-            if position not in RenderPictures.occupied_positions:
+            scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
+            current_entry = [scaled_image, (terrain_x, terrain_y)]
 
-                scaled_image = pygame.transform.scale \
-                        (
-                        image, (UniversalVariables.block_size, UniversalVariables.block_size)
-                    )
-                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                    UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
+            if current_entry not in UniversalVariables.blits_sequence:
+                UniversalVariables.blits_sequence.append(current_entry)
 
-                RenderPictures.occupied_positions[position] = scaled_image
+            occupied_positions_key = f"occupied_positions_{terrain_value}"
+
+            if occupied_positions_key not in RenderPictures.__dict__:
+                setattr(RenderPictures, occupied_positions_key, {})
+
+            occupied_positions = getattr(RenderPictures, occupied_positions_key)
+
+            if position not in occupied_positions:
+                occupied_positions[position] = scaled_image
             else:
-                scaled_image = RenderPictures.occupied_positions[position]
-                scaled_saved_image = pygame.transform.scale(scaled_image, (
-                UniversalVariables.block_size, UniversalVariables.block_size))
+                scaled_saved_image = pygame.transform.scale(occupied_positions[position],
+                                                            (UniversalVariables.block_size,
+                                                             UniversalVariables.block_size))
 
-                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                if [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def map_render(self) -> None:
-
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
@@ -85,21 +89,26 @@ class RenderPictures:
                         image = ImageLoader.load_image(image_name)
 
                         position = (i, j)  # Using grid indices directly for the position
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                     else:
                         image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                         image = ImageLoader.load_image(image_name)
 
-                        # Loadib Wheat'i ja Farmland'i
-                        if terrain_value == 7 or terrain_value == 107:
-                            image = ImageLoader.load_image("Farmland")
+                        if terrain_value == 98 or terrain_value == 99: pass
 
-                        position = (i, j)  # Using grid indices directly for the position
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image)
+                        else:
+                            # Loadib Wheat'i ja Farmland'i
+                            if terrain_value == 7 or terrain_value == 107:
+                                image = ImageLoader.load_image("Farmland")
+
+                            position = (i, j)  # Using grid indices directly for the position
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
             RenderPictures.render_terrain_data.append(self.row)
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
+
+
 
 class CreateCollisionBoxes:
     terrain_data_minerals: int = 0
