@@ -211,7 +211,7 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     visible_points.append(light_source)
 
     # Step 3: Create a polygon to display as the smaller circle
-    pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1) # Outline for visibility
+    # pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1) # Outline for visibility
 
     # Step 4: Draw shadows and walls as per the existing code
     draw_shadows(self, screen, visible_points)
