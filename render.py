@@ -85,7 +85,7 @@ class RenderPictures:
                     if terrain_value == None: pass
 
                     if terrain_value == 99:
-                        image_name = "Maze_Wall_" + str(random.randint(0, 5))
+                        image_name = "Maze_Wall_" + str(random.randint(0, 8))
                         image = ImageLoader.load_image(image_name)
 
                         position = (i, j)  # Using grid indices directly for the position
