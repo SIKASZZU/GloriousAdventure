@@ -60,6 +60,11 @@ class Game:
     game_menu_state = "main"
     pause_menu_state = "main"
 
+    # ******************** NIGHT/DAY LIGHTNING ******************** #
+    daylight_strength = 0
+    dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA, 32)
+    dim_surface = dim_surface.convert_alpha()
+
     def __init__(self):
         glade_data = None
         self.terrain_data = None
@@ -155,14 +160,17 @@ class Game:
                         Inventory.render_craftable_items(self)
 
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
+
                     EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
                     EssentsialsUpdate.render_general(self)  # inventory, fps counteri
-                    Collisions.keylock = 0
+                    EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
+                    Collisions.keylock = 0
                 else:
                     PauseMenu.settings_menu(self)
-                    pygame.display.update()
 
+                pygame.display.update()
+                self.clock.tick(60)
 
 if __name__ == "__main__":
     game = Game()
