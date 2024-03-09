@@ -96,7 +96,7 @@ class Game:
                         self.click_position = event.pos
 
                         if event.button == 4:  # Scroll +
-                            UniversalVariables.block_size += 1  # Increase block_size
+                            UniversalVariables.block_size += 10  # Increase block_size
 
                             UniversalVariables.player_height: int = UniversalVariables.block_size * 0.65
                             UniversalVariables.player_width: int = UniversalVariables.block_size * 0.65
@@ -105,7 +105,7 @@ class Game:
                             UniversalVariables.player_hitbox_offset_y = 0.22 * UniversalVariables.player_width
 
                         elif event.button == 5:  # Scroll -
-                            UniversalVariables.block_size -= 1  # Decrease block_size
+                            UniversalVariables.block_size -= 10  # Decrease block_size
                             if UniversalVariables.block_size < 1:  # Prevent block_size from being less than 1
                                 UniversalVariables.block_size = 1
 
