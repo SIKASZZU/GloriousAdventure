@@ -66,20 +66,20 @@ def draw_shadows(self, screen, visible_points):
         shadow_color = 255
         walls_hit_by_ray_color = 150
 
-    ### Shadow maze blockidele
+    # Create a shadow mask covering the entire screen
     shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
-    for wall in UniversalVariables.walls:
-        pygame.draw.rect(shadow_mask, (0, 0, 0, shadow_color), \
-                            pygame.Rect(wall[0], (wall[1][0] - wall[0][0], wall[1][1] - wall[0][1])))
-    
+
+    # Fill the shadow mask with shadow color
+    shadow_mask.fill((0, 0, 0, shadow_color))
+
+    # Subtract terrain data areas from the shadow mask
     for y in range(len(self.terrain_data)):
         for x in range(len(self.terrain_data[y])):
-            if self.terrain_data[y][x] == 98 or \
-                self.terrain_data[y][x] == 10 or \
-                self.terrain_data[y][x] == 11:
-                
-                pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x, y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
-                pygame.draw.rect(shadow_mask, (0, 0, 0, shadow_color), pathway_rect)
+            items_in_glade = [0,1,2,4,7,107]
+            if self.terrain_data[y][x] in items_in_glade:
+                pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x,
+                                           y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
+                pygame.draw.rect(shadow_mask, (0, 0, 0, 0), pathway_rect)
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
@@ -91,7 +91,7 @@ def draw_shadows(self, screen, visible_points):
             if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
                 squares_hit.add(wall)
 
-    # Highlightib wallid, mis saavad rayga pihta 
+    # Highlight wallid, mis saavad rayga pihta
     for square in squares_hit:
         pygame.draw.rect(shadow_mask, (0, 0, 0, walls_hit_by_ray_color), \
                          pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
