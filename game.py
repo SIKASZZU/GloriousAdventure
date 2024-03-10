@@ -163,7 +163,9 @@ class Game:
 
                     EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
                     EssentsialsUpdate.render_general(self)  # inventory, fps counteri
-                    EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
+                    
+                    # DAYLIGHT CHANGE
+                    # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
                     Collisions.keylock = 0
                 else:
