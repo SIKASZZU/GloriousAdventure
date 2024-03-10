@@ -108,6 +108,15 @@ items_list = [
         "Object_height": int(block_size * .7),
         "Render_when": (block_size * .2)
         },
+    {
+        "Type": "Object",
+        "Name": "Maze_Key",
+        "ID": 10,
+        "Breakable": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
 
     # Items
 
@@ -329,7 +338,17 @@ items_list = [
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": 0
-        }
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Ground_Keyhole",
+        "ID": 11,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+
 ]
 
 # Testida asju mis on seotud ainult item'ga
