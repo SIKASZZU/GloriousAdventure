@@ -39,8 +39,7 @@ from collisions import Collisions  # check_collisions, collison_terrain, collisi
     # m6te selles, et kui enemy on kuskil, ss ta ei kuuleks
     # mingi indikaator v6i heli tuleks kui enemy l2hedal
 
-# for lolz
-### TODO: aeg m66dub 66sel aeglasemini sest inimene sellises reaalsuses tunneks aega aeglasemini kui tegelikult
+### TODO: Outside map on k6ik shadow
 
 
 class Game:
