@@ -101,6 +101,9 @@ class RenderPictures:
                             # Loadib Wheat'i ja Farmland'i
                             if terrain_value == 7 or terrain_value == 107:
                                 image = ImageLoader.load_image("Farmland")
+                            # Loadib Key ja keyholeiga groundi
+                            if terrain_value == 10:
+                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
 
                             position = (i, j)  # Using grid indices directly for the position
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)

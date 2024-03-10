@@ -149,7 +149,7 @@ class MapData:
         for i in range(3):
             puzzle_x = random.randint(3, (size - 3))
             puzzle_y = random.randint(3, (size - 3))
-            MapData.converted_maze[puzzle_x][puzzle_y] = 7  # FIXME: see ära muuta
+            MapData.converted_maze[puzzle_x][puzzle_y] = 10
 
             if not (puzzle_x, puzzle_y) in MapData.puzzle_pieces:
                 MapData.puzzle_pieces.append((puzzle_x, puzzle_y))

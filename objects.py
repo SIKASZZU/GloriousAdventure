@@ -6,9 +6,9 @@ from variables import UniversalVariables
 
 
 class ObjectManagement:
+
     hitbox_count: int = 0
 
-    # x, y, ID
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_collision_box: tuple[int, ...],
                                   object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
@@ -30,9 +30,11 @@ class ObjectManagement:
 
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 7:
+                                if object_id == 7: 
                                     self.terrain_data[grid_row][grid_col] = 107
-                                else:
+                                if object_id == 10: 
+                                    self.terrain_data[grid_row][grid_col] = 11
+                                else: 
                                     self.terrain_data[grid_row][grid_col] = 1
                                 ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
 
@@ -51,6 +53,7 @@ class ObjectManagement:
     # 4   - objecti ID
     # 80  - hitboxi offset x
     # 40  - hitboxi offset y
+                            
     def add_object_to_inv(self, object_id: int, obj_collision_box: tuple[int, ...]) -> None:
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
@@ -91,8 +94,6 @@ class ObjectManagement:
 
     def place_and_render_object(self) -> None:
         """ Visuaalselt paneb objekti maailma (image). """
-
-        keys = pygame.key.get_pressed()
 
         interaction_boxes = {}  # Object id, pilt, ja pildi suurus
 
