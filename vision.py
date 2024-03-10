@@ -74,7 +74,10 @@ def draw_shadows(self, screen, visible_points):
     
     for y in range(len(self.terrain_data)):
         for x in range(len(self.terrain_data[y])):
-            if self.terrain_data[y][x] == 98:
+            if self.terrain_data[y][x] == 98 or \
+                self.terrain_data[y][x] == 10 or \
+                self.terrain_data[y][x] == 11:
+                
                 pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x, y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
                 pygame.draw.rect(shadow_mask, (0, 0, 0, shadow_color), pathway_rect)
 
