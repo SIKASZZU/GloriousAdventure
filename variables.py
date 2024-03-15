@@ -82,8 +82,8 @@ class UniversalVariables:
 
     player_hitbox_offset_x = 0.29 * player_width
     player_hitbox_offset_y = 0.22 * player_height
-    player_x: int = random.randint(3 * block_size, 3 * block_size)
-    player_y: int = random.randint(45 * block_size, 45 * block_size)
+    player_x: int = random.randint(1 * block_size, 38 * block_size)
+    player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     # ******************** OTHER ******************** #
     collision_boxes: list = []  # collision

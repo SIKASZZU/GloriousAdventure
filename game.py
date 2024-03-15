@@ -78,6 +78,11 @@ class Game:
         if not self.terrain_data:
             self.terrain_data = MapData.map_list_to_map(self)
 
+        for i in range(len(self.terrain_data)):
+            for j in range(len(self.terrain_data[i])):
+                if self.terrain_data[i][j] == 933:
+                    self.terrain_data[i - 1][j] = 98
+
     def run(self) -> None:
         while True:
             UniversalVariables.blits_sequence = []
@@ -167,7 +172,6 @@ class Game:
                     # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
                     Collisions.keylock = 0
-                    print(Inventory.inventory)
                 else:
                     PauseMenu.settings_menu(self)
 
