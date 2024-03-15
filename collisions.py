@@ -2,7 +2,9 @@ import pygame
 
 from items import items_list
 from components import player
+from inventory import Inventory
 from render import RenderPictures
+from update import EssentsialsUpdate
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
@@ -38,30 +40,39 @@ class Collisions:
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
+
             # Clickides saab avada ukse - uue maze
-            if self.click_window_x and self.click_window_y:
-                if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
+            if EssentsialsUpdate.day_night_text != 'Day':
+                ### TODO: not open door at night WRITE ON SCREEN
+                
+                pass
+            else:
+                if 'Maze_Key' in Inventory.inventory:
+                    Inventory.inventory['Maze_Key'] -= 1
 
-                    # Kinniste uste ID'd
-                    if object_id in [94, 95, 96, 97]:
+                    if self.click_window_x and self.click_window_y:
+                        if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
 
-                        if Collisions.keylock == 0:
-                            Collisions.keylock += 1
+                            # Kinniste uste ID'd
+                            if object_id in [94, 95, 96, 97]:
 
-                            # Sellega saab suuna kätte, '94: 3' - vasakule
-                            locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-                            location = locations[object_id]
+                                if Collisions.keylock == 0:
+                                    Collisions.keylock += 1
 
-                            grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+                                    # Sellega saab suuna kätte, '94: 3' - vasakule
+                                    locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                    location = locations[object_id]
 
-                            j = (grid_y // 39) * 39  # Y koordinaat
-                            i = (grid_x // 39) * 39  # X kooridnaat
+                                    grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
-                            if location == 1 or location == 2:
-                                AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
-                            else:   # 3, 4
-                                AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                                    j = (grid_y // 39) * 39  # Y koordinaat
+                                    i = (grid_x // 39) * 39  # X kooridnaat
 
+                                    if location == 1 or location == 2:
+                                        AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
+                                    else:   # 3, 4
+                                        AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+            
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)

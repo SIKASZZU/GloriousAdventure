@@ -13,6 +13,7 @@ class RenderPictures:
     occupied_positions: dict = {}
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
+    door_id = None  # glade ukse avamine, sulgemine
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
@@ -55,6 +56,7 @@ class RenderPictures:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def map_render(self) -> None:
+        door_id = RenderPictures.door_id
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
@@ -84,7 +86,7 @@ class RenderPictures:
                     terrain_value = self.terrain_data[i][j]
                     if terrain_value == None: pass
                     
-                    if terrain_value == 933 or terrain_value == 977:
+                    if terrain_value == 933 and not door_id == 933 or terrain_value == 977 and not door_id == 977:
 
                         if EssentsialsUpdate.day_night_text == 'Night':
                             door_id = 977
