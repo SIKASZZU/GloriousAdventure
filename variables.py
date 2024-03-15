@@ -101,6 +101,7 @@ class UniversalVariables:
     blits_sequence = []
     screen_x_08 = screen_x * 0.8
     screen_y_08 = screen_y * 0.8
+    no_terrain_background_items = [98, 99]
 
     def render_text(self, text: str, position: tuple[int, int] = None,
                     color: tuple[int, int, int] = (255, 255, 255),

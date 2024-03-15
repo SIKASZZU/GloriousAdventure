@@ -101,22 +101,34 @@ class RenderPictures:
                         position = (i, j)  # Using grid indices directly for the position
                         RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                    else:
-                        image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
-                        image = ImageLoader.load_image(image_name)
+                    # if terrain_value == 98:
+                    #     image_name = "Maze_Ground_" + str(random.randint(0, 1))
+                    #     image = ImageLoader.load_image(image_name)
+                    #
+                    #     position = (i, j)  # Using grid indices directly for the position
+                    #     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                        if terrain_value == 98 or terrain_value == 99: pass
+
+                    else:
+                        if terrain_value in UniversalVariables.no_terrain_background_items:
+                            pass
 
                         else:
+                            image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                            image = ImageLoader.load_image(image_name)
+
                             # Loadib Wheat'i ja Farmland'i
                             if terrain_value == 7 or terrain_value == 107:
                                 image = ImageLoader.load_image("Farmland")
+
                             # Loadib Key ja keyholeiga groundi
-                            if terrain_value == 10:
+                            if terrain_value == 10 or terrain_value == 11:
                                 image = ImageLoader.load_image('Maze_Ground_Keyhole')
 
+
                             position = (i, j)  # Using grid indices directly for the position
-                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                 terrain_value)
 
             RenderPictures.render_terrain_data.append(self.row)
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)

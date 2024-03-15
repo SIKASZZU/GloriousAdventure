@@ -48,7 +48,6 @@ class Collisions:
                 pass
             else:
                 if 'Maze_Key' in Inventory.inventory:
-                    Inventory.inventory['Maze_Key'] -= 1
 
                     if self.click_window_x and self.click_window_y:
                         if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:

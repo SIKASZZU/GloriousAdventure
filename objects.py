@@ -30,12 +30,16 @@ class ObjectManagement:
 
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 7: 
-                                    self.terrain_data[grid_row][grid_col] = 107
                                 if object_id == 10: 
                                     self.terrain_data[grid_row][grid_col] = 11
+
+                                elif object_id == 7:
+                                    self.terrain_data[grid_row][grid_col] = 107
+
                                 else: 
                                     self.terrain_data[grid_row][grid_col] = 1
+
+
                                 ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
 
                             else:

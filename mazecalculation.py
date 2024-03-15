@@ -1,6 +1,7 @@
 from map import MapData
 from variables import UniversalVariables
 from camera import Camera
+from inventory import Inventory
 class AddingMazeAtPosition:
     row = []
     col = []
@@ -198,5 +199,6 @@ class AddingMazeAtPosition:
             if row_index < 0: row_index = 0
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
 
+        Inventory.inventory['Maze_Key'] = Inventory.inventory['Maze_Key'] - 1
 
 if __name__ == '__main__': ...

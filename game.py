@@ -167,6 +167,7 @@ class Game:
                     # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
                     Collisions.keylock = 0
+                    print(Inventory.inventory)
                 else:
                     PauseMenu.settings_menu(self)
 
