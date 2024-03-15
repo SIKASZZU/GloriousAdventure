@@ -1,11 +1,11 @@
 import pygame
 import random
 
-from items import items_list
-from variables import UniversalVariables
-from images import ImageLoader
 from camera import Camera
-import time
+from items import items_list
+from images import ImageLoader
+from update import EssentsialsUpdate
+from variables import UniversalVariables
 
 class RenderPictures:
     render_range: int = 0
@@ -83,6 +83,14 @@ class RenderPictures:
                 if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                     terrain_value = self.terrain_data[i][j]
                     if terrain_value == None: pass
+                    
+                    if terrain_value == 933 or terrain_value == 977:
+
+                        if EssentsialsUpdate.day_night_text == 'Night':
+                            door_id = 977
+                        else:
+                            door_id = 933
+                        self.terrain_data[i][j] = door_id
 
                     if terrain_value == 99:
                         image_name = "Maze_Wall_" + str(random.randint(0, 9))

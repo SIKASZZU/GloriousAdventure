@@ -289,6 +289,16 @@ items_list = [
         },
     {
         "Type": "Object",
+        "Name": "Maze_Start_Bottom",
+        "ID": 933,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
         "Name": "Maze_End_Left",
         "ID": 94,
         "Breakable": False,
@@ -324,6 +334,17 @@ items_list = [
         "Type": "Object",
         "Name": "Maze_End_Bottom",
         "ID": 97,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": 0
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_End_Bottom",
+        "ID": 977,
         "Breakable": False,
         "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
