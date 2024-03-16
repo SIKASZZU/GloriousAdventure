@@ -96,6 +96,19 @@ class ObjectManagement:
         except RuntimeError as e:
             print("\nError in file: objects.py, add_object_to_inv", e)
 
+
+    def remove_object_from_inv(item):
+        if Inventory.inventory[item] > 0 :
+            Inventory.inventory[item] -= 1
+        
+        if Inventory.inventory[item] == 0:
+            print()
+            print(Inventory.inventory)
+            print(Inventory.inventory['Maze_Key'])
+            del Inventory.inventory['Maze_Key']
+            print(Inventory.inventory)
+
+
     def place_and_render_object(self) -> None:
         """ Visuaalselt paneb objekti maailma (image). """
 
@@ -148,6 +161,7 @@ class ObjectManagement:
                 if object_breakable:
                     pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,
                                      1)  # Teeb roosa outline objecti ümber
+
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,
                                 collision_box_height) -> None:

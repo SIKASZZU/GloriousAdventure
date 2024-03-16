@@ -47,13 +47,15 @@ class Collisions:
                 
                 pass
             else:
-                if 'Maze_Key' in Inventory.inventory:
+                if self.click_window_x and self.click_window_y:
+                    if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
 
-                    if self.click_window_x and self.click_window_y:
-                        if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
-
-                            # Kinniste uste ID'd
-                            if object_id in [94, 95, 96, 97]:
+                        # Kinniste uste ID'd
+                        if object_id in [94, 95, 96, 97]:
+                            
+                            # For opening the door remove one key from inventory
+                            if 'Maze_Key' in Inventory.inventory:
+                                ObjectManagement.remove_object_from_inv('Maze_Key')
 
                                 if Collisions.keylock == 0:
                                     Collisions.keylock += 1
