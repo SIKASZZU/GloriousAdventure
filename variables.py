@@ -103,6 +103,7 @@ class UniversalVariables:
     screen_y_08 = screen_y * 0.8
     no_terrain_background_items = [98, 99]
     no_shadow_needed = [0,1,2,4,7,9,107]
+    text_sequence = []
 
     def render_text(self, text: str, position: tuple[int, int] = None,
                     color: tuple[int, int, int] = (255, 255, 255),

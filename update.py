@@ -228,11 +228,9 @@ class EssentsialsUpdate:
     def render_gui_text(self, text, position, color=(100, 255, 100)):
         """Utility function to render text on the screen."""
         text_surface = self.font.render(text, True, color)
-        UniversalVariables.screen.blit(text_surface, position)
-
+        UniversalVariables.text_sequence.append((text_surface, position))
 
     def render_general(self):
-        Inventory.call_inventory(self)
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
         ui_elements = [

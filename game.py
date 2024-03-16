@@ -85,7 +85,9 @@ class Game:
 
     def run(self) -> None:
         while True:
+            UniversalVariables.text_sequence = []
             UniversalVariables.blits_sequence = []
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -151,17 +153,16 @@ class Game:
                     if Collisions.render_after == True:
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
                         PlayerUpdate.render_player(self)  # Renderib playeri (+ tema recti)
-                    else:  # self.render_after == False
+                    else:
                         PlayerUpdate.render_player(self)
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
+
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
+                    # Inventory.call_inventory(self)  # arvutab, kas player on tabi vajutanud v mitte
 
                     vision.find_boxes_in_window()
                     vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
-
-                    if Inventory.render_inv:
-                        Inventory.render_craftable_items(self)
 
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
 
@@ -172,6 +173,7 @@ class Game:
                     # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
                     Collisions.keylock = 0
+                    self.screen.blits(UniversalVariables.text_sequence)
                 else:
                     PauseMenu.settings_menu(self)
 
