@@ -60,6 +60,7 @@ def draw_shadows(self, screen, visible_points):
     shadow_color = 0
     walls_hit_by_ray_color = 0
     BLOCK_SIZE = UniversalVariables.block_size
+    no_shadow_needed = UniversalVariables.no_shadow_needed
 
     # kas J - Light ON/OFF key on pressed
     if (vision_count % 2) != 0:
@@ -75,8 +76,7 @@ def draw_shadows(self, screen, visible_points):
     # Subtract terrain data areas from the shadow mask
     for y in range(len(self.terrain_data)):
         for x in range(len(self.terrain_data[y])):
-            items_in_glade = [0,1,2,4,7,107]
-            if self.terrain_data[y][x] in items_in_glade:
+            if self.terrain_data[y][x] in no_shadow_needed:
                 pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x,
                                            y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
                 pygame.draw.rect(shadow_mask, (0, 0, 0, 0), pathway_rect)
