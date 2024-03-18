@@ -126,8 +126,6 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         opposite_angle = range(240, 490)
     elif UniversalVariables.last_input == 'd':
         opposite_angle = range(60, 300)
-    else:
-        opposite_angle = range(0, 360)
 
     if opposite_angle:
         # Step 1: Cast Rays in the opposite direction of the player's last move
