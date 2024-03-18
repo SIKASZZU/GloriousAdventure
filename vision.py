@@ -105,9 +105,12 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     visible_points = []
     corners_to_check = set()
     vision_step = 5
+    opposite_angle = None
 
     # Define OPPOSITE angle ranges based on the player's last input
-    if UniversalVariables.last_input == 'wa':
+    if len(str(UniversalVariables.last_input)) == 3:
+        pass
+    elif UniversalVariables.last_input == 'wa':
         opposite_angle = range(-50, 140)
     elif UniversalVariables.last_input == 'wd':
         opposite_angle = range(40, 230)
@@ -126,42 +129,45 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     else:
         opposite_angle = range(0, 360)
 
-    # Step 1: Cast Rays in the opposite direction of the player's last move
-    for angle in range(opposite_angle.start, opposite_angle.stop, vision_step):
-        rad_angle = math.radians(angle)
-        ray_end = (light_source[0] + math.cos(rad_angle) * (light_range / 2),
-                   light_source[1] + math.sin(rad_angle) * (light_range / 2))
+    if opposite_angle:
+        # Step 1: Cast Rays in the opposite direction of the player's last move
+        for angle in range(opposite_angle.start, opposite_angle.stop, vision_step):
+            rad_angle = math.radians(angle)
+            ray_end = (light_source[0] + math.cos(rad_angle) * (light_range / 2),
+                       light_source[1] + math.sin(rad_angle) * (light_range / 2))
 
-        closest_intersection = None
-        for wall in UniversalVariables.walls:
-            corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
-                       (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
-            for corner in corners:
-                corners_to_check.add(corner)
+            closest_intersection = None
+            for wall in UniversalVariables.walls:
+                corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
+                           (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
+                for corner in corners:
+                    corners_to_check.add(corner)
 
-            segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
-            for seg_start, seg_end in segments:
-                intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
-                if intersection:
-                    if closest_intersection is None or \
-                            math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
-                            math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
-                        closest_intersection = intersection
+                segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
+                for seg_start, seg_end in segments:
+                    intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
+                    if intersection:
+                        if closest_intersection is None or \
+                                math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
+                                math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
+                            closest_intersection = intersection
 
-        # Ensure that the intersection point is within the light range
-        if closest_intersection:
-            distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
-            if distance_to_intersection <= light_range:
-                visible_points.append(closest_intersection)
-        else:
-            visible_points.append(ray_end)
+            # Ensure that the intersection point is within the light range
+            if closest_intersection:
+                distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
+                if distance_to_intersection <= light_range:
+                    visible_points.append(closest_intersection)
+            else:
+                visible_points.append(ray_end)
 
-    visible_points.insert(0, light_source)
-    visible_points.append(light_source)
+        visible_points.insert(0, light_source)
+        visible_points.append(light_source)
 
     # Step 2: Draw the cone as per the existing code
     # Define angle ranges based on the player's last input
-    if UniversalVariables.last_input == 'wa':
+    if len(str(UniversalVariables.last_input)) == 3:
+        angles = range(0, 365)
+    elif UniversalVariables.last_input == 'wa':
         angles = range(135, 315)
     elif UniversalVariables.last_input == 'wd':
         angles = range(-135, 45)
