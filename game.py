@@ -19,16 +19,7 @@ from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
 
 
-### TODO: hitboxid on paremal ja all collectimisel perses
-
-### TODO: Kui kell on mingi t2pne aeg, l2hevad mzei uksed kinni, mis on gladei juures
-
 ### TODO: monsterite tegemine, enemy
-
-### TODO: lisada vilja asemel maze'is mingi võtmed
-
-### TODO: kui kolm võtit on käes, siis saab alles avada ukse
-    # avades ukse võtab playerilt kõik kolm võtit ära
 
 ### TODO: Mingid lambised juhtivad tekstid ekraanile
     # Esimese võtme leidmisel näiteks "Hmm, what can this be used for? What sort of a door needs this?"
@@ -38,8 +29,6 @@ from collisions import Collisions  # check_collisions, collison_terrain, collisi
 ### TODO: Jooksmise asemel luuramine, aeglasem speed. 
     # m6te selles, et kui enemy on kuskil, ss ta ei kuuleks
     # mingi indikaator v6i heli tuleks kui enemy l2hedal
-
-### TODO: Outside map on k6ik shadow
 
 
 class Game:
