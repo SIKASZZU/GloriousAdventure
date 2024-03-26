@@ -167,7 +167,7 @@ class Game:
                     PauseMenu.settings_menu(self)
 
                 pygame.display.update()
-                self.clock.tick(60)
+                self.clock.tick(600)
 
 if __name__ == "__main__":
     game = Game()
