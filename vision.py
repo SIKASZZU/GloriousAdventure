@@ -73,13 +73,13 @@ def draw_shadows(self, screen, visible_points):
     # Fill the shadow mask with shadow color
     shadow_mask.fill((0, 0, 0, shadow_color))
 
-    # Subtract terrain data areas from the shadow mask
-    for y in range(len(self.terrain_data)):
-        for x in range(len(self.terrain_data[y])):
-            if self.terrain_data[y][x] in no_shadow_needed:
-                pathway_rect = pygame.Rect(x * BLOCK_SIZE + UniversalVariables.offset_x,
-                                           y * BLOCK_SIZE + UniversalVariables.offset_y, BLOCK_SIZE, BLOCK_SIZE)
-                pygame.draw.rect(shadow_mask, (0, 0, 0, 0), pathway_rect)
+    # playeri light rangei muutmine kui ta asub gladeis
+    player_x_row = int(UniversalVariables.player_x // BLOCK_SIZE)
+    player_y_col = int(UniversalVariables.player_y // BLOCK_SIZE)
+
+    UniversalVariables.light_range = 420
+    if self.terrain_data[player_y_col][player_x_row] in no_shadow_needed:
+        UniversalVariables.light_range *= 6
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
