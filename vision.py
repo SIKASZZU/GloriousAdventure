@@ -105,39 +105,51 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     visible_points = []
     corners_to_check = set()
     vision_step = 5
-    opposite_angle = None
 
-    # Define OPPOSITE angle ranges based on the player's last input
+    # Define angles based on the player's last input
     if len(str(UniversalVariables.last_input)) == 3:
-        pass
+        main_angles = range(0, 360 + vision_step)
+    
     elif UniversalVariables.last_input == 'wa':
-        opposite_angle = range(-50, 140)
+        main_angles = range(135, 315)
+        opposite_angles = range(-50, 140)
     elif UniversalVariables.last_input == 'wd':
-        opposite_angle = range(40, 230)
+        main_angles = range(-135, 45)
+        opposite_angles = range(40, 230)
     elif UniversalVariables.last_input == 'sa':
-        opposite_angle = range(-140, 50)
+        main_angles = range(45, 225)
+        opposite_angles = range(-140, 50)
     elif UniversalVariables.last_input == 'sd':
-        opposite_angle = range(130, 320)
+        main_angles = range(-45, 135)
+        opposite_angles = range(130, 320)
+    
     elif UniversalVariables.last_input == 'w':
-        opposite_angle = range(-30, 210)
+        main_angles = range(-155, -25)
+        opposite_angles = range(-30, 210)
     elif UniversalVariables.last_input == 's':
-        opposite_angle = range(-210, 30)
+        main_angles = range(25, 155)
+        opposite_angles = range(-210, 30)
     elif UniversalVariables.last_input == 'a':
-        opposite_angle = range(240, 490)
+        main_angles = range(125, 245)
+        opposite_angles = range(240, 490)
     elif UniversalVariables.last_input == 'd':
-        opposite_angle = range(60, 300)
+        main_angles = range(-65, 65)
+        opposite_angles = range(60, 300)
+    else:
+        main_angles = range(0, 360 + vision_step)
+        opposite_angles = range(0, 0)
 
-    if opposite_angle:
-        # Step 1: Cast Rays in the opposite direction of the player's last move
-        for angle in range(opposite_angle.start, opposite_angle.stop, vision_step):
+    def calculate_angle(requested_angle, light_range):
+    
+        for angle in range(requested_angle.start, requested_angle.stop, vision_step):
             rad_angle = math.radians(angle)
-            ray_end = (light_source[0] + math.cos(rad_angle) * (light_range / 2),
-                       light_source[1] + math.sin(rad_angle) * (light_range / 2))
+            ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
+                        light_source[1] + math.sin(rad_angle) * light_range)
 
             closest_intersection = None
             for wall in UniversalVariables.walls:
                 corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
-                           (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
+                            (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
                 for corner in corners:
                     corners_to_check.add(corner)
 
@@ -161,64 +173,9 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         visible_points.insert(0, light_source)
         visible_points.append(light_source)
 
-    # Step 2: Draw the cone as per the existing code
-    # Define angle ranges based on the player's last input
-    if len(str(UniversalVariables.last_input)) == 3:
-        angles = range(0, 365)
-    elif UniversalVariables.last_input == 'wa':
-        angles = range(135, 315)
-    elif UniversalVariables.last_input == 'wd':
-        angles = range(-135, 45)
-    elif UniversalVariables.last_input == 'sa':
-        angles = range(45, 225)
-    elif UniversalVariables.last_input == 'sd':
-        angles = range(-45, 135)
-    elif UniversalVariables.last_input == 'w':
-        angles = range(-155, -25)
-    elif UniversalVariables.last_input == 's':
-        angles = range(25, 155)
-    elif UniversalVariables.last_input == 'a':
-        angles = range(125, 245)
-    elif UniversalVariables.last_input == 'd':
-        angles = range(-65, 65)
-    else:
-        angles = range(0, 360)
-
-    # Cast rays and draw the vision cone
-    for angle in range(angles.start, angles.stop, vision_step):
-        rad_angle = math.radians(angle)
-        ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
-                   light_source[1] + math.sin(rad_angle) * light_range)
-
-        closest_intersection = None
-        for wall in UniversalVariables.walls:
-            corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
-                       (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
-            for corner in corners:
-                corners_to_check.add(corner)
-
-            segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
-            for seg_start, seg_end in segments:
-                intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
-                if intersection:
-                    if closest_intersection is None or \
-                            math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
-                            math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
-                        closest_intersection = intersection
-
-        # Ensure that the intersection point is within the light range
-        if closest_intersection:
-            distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
-            if distance_to_intersection <= light_range:
-                visible_points.append(closest_intersection)
-        else:
-            visible_points.append(ray_end)
-
-    visible_points.insert(0, light_source)
-    visible_points.append(light_source)
-
-    # Step 3: Create a polygon to display as the smaller circle
-    # pygame.draw.polygon(screen, pygame.Color('yellow'), visible_points, 1) # Outline for visibility
-
+    calculate_angle(main_angles, light_range)
+    calculate_angle(opposite_angles, (light_range / 2))
+    
+    
     # Step 4: Draw shadows and walls as per the existing code
     draw_shadows(self, screen, visible_points)
