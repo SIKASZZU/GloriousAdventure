@@ -82,10 +82,12 @@ class UniversalVariables:
 
     player_hitbox_offset_x = 0.29 * player_width
     player_hitbox_offset_y = 0.22 * player_height
+    
+    # Playeri koordinaatide arvutamine
     player_x: int = random.randint(1 * block_size, 38 * block_size)
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
-    # ******************** OTHER ******************** #
+    # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
 
     # ******************** VISION ******************** #
@@ -96,14 +98,39 @@ class UniversalVariables:
     # ******************** OFFSET ******************** #
     offset_x: int = 0
     offset_y: int = 0
-
-    map_list = [['maze'], ['glade']]
-    blits_sequence = []
     screen_x_08 = screen_x * 0.8
     screen_y_08 = screen_y * 0.8
+
+    # ******************** MAZE ******************** #
+    maze_counter = 1
+    
+    # ******************** LISTS ******************** #
+    map_list = [['maze'], ['glade']]
+    blits_sequence = []
+    text_sequence = []
     no_terrain_background_items = [98, 99]
     no_shadow_needed = [0,1,2,4,7,9,107]
-    text_sequence = []
+    enemy_spawnpoint_list = []
+
+    # if mapdata is done, create enemy spawnpoints
+    def find_spawnpoints_in_map_data(terrain_data):
+        if terrain_data is not None:
+            spawnpoints = []  # Create a temporary list to store spawn points
+            for y in range(len(terrain_data)):
+                for x in range(len(terrain_data[y])):
+                    if terrain_data[y][x] == 98:
+                        spawnpoints.append((x, y))  # Append all potential spawn points to the temporary list
+
+            random.shuffle(spawnpoints)  # Shuffle the temporary list
+
+            # Append the first 50 shuffled spawn points to the enemy spawn point list
+            arv = 50
+            for spawnpoint in spawnpoints[:arv]:
+                UniversalVariables.enemy_spawnpoint_list.append(spawnpoint)
+
+        print('size of enemy spawnpoint list', len(UniversalVariables.enemy_spawnpoint_list))
+        print(UniversalVariables.enemy_spawnpoint_list)
+
 
     def render_text(self, text: str, position: tuple[int, int] = None,
                     color: tuple[int, int, int] = (255, 255, 255),

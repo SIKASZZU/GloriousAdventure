@@ -71,7 +71,7 @@ class Game:
             for j in range(len(self.terrain_data[i])):
                 if self.terrain_data[i][j] == 933:
                     self.terrain_data[i - 1][j] = 98
-
+        
     def run(self) -> None:
         while True:
             UniversalVariables.text_sequence = []
@@ -161,6 +161,7 @@ class Game:
                     # DAYLIGHT CHANGE
                     # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
 
+
                     Collisions.keylock = 0
                     self.screen.blits(UniversalVariables.text_sequence)
                 else:
@@ -170,5 +171,6 @@ class Game:
                 self.clock.tick(600)
 
 if __name__ == "__main__":
+    
     game = Game()
     game.run()
