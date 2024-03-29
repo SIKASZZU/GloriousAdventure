@@ -20,6 +20,32 @@ class ImageLoader:
         except FileNotFoundError:
             print(f"Error: '{image_name.capitalize()}' image not found.")
             return None
+    @staticmethod
+    def load_sprite_image(sprite: str) -> Optional[pygame.Surface]:
+        """
+        Salvestab pildid vahemällu.
+
+        SEE FUNC EI VISUALISEERI PILTE !
+        """
+
+        image_path = None
+
+        # Vaatab kas pilt on juba ära laetud
+        if sprite in ImageLoader.loaded_sprite_images:
+            return ImageLoader.loaded_sprite_images[sprite]
+
+        try:
+            image_path = f"Images/Sprite/{sprite}.png"
+            loaded_image = pygame.image.load(image_path)
+            converted_image = loaded_image.convert_alpha()
+            ImageLoader.loaded_sprite_images[sprite] = converted_image
+            print(f"{sprite} image ({image_path}) pre-loaded successfully.")
+            return converted_image
+
+        # Kui Sprite ei ole olemas
+        except FileNotFoundError:
+            print(f"Error: '{image_path}' image not found.")
+            return None
 
     @staticmethod
     def load_image(image_name: str) -> Optional[pygame.Surface]:
