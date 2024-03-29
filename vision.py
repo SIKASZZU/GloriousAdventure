@@ -73,7 +73,7 @@ def draw_shadows(self, screen, visible_points):
     # Fill the shadow mask with shadow color
     shadow_mask.fill((0, 0, 0, shadow_color))
 
-    # playeri light rangei muutmine kui ta asub gladeis
+    # Playeri gridi arvutamine
     player_x_row = int(UniversalVariables.player_x // BLOCK_SIZE)
     player_y_col = int(UniversalVariables.player_y // BLOCK_SIZE)
 
