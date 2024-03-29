@@ -109,6 +109,7 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     # Define angles based on the player's last input
     if len(str(UniversalVariables.last_input)) == 3:
         main_angles = range(0, 360 + vision_step)
+        opposite_angles = range(0, 0)
     
     elif UniversalVariables.last_input == 'wa':
         main_angles = range(135, 315)
