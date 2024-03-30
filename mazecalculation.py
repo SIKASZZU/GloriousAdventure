@@ -1,5 +1,6 @@
 from map import MapData
 from variables import UniversalVariables
+from objects import ObjectManagement
 from camera import Camera
 
 class AddingMazeAtPosition:
@@ -198,5 +199,9 @@ class AddingMazeAtPosition:
                 row_index = ((gridy + 20) // 40)
             if row_index < 0: row_index = 0
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
+
+        # Do stuff here after adding maze
+        ObjectManagement.remove_object_from_inv('Maze_Key')
+        UniversalVariables.maze_counter += 1
 
 if __name__ == '__main__': ...
