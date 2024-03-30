@@ -116,10 +116,10 @@ class UniversalVariables:
     def find_spawnpoints_in_map_data(terrain_data):
         if terrain_data is not None:
             spawnpoints = []  # Create a temporary list to store spawn points
-            for y in range(len(terrain_data)):
-                for x in range(len(terrain_data[y])):
-                    if terrain_data[y][x] == 98:
-                        spawnpoints.append((x, y))  # Append all potential spawn points to the temporary list
+            for row in range(len(terrain_data)):
+                for column in range(len(terrain_data[row])):
+                    if terrain_data[row][column] == 98:
+                        spawnpoints.append((row, column))  # Append all potential spawn points to the temporary list
 
             random.shuffle(spawnpoints)  # Shuffle the temporary list
 
