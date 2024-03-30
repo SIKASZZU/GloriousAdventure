@@ -189,7 +189,6 @@ class EssentsialsUpdate:
         # Update day, night text next to game_day_count
         if 23 >= hours < 8: 
             day_night_text = 'Night'
-            Enemy.spawn(self)
         else: 
             day_night_text = 'Day'
         EssentsialsUpdate.day_night_text = day_night_text

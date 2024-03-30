@@ -1,4 +1,5 @@
 from map import MapData
+from entity import Enemy
 from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
@@ -201,7 +202,10 @@ class AddingMazeAtPosition:
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
 
         # Do stuff here after adding maze
-        ObjectManagement.remove_object_from_inv('Maze_Key')
-        UniversalVariables.maze_counter += 1
+        ObjectManagement.remove_object_from_inv('Maze_Key')   # remove maze key
+        UniversalVariables.maze_counter += 1                  # add maze counter, to calculate extra enemy spawns
+        for row in UniversalVariables.map_list: print(row)    # print maze list 
+        Enemy.spawn(self)            
+
 
 if __name__ == '__main__': ...
