@@ -55,9 +55,6 @@ class Collisions:
                             
                             # For opening the door remove one key from inventory
                             if 'Maze_Key' in Inventory.inventory:
-                                ObjectManagement.remove_object_from_inv('Maze_Key')
-                                UniversalVariables.maze_counter += 1
-                                
                                 if Collisions.keylock == 0:
                                     Collisions.keylock += 1
 
@@ -75,8 +72,6 @@ class Collisions:
                                     else:   # 3, 4
                                         AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
                                     
-                                    print('\n', UniversalVariables.map_list)
-            
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
