@@ -25,11 +25,11 @@ class Enemy:
         x = 0
         while x <= 5:
             enemy_spawn_location = random.choice(UniversalVariables.enemy_spawnpoint_list)
-
             # Kui enemy spawn on kaugemal, kui vision range (light_range).
             if (abs(player_grid[0] - enemy_spawn_location[0]) > distance_from_player or
                 abs(player_grid[1] - enemy_spawn_location[1]) > distance_from_player):
 
+                print()
                 print("Enemy spawn location:", enemy_spawn_location)
                 print("Player grid:", player_grid)
                 print("Distance from player:", distance_from_player)
@@ -38,7 +38,6 @@ class Enemy:
                 # spawn mob.
                 self.terrain_data[enemy_spawn_location[0]][enemy_spawn_location[1]] = 2
                 x += 1
-                
 
                     
             # spawn night 1 max 3, night 2 max 5, Maze count ka arvesse v6tta
