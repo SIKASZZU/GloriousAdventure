@@ -155,7 +155,6 @@ class MapData:
                 MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
 
         MapData.search_paths(MapData.converted_maze)
-        UniversalVariables.find_spawnpoints_in_map_data(MapData.converted_maze)
         
         if MapData.create_save_puzzle:
             return MapData.converted_maze
