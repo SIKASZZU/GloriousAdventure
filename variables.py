@@ -109,7 +109,7 @@ class UniversalVariables:
     blits_sequence = []
     text_sequence = []
     no_terrain_background_items = [98, 99]
-    no_shadow_needed = [0,1,2,4,7,9,107]
+    no_shadow_needed = [0,1,2,4,7,9,107,933]
     enemy_spawnpoint_list = []
 
     # if mapdata is done, create enemy spawnpoints

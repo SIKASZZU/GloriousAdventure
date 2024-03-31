@@ -78,13 +78,15 @@ def draw_shadows(self, screen, visible_points):
     player_y_col = int(UniversalVariables.player_y // BLOCK_SIZE)
 
     UniversalVariables.light_range = 420
+    changed = 100
     try:
         if self.terrain_data[player_y_col][player_x_row] in no_shadow_needed:
             UniversalVariables.light_range *= 6
+            changed = 0
     except IndexError as e: print('Error @ vision.py, draw_shadows:', e)
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
-    pygame.draw.polygon(shadow_mask, (0, 0, 0, 0), vertices)  # visioni joonestamine
+    pygame.draw.polygon(shadow_mask, (0, 0, 0, changed), vertices)  # visioni joonestamine
 
     # Get the squares hit by light rays
     squares_hit = set()
