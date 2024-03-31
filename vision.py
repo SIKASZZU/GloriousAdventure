@@ -179,7 +179,7 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         visible_points.append(light_source)
 
     calculate_angle(main_angles, light_range)
-    calculate_angle(opposite_angles, (light_range / 2))
+    calculate_angle(opposite_angles, (light_range / 4))
     
     
     # Step 4: Draw shadows and walls as per the existing code
