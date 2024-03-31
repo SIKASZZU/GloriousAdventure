@@ -78,12 +78,16 @@ def draw_shadows(self, screen, visible_points):
     player_y_col = int(UniversalVariables.player_y // BLOCK_SIZE)
 
     UniversalVariables.light_range = 420
+    UniversalVariables.opposite_light_range = 75
     changed = 100
     try:
         if self.terrain_data[player_y_col][player_x_row] in no_shadow_needed:
             UniversalVariables.light_range *= 6
+            UniversalVariables.opposite_light_range *= 34
             changed = 0
-    except IndexError as e: print('Error @ vision.py, draw_shadows:', e)
+    
+    except IndexError as e: 
+        print('Error @ vision.py, draw_shadows:', e)
 
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(shadow_mask, (0, 0, 0, changed), vertices)  # visioni joonestamine
@@ -179,7 +183,7 @@ def draw_light_source_and_rays(self, screen, position, light_range):
         visible_points.append(light_source)
 
     calculate_angle(main_angles, light_range)
-    calculate_angle(opposite_angles, (light_range / 4))
+    calculate_angle(opposite_angles, (UniversalVariables.opposite_light_range))
     
     
     # Step 4: Draw shadows and walls as per the existing code
