@@ -12,8 +12,8 @@ class ImageLoader:
 
         try:
             if image_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.PNG")
-                print(f"images/Gui/{image_name}.PNG pre-loaded successfully.")
+                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.png")
+                print(f"images/Gui/{image_name}.png pre-loaded successfully.")
 
             return ImageLoader.loaded_item_images[image_name]
 
@@ -63,16 +63,16 @@ class ImageLoader:
 
                 # Peab siin ära LOADima, sest neid ei ole item_list'is
                 if image_name.startswith("Ground_"):
-                    image_path = f"images/Objects/Ground/{image_name}.PNG"
+                    image_path = f"images/Objects/Ground/{image_name}.png"
 
                 elif image_name.startswith("Water_"):
-                    image_path = f"images/Objects/Water/{image_name}.PNG"
+                    image_path = f"images/Objects/Water/{image_name}.png"
 
                 elif image_name.startswith("Maze_Wall_"):
-                    image_path = f"images/Objects/{image_name}.PNG"
+                    image_path = f"images/Objects/{image_name}.png"
 
                 elif image_name.startswith("Maze_Ground_"):
-                    image_path = f"images/Objects/{image_name}.PNG"
+                    image_path = f"images/Objects/{image_name}.png"
 
                 if image_path:
                     loaded_image = pygame.image.load(image_path)
@@ -89,11 +89,11 @@ class ImageLoader:
                         item_type = item.get("Type")
 
                         if item_type == "Object":
-                            image_path = f"images/Objects/{image_name}.PNG"
+                            image_path = f"images/Objects/{image_name}.png"
                         elif item_type == "Mineral":
-                            image_path = f"images/Items/Minerals/{image_name}.PNG"
+                            image_path = f"images/Items/Minerals/{image_name}.png"
                         elif item_type == "Tool":
-                            image_path = f"images/Items/Tools/{image_name}.PNG"
+                            image_path = f"images/Items/Tools/{image_name}.png"
 
                         if image_path:
                             loaded_image = pygame.image.load(image_path)
