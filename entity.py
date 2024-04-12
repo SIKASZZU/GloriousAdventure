@@ -7,13 +7,10 @@ from variables import UniversalVariables
 
 class Enemy:
 
-    def __init__(self) -> None:
-        ...
+    spawned_enemy_list: dict = {}
 
     def spawn(self):
-        """
-        Spawns enemies based on certain conditions.
-        """
+        """ Spawns enemies based on certain conditions. """
 
         # Player grid calculation
         player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
@@ -26,28 +23,23 @@ class Enemy:
         x = 0
 
         for spawn_point in UniversalVariables.enemy_spawnpoint_list:
-            print(spawn_point)
             # Check if the spawn point is far enough from the player
             if (abs(player_grid[0] - spawn_point[0]) > distance_from_player or
                     abs(player_grid[1] - spawn_point[1]) > distance_from_player):
 
-                print()
-                print("Enemy spawn location:", spawn_point)
-                print("Player grid:", player_grid)
-                print("Distance from player:", distance_from_player)
-                print("X value:", x)
-
                 # Spawn an enemy
+                Enemy.spawned_enemy_list[f'Enemy_{UniversalVariables.enemy_counter}'] = (spawn_point[0], spawn_point[1])
                 self.terrain_data[spawn_point[0]][spawn_point[1]] = 2
                 x += 1
+                UniversalVariables.enemy_counter += 1
 
                 # Limit to 5 spawns
                 if x >= 5:
                     break
 
-            # Limit to 5 spawns
-            if x >= 5:
-                break
+        print()
+        print(Enemy.spawned_enemy_list)
+
 
     def despawn(self):
         ...
