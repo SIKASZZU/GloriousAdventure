@@ -123,15 +123,10 @@ class UniversalVariables:
                     if terrain_data[row][column] == 98:
                         spawnpoints.add((row, column))
 
-            # Add up to 5 new spawn points to the list
             count = 0
-            
             for spawnpoint in spawnpoints:
-                
-                spawn_point_counter = (10*UniversalVariables.maze_counter)
-                if UniversalVariables.maze_counter == 1: spawn_point_counter = 2
 
-                if count < spawn_point_counter and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
+                if count < 10 * UniversalVariables.maze_counter and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
                     UniversalVariables.enemy_spawnpoint_list.add(spawnpoint)
                     count += 1
                 else:
