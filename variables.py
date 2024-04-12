@@ -106,7 +106,6 @@ class UniversalVariables:
     maze_counter = 1
     enemy_counter = 0
 
-    
     # ******************** LISTS ******************** #
     map_list = [['maze'], ['glade']]
     blits_sequence = []
@@ -126,8 +125,13 @@ class UniversalVariables:
 
             # Add up to 5 new spawn points to the list
             count = 0
+            
             for spawnpoint in spawnpoints:
-                if count < 5 and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
+                
+                spawn_point_counter = (10*UniversalVariables.maze_counter)
+                if UniversalVariables.maze_counter == 1: spawn_point_counter = 2
+
+                if count < spawn_point_counter and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
                     UniversalVariables.enemy_spawnpoint_list.add(spawnpoint)
                     count += 1
                 else:

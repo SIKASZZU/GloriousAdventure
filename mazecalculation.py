@@ -1,5 +1,4 @@
 from map import MapData
-from entity import Enemy
 from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
@@ -206,8 +205,5 @@ class AddingMazeAtPosition:
         ObjectManagement.remove_object_from_inv('Maze_Key')                         # remove maze key
         UniversalVariables.maze_counter += 1                                        # add maze counter, to calculate extra enemy spawns
         for row in UniversalVariables.map_list: print(row)                          # print maze list 
-        UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)          # map datast enemite spawnpointide leidmine     
-        Enemy.spawn(self)                                                           # Enemite spawnimine
-        UniversalVariables.enemy_spawnpoint_list = set()                            # Reset list, sest muidu hakkab enemy spawima outside the map
 
 if __name__ == '__main__': ...
