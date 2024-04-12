@@ -111,27 +111,25 @@ class UniversalVariables:
     text_sequence = []
     no_terrain_background_items = [98, 99]
     no_shadow_needed = [0,1,2,4,7,9,107,933]
-    enemy_spawnpoint_list = []
+    enemy_spawnpoint_list = set()
 
     # if mapdata is done, create enemy spawnpoints
     def find_spawnpoints_in_map_data(terrain_data):
         if terrain_data is not None:
-            spawnpoints = []  # Create a temporary list to store spawn points
+            spawnpoints = set()
             for row in range(len(terrain_data)):
                 for column in range(len(terrain_data[row])):
                     if terrain_data[row][column] == 98:
-                        spawnpoints.append((row, column))  # Append all potential spawn points to the temporary list
+                        spawnpoints.add((row, column))
 
-            random.shuffle(spawnpoints)  # Shuffle the temporary list
-
-            # Append the first 50 shuffled spawn points to the enemy spawn point list
-            arv = 50
-            for spawnpoint in spawnpoints[:arv]:
-                UniversalVariables.enemy_spawnpoint_list.append(spawnpoint)
-
-        print('size of enemy spawnpoint list', len(UniversalVariables.enemy_spawnpoint_list))
-        print(UniversalVariables.enemy_spawnpoint_list)
-
+            # Add up to 5 new spawn points to the list
+            count = 0
+            for spawnpoint in spawnpoints:
+                if count < 5 and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
+                    UniversalVariables.enemy_spawnpoint_list.add(spawnpoint)
+                    count += 1
+                else:
+                    break
 
     def render_text(self, text: str, position: tuple[int, int] = None,
                     color: tuple[int, int, int] = (255, 255, 255),
