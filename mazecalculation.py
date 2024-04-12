@@ -208,6 +208,6 @@ class AddingMazeAtPosition:
         for row in UniversalVariables.map_list: print(row)                          # print maze list 
         UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)          # map datast enemite spawnpointide leidmine     
         Enemy.spawn(self)                                                           # Enemite spawnimine
-        UniversalVariables.enemy_spawnpoint_list = []                               # Reset list, sest muidu hakkab enemy spawima outside the map
+        UniversalVariables.enemy_spawnpoint_list = set()                            # Reset list, sest muidu hakkab enemy spawima outside the map
 
 if __name__ == '__main__': ...

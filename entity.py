@@ -15,35 +15,39 @@ class Enemy:
         Spawns enemies based on certain conditions.
         """
 
-        # Playeri gridi arvutamine
+        # Player grid calculation
         player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
         player_grid = (player_y_col, player_x_row)
 
         distance_from_player = int(UniversalVariables.light_range / UniversalVariables.block_size)
-        # light rangei ei spawni enemyt
+
+        # Count of spawned enemies
         x = 0
-        while x <= 5:
-            enemy_spawn_location = random.choice(UniversalVariables.enemy_spawnpoint_list)
-            # Kui enemy spawn on kaugemal, kui vision range (light_range).
-            if (abs(player_grid[0] - enemy_spawn_location[0]) > distance_from_player or
-                abs(player_grid[1] - enemy_spawn_location[1]) > distance_from_player):
+
+        for spawn_point in UniversalVariables.enemy_spawnpoint_list:
+            print(spawn_point)
+            # Check if the spawn point is far enough from the player
+            if (abs(player_grid[0] - spawn_point[0]) > distance_from_player or
+                    abs(player_grid[1] - spawn_point[1]) > distance_from_player):
 
                 print()
-                print("Enemy spawn location:", enemy_spawn_location)
+                print("Enemy spawn location:", spawn_point)
                 print("Player grid:", player_grid)
                 print("Distance from player:", distance_from_player)
                 print("X value:", x)
 
-                # spawn mob.
-                self.terrain_data[enemy_spawn_location[0]][enemy_spawn_location[1]] = 2
+                # Spawn an enemy
+                self.terrain_data[spawn_point[0]][spawn_point[1]] = 2
                 x += 1
 
-                    
-            # spawn night 1 max 3, night 2 max 5, Maze count ka arvesse v6tta
-            # yhes mazeis max 5 tykki
+                # Limit to 5 spawns
+                if x >= 5:
+                    break
 
-
+            # Limit to 5 spawns
+            if x >= 5:
+                break
 
     def despawn(self):
         ...
