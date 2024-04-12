@@ -1,9 +1,6 @@
 import pygame
 import math
 
-
-
-from entity import Enemy
 import vision
 from images import ImageLoader
 from HUD import HUD_class
