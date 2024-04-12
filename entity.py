@@ -37,7 +37,10 @@ class Enemy:
                     UniversalVariables.enemy_counter += 1
 
                     # Limit to 5 spawns
-                    if x >= (5*UniversalVariables.maze_counter):
+
+                    x_counter = 5 * UniversalVariables.maze_counter
+                    if UniversalVariables.maze_counter == 1: x_counter = 2
+                    if x >= x_counter:
                         break
 
 
