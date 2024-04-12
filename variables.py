@@ -104,6 +104,8 @@ class UniversalVariables:
 
     # ******************** MAZE ******************** #
     maze_counter = 1
+    enemy_counter = 0
+
     
     # ******************** LISTS ******************** #
     map_list = [['maze'], ['glade']]
