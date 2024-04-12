@@ -4,6 +4,7 @@ import sys
 
 
 # Oma enda failid
+from entity import Enemy
 from variables import UniversalVariables
 from camera import Camera  # box_target_camera
 from render import RenderPictures  # map_render
@@ -131,6 +132,8 @@ class Game:
                     Camera.box_target_camera(self)  # Kaamera
                     StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
+                    Enemy.update(self) 
+                    
                     # collision things
                     Collisions.collison_terrain(self)
                     Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
@@ -149,6 +152,7 @@ class Game:
 
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
                     # Inventory.call_inventory(self)  # arvutab, kas player on tabi vajutanud v mitte
+                    
 
                     vision.find_boxes_in_window()
                     vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
@@ -157,6 +161,7 @@ class Game:
 
                     EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
                     EssentsialsUpdate.render_general(self)  # inventory, fps counteri
+                    
                     
                     # DAYLIGHT CHANGE
                     # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
