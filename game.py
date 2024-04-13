@@ -132,8 +132,6 @@ class Game:
                     Camera.box_target_camera(self)  # Kaamera
                     StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
-                    Enemy.update(self) 
-                    
                     # collision things
                     Collisions.collison_terrain(self)
                     Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
@@ -149,6 +147,8 @@ class Game:
                         PlayerUpdate.render_player(self)
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
 
+                    Enemy.update(self)
+
 
                     Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
                     # Inventory.call_inventory(self)  # arvutab, kas player on tabi vajutanud v mitte
@@ -156,6 +156,7 @@ class Game:
 
                     vision.find_boxes_in_window()
                     vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+
 
                     PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
 

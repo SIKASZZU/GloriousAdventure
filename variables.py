@@ -115,6 +115,7 @@ class UniversalVariables:
     enemy_spawnpoint_list = set()
 
     # if mapdata is done, create enemy spawnpoints
+    @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
         if terrain_data is not None:
             spawnpoints = set()
@@ -131,67 +132,3 @@ class UniversalVariables:
                     count += 1
                 else:
                     break
-
-    def render_text(self, text: str, position: tuple[int, int] = None,
-                    color: tuple[int, int, int] = (255, 255, 255),
-                    font: str = 'Arial', size: int = 20, background_opacity: float = 0.3) -> None:
-        """
-        Renderdab teksti mänguaknale, pakkudes kohandamise võimalusi teksti värvi, asukoha,
-        fondi, suuruse ja tausta läbipaistvuse osas.
-
-        Parameetrid:
-        - text (str): Kuvatav tekst.
-        - position (tuple[int, int], valikuline): Teksti asukoht ekraanil (x, y). Kui ei ole määratud,
-          siis tekst keskendatakse ekraani allosas.
-        - color (tuple[int, int, int], valikuline): Teksti värv RGB formaadis. Vaikimisi valge.
-        - font (str, valikuline): Fondi nimi. Vaikimisi 'Arial'.
-        - size (int, valikuline): Fondi suurus. Vaikimisi 20.
-        - background_opacity (float, valikuline): Teksti tausta läbipaistvus (0 kuni 1). Vaikimisi 0.3.
-        """
-
-        font = pygame.font.SysFont(font, size)
-        words = text.split(' ')
-        lines = []
-        current_line = []
-
-        # Split text into lines
-        for word in words:
-            test_line = ' '.join(current_line + [word])
-            line_width, line_height = font.size(test_line)
-            if line_width <= UniversalVariables.screen_x_08:  # Use 80% of screen width
-                current_line.append(word)
-            else:
-                if current_line:  # Add the current line if it's not empty
-                    lines.append(' '.join(current_line))
-                current_line = [word]
-        if current_line:  # Add the last line
-            lines.append(' '.join(current_line))
-
-        # Calculate total height of the text block to center it vertically within the 80% height
-        total_height = len(lines) * line_height
-
-        # Adjust Y position based on whether a specific position is provided
-        if position:
-            base_y_position = position[1]
-        else:
-            # Center vertically within the 80% height area
-            base_y_position = (UniversalVariables.screen_y + UniversalVariables.screen_y_08 - total_height) / 2
-
-        for i, line in enumerate(lines):
-            line_surface = font.render(line, True, color)
-            line_width, _ = font.size(line)
-
-            # Adjust X position to center the line or use the provided position
-            if position:
-                line_x_position = position[0]
-            else:
-                line_x_position = (UniversalVariables.screen_x - line_width) / 2
-
-            line_y_position = base_y_position - i * line_height
-
-            # Create and blit the background surface
-            background_surface = pygame.Surface((line_width, line_height))
-            background_surface.set_alpha(int(255 * background_opacity))
-            background_surface.fill((0, 0, 0))
-            self.screen.blit(background_surface, (line_x_position, line_y_position))
-            self.screen.blit(line_surface, (line_x_position, line_y_position))

@@ -1,20 +1,20 @@
-import random
+import pygame
 
 from variables import UniversalVariables
-from update import EssentsialsUpdate 
+from update import EssentsialsUpdate
+from images import ImageLoader
 
-
+ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (UniversalVariables.block_size, UniversalVariables.block_size))
 
 
 class Enemy:
-
-    spawned_enemy_dict: dict = {}
+    spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
         if not Enemy.spawned_enemy_dict and EssentsialsUpdate.day_night_text == 'Night':
-            UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data) 
-            
+            UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
+
             # Player grid calculation
             player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
             player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -23,7 +23,7 @@ class Enemy:
             distance_from_player = int(UniversalVariables.light_range / UniversalVariables.block_size)
 
             # Count of spawned enemies
-            x = 0
+            spawned_enemy_count = 0
 
             for spawn_point in UniversalVariables.enemy_spawnpoint_list:
                 # Check if the spawn point is far enough from the player
@@ -31,29 +31,31 @@ class Enemy:
                         abs(player_grid[1] - spawn_point[1]) > distance_from_player):
 
                     # Spawn an enemy
-                    Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = (spawn_point[0], spawn_point[1])
-                    self.terrain_data[spawn_point[0]][spawn_point[1]] = 2
-                    x += 1
+                    Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = ghost_image, spawn_point[1], \
+                    spawn_point[0]
+
+                    spawned_enemy_count += 1
                     UniversalVariables.enemy_counter += 1
 
-                    # Limit to 5 spawns
-
-                    x_counter = 5 * UniversalVariables.maze_counter
-                    if UniversalVariables.maze_counter == 1: x_counter = 2
-                    if x >= x_counter:
+                    # Limiteerib Enemite arvu vastvalt maze_counterile
+                    max_enenmy = 5 * UniversalVariables.maze_counter
+                    if UniversalVariables.maze_counter == 1: max_enenmy = 2  # Kui on ainult 1 maze siis spawnib max 2 enemit
+                    if spawned_enemy_count >= max_enenmy:
                         break
 
+        for enemy in Enemy.spawned_enemy_dict.values():
+            enemy_x = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_x
+            enemy_y = enemy[2] * UniversalVariables.block_size + UniversalVariables.offset_y
 
+            UniversalVariables.screen.blit(pygame.transform.scale(enemy[0], (UniversalVariables.block_size, UniversalVariables.block_size)), (enemy_x, enemy_y))
+
+    @staticmethod
     def despawn(self):
         # {'Enemy_0': (26, 21),
         if EssentsialsUpdate.day_night_text == 'Day':
-            for key, value in Enemy.spawned_enemy_dict.items():
-                self.terrain_data[value[0]][value[1]] = 98
-            Enemy.spawned_enemy_dict: dict = {}
+            Enemy.spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
             UniversalVariables.enemy_spawnpoint_list = set()
             UniversalVariables.enemy_counter = 0
-            print('despawned Enemy')
-
 
     def move(self):
         """ Liikumine paremale, vasakule, yles, alla. Liigub playeri suunas, kui detected. Liigub ainult object idl 98. """
@@ -72,21 +74,46 @@ class Enemy:
         block_size = UniversalVariables.block_size
         x = abs(x)
 
-
         if x - block_size > x < x + block_size:
             # do that
             ...
 
+    def detection(self, player_x, player_y):
+        block_size = UniversalVariables.block_size
+        for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
+            enemy_x, enemy_y = enemy_info[1], enemy_info[2]
+            distance_to_player_x_grid = abs((player_x // block_size) - (enemy_x // block_size))
+            distance_to_player_y_grid = abs((player_y // block_size) - (enemy_y // block_size))
 
-    def detection(self):
-        ... ### enemy peaks detectima playeri 5 blocki kauguselt
+            print(distance_to_player_x_grid, " <= ", 10)
+            print(distance_to_player_y_grid, " <= ", 10)
 
+            if distance_to_player_x_grid <= 10 or distance_to_player_y_grid <= 10:
+                dx = player_x - enemy_x
+                dy = player_y - enemy_y
 
-    def hit(self):
+                # Update direction
+                if abs(dx) > abs(dy):
+                    if dx > 0:
+                        self.direction = 'right'
+                        print('right')
+                    else:
+                        self.direction = 'left'
+                        print('left')
+                else:
+                    if dy > 0:
+                        self.direction = 'down'
+                        print('down')
+                    else:
+                        self.direction = 'up'
+                        print('up')
+            else:
+                self.direction = 'none'
+
+    def attack(self):
         ...
-
 
     def update(self):
         Enemy.spawn(self)
-        print('Enemy.spawned_enemy_dict', Enemy.spawned_enemy_dict)
+        Enemy.detection(self, UniversalVariables.player_x, UniversalVariables.player_y)
         Enemy.despawn(self)

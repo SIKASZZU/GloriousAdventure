@@ -5,6 +5,7 @@ from variables import Decorators
 
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
+    loaded_sprite_images: Dict[str, pygame.Surface] = {}
 
     @staticmethod
     def load_gui_image(image_name: str) -> Optional[pygame.Surface]:
@@ -35,7 +36,7 @@ class ImageLoader:
             return ImageLoader.loaded_sprite_images[sprite]
 
         try:
-            image_path = f"Images/Sprite/{sprite}.png"
+            image_path = f"images/Sprites/{sprite}.png"
             loaded_image = pygame.image.load(image_path)
             converted_image = loaded_image.convert_alpha()
             ImageLoader.loaded_sprite_images[sprite] = converted_image
