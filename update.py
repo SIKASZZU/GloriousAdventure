@@ -149,14 +149,14 @@ class PlayerUpdate:
 
 class EssentsialsUpdate:
         
-    game_start_clock = (9, 0)
+    game_start_clock = (7, 0)
     time_update: int = 0
     game_day_count = 0
     day_night_text = 'Day'
 
     # Function to calculate in-game time
     def calculate_time(self):
-        game_minute_lenght = 1  # mida väiksem,seda kiiremini aeg mängus möödub
+        game_minute_lenght = 10000  # mida väiksem,seda kiiremini aeg mängus möödub
         day_night_text = EssentsialsUpdate.day_night_text
 
         time = EssentsialsUpdate.game_start_clock  # (9, 0)
