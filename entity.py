@@ -9,6 +9,7 @@ ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (Un
 
 class Enemy:
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
+    enemy_in_range: set[tuple[str, str]] = set()
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
@@ -84,26 +85,24 @@ class Enemy:
                 return default_speed + blocks_moved_x + blocks_moved_y
 
         
-        # detectioni peale hakkab liikuma
-        if self.direction != 'none': 
-            for enemy in Enemy.spawned_enemy_dict.values():
-                current_position = (enemy[1], enemy[2])
-                calculate_next_step(current_position, self.direction)
+        #   # detectioni peale hakkab liikuma
+        #   if direction != 'none':
+        #       for enemy in Enemy.spawned_enemy_dict.values():
+        #           current_position = (enemy[1], enemy[2])
+        #           calculate_next_step(current_position, direction)
         
 
-
-        # hakkab liikuma oma rutiinset sitta, yles alla paremale vasakule
-        block_size = UniversalVariables.block_size
-        x = abs(x)
-        if x - block_size > x < x + block_size:
-            # do that
-            ...
+        # else:
+        #     pass
+        #     # hakkab liikuma oma rutiinset sitta, yles alla paremale vasakule
 
 
     def detection(self):
         block_size = UniversalVariables.block_size
         player_x = UniversalVariables.player_x
         player_y = UniversalVariables.player_y
+
+        Enemy.enemy_in_range = set()
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             enemy_x, enemy_y = enemy_info[1], enemy_info[2]
@@ -118,27 +117,29 @@ class Enemy:
             distance_to_player_y_grid = abs(player_y_grid - enemy_y)
 
             if abs(distance_to_player_x_grid) <= 10 and abs(distance_to_player_y_grid) <= 10:
+                direction: str = 'none'
 
                 # Update direction
-                if abs(dx) == abs(dy):
+                if distance_to_player_x_grid < 0.5 and distance_to_player_y_grid < 0.5:
                     print('ontop')   # vb peab olema pass, player dead
 
                 elif abs(dx) > abs(dy):
                     if dx > 0:
-                        self.direction = 'right'
+                        direction = 'right'
                         print('right')
                     else:
-                        self.direction = 'left'
+                        direction = 'left'
                         print('left')
                 else:
                     if dy > 0:
-                        self.direction = 'down'
+                        direction = 'down'
                         print('down')
                     else:
-                        self.direction = 'up'
+                        direction = 'up'
                         print('up')
-            else:
-                self.direction = 'none'
+
+                Enemy.enemy_in_range.add((enemy_name, direction))
+
 
     def attack(self):
         ...
@@ -147,3 +148,5 @@ class Enemy:
         Enemy.spawn(self)
         Enemy.detection(self)
         Enemy.despawn(self)
+
+        print(Enemy.enemy_in_range)
