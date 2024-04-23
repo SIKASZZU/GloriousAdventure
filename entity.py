@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from variables import UniversalVariables
@@ -51,38 +53,75 @@ class Enemy:
             UniversalVariables.screen.blit(pygame.transform.scale(enemy[0], (UniversalVariables.block_size, UniversalVariables.block_size)), (enemy_x, enemy_y))
 
     @staticmethod
-    def despawn(self):
-        # {'Enemy_0': (26, 21),
+    def despawn():
         if EssentsialsUpdate.day_night_text == 'Day':
-            Enemy.spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # resetting list of enemies (Enemy_image, y, x)
+            Enemy.spawned_enemy_dict = {}  # resetting list of enemies (Enemy_name, Enemy_image, x, y)
             UniversalVariables.enemy_spawnpoint_list = set()
             UniversalVariables.enemy_counter = 0
 
     def move(self):
         """ Liikumine paremale, vasakule, yles, alla. Liigub playeri suunas, kui detected. Liigub ainult object idl 98. """
 
-        def calculate_next_step(current_position, next_position):
-            if next_position == 'right': next_step = (1, 0)  # +1
-            if next_position == 'left': next_step = (-1, 0)  # -1
-            if next_position == 'top': next_step = (0, -1) 
-            if next_position == 'down': next_step = (0, 1)
+        for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
+            image, x, y = enemy_info
+            for enemy_name_, direction in Enemy.enemy_in_range:
+
+                if enemy_name == enemy_name_:
+                    print(direction)
+                    print(enemy_info)
+
+                    if direction == 'right':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x + 0.03, y
+
+                    if direction == 'left':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x - 0.03, y
+
+                    if direction == 'down':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y + 0.03
+
+                    if direction == 'up':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y - 0.03
 
 
-            ''' next position on suund, mitte koordinaat. left, right, up, down. '''
-            for enemy in Enemy.spawned_enemy_dict.values():
-                if enemy[1][2] == current_position:
-                    enemy[1][2] 
+                else:
+                    direction = random.choice(['right', 'left', 'down', 'up'])
 
-        # funk, et arvutada kiirendus kummitusele.
-        def calculate_speed(x1, y1, x2, y2, default_speed, block_size):
-            if (x2 - x1) != 0 and (y2 - y1) != 0:  # If movement is along both axes
-                return default_speed
-            else:
-                # Calculate number of blocks moved in each axis
-                blocks_moved_x = abs(x2 - x1) / block_size
-                blocks_moved_y = abs(y2 - y1) / block_size
-                # Speed increases by the total number of blocks moved in both axes
-                return default_speed + blocks_moved_x + blocks_moved_y
+                    if direction == 'right':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x + 0.03, y
+
+                    if direction == 'left':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x - 0.03, y
+
+                    if direction == 'down':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y + 0.03
+
+                    if direction == 'up':
+                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y - 0.03
+
+
+
+        # def calculate_next_step(current_position, next_position):
+        #     if next_position == 'right': next_step = (1, 0)  # +1
+        #     if next_position == 'left': next_step = (-1, 0)  # -1
+        #     if next_position == 'top': next_step = (0, -1)
+        #     if next_position == 'down': next_step = (0, 1)
+        #
+        #
+        #     ''' next position on suund, mitte koordinaat. left, right, up, down. '''
+        #     for enemy in Enemy.spawned_enemy_dict.values():
+        #         if enemy[1][2] == current_position:
+        #             enemy[1][2]
+        #
+        # # funk, et arvutada kiirendus kummitusele.
+        # def calculate_speed(x1, y1, x2, y2, default_speed, block_size):
+        #     if (x2 - x1) != 0 and (y2 - y1) != 0:  # If movement is along both axes
+        #         return default_speed
+        #     else:
+        #         # Calculate number of blocks moved in each axis
+        #         blocks_moved_x = abs(x2 - x1) / block_size
+        #         blocks_moved_y = abs(y2 - y1) / block_size
+        #         # Speed increases by the total number of blocks moved in both axes
+        #         return default_speed + blocks_moved_x + blocks_moved_y
 
         
         #   # detectioni peale hakkab liikuma
@@ -126,17 +165,14 @@ class Enemy:
                 elif abs(dx) > abs(dy):
                     if dx > 0:
                         direction = 'right'
-                        print('right')
                     else:
                         direction = 'left'
-                        print('left')
+
                 else:
                     if dy > 0:
                         direction = 'down'
-                        print('down')
                     else:
                         direction = 'up'
-                        print('up')
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
@@ -147,6 +183,6 @@ class Enemy:
     def update(self):
         Enemy.spawn(self)
         Enemy.detection(self)
-        Enemy.despawn(self)
+        Enemy.move(self)
+        Enemy.despawn()
 
-        print(Enemy.enemy_in_range)
