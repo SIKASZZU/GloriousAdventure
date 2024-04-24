@@ -1,3 +1,5 @@
+
+import camera
 import random
 
 import pygame
@@ -70,8 +72,8 @@ class Enemy:
             image, x, y = enemy_info
             for enemy_name_, direction in Enemy.enemy_in_range:
 
+                print(enemy_name, 'direction:', direction)
                 if enemy_name == enemy_name_:
-                    print(enemy_name, 'direction:', direction)
 
                     if direction == 'right':
                         Enemy.spawned_enemy_dict[enemy_name] = image, x + 0.03, y
@@ -115,26 +117,25 @@ class Enemy:
 
 
     def detection(self):
-        block_size = UniversalVariables.block_size
-        player_x = UniversalVariables.player_x
-        player_y = UniversalVariables.player_y
+        player_window_x = camera.Camera.player_window_x
+        player_window_y = camera.Camera.player_window_y
 
         Enemy.enemy_in_range = set()
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             enemy_x_grid, enemy_y_grid = enemy_info[1], enemy_info[2]
 
-            player_x_grid = int(player_x // block_size)
-            player_y_grid = int(player_y // block_size)
+            enemy_x = enemy_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
+            enemy_y = enemy_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
             
-            distance_to_player_x_grid = player_x_grid - enemy_x_grid
-            distance_to_player_y_grid = player_y_grid - enemy_y_grid
+            distance_to_player_x_grid = player_window_x - enemy_x
+            distance_to_player_y_grid = player_window_y - enemy_y
 
-            if abs(distance_to_player_x_grid) <= 10 and abs(distance_to_player_y_grid) <= 10:
+            if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
                 # Update direction
-                if abs(distance_to_player_x_grid) < 0.5 and abs(distance_to_player_y_grid) < 0.5:
+                if abs(distance_to_player_x_grid) < 15 and abs(distance_to_player_y_grid) < 15:
                     print('ontop')   # vb peab olema pass, player dead
 
                 elif abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
