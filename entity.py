@@ -66,43 +66,40 @@ class Enemy:
 
 
     def move(self):
-        """ Liikumine paremale, vasakule, yles, alla. Liigub playeri suunas, kui detected. Liigub ainult object idl 98. """
-
+        """Move enemies based on their individual decisions."""
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
-            for enemy_name_, direction in Enemy.enemy_in_range:
-
-                print(enemy_name, 'direction:', direction)
+            direction = None
+            
+            for enemy_name_, dir_ in Enemy.enemy_in_range:
                 if enemy_name == enemy_name_:
+                    direction = dir_
+                    break
 
-                    if direction == 'right':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x + 0.03, y
+            # If the enemy is in range of the player, move accordingly
+            if direction:
+                if direction == 'right':
+                    x += 0.03
+                elif direction == 'left':
+                    x -= 0.03
+                elif direction == 'down':
+                    y += 0.03
+                elif direction == 'up':
+                    y -= 0.03
+            else:
+                # If the enemy is not in range, move randomly
+                direction = random.choice(['right', 'left', 'down', 'up'])
+                if direction == 'right':
+                    x += 0.03
+                elif direction == 'left':
+                    x -= 0.03
+                elif direction == 'down':
+                    y += 0.03
+                elif direction == 'up':
+                    y -= 0.03
 
-                    if direction == 'left':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x - 0.03, y
-
-                    if direction == 'down':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y + 0.03
-
-                    if direction == 'up':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y - 0.03
-
-
-                else:
-                    direction = random.choice(['right', 'left', 'down', 'up'])
-
-                    if direction == 'right':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x + 0.03, y
-
-                    if direction == 'left':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x - 0.03, y
-
-                    if direction == 'down':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y + 0.03
-
-                    if direction == 'up':
-                        Enemy.spawned_enemy_dict[enemy_name] = image, x, y - 0.03
-
+            # Update the enemy's position
+            Enemy.spawned_enemy_dict[enemy_name] = image, x, y
 
         # # funk, et arvutada kiirendus kummitusele.
         # def calculate_speed(x1, y1, x2, y2, default_speed, block_size):
