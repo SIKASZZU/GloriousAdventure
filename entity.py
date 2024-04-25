@@ -3,6 +3,8 @@ import random
 
 import pygame
 
+from components import player
+
 from variables import UniversalVariables
 from update import EssentsialsUpdate
 from images import ImageLoader
@@ -12,6 +14,8 @@ class Enemy:
     ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
+
+    damage_delay: int = 0
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
@@ -148,8 +152,12 @@ class Enemy:
                 direction: str = 'none'
 
                 # Update direction
-                if abs(distance_to_player_x_grid) < 15 and abs(distance_to_player_y_grid) < 15:
-                    print('ontop')  # vb peab olema pass, player dead
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+
+                    # Kui Ghost on playeri peal siis saab dammi
+                    if Enemy.damage_delay >= 10:
+                        player.current_health = player.current_health - 1
+                        Enemy.damage_delay = 0
 
                 elif abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
@@ -164,6 +172,8 @@ class Enemy:
                         direction = 'up'
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
+
+        Enemy.damage_delay += 1
 
     def attack(self):
         ...

@@ -3,6 +3,7 @@ import time
 
 from HUD import HUD_class
 from variables import UniversalVariables
+from threading import Timer
 
 
 class HealthComponent:
@@ -23,7 +24,6 @@ class HealthComponent:
 
 
 class StaminaComponent:
-    
     stamina_bar_decay: int = 0
 
     def __init__(self, max_stamina, min_stamina):
@@ -53,29 +53,34 @@ class StaminaComponent:
             self.max_stamina = 20
 
     def get_stamina(self):
-      return self.current_stamina
+        return self.current_stamina
 
     def stamina_bar_update(self):
-      stamina_rect, stamina_bar_border, stamina_bar_bg = HUD_class.stamina_bar(self, HUD_class.half_w)
+        stamina_rect, stamina_bar_border, stamina_bar_bg = HUD_class.stamina_bar(self, HUD_class.half_w)
 
-      if StaminaComponent.stamina_bar_decay == 120:
-        stamina_bar_bg = pygame.Rect(0, 0, 0, 0)
-        stamina_rect = pygame.Rect(0, 0, 0, 0)
-        stamina_bar_border = pygame.Rect(0, 0, 0, 0)
+        if StaminaComponent.stamina_bar_decay == 120:
+            stamina_bar_bg = pygame.Rect(0, 0, 0, 0)
+            stamina_rect = pygame.Rect(0, 0, 0, 0)
+            stamina_bar_border = pygame.Rect(0, 0, 0, 0)
 
-      if player.stamina.current_stamina >= player.stamina.max_stamina:
-          StaminaComponent.stamina_bar_decay += 1
+        if player.stamina.current_stamina >= player.stamina.max_stamina:
+            StaminaComponent.stamina_bar_decay += 1
 
-      else:
-          HUD_class.stamina_bar_size = player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
-          stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6, UniversalVariables.screen_y - 75,
-                                            HUD_class.stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
-          
-          stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6, UniversalVariables.screen_y - 75, 
-                                                HUD_class.stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
-          
-          stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6, UniversalVariables.screen_y - 75,
-                                          HUD_class.stamina_bar_size + 12, 15)
+        else:
+            HUD_class.stamina_bar_size = player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
+            stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6,
+                                         UniversalVariables.screen_y - 75,
+                                         HUD_class.stamina_bar_size_bg + 12,
+                                         15)  # Kui staminat kulub, ss on background taga
+
+            stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6,
+                                             UniversalVariables.screen_y - 75,
+                                             HUD_class.stamina_bar_size_border + 12,
+                                             15)  # K6igi stamina baride ymber border
+
+            stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6,
+                                       UniversalVariables.screen_y - 75,
+                                       HUD_class.stamina_bar_size + 12, 15)
 
 
 class SpeedComponent:
@@ -108,22 +113,35 @@ class HitBoxComponent:
 
 
 class Player:
-    
     def __init__(self, max_health, min_health,
-                max_stamina, min_stamina,
-                base_speed, max_speed, min_speed):
-
+                 max_stamina, min_stamina,
+                 base_speed, max_speed, min_speed):
         self.health = HealthComponent(max_health=max_health,
-                                    min_health=min_health)
+                                      min_health=min_health)
+        self.stamina = StaminaComponent(max_stamina=max_stamina,
+                                        min_stamina=min_stamina)
+        self.speed = SpeedComponent(base_speed=base_speed,
+                                    max_speed=max_speed,
+                                    min_speed=min_speed)
+        self.current_health = max_health
 
-        self.stamina = StaminaComponent(max_stamina=max_stamina, 
-                                    min_stamina=min_stamina)
+        # Start the timer for health regeneration
+        self.regeneration_timer = Timer(3, self.regenerate_health)
+        self.regeneration_timer.start()
 
-        self.speed= SpeedComponent(base_speed=base_speed, 
-                                max_speed=max_speed, 
-                                min_speed=min_speed)
+    def check_health(self):
+        # Check if health is zero or below
+        if self.current_health <= 0:
+            print("Player dead")
+            self.current_health = 0
+
+    def regenerate_health(self):
+        # Increase health by 1 if it's not at maximum
+        if self.current_health < self.health.max_health and self.current_health != 0:
+            self.current_health += 1
+        # Restart the timer
+        self.regeneration_timer = Timer(3, self.regenerate_health)
+        self.regeneration_timer.start()
 
 
 player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=8, max_speed=10, min_speed=1)
-
-    
