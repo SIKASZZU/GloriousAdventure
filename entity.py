@@ -15,6 +15,7 @@ class Enemy:
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
+
         if not Enemy.spawned_enemy_dict and EssentsialsUpdate.day_night_text == 'Night':
             UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
 
@@ -100,33 +101,33 @@ class Enemy:
                 elif direction == 'up':
                     next_y -= 0.03
 
-            # enemy_info[0]  # image
-            # self.terrain_data[next_x][next_yx]
+
             enemy_corner_set: set[tuple[float, float], ...] = set()
-            enemy_width = (enemy_info[0].get_width())
+            enemy_width = enemy_info[0].get_width()
             enemy_height = enemy_info[0].get_height()
-            print(enemy_info[0])
 
             block_size = UniversalVariables.block_size
 
-            enemy_corner_set.add((x * block_size, y * block_size))                                  # Top-Left
-            enemy_corner_set.add((x * block_size + enemy_width, y * block_size))                    # Top-Right
-            enemy_corner_set.add((x * block_size, y * block_size + enemy_height))                   # Bottom-Left
-            enemy_corner_set.add((x * block_size + enemy_width, y * block_size + enemy_height))     # Bottom-Right
-
+            # Testib cornerid 2ra tuleviku koordinaatidega.
+            enemy_corner_set.add((next_x * block_size, next_y * block_size))                                  # Top-Left
+            enemy_corner_set.add((next_x * block_size + enemy_width, next_y * block_size))                    # Top-Right
+            enemy_corner_set.add((next_x * block_size, next_y * block_size + enemy_height))                   # Bottom-Left
+            enemy_corner_set.add((next_x * block_size + enemy_width, next_y * block_size + enemy_height))     # Bottom-Right
 
             for next_cords in enemy_corner_set:
-                new_next_x, new_next_y = int(next_cords[0] // block_size), int(next_cords[1] // block_size)
+                new_grid_x, new_grid_y = int(next_cords[0] // block_size), int(next_cords[1] // block_size)
 
-                if self.terrain_data[new_next_y][new_next_x] != 99 and self.terrain_data[new_next_y][new_next_x] != 933 and self.terrain_data[new_next_y][new_next_x] != 977:
-                    x, y = next_x, next_y
-
+                if self.terrain_data[new_grid_y][new_grid_x] != 99 and \
+                    self.terrain_data[new_grid_y][new_grid_x] != 933 and \
+                    self.terrain_data[new_grid_y][new_grid_x] != 977:
+                    continue
                 else:
-                    print("get cancer", self.terrain_data[new_next_y][new_next_x])
                     break
+            else:
+                x, y = next_x, next_y
 
-            # Update the enemy's position
             Enemy.spawned_enemy_dict[enemy_name] = image, x, y
+
 
     def detection(self):
         player_window_x = camera.Camera.player_window_x
@@ -142,9 +143,6 @@ class Enemy:
 
             distance_to_player_x_grid = player_window_x - enemy_x
             distance_to_player_y_grid = player_window_y - enemy_y
-
-            print('distance_to_player_x_grid', distance_to_player_x_grid, 'distance_to_player_y_grid',
-                  distance_to_player_y_grid)
 
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
