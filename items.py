@@ -381,6 +381,27 @@ items_list = [
         "Render_when": (block_size * -1)
         },
 
+    {
+        "Type": "Object",
+        "Name": "Final_Maze_Ground",
+        "ID": 988,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+
+    {
+        "Type": "Object",
+        "Name": "Void",
+        "ID": 999,
+        "Collision_box": [0, 0, 1, 1],
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+
 ]
 
 # Testida asju mis on seotud ainult item'ga

@@ -111,7 +111,7 @@ class RenderPictures:
 
                     else:
                         if terrain_value in UniversalVariables.no_terrain_background_items:
-                            pass
+                            image = ImageLoader.load_image("Maze_Ground")
 
                         else:
                             image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
