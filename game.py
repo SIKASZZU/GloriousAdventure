@@ -2,6 +2,7 @@
 import pygame
 import sys
 
+from components import Player, StaminaComponent
 
 # Oma enda failid
 from entity import Enemy
@@ -9,7 +10,7 @@ from variables import UniversalVariables
 from camera import Camera  # box_target_camera
 from render import RenderPictures  # map_render
 from map import MapData  # glade_creation, map_list_to_map
-from components import StaminaComponent, player  # stamina_bar_update
+# from components import StaminaComponent  # stamina_bar_update
 from objects import ObjectManagement  # place_and_render_object
 from render import CreateCollisionBoxes  # object_list_creation
 import vision  # find_boxes_in_window, draw_light_source_and_rays
@@ -38,6 +39,7 @@ class Game:
 
     # ******************** PLAYER *******ds************* #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
+    player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=8, max_speed=10, min_speed=1)
 
     # ******************** FPS, FONT ******************** #w
     clock = pygame.time.Clock()  # fps
@@ -90,21 +92,6 @@ class Game:
     def run(self) -> None:
         while True:
 
-
-
-
-
-
-            if Game.print__hp == 60:
-                print(player.current_health)
-                Game.print__hp = 0
-
-            Game.print__hp += 1
-
-
-
-
-
             UniversalVariables.text_sequence = []
             UniversalVariables.blits_sequence = []
 
@@ -112,6 +99,14 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+
+                if Game.print__hp == 60:
+                    print(self.player.current_health)
+                    Game.print__hp = 0
+
+                Game.print__hp += 1
+
                 if not Menu.game_state:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         if PauseMenu.game_paused == False:
@@ -158,13 +153,7 @@ class Game:
                 # Vaatab kas mäng on pausi peale pandud või mitte
                 if not PauseMenu.game_paused:
 
-
-
-
-                    player.check_health()
-
-
-
+                    self.player.check_health()
 
                     UniversalVariables()
                     PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju

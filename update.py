@@ -4,7 +4,7 @@ import math
 import vision
 from images import ImageLoader
 from HUD import HUD_class
-from components import player
+# from components import player
 from inventory import Inventory
 from sprite import AnimationManager
 from objects import ObjectManagement
@@ -70,8 +70,8 @@ class PlayerUpdate:
             normalized_x = x / magnitude
             normalized_y = y / magnitude
 
-        new_player_x = UniversalVariables.player_x + player.speed.current_speed * normalized_x
-        new_player_y = UniversalVariables.player_y + player.speed.current_speed * normalized_y
+        new_player_x = UniversalVariables.player_x + self.player.speed.current_speed * normalized_x
+        new_player_y = UniversalVariables.player_y + self.player.speed.current_speed * normalized_y
 
         # Kui seda pole siis player ei liigu mapi peal
         # Uuendab playeri asukohta vastavalt keyboard inputile

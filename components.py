@@ -63,11 +63,11 @@ class StaminaComponent:
             stamina_rect = pygame.Rect(0, 0, 0, 0)
             stamina_bar_border = pygame.Rect(0, 0, 0, 0)
 
-        if player.stamina.current_stamina >= player.stamina.max_stamina:
+        if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
             StaminaComponent.stamina_bar_decay += 1
 
         else:
-            HUD_class.stamina_bar_size = player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
+            HUD_class.stamina_bar_size = self.player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
             stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6,
                                          UniversalVariables.screen_y - 75,
                                          HUD_class.stamina_bar_size_bg + 12,
@@ -142,6 +142,3 @@ class Player:
         # Restart the timer
         self.regeneration_timer = Timer(3, self.regenerate_health)
         self.regeneration_timer.start()
-
-
-player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=8, max_speed=10, min_speed=1)

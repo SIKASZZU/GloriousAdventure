@@ -3,8 +3,6 @@ import random
 
 import pygame
 
-from components import player
-
 from variables import UniversalVariables
 from update import EssentsialsUpdate
 from images import ImageLoader
@@ -48,7 +46,7 @@ class Enemy:
 
                     # Limiteerib Enemite arvu vastvalt maze_counterile
                     max_enenmy = 5 * UniversalVariables.maze_counter
-                    if UniversalVariables.maze_counter == 1: max_enenmy = 1  # Kui on ainult 1 maze siis spawnib max 2 enemit
+                    if UniversalVariables.maze_counter == 1: max_enenmy = 2  # Kui on ainult 1 maze siis spawnib max 2 enemit
                     if spawned_enemy_count >= max_enenmy:
                         break
 
@@ -156,7 +154,7 @@ class Enemy:
 
                     # Kui Ghost on playeri peal siis saab dammi
                     if Enemy.damage_delay >= 10:
-                        player.current_health = player.current_health - 1
+                        self.player.current_health = self.player.current_health - 1
                         Enemy.damage_delay = 0
 
                 elif abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
