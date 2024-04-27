@@ -45,6 +45,8 @@ class AddingMazeAtPosition:
 
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index):
+        print(len(map_list[0]))
+        print(len(map_list[1]))
 
         # Kui row_index on võrdne mapis map_list'is olevale listide
         # arvuga siis lisab igale list'is olevale row'ile place'i.
@@ -71,7 +73,6 @@ class AddingMazeAtPosition:
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index *  39
             start_col = col_index *  39
-
             for i in range(40):
                 for j in range(40):
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
@@ -202,8 +203,8 @@ class AddingMazeAtPosition:
 
         # Do stuff here after adding maze
         print()
-        ObjectManagement.remove_object_from_inv('Maze_Key')                         # remove maze key
-        UniversalVariables.maze_counter += 1                                        # add maze counter, to calculate extra enemy spawns
+        #ObjectManagement.remove_object_from_inv('Maze_Key')                         # remove maze key
+        UniversalVariables.maze_counter += 1                                         # add maze counter, to calculate extra enemy spawns
         for row in UniversalVariables.map_list: print(row)                          # print maze list 
-
+        print(UniversalVariables.maze_counter)
 if __name__ == '__main__': ...

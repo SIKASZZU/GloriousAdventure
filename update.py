@@ -148,7 +148,7 @@ class PlayerUpdate:
 
 class EssentsialsUpdate:
         
-    game_start_clock = (7, 0)
+    game_start_clock = (9, 0)
     time_update: int = 0
     game_day_count = 0
     day_night_text = 'Day'

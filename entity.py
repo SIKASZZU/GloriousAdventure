@@ -13,7 +13,7 @@ class Enemy:
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
 
-    damage_delay: int = 0
+    damage_delay: int = 30
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
@@ -149,7 +149,6 @@ class Enemy:
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
-                # Update direction
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
                     Enemy.attack(self, 3)
 

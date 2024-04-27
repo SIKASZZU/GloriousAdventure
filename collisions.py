@@ -54,6 +54,9 @@ class Collisions:
                             
                             # For opening the door remove one key from inventory
                             if 'Maze_Key' in Inventory.inventory:
+                                if UniversalVariables.maze_counter >= 2:
+                                    UniversalVariables.final_maze = True
+                                    
                                 if Collisions.keylock == 0:
                                     Collisions.keylock += 1
 

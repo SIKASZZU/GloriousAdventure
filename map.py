@@ -37,6 +37,12 @@ class MapData:
         with open('glade.txt', 'r') as file:
             return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
+    
+    # Create end maze
+    def final_maze_creation():
+        with open('final_maze.txt', 'r') as file:
+            return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                    for line in file if line.strip()]
 
 
     def maze_generation(shape, res):
@@ -220,7 +226,11 @@ class MapData:
     def get_data(item, start_side):
         # Your existing method to generate data based on the item type
         if item == 'maze':
-            return MapData.create_maze_with_perlin_noise(start_side)
+            print('UniversalVariables.final_maze', UniversalVariables.final_maze)
+            if UniversalVariables.final_maze == True: 
+                return MapData.final_maze_creation()
+            else:
+                return MapData.create_maze_with_perlin_noise(start_side)
         elif item == 'glade':
             return MapData.glade_creation()
 
