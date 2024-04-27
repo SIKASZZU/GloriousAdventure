@@ -76,7 +76,14 @@ class UniversalVariables:
     block_size: int = screen_x // jagatis
     prev_block_size: int = 0
 
+    # ******************** OFFSET ******************** #
+    offset_x: int = 0
+    offset_y: int = 0
+    screen_x_08 = screen_x * 0.8
+    screen_y_08 = screen_y * 0.8
+
     # ******************** PLAYER ******************** #
+
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
 
@@ -87,6 +94,8 @@ class UniversalVariables:
     player_x: int = random.randint(1 * block_size, 38 * block_size)
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
+    health_status = None    
+    
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
 
@@ -96,11 +105,6 @@ class UniversalVariables:
     walls = []  # Collision boxide seinad
     last_input = str
 
-    # ******************** OFFSET ******************** #
-    offset_x: int = 0
-    offset_y: int = 0
-    screen_x_08 = screen_x * 0.8
-    screen_y_08 = screen_y * 0.8
 
     # ******************** MAZE ******************** #
     maze_counter = 1

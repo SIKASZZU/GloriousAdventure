@@ -6,45 +6,39 @@ from variables import UniversalVariables
 
 
 class HealthComponent:
+
     def __init__(self, max_health, min_health):
         self.max_health = max_health
         self.min_health = min_health
         self.current_health = max(min_health, min(max_health, max_health))
-        self.health_last_update_time = time.time()
+        self.health_cooldown_timer = 0
         self.previous_health = self.current_health
 
     def damage(self, amount):
         self.current_health = max(self.current_health - amount, self.min_health)
+        self.health_cooldown_timer = 0
+        UniversalVariables.health_status = False
         HealthComponent.check_health(self)
 
     def regenerate_health(self):
         if self.current_health < self.max_health and self.current_health != 0:
             self.current_health += 1
-        HealthComponent.check_health(self)
-
-    def health_change_visual(self):
-        if self.previous_health < self.current_health:
-            print('roheline')
-            # sai elusid juurde
-            # roheline flash
-
-        elif self.previous_health > self.current_health:
-            print('punane')
-            # elusid kadus
-            # punane
-
-        self.previous_health = self.current_health
+            UniversalVariables.health_status = True
 
     def check_health(self):
-        if self.current_health <= 0: 
-            print("Player dead")
-        print('Player HP:', self.current_health)
-        HealthComponent.health_change_visual(self)
+        self.health_cooldown_timer += 1
+        if self.current_health <= 0: print("Player dead")
+        
+        if self.health_cooldown_timer >= 220:
+            HealthComponent.regenerate_health(self)
+            self.health_cooldown_timer = 100
+
+        if self.previous_health != self.current_health: print('Player HP:', self.current_health)
+        self.previous_health = self.current_health
 
     def get_health(self):
         return self.current_health
     
-
 
 class StaminaComponent:
     stamina_bar_decay: int = 0

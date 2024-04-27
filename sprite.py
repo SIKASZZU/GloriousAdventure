@@ -1,6 +1,6 @@
 import pygame
 from variables import UniversalVariables
-
+from components import HealthComponent
 
 ### TODO: Kõik ümber teha, liiga raske animatsioone lisada, lic teha func millega on kegem animatsioone teha
 
@@ -14,9 +14,22 @@ class SpriteSheet:
     def __init__(self, image):
         self.sheet = image
 
-    def get_image(self, x, y, width, height):
+    def get_image(self, x, y, width, height, filter_color=None):
         image = pygame.Surface((width, height), pygame.SRCALPHA)
         image.blit(self.sheet, (0, 0), (x, y, width, height))
+
+        if filter_color:
+            # Apply the filter color to non-transparent pixels
+            for i in range(width):
+                for j in range(height):
+                    pixel_color = image.get_at((i, j))
+                    if pixel_color[3] > 0:  # Check if the pixel is not transparent
+                        filtered_color = (min(pixel_color[0] + filter_color[0], 255),
+                                          min(pixel_color[1] + filter_color[1], 255),
+                                          min(pixel_color[2] + filter_color[2], 255),
+                                          pixel_color[3])
+                        image.set_at((i, j), filtered_color)
+
         image = pygame.transform.scale(image, (UniversalVariables.player_width, UniversalVariables.player_height))
         return image
 
@@ -47,8 +60,25 @@ class AnimationManager:
         self.animation_timer += 1
         sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index])
         x, y, animation_width, animation_height = self.animations[self.animation_index][0]
+        if UniversalVariables.health_status == True:
+            self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
+                                                animation_height, filter_color=(0, 255, 0))
+            self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
+            self.animation_timer = 0  # Reset the animation timer
+            UniversalVariables.health_status = None
 
-        if self.animation_timer >= self.animation_speeds[self.animation_index]:
+            return self.frame
+
+        elif UniversalVariables.health_status == False:
+            self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
+                                                animation_height, filter_color=(255, 0, 0))
+            self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
+            self.animation_timer = 0  # Reset the animation timer
+            UniversalVariables.health_status = None
+
+            return self.frame
+
+        elif self.animation_timer >= self.animation_speeds[self.animation_index]:
             self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
                                                 animation_height)
             self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
@@ -58,4 +88,5 @@ class AnimationManager:
 
         # If no frame change, return the current frame
         else:
-            return sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width, animation_height)
+            self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width, animation_height)
+            return self.frame

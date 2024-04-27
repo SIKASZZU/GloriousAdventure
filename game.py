@@ -154,6 +154,8 @@ class Game:
                     else:
                         PlayerUpdate.render_player(self)
                         ObjectManagement.place_and_render_object(self)  # Renderib objektid
+                    
+                    self.player.health.check_health()
 
                     Enemy.update(self)
 

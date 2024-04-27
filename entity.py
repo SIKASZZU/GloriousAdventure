@@ -151,7 +151,7 @@ class Enemy:
 
                 # Update direction
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
-                    Enemy.attack(self, 1)
+                    Enemy.attack(self, 3)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
@@ -171,7 +171,7 @@ class Enemy:
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """
         
-        if Enemy.damage_delay >= 10:
+        if Enemy.damage_delay >= 60:
             self.player.health.damage(damage)
             Enemy.damage_delay = 0
         Enemy.damage_delay += 1
