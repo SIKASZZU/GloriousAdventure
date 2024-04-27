@@ -4,7 +4,6 @@ import math
 import vision
 from images import ImageLoader
 from HUD import HUD_class
-# from components import player
 from inventory import Inventory
 from sprite import AnimationManager
 from objects import ObjectManagement

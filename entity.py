@@ -151,13 +151,9 @@ class Enemy:
 
                 # Update direction
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                    Enemy.attack(self, 1)
 
-                    # Kui Ghost on playeri peal siis saab dammi
-                    if Enemy.damage_delay >= 10:
-                        self.player.current_health = self.player.current_health - 1
-                        Enemy.damage_delay = 0
-
-                elif abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
+                if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
                         direction = 'right'
                     else:
@@ -171,10 +167,15 @@ class Enemy:
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
+
+    def attack(self, damage):
+        """ Kui Ghost on playeri peal siis saab damage'i. """
+        
+        if Enemy.damage_delay >= 10:
+            self.player.health.damage(damage)
+            Enemy.damage_delay = 0
         Enemy.damage_delay += 1
 
-    def attack(self):
-        ...
 
     def update(self):
         Enemy.spawn(self)

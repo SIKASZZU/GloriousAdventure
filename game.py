@@ -10,7 +10,6 @@ from variables import UniversalVariables
 from camera import Camera  # box_target_camera
 from render import RenderPictures  # map_render
 from map import MapData  # glade_creation, map_list_to_map
-# from components import StaminaComponent  # stamina_bar_update
 from objects import ObjectManagement  # place_and_render_object
 from render import CreateCollisionBoxes  # object_list_creation
 import vision  # find_boxes_in_window, draw_light_source_and_rays
@@ -55,19 +54,9 @@ class Game:
     daylight_strength = 0
     dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA, 32)
     dim_surface = dim_surface.convert_alpha()
-
-
-
-
-
-
-
+    
+    # ******************** RANDOM/DEBUG ******************** #
     print__hp = 0
-
-
-
-
-
 
 
     def __init__(self):
@@ -99,13 +88,6 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
-
-                if Game.print__hp == 60:
-                    print(self.player.current_health)
-                    Game.print__hp = 0
-
-                Game.print__hp += 1
 
                 if not Menu.game_state:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -152,8 +134,6 @@ class Game:
 
                 # Vaatab kas mäng on pausi peale pandud või mitte
                 if not PauseMenu.game_paused:
-
-                    self.player.check_health()
 
                     UniversalVariables()
                     PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju

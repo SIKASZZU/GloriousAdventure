@@ -1,7 +1,6 @@
 import pygame
 
 from items import items_list
-# from components import player
 from inventory import Inventory
 from render import RenderPictures
 from update import EssentsialsUpdate

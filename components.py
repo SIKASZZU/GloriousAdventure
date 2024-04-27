@@ -3,7 +3,6 @@ import time
 
 from HUD import HUD_class
 from variables import UniversalVariables
-from threading import Timer
 
 
 class HealthComponent:
@@ -12,15 +11,39 @@ class HealthComponent:
         self.min_health = min_health
         self.current_health = max(min_health, min(max_health, max_health))
         self.health_last_update_time = time.time()
-
-    def heal(self, amount):
-        self.current_health = min(self.current_health + amount, self.max_health)
+        self.previous_health = self.current_health
 
     def damage(self, amount):
         self.current_health = max(self.current_health - amount, self.min_health)
+        HealthComponent.check_health(self)
+
+    def regenerate_health(self):
+        if self.current_health < self.max_health and self.current_health != 0:
+            self.current_health += 1
+        HealthComponent.check_health(self)
+
+    def health_change_visual(self):
+        if self.previous_health < self.current_health:
+            print('roheline')
+            # sai elusid juurde
+            # roheline flash
+
+        elif self.previous_health > self.current_health:
+            print('punane')
+            # elusid kadus
+            # punane
+
+        self.previous_health = self.current_health
+
+    def check_health(self):
+        if self.current_health <= 0: 
+            print("Player dead")
+        print('Player HP:', self.current_health)
+        HealthComponent.health_change_visual(self)
 
     def get_health(self):
         return self.current_health
+    
 
 
 class StaminaComponent:
@@ -123,22 +146,3 @@ class Player:
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
-        self.current_health = max_health
-
-        # Start the timer for health regeneration
-        self.regeneration_timer = Timer(3, self.regenerate_health)
-        self.regeneration_timer.start()
-
-    def check_health(self):
-        # Check if health is zero or below
-        if self.current_health <= 0:
-            print("Player dead")
-            self.current_health = 0
-
-    def regenerate_health(self):
-        # Increase health by 1 if it's not at maximum
-        if self.current_health < self.health.max_health and self.current_health != 0:
-            self.current_health += 1
-        # Restart the timer
-        self.regeneration_timer = Timer(3, self.regenerate_health)
-        self.regeneration_timer.start()
