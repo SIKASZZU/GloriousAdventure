@@ -39,10 +39,33 @@ class MapData:
                     for line in file if line.strip()]
     
     # Create end maze
-    def final_maze_creation():
+    def final_maze_creation(start_side):
+        maze = []
         with open('final_maze.txt', 'r') as file:
-            return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+            maze = [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
+        
+        size = len(maze)
+    
+        # Set the start point
+        if start_side == 'left':
+            start_0 = (size // 2, 0)
+            start_1 = (size // 2 - 1, 0)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+        elif start_side == 'top':
+            start_0 = (0, size // 2)
+            start_1 = (0, size // 2 - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+        elif start_side == 'right':
+            start_0 = (size // 2, size - 1)
+            start_1 = (size // 2 - 1, size - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+        elif start_side == 'bottom':
+            start_0 = (size - 1, size // 2)
+            start_1 = (size - 1, size // 2 - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+    
+        return maze
 
 
     def maze_generation(shape, res):
@@ -227,7 +250,7 @@ class MapData:
         # Your existing method to generate data based on the item type
 
         if item.endswith('maze'):
-            if item == 'final_maze': return MapData.final_maze_creation()
+            if item == 'final_maze': return MapData.final_maze_creation(start_side)
             else: return MapData.create_maze_with_perlin_noise(start_side)
         
         elif item == 'glade':
