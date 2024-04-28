@@ -42,9 +42,10 @@ class MapData:
     def final_maze_creation(start_side):
         maze = []
         with open('final_maze.txt', 'r') as file:
-            maze = [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+            maze = [[int(x) if x.strip().lower() != 'none' else None
+                     for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
-        
+
         size = len(maze)
     
         # Set the start point

@@ -115,8 +115,8 @@ class UniversalVariables:
     map_list = [['maze'], ['glade']]
     blits_sequence = []
     text_sequence = []
-    no_terrain_background_items = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
-    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988]
+    no_terrain_background_items = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99,999 ,988, None]
+    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None]
     enemy_spawnpoint_list = set()
 
     # if mapdata is done, create enemy spawnpoints
