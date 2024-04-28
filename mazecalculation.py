@@ -6,9 +6,10 @@ from camera import Camera
 class AddingMazeAtPosition:
     row = []
     col = []
+    maze_type = 'maze' # regular maze is 'maze', final maze is 'final_maze'
 
     ### TODO: Kui soovid ust avada kus on juba mingi maze või glade siis teeb uksed lahti aga puzzle pice ära ei võta
-    def add_maze_to_specific_position_top(self, map_list, row_index, col_index):
+    def add_maze_to_specific_position_top(self, map_list, row_index, col_index, maze_type):
 
         # Kui row_index on 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
@@ -29,9 +30,9 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
-            map_list[row_index][col_index] = 'maze'
+            map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data('maze', 'bottom')  # uks läheb alla - maze ülesse
+            new_maze = MapData.get_data(maze_type, 'bottom')  # uks läheb alla - maze ülesse
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -44,7 +45,7 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_top:{[row_index],[col_index]}')
 
 
-    def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index):
+    def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
         print(len(map_list[0]))
         print(len(map_list[1]))
 
@@ -66,9 +67,9 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
-            map_list[row_index][col_index] = 'maze'
+            map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data('maze', 'top')
+            new_maze = MapData.get_data(maze_type, 'top')
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index *  39
@@ -80,7 +81,7 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index],[col_index]}')
 
 
-    def add_maze_to_specific_position_left(self, map_list, row_index, col_index):
+    def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
         # Kui col_index == 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
@@ -102,9 +103,9 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index]== 'place':
-            map_list[row_index][col_index]= 'maze'
+            map_list[row_index][col_index]= maze_type
 
-            new_maze = MapData.get_data('maze', 'right')  # uks tuleb paremale - maze tuleb vasakule
+            new_maze = MapData.get_data(maze_type, 'right')  # uks tuleb paremale - maze tuleb vasakule
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -118,7 +119,7 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index],[row_index]}')
 
 
-    def add_maze_to_specific_position_right(self, map_list, row_index, col_index):
+    def add_maze_to_specific_position_right(self, map_list, row_index, col_index, maze_type):
 
         # Kui col_index == [list'i esimese row'i andmete kogus] siis ta lisab igale row'ile place'i mis listis on.
         if col_index == len(map_list[0]):  # Igal row'il on sama andmete kogus
@@ -135,9 +136,9 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
-            map_list[row_index][col_index] = 'maze'
+            map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data('maze', 'left')  # uks tuleb vasakule - maze paremale
+            new_maze = MapData.get_data(maze_type, 'left')  # uks tuleb vasakule - maze paremale
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -151,6 +152,9 @@ class AddingMazeAtPosition:
 
     
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
+        if UniversalVariables.final_maze == True: maze_type = 'final_maze'
+        else: maze_type = AddingMazeAtPosition.maze_type
+
         ### location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:
             gridx, gridy = grid_main, grid_other
@@ -164,7 +168,7 @@ class AddingMazeAtPosition:
                 coordinate += 20
                 col_index = ((gridy - 20) // 40)
             if col_index < 0: col_index = 0
-            AddingMazeAtPosition.add_maze_to_specific_position_left(self, UniversalVariables.map_list, row_index, col_index)
+            AddingMazeAtPosition.add_maze_to_specific_position_left(self, UniversalVariables.map_list, row_index, col_index, maze_type)
 
         if location == 4:
             gridx, gridy = grid_main, grid_other
@@ -177,7 +181,7 @@ class AddingMazeAtPosition:
             else:
                 coordinate += 20
                 col_index = ((gridy + 20) // 40)
-            AddingMazeAtPosition.add_maze_to_specific_position_right(self, UniversalVariables.map_list, row_index, col_index)
+            AddingMazeAtPosition.add_maze_to_specific_position_right(self, UniversalVariables.map_list, row_index, col_index, maze_type)
 
         if location == 1:
             gridx, gridy = grid_other, grid_main
@@ -188,7 +192,7 @@ class AddingMazeAtPosition:
             else:
                 row_index = ((gridy - 20) // 40)
             if row_index < 0: row_index = 0
-            AddingMazeAtPosition.add_maze_to_specific_position_top(self, UniversalVariables.map_list, row_index, col_index)
+            AddingMazeAtPosition.add_maze_to_specific_position_top(self, UniversalVariables.map_list, row_index, col_index, maze_type)
 
         if location == 2:
             gridx, gridy = grid_other, grid_main
@@ -199,12 +203,12 @@ class AddingMazeAtPosition:
             else:
                 row_index = ((gridy + 20) // 40)
             if row_index < 0: row_index = 0
-            AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index)
+            AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index, col_index, maze_type)
 
         # Do stuff here after adding maze
         print()
-        #ObjectManagement.remove_object_from_inv('Maze_Key')                         # remove maze key
+        #ObjectManagement.remove_object_from_inv('Maze_Key')                          # remove maze key
         UniversalVariables.maze_counter += 1                                         # add maze counter, to calculate extra enemy spawns
-        for row in UniversalVariables.map_list: print(row)                          # print maze list 
+        for row in UniversalVariables.map_list: print(row)                           # print maze list 
         print(UniversalVariables.maze_counter)
 if __name__ == '__main__': ...

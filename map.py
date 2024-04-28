@@ -225,12 +225,11 @@ class MapData:
     @staticmethod
     def get_data(item, start_side):
         # Your existing method to generate data based on the item type
-        if item == 'maze':
-            print('UniversalVariables.final_maze', UniversalVariables.final_maze)
-            if UniversalVariables.final_maze == True: 
-                return MapData.final_maze_creation()
-            else:
-                return MapData.create_maze_with_perlin_noise(start_side)
+
+        if item.endswith('maze'):
+            if item == 'final_maze': return MapData.final_maze_creation()
+            else: return MapData.create_maze_with_perlin_noise(start_side)
+        
         elif item == 'glade':
             return MapData.glade_creation()
 
