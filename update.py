@@ -123,17 +123,17 @@ class PlayerUpdate:
         if StaminaComponent.stamina_bar_decay < 50:
             pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
             pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
-            pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 2, 7)
+            pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
         # Renderib health-bari
         pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', health_bar_bg, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, '#FF6666', health_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', health_bar_border, 2, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', health_bar_border, 3, 7)
         
         # Renderib food-bari
         pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', food_bar_bg, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 2, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
 
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
@@ -155,7 +155,7 @@ class EssentsialsUpdate:
 
     # Function to calculate in-game time
     def calculate_time(self):
-        game_minute_lenght = 10000  # mida väiksem,seda kiiremini aeg mängus möödub
+        game_minute_lenght = 5  # mida väiksem,seda kiiremini aeg mängus möödub
         day_night_text = EssentsialsUpdate.day_night_text
 
         time = EssentsialsUpdate.game_start_clock  # (9, 0)

@@ -1,5 +1,6 @@
 import pygame
 from variables import UniversalVariables
+
 class HUD_class:
     
     # need v6iks nahhuj siit saada. Game classi ei saa importida - circular porno
@@ -51,12 +52,17 @@ class HUD_class:
         health_rect_border = pygame.Rect(half_w - health_bar_size_border - 6, HUD_class.screen_y - 50,
                                                 health_bar_size_border, 45)
         
-        health_rect = pygame.Rect(half_w - health_bar_size - 6, HUD_class.screen_y - 50,
-                                        health_bar_size, 45)
-        
+        player_current_health =  self.player.health.get_health()  # player current health
+        player_max_health = self.player.health.max_health  # player current health
+
+        val = player_current_health / player_max_health
+
+        health_rect = pygame.Rect(half_w - health_bar_size - 4, (HUD_class.screen_y - 5) - (45 * val),
+                                        health_bar_size - 4, 45 * val)
+
         # Iconi paigutamiseks bari keskkoha leidmine
-        heart_w_midpoint = health_rect[0] + (health_rect[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
-        heart_h_midpoint = health_rect[1] + (health_rect[3] // 2) - 25
+        heart_w_midpoint = health_rect_border[0] + (health_rect_border[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
+        heart_h_midpoint = health_rect_border[1] + (health_rect_border[3] // 2) - 25
         
         return health_rect, health_rect_border, health_rect_bg, heart_w_midpoint, heart_h_midpoint
     
@@ -76,7 +82,7 @@ class HUD_class:
                                         food_bar_size, 45)
         
         # Iconi paigutamiseks bari keskkoha leidmine
-        food_w_midpoint = food_rect[0] + (food_rect[2] // 2) - 25
-        food_h_midpoint = food_rect[1] + (food_rect[3] // 2) - 20
+        food_w_midpoint = food_rect_border[0] + (food_rect_border[2] // 2) - 25
+        food_h_midpoint = food_rect_border[1] + (food_rect_border[3] // 2) - 20
 
         return food_rect, food_rect_border, food_rect_bg, food_w_midpoint, food_h_midpoint
