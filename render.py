@@ -117,6 +117,15 @@ class RenderPictures:
                             image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                             image = ImageLoader.load_image(image_name)
 
+                            door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 977, 933]
+
+                            if terrain_value in door_ids:
+
+                                for value in door_ids:
+                                    if terrain_value == int(value):
+                                        image = ImageLoader.load_image("Maze_Ground")
+                                        print(terrain_value)
+
                             # Loadib Wheat'i ja Farmland'i
                             if terrain_value == 7 or terrain_value == 107:
                                 image = ImageLoader.load_image("Farmland")

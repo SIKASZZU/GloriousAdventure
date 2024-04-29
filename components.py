@@ -115,20 +115,6 @@ class SpeedComponent:
         return self.current_speed
 
 
-class AttackComponent:
-    def __init__(self, base_attack_speed, min_attack_speed, max_attack_speed):
-        self.base_attack_speed = base_attack_speed
-        self.current_speed = max(min_attack_speed, min(max_attack_speed, base_attack_speed))
-
-
-class HungerComponent:
-    pass
-
-
-class HitBoxComponent:
-    pass
-
-
 class Player:
     def __init__(self, max_health, min_health,
                  max_stamina, min_stamina,
