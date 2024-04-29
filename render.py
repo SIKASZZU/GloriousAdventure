@@ -124,7 +124,6 @@ class RenderPictures:
                                 for value in door_ids:
                                     if terrain_value == int(value):
                                         image = ImageLoader.load_image("Maze_Ground")
-                                        print(terrain_value)
 
                             # Loadib Wheat'i ja Farmland'i
                             if terrain_value == 7 or terrain_value == 107:
