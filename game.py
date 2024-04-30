@@ -9,6 +9,7 @@ from entity import Enemy
 from variables import UniversalVariables
 from camera import Camera  # box_target_camera
 from render import RenderPictures  # map_render
+from mbd import event_mousebuttondown
 from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
 from render import CreateCollisionBoxes  # object_list_creation
@@ -65,22 +66,17 @@ class Game:
             for j in range(len(self.terrain_data[i])):
                 if self.terrain_data[i][j] == 933:
                     self.terrain_data[i - 1][j] = 98
-        
 
-
-    ### TODO: siit on game menu stuff puudu
-    def game_state_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.click_position = event.pos  # window clicking reg.
-
+    def event_game_state(self, event):
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
     def events(self):
-        Game.game_state_events(self)
+        for event in pygame.event.get():
+            Game.event_game_state(self, event)
+            event_mousebuttondown(self, event)
+        
 
     def load_variables(self): UniversalVariables()
 
@@ -97,7 +93,7 @@ class Game:
         vision.find_boxes_in_window()
         self.player.health.check_health()
         Enemy.update(self)
-        # Inventory.call_inventory(self)  #doesn't visualize, just calculates
+        # Inventory.call_inventory(self)  # doesn't visualize, just calculates
 
     def call_visuals(self):
         RenderPictures.map_render(self)  # Renderib terraini
