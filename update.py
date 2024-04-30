@@ -183,12 +183,15 @@ class EssentsialsUpdate:
         EssentsialsUpdate.game_start_clock = (hours, minutes)
 
         # Update day, night text next to game_day_count
-        if 23 >= hours < 8: 
+        
+        if hours < 8 or hours >= 22: 
+            print('night')
             day_night_text = 'Night'
         else: 
             day_night_text = 'Day'
         EssentsialsUpdate.day_night_text = day_night_text
-        
+
+        if len(str(minutes)) == 1: minutes = f'0{minutes}'  # alati 2 nubrit minutite kohal
         return hours, minutes, days
     
 
@@ -238,7 +241,7 @@ class EssentsialsUpdate:
             ("H - Show hitboxes", (800, 5)),  # Example with specified position and color
             ("J - Switch light", (800, 35)),  # Example with specified position and color
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
-            (f"Hr/Min {EssentsialsUpdate.calculate_time(self)[0]}:{EssentsialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
+            (f"Time {EssentsialsUpdate.calculate_time(self)[0]}:{EssentsialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentsialsUpdate.day_night_text} {EssentsialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
             ]
 
