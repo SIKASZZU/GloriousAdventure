@@ -58,15 +58,26 @@ class Enemy:
 
     @staticmethod
     def despawn():
-        """  Despawnib kõik enemyd, kui on päev. """
+        """ Despawns enemies during the day.  """
+        """ Doesn't despawn detected enemies. """
 
         if EssentsialsUpdate.day_night_text == 'Day':
-            Enemy.spawned_enemy_dict = {}  # resetting list of enemies (Enemy_name, Enemy_image, x, y)
-            UniversalVariables.enemy_spawnpoint_list = set()
-            UniversalVariables.enemy_counter = 0
+            detected_enemies = {enemy_name for enemy_name, _ in Enemy.enemy_in_range}
+            
+            enemies_to_remove = set()
+
+            for enemy_name, _ in Enemy.spawned_enemy_dict.items():
+                if enemy_name not in detected_enemies:
+                    print('f', enemy_name)
+                    enemies_to_remove.add(enemy_name) # ei saa koheselt removeida, peab tegema uue listi
+
+            for enemy_name in enemies_to_remove:
+                del Enemy.spawned_enemy_dict[enemy_name]
+
+            Enemy.enemy_in_range.clear()
 
     def move(self):
-        """Move enemies based on their individual decisions."""
+        """ Move enemies based on their individual decisions."""
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
