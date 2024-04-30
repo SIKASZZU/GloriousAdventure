@@ -86,6 +86,7 @@ class Inventory:
         """ Vajutades tabi ei hakka inventory
         visuaalselt glitchima on/off. """
 
+        Inventory.handle_mouse_click(self)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
             Inventory.tab_pressed = True

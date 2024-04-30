@@ -82,6 +82,8 @@ class UniversalVariables:
     screen_x_08 = screen_x * 0.8
     screen_y_08 = screen_y * 0.8
 
+    FPS = 600
+
     # ******************** PLAYER ******************** #
 
     player_height: int = block_size * 0.65

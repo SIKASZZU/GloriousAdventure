@@ -66,57 +66,40 @@ class Game:
                 if self.terrain_data[i][j] == 933:
                     self.terrain_data[i - 1][j] = 98
         
+
+
+    ### TODO: siit on game menu stuff puudu
     def game_state_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            if not Menu.game_state:               
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    if PauseMenu.game_paused == False:
-                        PauseMenu.game_paused = True
-                    else:
-                        PauseMenu.screenshot = None
-                        PauseMenu.game_paused = False
-                        self.pause_menu_state = "main"
-                        PauseMenu.screenshot = None
-        
-    def check_state_menu(self):
-        if Menu.game_state:
-            Menu.main_menu(self)
-            pygame.display.update()
-        else:
-            if PauseMenu.game_paused:
-                PauseMenu.settings_menu(self)
-
-    def check_event_buttons(self):
-        for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:  # Scroll +
-                    UniversalVariables.block_size += 10  # Increase block_size
+                self.click_position = event.pos  # window clicking reg.
 
-                    UniversalVariables.player_height: int = UniversalVariables.block_size * 0.65
-                    UniversalVariables.player_width: int = UniversalVariables.block_size * 0.65
-
-                    UniversalVariables.player_hitbox_offset_x = 0.29 * UniversalVariables.player_height
-                    UniversalVariables.player_hitbox_offset_y = 0.22 * UniversalVariables.player_width
-
-                elif event.button == 5:  # Scroll -
-                    UniversalVariables.block_size -= 10  # Decrease block_size
-                    if UniversalVariables.block_size < 1:  # Prevent block_size from being less than 1
-                        UniversalVariables.block_size = 1
-
-                    UniversalVariables.player_height: int = UniversalVariables.block_size * 0.65
-                    UniversalVariables.player_width: int = UniversalVariables.block_size * 0.65
-
-                    UniversalVariables.player_hitbox_offset_x = 0.29 * UniversalVariables.player_height
-                    UniversalVariables.player_hitbox_offset_y = 0.22 * UniversalVariables.player_width
 
     def events(self):
         Game.game_state_events(self)
-        Game.check_state_menu(self)
-        Game.check_event_buttons(self)
+
+    def load_variables(self): UniversalVariables()
+
+    def call_technical(self):
+        PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
+        Camera.box_target_camera(self)  # Kaamera
+        StaminaComponent.stamina_bar_update(self)  # Stamina bar
+
+        # collision things
+        Collisions.collison_terrain(self)
+        Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+    
+        CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
+
+        self.player.health.check_health()
+
+        vision.find_boxes_in_window()
+        
+        # Inventory.call_inventory(self)  #doesn't visualize, just calculates
 
     def call_visuals(self):
         RenderPictures.map_render(self)  # Renderib terraini
@@ -132,63 +115,40 @@ class Game:
         PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
         EssentsialsUpdate.render_general(self)  # render inv, display text
 
-            
-        # DAYLIGHT CHANGE
-        # EssentsialsUpdate.calculate_daylight_strength(self)  # p2evavalguse tugevus
+        Enemy.update(self)  # see tuleb lahti teha, et renderimine on eraldi callitud visual funcis
+        
+        # EssentsialsUpdate.calculate_daylight_strength(self)  # DAYLIGHT CHANGE
 
 
-    def call_technical(self):
-        PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
-        Camera.box_target_camera(self)  # Kaamera
-        StaminaComponent.stamina_bar_update(self)  # Stamina bar
-
-        # collision things
-        Collisions.collison_terrain(self)
-        Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
-    
-        CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
-
-        self.player.health.check_health()
-
-        Enemy.update(self)
-
-        vision.find_boxes_in_window()
 
     def check_keys(self):
-
-        # *** inventory check *** #
-        Inventory.handle_mouse_click(self)  # Inventorisse clickimise systeem
-        # Inventory.call_inventory(self)  # calculates inv coordinates and stuff, doesn't visualize
-
         EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
 
-    
-        
     def reset_lists():
         ''' Before new loop, reset image sequences. '''
 
         UniversalVariables.text_sequence = []
         UniversalVariables.blits_sequence = []
 
-    def update(self):
+    def refresh_loop(self):
+        """ Set and reset stuff for new loop. """
         
         Collisions.keylock = 0
         self.screen.blits(UniversalVariables.text_sequence)
 
         pygame.display.update()
-        self.clock.tick(600)
+        self.clock.tick(UniversalVariables.FPS)
 
     def run(self):
         while True:
+            Game.events(self)
+            Game.load_variables(self)
             Game.reset_lists()
             
-            UniversalVariables()
-            
-            # Game.events(self)
             Game.call_technical(self)
             Game.call_visuals(self)
             Game.check_keys(self)
-            Game.update(self)
+            Game.refresh_loop(self)
 
 if __name__ == "__main__":
     game = Game()
