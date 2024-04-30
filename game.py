@@ -92,13 +92,11 @@ class Game:
         # collision things
         Collisions.collison_terrain(self)
         Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
-    
-        CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
-
-        self.player.health.check_health()
-
-        vision.find_boxes_in_window()
         
+        CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
+        vision.find_boxes_in_window()
+        self.player.health.check_health()
+        Enemy.update(self)
         # Inventory.call_inventory(self)  #doesn't visualize, just calculates
 
     def call_visuals(self):
@@ -111,17 +109,15 @@ class Game:
             PlayerUpdate.render_player(self)
             ObjectManagement.place_and_render_object(self)  # Renderib objektid
         
+        Enemy.spawn(self)
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
         EssentsialsUpdate.render_general(self)  # render inv, display text
-
-        Enemy.update(self)  # see tuleb lahti teha, et renderimine on eraldi callitud visual funcis
-        
         # EssentsialsUpdate.calculate_daylight_strength(self)  # DAYLIGHT CHANGE
 
-
-
     def check_keys(self):
+        """ Check for which keys are pressed. """
+
         EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
 
     def reset_lists():

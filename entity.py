@@ -177,7 +177,6 @@ class Enemy:
 
 
     def update(self):
-        Enemy.spawn(self)
         Enemy.detection(self)
         Enemy.move(self)
         Enemy.despawn()
