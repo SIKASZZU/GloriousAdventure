@@ -114,7 +114,6 @@ class Enemy:
                 elif direction == 'up':
                     next_y -= 0.03
 
-
             enemy_corner_set: set[tuple[float, float], ...] = set()
             enemy_width = enemy_info[0].get_width()
             enemy_height = enemy_info[0].get_height()
@@ -141,7 +140,6 @@ class Enemy:
 
             Enemy.spawned_enemy_dict[enemy_name] = image, x, y
 
-
     def detection(self):
         player_window_x = camera.Camera.player_window_x
         player_window_y = camera.Camera.player_window_y
@@ -160,7 +158,7 @@ class Enemy:
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75 and self.player.health.get_health() > 0:
                     Enemy.attack(self, 3)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
@@ -177,15 +175,13 @@ class Enemy:
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
-
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """
-        
+
         if Enemy.damage_delay >= 60:
             self.player.health.damage(damage)
             Enemy.damage_delay = 0
         Enemy.damage_delay += 1
-
 
     def update(self):
         Enemy.detection(self)
