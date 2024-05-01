@@ -51,7 +51,7 @@ class Enemy:
 
                     # Limiteerib Enemite arvu vastvalt maze_counterile
                     max_enenmy = 5 * UniversalVariables.maze_counter
-                    if UniversalVariables.maze_counter == 1: max_enenmy = 1  # Kui on ainult 1 maze siis spawnib max 2 enemit
+                    if UniversalVariables.maze_counter == 1: max_enenmy = 2  # Kui on ainult 1 maze siis spawnib max 2 enemit
                     if spawned_enemy_count >= max_enenmy:
                         break
 
@@ -82,6 +82,7 @@ class Enemy:
 
             Enemy.enemy_in_range.clear()
     
+
     @staticmethod
     def custom_round(number):
         if number - math.floor(number) < 0.5:
@@ -89,6 +90,7 @@ class Enemy:
             return math.floor(number)
         else:
             return math.ceil(number)
+
 
     # TODO: pathfinding eraldi faili viia
     def is_valid(self, x, y):
@@ -124,6 +126,7 @@ class Enemy:
 
     def move(self):
         """ Move enemies based on their individual decisions."""
+
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
             direction = None
@@ -154,10 +157,7 @@ class Enemy:
                     elif next_grid[1] == -1: 
                         next_y -= 0.05
 
-                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
-
-
-
+                    Enemy.spawned_enemy_dict[enemy_name] = image, round(next_x, 3), round(next_y, 3)
 
 
     def detection(self):
