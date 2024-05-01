@@ -130,7 +130,7 @@ class Enemy:
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
             direction = None
-
+            
             for enemy_name_, dir_ in Enemy.enemy_in_range:
                 if enemy_name == enemy_name_:
                     direction = dir_
@@ -157,7 +157,17 @@ class Enemy:
                     elif next_grid[1] == -1: 
                         next_y -= 0.05
 
-                    Enemy.spawned_enemy_dict[enemy_name] = image, round(next_x, 3), round(next_y, 3)
+                    next_x, next_y = round(next_x, 3), round(next_y, 3)
+
+
+                    if next_x == x and next_y != y:
+                        print('next')
+                        if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
+                    if next_y == y and next_x != x:
+                        print('nexty')
+                        if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
+
+                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
 
 
     def detection(self):
