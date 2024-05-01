@@ -148,7 +148,7 @@ class PlayerUpdate:
 
 class EssentsialsUpdate:
         
-    game_start_clock = (20, 0)
+    game_start_clock = (21, 0)
     time_update: int = 0
     game_day_count = 0
     day_night_text = 'Day'
@@ -185,6 +185,7 @@ class EssentsialsUpdate:
         # Update day, night text next to game_day_count
         
         if hours < 8 or hours >= 22: 
+            print('night')
             day_night_text = 'Night'
         else: 
             day_night_text = 'Day'

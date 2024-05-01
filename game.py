@@ -87,7 +87,7 @@ class Game:
 
         # collision things
         Collisions.collison_terrain(self)
-        Collisions.check_collisions(self)  # Vaatab mängija kokkup6rkeid objecktidega
+        Collisions.check_collisions(self)  # Vaatwab mängija kokkup6rkeid objecktidega
         
         CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
         vision.find_boxes_in_window()

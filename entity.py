@@ -1,11 +1,16 @@
-import camera
-import random
-
 import pygame
+import math
+from collections import deque
 
-from variables import UniversalVariables
-from update import EssentsialsUpdate
+from camera import Camera
 from images import ImageLoader
+from update import EssentsialsUpdate
+from variables import UniversalVariables
+
+
+### TODO:
+    # ghost collision
+    # kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
 
 
 class Enemy:
@@ -68,13 +73,54 @@ class Enemy:
 
             for enemy_name, _ in Enemy.spawned_enemy_dict.items():
                 if enemy_name not in detected_enemies:
-                    print('f', enemy_name)
                     enemies_to_remove.add(enemy_name) # ei saa koheselt removeida, peab tegema uue listi
 
             for enemy_name in enemies_to_remove:
                 del Enemy.spawned_enemy_dict[enemy_name]
 
             Enemy.enemy_in_range.clear()
+
+
+    @staticmethod
+    def custom_round(number):
+        if number - math.floor(number) < 0.5:
+
+            return math.floor(number)
+        else:
+            return math.ceil(number)
+
+
+    # TODO: pathfinding eraldi faili viia
+    def is_valid(self, x, y):
+            """ Check if coordinates (x, y) are valid in the maze. """
+            x, y = int(x), int(y)
+
+            return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) and self.terrain_data[x][y] != 99
+
+
+    def find_path_bfs(self, start, end):
+        """ Breadth-First Search algorithm to find a path from start to end in the maze. """
+
+        queue = deque([(start, [])])
+        visited = set()
+        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+
+        while queue:
+            (x, y), path = queue.popleft()
+            if (x, y) == end:
+                return path
+
+            if (x, y) not in visited:
+                visited.add((x, y))
+                for dx, dy in directions:
+                    new_x, new_y = x + dx, y + dy
+                    if Enemy.is_valid(self, new_x, new_y):
+                        new_path = path + [(new_x, new_y)]
+                        queue.append(((new_x, new_y), new_path))
+
+        return None
+
 
     def move(self):
         """ Move enemies based on their individual decisions."""
@@ -88,61 +134,43 @@ class Enemy:
                     direction = dir_
                     break
 
-            # If the enemy is in range of the player, move accordingly
+            enemy_grid = (Enemy.custom_round(enemy_info[2]) , Enemy.custom_round(enemy_info[1]))
+            player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
+                           Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+            path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+
             if direction:
-                # Calculate the next position based on direction
-                next_x, next_y = x, y
-                if direction == 'right':
-                    next_x += 0.03
-                elif direction == 'left':
-                    next_x -= 0.03
-                elif direction == 'down':
-                    next_y += 0.03
-                elif direction == 'up':
-                    next_y -= 0.03
+                if path:
+                    next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
+                    next_x, next_y = x, y
+                    if next_grid[0] == 1:
+                        next_x += 0.05
 
-            else:
-                # If the enemy is not in range, move randomly
-                direction = random.choice(['right', 'left', 'down', 'up'])
-                next_x, next_y = x, y
-                if direction == 'right':
-                    next_x += 0.03
-                elif direction == 'left':
-                    next_x -= 0.03
-                elif direction == 'down':
-                    next_y += 0.03
-                elif direction == 'up':
-                    next_y -= 0.03
+                    elif next_grid[0] == -1:
+                        next_x -= 0.05
 
-            enemy_corner_set: set[tuple[float, float], ...] = set()
-            enemy_width = enemy_info[0].get_width()
-            enemy_height = enemy_info[0].get_height()
+                    elif next_grid[1] == 1:
+                        next_y += 0.05
 
-            block_size = UniversalVariables.block_size
+                    elif next_grid[1] == -1:
+                        next_y -= 0.05
 
-            # Testib cornerid 2ra tuleviku koordinaatidega.
-            enemy_corner_set.add((next_x * block_size, next_y * block_size))                                  # Top-Left
-            enemy_corner_set.add((next_x * block_size + enemy_width, next_y * block_size))                    # Top-Right
-            enemy_corner_set.add((next_x * block_size, next_y * block_size + enemy_height))                   # Bottom-Left
-            enemy_corner_set.add((next_x * block_size + enemy_width, next_y * block_size + enemy_height))     # Bottom-Right
+                    next_x, next_y = round(next_x, 3), round(next_y, 3)
 
-            for next_cords in enemy_corner_set:
-                new_grid_x, new_grid_y = int(next_cords[0] // block_size), int(next_cords[1] // block_size)
 
-                if self.terrain_data[new_grid_y][new_grid_x] != 99 and \
-                    self.terrain_data[new_grid_y][new_grid_x] != 933 and \
-                    self.terrain_data[new_grid_y][new_grid_x] != 977:
-                    continue
-                else:
-                    break
-            else:
-                x, y = next_x, next_y
+                    if next_x == x and next_y != y:
+                        print('next')
+                        if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
+                    if next_y == y and next_x != x:
+                        print('nexty')
+                        if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
 
-            Enemy.spawned_enemy_dict[enemy_name] = image, x, y
+                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+
 
     def detection(self):
-        player_window_x = camera.Camera.player_window_x
-        player_window_y = camera.Camera.player_window_y
+        player_window_x = Camera.player_window_x
+        player_window_y = Camera.player_window_y
 
         Enemy.enemy_in_range = set()
 
