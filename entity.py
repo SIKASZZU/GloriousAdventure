@@ -81,7 +81,14 @@ class Enemy:
                 del Enemy.spawned_enemy_dict[enemy_name]
 
             Enemy.enemy_in_range.clear()
+    
+    @staticmethod
+    def custom_round(number):
+        if number - math.floor(number) < 0.5:
 
+            return math.floor(number)
+        else:
+            return math.ceil(number)
 
     # TODO: pathfinding eraldi faili viia
     def is_valid(self, x, y):
@@ -114,58 +121,43 @@ class Enemy:
 
         return None
     
-    def custom_round(number):
-        if number - math.floor(number) < 0.5:
-
-            return math.floor(number)
-        else:
-            return math.ceil(number)
 
     def move(self):
         """ Move enemies based on their individual decisions."""
-    
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
             direction = None
-    
+
             for enemy_name_, dir_ in Enemy.enemy_in_range:
                 if enemy_name == enemy_name_:
                     direction = dir_
                     break
-                
-            # finds path, looks with grids
-            player_grid = (int(UniversalVariables.player_y // UniversalVariables.block_size), int(UniversalVariables.player_x // UniversalVariables.block_size))
-            print(y, x)
 
-            enemy_grid = (Enemy.custom_round(y), Enemy.custom_round(x))
-            print('ROUNDED,', enemy_grid)
-            
+            enemy_grid = (Enemy.custom_round(enemy_info[2]) , Enemy.custom_round(enemy_info[1]))
+            player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
+                           Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
             path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
-            print(path)
-            
-            if path:
-                next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
-                print('next_grid', next_grid)
-                if direction:
 
-                    # direction peab olema arvutatud järgmise pathfinder gridi järgi
+            if direction:
+                if path:
+                    next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
                     next_x, next_y = x, y
                     if next_grid[0] == 1: 
-                        next_x += 0.03
+                        next_x += 0.05
 
                     elif next_grid[0] == -1: 
-                        next_x -= 0.03
+                        next_x -= 0.05
 
                     elif next_grid[1] == 1: 
-                        next_y += 0.03
+                        next_y += 0.05
 
                     elif next_grid[1] == -1: 
-                        next_y -= 0.03
+                        next_y -= 0.05
 
-                    print(next_y, next_x)
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
-                    print('player', player_grid)
-                print()
+
+
+
 
 
     def detection(self):
