@@ -30,7 +30,7 @@ class Player_audio:
 
     water_sound_list: list[int, ...] = [0]
     ground_sound_list: list[int, ...] = [1, 2, 4, 7, 107]
-    maze_ground_list: list[int, ...] = [11, 89, 90, 91, 92, 93, 933, 94, 95, 96, 97, 977, 98, 988]
+    maze_ground_list: list[int, ...] = [11, 89, 90, 91, 92, 93, 933, 94, 95, 96, 97, 977, 98, 988, 99]
     audio_list: list[str, ...] = [player_death_sound, player_hit_sound, grass_sounds, water_sound, maze_ground_sound]
 
     for audio_name in audio_list:
@@ -92,6 +92,15 @@ class Player_audio:
                         Player_audio.grass_channel.stop()
                     if Player_audio.water_channel.get_busy():
                         Player_audio.water_channel.stop()
+
+                else:
+                    # Kaotab kõik liikumisega seonduvad helid ära kui player ei liigu
+                    if Player_audio.grass_channel.get_busy():
+                        Player_audio.grass_channel.stop()
+                    if Player_audio.water_channel.get_busy():
+                        Player_audio.water_channel.stop()
+                    if Player_audio.maze_channel.get_busy():
+                        Player_audio.maze_channel.stop()
 
             else:
                 # Kaotab kõik liikumisega seonduvad helid ära kui player ei liigu

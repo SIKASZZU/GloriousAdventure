@@ -159,10 +159,8 @@ class Enemy:
 
 
                     if next_x == x and next_y != y:
-                        print('next')
                         if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
                     if next_y == y and next_x != x:
-                        print('nexty')
                         if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
 
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
