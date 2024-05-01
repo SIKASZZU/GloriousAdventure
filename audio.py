@@ -23,7 +23,7 @@ class Player_audio:
             Player_audio.current_health = self.player.health.get_health()
 
         # Kui playeri kaotab elusi siis käid 'Player_hit' heli
-        if Player_audio.current_health != self.player.health.get_health():
+        if Player_audio.current_health != self.player.health.get_health() and self.player.health.get_health() > 0:
             Player_audio.player_hit_sound.play()
             Player_audio.current_health = self.player.health.get_health()
 
