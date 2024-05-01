@@ -1,4 +1,5 @@
 import pygame
+import math
 from collections import deque
 
 from camera import Camera
@@ -55,6 +56,7 @@ class Enemy:
                         break
 
         for enemy in Enemy.spawned_enemy_dict.values():
+            print(enemy)
             enemy_x = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_x
             enemy_y = enemy[2] * UniversalVariables.block_size + UniversalVariables.offset_y
 
@@ -112,7 +114,12 @@ class Enemy:
 
         return None
     
+    def custom_round(number):
+        if number - math.floor(number) < 0.5:
 
+            return math.floor(number)
+        else:
+            return math.ceil(number)
 
     def move(self):
         """ Move enemies based on their individual decisions."""
@@ -128,9 +135,10 @@ class Enemy:
                 
             # finds path, looks with grids
             player_grid = (int(UniversalVariables.player_y // UniversalVariables.block_size), int(UniversalVariables.player_x // UniversalVariables.block_size))
-            print(x, y)
-            enemy_grid = (int(y), int(x))
-            print('rounded,', enemy_grid)
+            print(y, x)
+
+            enemy_grid = (Enemy.custom_round(y), Enemy.custom_round(x))
+            print('ROUNDED,', enemy_grid)
             
             path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
             print(path)
@@ -154,7 +162,7 @@ class Enemy:
                     elif next_grid[1] == -1: 
                         next_y -= 0.03
 
-                    print('ghost', enemy_grid)
+                    print(next_y, next_x)
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
                     print('player', player_grid)
                 print()
