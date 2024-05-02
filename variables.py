@@ -68,23 +68,29 @@ class Decorators:
 
 class UniversalVariables:
     # ******************** Settings ******************** #
+
+    # Windowi suurus x, y
     screen_x: int = 1650
     screen_y: int = 1020
-    sound_volume: int = 0.05
 
+    # Mängu heli tugevus
+    sound_volume: int = 0.01
+
+    # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
+    enemy_path_update_tick = 10 + random.randint(-5, 5)
+
+    # Mängu max tick rate
     FPS = 600
+
 
     # ******************** Screen ******************** #
     screen = pygame.display.set_mode((screen_x, screen_y))
+
+    # Block size muutmiseks kui zoomitakse sisse või välja
     jagatis = 15
     block_size: int = screen_x // jagatis
     prev_block_size: int = 0
 
-    # ******************** OFFSET ******************** #
-    offset_x: int = 0
-    offset_y: int = 0
-    screen_x_08 = screen_x * 0.8
-    screen_y_08 = screen_y * 0.8
 
     # ******************** PLAYER ******************** #
     player_height: int = block_size * 0.65
@@ -92,21 +98,24 @@ class UniversalVariables:
 
     player_hitbox_offset_x = 0.29 * player_width
     player_hitbox_offset_y = 0.22 * player_height
+
     
     # Playeri koordinaatide arvutamine
     player_x: int = random.randint(1 * block_size, 38 * block_size)
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     health_status = None    
-    
+
+
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
+
 
     # ******************** VISION ******************** #
     light_range = 420
     opposite_light_range = 75
     walls = []  # Collision boxide seinad
-    last_input = 's'
+    last_input = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
 
     # ******************** MAZE ******************** #
@@ -114,13 +123,23 @@ class UniversalVariables:
     enemy_counter = 0
     final_maze = bool
 
-    # ******************** LISTS ******************** #
+
+    # ******************** Render ******************** #
     map_list = [['maze'], ['glade']]
     blits_sequence = []
     text_sequence = []
     no_terrain_background_items = [98, 99, 999 ,988, None]
     no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None]
+
+    offset_x: int = 0
+    offset_y: int = 0
+    screen_x_08 = screen_x * 0.8
+    screen_y_08 = screen_y * 0.8
+
+
+    # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
+    enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
     # if mapdata is done, create enemy spawnpoints
     @staticmethod

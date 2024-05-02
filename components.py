@@ -27,13 +27,16 @@ class HealthComponent:
 
     def check_health(self):
         self.health_cooldown_timer += 1
-        if self.current_health <= 0: print("Player dead")
+        if self.current_health <= 0:
+            return  # print("Player dead")
+            # Death screen...
         
         if self.health_cooldown_timer >= 220:
             HealthComponent.regenerate_health(self)
             self.health_cooldown_timer = 100
 
-        if self.previous_health != self.current_health: print('Player HP:', self.current_health)
+        # if self.previous_health != self.current_health:
+        #     print('Player HP:', self.current_health)
         self.previous_health = self.current_health
 
     def get_health(self):

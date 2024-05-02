@@ -8,17 +8,21 @@ from update import EssentsialsUpdate
 from variables import UniversalVariables
 import random
 
+
 ### TODO:
-    # ghost collision
-    # kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
+# ghost collision
+# kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
 
 
 class Enemy:
-    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
+                                         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
 
     damage_delay: int = 30
+    path_ticks = {}
+    path = {}
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
@@ -43,7 +47,7 @@ class Enemy:
 
                     # Spawn an enemy
                     Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = Enemy.ghost_image, \
-                    spawn_point[1], \
+                        spawn_point[1], \
                         spawn_point[0]
 
                     spawned_enemy_count += 1
@@ -117,49 +121,56 @@ class Enemy:
 
         return None
 
+    import random
+
+    @staticmethod
     def move(self):
         """ Move enemies based on their individual decisions."""
-
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
             direction = None
 
+            # Check if the player is in range
             for enemy_name_, dir_ in Enemy.enemy_in_range:
                 if enemy_name == enemy_name_:
                     direction = dir_
                     break
 
             if direction:
-
                 enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
-                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
+                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
                                Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
-                path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
 
-                if path:
-                    next_grid = ((path[0][1] - enemy_grid[1]), (path[0][0] - enemy_grid[
-                        0]))  # Calculate position of next grid to determine to direction of entity's movement
+                # Update path after certain number of ticks or if path is None
+                if enemy_name not in Enemy.path_ticks or Enemy.path_ticks[enemy_name] >= UniversalVariables.enemy_path_update_tick \
+                        or Enemy.path[enemy_name] is None:
+                    Enemy.path[enemy_name] = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+                    Enemy.path_ticks[enemy_name] = 0
+
+                if Enemy.path[enemy_name]:
+                    next_grid = (
+                        (Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
                     next_x, next_y = x, y
-                    if next_grid[0] == 1:
-                        next_x += 0.05
 
-                    elif next_grid[0] == -1:
-                        next_x -= 0.05
-
-                    elif next_grid[1] == 1:
-                        next_y += 0.05
-
-                    elif next_grid[1] == -1:
-                        next_y -= 0.05
+                    # Move enemy based on the next grid
+                    next_x += (next_grid[0] * UniversalVariables.enemy_speed)
+                    next_y += (next_grid[1] * UniversalVariables.enemy_speed)
 
                     next_x, next_y = round(next_x, 3), round(next_y, 3)
 
+                    # Adjust position if needed
                     if next_x == x and next_y != y:
-                        if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
+                        if str(next_x).endswith('.5'):
+                            next_x = math.ceil(next_x)
                     if next_y == y and next_x != x:
-                        if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
+                        if str(next_y).endswith('.5'):
+                            next_y = math.ceil(next_y)
 
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+
+            # Increment path ticks
+            if enemy_name in Enemy.path_ticks:
+                Enemy.path_ticks[enemy_name] += 1
 
     def detection(self):
         player_window_x = Camera.player_window_x
@@ -205,8 +216,7 @@ class Enemy:
             Enemy.damage_delay = 0
         Enemy.damage_delay += 1
 
-
-    def health(self): 
+    def health(self):
         """ Has health """
         pass
 
@@ -228,16 +238,14 @@ class Enemy:
                                                    other_enemy_info[2] * UniversalVariables.block_size, 73,
                                                    73)
                     if enemy_rect.colliderect(other_enemy_rect):
-                        print("collisions between enemies")
                         enemy_x = enemy_info[1]
                         enemy_y = enemy_info[2]
-
-                        print(f"{enemy_x} += {random.uniform(-3, 3)}")
 
                         enemy_x += random.uniform(-1, 1)
                         enemy_y += random.uniform(-1, 1)
 
                         Enemy.spawned_enemy_dict[enemy_id] = enemy_info[0], enemy_x, enemy_y
+
     def update(self):
         Enemy.detection(self)
         Enemy.move(self)
