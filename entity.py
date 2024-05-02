@@ -215,7 +215,28 @@ class Enemy:
         Enemy.damage_delay += 1
 
 
+    def health(self): 
+        """ Has health """
+        pass
+
+    def damage_taken(self):
+        """ Takes damage. Can die. """
+        pass
+
+
+    def collision_with_entities(self): 
+        """ Doesn't collide with other entities. """
+        for enemy in Enemy.spawned_enemy_dict:
+            enemy_info = Enemy.spawned_enemy_dict[enemy]
+            print('enemy_info', enemy_info)
+        
+        # enemy_corner_set: set[tuple[float, float], ...] = set()
+        # enemy_width = enemy_info[0].get_width()
+        # enemy_height = enemy_info[0].get_height()
+
+
     def update(self):
+        Enemy.collision_with_entities
         Enemy.detection(self)
         Enemy.move(self)
         Enemy.despawn()
