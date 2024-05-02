@@ -101,8 +101,8 @@ class UniversalVariables:
     player_x: int = random.randint(1 * block_size, 38 * block_size)
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
-    health_status = None    
-
+    health_status = None
+    player_range = block_size * 1.5
 
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
