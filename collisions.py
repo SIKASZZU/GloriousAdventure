@@ -74,14 +74,13 @@ class Collisions:
 
                         if object_id == 981:
                             if 'Maze_Key' in Inventory.inventory and UniversalVariables.final_maze == True:
-                                    Tile_Sounds.insert_key_audio(self)
-
                                     self.terrain_data[terrain_grid_y][terrain_grid_x] = 982
                                     # ObjectManagement.remove_object_from_inv('Maze_Key')
 
                                     x, y = find_number_in_list_of_lists(self.terrain_data, 500)
 
                                     self.terrain_data[x][y] = 550
+                                    Tile_Sounds.insert_key_audio(self)
 
                             else: return
 
@@ -91,12 +90,11 @@ class Collisions:
 
                             else:
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981
-                                Tile_Sounds.pop_key_audio(self)
-
                                 ObjectManagement.add_object_from_inv('Maze_Key')
 
                                 x, y = find_number_in_list_of_lists(self.terrain_data, 550)
                                 self.terrain_data[x][y] = 500
+                                Tile_Sounds.pop_key_audio(self)
 
 
                         # Clickides saab avada ukse - uue maze

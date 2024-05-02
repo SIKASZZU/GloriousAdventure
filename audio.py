@@ -183,19 +183,16 @@ class Tile_Sounds:
             # Muudab kogu mängu audio ära vastavalt sound_volume'ile
             audio_name.set_volume(UniversalVariables.sound_volume)
 
-    @staticmethod
-    def portal_open_audio() -> None:
+    def portal_open_audio(self) -> None:
         Tile_Sounds.portal_channel.play(Tile_Sounds.portal_open_sound)
 
-    @staticmethod
-    def insert_key_audio() -> None:
+    def insert_key_audio(self) -> None:
         Tile_Sounds.insert_key_channel.play(Tile_Sounds.insert_key_sound)
 
         if Tile_Sounds.pop_key_channel.get_busy():
             Tile_Sounds.pop_key_channel.stop()
 
-    @staticmethod
-    def pop_key_audio() -> None:
+    def pop_key_audio(self) -> None:
         Tile_Sounds.pop_key_channel.play(Tile_Sounds.pop_key_sound)
 
         if Tile_Sounds.insert_key_channel.get_busy():

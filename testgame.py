@@ -118,3 +118,46 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+import pygame
+import sys
+
+# Initialize pygame
+pygame.init()
+
+# Set up display
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Custom Mouse Pointer")
+
+# Load custom mouse pointer image
+custom_pointer_img = pygame.image.load("custom_pointer.png")  # Replace "custom_pointer.png" with your image file
+
+# Set default mouse pointer to invisible
+pygame.mouse.set_visible(False)
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Clear the screen
+    screen.fill((255, 255, 255))
+
+    # Get mouse position
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    # Draw the custom mouse pointer image at the mouse position
+    screen.blit(custom_pointer_img, (mouse_x, mouse_y))
+
+    # Update the display
+    pygame.display.flip()
+
+    # Limit frame rate
+    pygame.time.Clock().tick(60)
+
+pygame.quit()
+sys.exit()
