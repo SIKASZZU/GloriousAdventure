@@ -96,17 +96,19 @@ class PlayerUpdate:
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
+        try:
+            if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
+                if is_idle:
+                    self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                else:
+                    self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+            else:
+                if is_idle:
+                    self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+                else:
+                    self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+        except Exception as e: print(f'Error @ update.py: {e}')
 
-        if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
-            if is_idle:
-                self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
-            else:
-                self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
-        else:
-            if is_idle:
-                self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
-            else:
-                self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
 
     def render_player(self) -> None:
         """ Renderib ainult playeri. """
@@ -251,6 +253,7 @@ class EssentsialsUpdate:
         """Utility function to render text on the screen."""
         text_surface = self.font.render(text, True, color)
         UniversalVariables.text_sequence.append((text_surface, position))
+
 
     def render_general(self):
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory

@@ -61,6 +61,7 @@ class Enemy:
 
             UniversalVariables.screen.blit(enemy[0], (enemy_x, enemy_y))
 
+
     @staticmethod
     def despawn():
         """ Despawns enemies during the day.  """
@@ -134,12 +135,11 @@ class Enemy:
                     direction = dir_
                     break
 
-            enemy_grid = (Enemy.custom_round(enemy_info[2]) , Enemy.custom_round(enemy_info[1]))
-            player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
-                           Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
-            path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
-
             if direction:
+                enemy_grid = (Enemy.custom_round(enemy_info[2]) , Enemy.custom_round(enemy_info[1]))
+                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
+                            Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+                path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
                 if path:
                     next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
                     next_x, next_y = x, y
@@ -200,6 +200,7 @@ class Enemy:
                         direction = 'up'
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
+
 
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """
