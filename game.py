@@ -134,6 +134,7 @@ class Game:
         self.clock.tick(UniversalVariables.FPS)
 
     def run(self):
+
         while True:
             Game.events(self)
             Game.load_variables(self)

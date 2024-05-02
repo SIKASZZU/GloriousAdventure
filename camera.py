@@ -16,7 +16,6 @@ class Camera:
     click_x: int = None
     click_y: int = None
 
-    @staticmethod
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
 
@@ -35,9 +34,11 @@ class Camera:
         UniversalVariables.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
         UniversalVariables.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
 
+
         Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + 450 - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
         Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + 450 - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
+    def click_on_screen(self):
         if self.click_position:
             self.click_window_x = self.click_position[0] - Camera.player_window_x
             self.click_window_y = self.click_position[1] - Camera.player_window_y
