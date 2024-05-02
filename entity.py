@@ -6,7 +6,7 @@ from camera import Camera
 from images import ImageLoader
 from update import EssentsialsUpdate
 from variables import UniversalVariables
-
+import random
 
 ### TODO:
     # ghost collision
@@ -214,20 +214,32 @@ class Enemy:
         """ Takes damage. Can die. """
         pass
 
+    @staticmethod
+    def collision_with_entities():
+        for enemy_id, enemy_info in Enemy.spawned_enemy_dict.items():
+            enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
+                                     enemy_info[2] * UniversalVariables.block_size, 73,
+                                     73)
 
-    def collision_with_entities(self): 
-        """ Doesn't collide with other entities. """
-        for enemy in Enemy.spawned_enemy_dict:
-            enemy_info = Enemy.spawned_enemy_dict[enemy]
-            print('enemy_info', enemy_info)
-        
-        # enemy_corner_set: set[tuple[float, float], ...] = set()
-        # enemy_width = enemy_info[0].get_width()
-        # enemy_height = enemy_info[0].get_height()
+            # Check for collisions between enemies
+            for other_enemy_id, other_enemy_info in Enemy.spawned_enemy_dict.items():
+                if enemy_id != other_enemy_id:
+                    other_enemy_rect = pygame.Rect(other_enemy_info[1] * UniversalVariables.block_size,
+                                                   other_enemy_info[2] * UniversalVariables.block_size, 73,
+                                                   73)
+                    if enemy_rect.colliderect(other_enemy_rect):
+                        print("collisions between enemies")
+                        enemy_x = enemy_info[1]
+                        enemy_y = enemy_info[2]
 
+                        print(f"{enemy_x} += {random.uniform(-3, 3)}")
 
+                        enemy_x += random.uniform(-1, 1)
+                        enemy_y += random.uniform(-1, 1)
+
+                        Enemy.spawned_enemy_dict[enemy_id] = enemy_info[0], enemy_x, enemy_y
     def update(self):
-        Enemy.collision_with_entities
         Enemy.detection(self)
         Enemy.move(self)
+        Enemy.collision_with_entities()
         Enemy.despawn()
