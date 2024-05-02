@@ -9,12 +9,13 @@ from variables import UniversalVariables
 
 
 ### TODO:
-    # ghost collision
-    # kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
+# ghost collision
+# kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
 
 
 class Enemy:
-    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
+                                         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
 
@@ -43,7 +44,7 @@ class Enemy:
 
                     # Spawn an enemy
                     Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = Enemy.ghost_image, \
-                    spawn_point[1], \
+                        spawn_point[1], \
                         spawn_point[0]
 
                     spawned_enemy_count += 1
@@ -68,18 +69,17 @@ class Enemy:
 
         if EssentsialsUpdate.day_night_text == 'Day':
             detected_enemies = {enemy_name for enemy_name, _ in Enemy.enemy_in_range}
-            
+
             enemies_to_remove = set()
 
             for enemy_name, _ in Enemy.spawned_enemy_dict.items():
                 if enemy_name not in detected_enemies:
-                    enemies_to_remove.add(enemy_name) # ei saa koheselt removeida, peab tegema uue listi
+                    enemies_to_remove.add(enemy_name)  # ei saa koheselt removeida, peab tegema uue listi
 
             for enemy_name in enemies_to_remove:
                 del Enemy.spawned_enemy_dict[enemy_name]
 
             Enemy.enemy_in_range.clear()
-
 
     @staticmethod
     def custom_round(number):
@@ -89,14 +89,12 @@ class Enemy:
         else:
             return math.ceil(number)
 
-
     # TODO: pathfinding eraldi faili viia
     def is_valid(self, x, y):
-            """ Check if coordinates (x, y) are valid in the maze. """
-            x, y = int(x), int(y)
+        """ Check if coordinates (x, y) are valid in the maze. """
+        x, y = int(x), int(y)
 
-            return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) and self.terrain_data[x][y] != 99
-
+        return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) and self.terrain_data[x][y] != 99
 
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
@@ -104,7 +102,6 @@ class Enemy:
         queue = deque([(start, [])])
         visited = set()
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
 
         while queue:
             (x, y), path = queue.popleft()
@@ -121,7 +118,6 @@ class Enemy:
 
         return None
 
-
     def move(self):
         """ Move enemies based on their individual decisions."""
 
@@ -134,14 +130,16 @@ class Enemy:
                     direction = dir_
                     break
 
-            enemy_grid = (Enemy.custom_round(enemy_info[2]) , Enemy.custom_round(enemy_info[1]))
-            player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
-                           Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
-            path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
-
             if direction:
+
+                enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
+                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size), \
+                               Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+                path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+
                 if path:
-                    next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
+                    next_grid = ((path[0][1] - enemy_grid[1]), (path[0][0] - enemy_grid[
+                        0]))  # Calculate position of next grid to determine to direction of entity's movement
                     next_x, next_y = x, y
                     if next_grid[0] == 1:
                         next_x += 0.05
@@ -157,14 +155,12 @@ class Enemy:
 
                     next_x, next_y = round(next_x, 3), round(next_y, 3)
 
-
                     if next_x == x and next_y != y:
                         if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
                     if next_y == y and next_x != x:
                         if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
 
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
-
 
     def detection(self):
         player_window_x = Camera.player_window_x
@@ -184,7 +180,8 @@ class Enemy:
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75 and self.player.health.get_health() > 0:
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(
+                        distance_to_player_y_grid) < UniversalVariables.block_size * 0.75 and self.player.health.get_health() > 0:
                     Enemy.attack(self, 3)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
@@ -201,6 +198,9 @@ class Enemy:
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
+            else:
+                pass
+
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """
 
@@ -213,4 +213,3 @@ class Enemy:
         Enemy.detection(self)
         Enemy.move(self)
         Enemy.despawn()
-
