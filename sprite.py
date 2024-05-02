@@ -55,7 +55,16 @@ class AnimationManager:
                 self.animation_index = 2  # Up animation
             elif keys[pygame.K_s]:
                 self.animation_index = 3  # Down animation
-
+        elif is_idle:
+            if UniversalVariables.last_input == "a":
+                self.animation_index = 0  # Left animation
+            elif UniversalVariables.last_input == "d":
+                self.animation_index = 1  # Right animation
+            elif UniversalVariables.last_input == "w":
+                self.animation_index = 2  # Up animation
+            elif UniversalVariables.last_input == "s":
+                self.animation_index = 3  # Down animation
+                
         # Update animation frame based on animation_timer and animation_speed
         self.animation_timer += 1
         sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index])
