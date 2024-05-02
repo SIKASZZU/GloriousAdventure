@@ -1,10 +1,16 @@
 import pygame
 from variables import UniversalVariables
+from camera import Camera
 
-def event_mousebuttondown(self, event):  
+
+def event_mousebuttondown(self, event):
     if event.type == pygame.MOUSEBUTTONDOWN:
-        self.click_position = event.pos  # window clicking reg.  
-        if event.button == 4:  # Scroll +
+        self.click_position = event.pos  # window clicking reg.
+
+        if event.button == 1:  # Left mouse click
+            Camera.click_on_screen(self)
+
+        elif event.button == 4:  # Scroll +
             UniversalVariables.block_size += 10  # Increase block_size
 
             UniversalVariables.player_height: int = UniversalVariables.block_size * 0.65
