@@ -380,6 +380,51 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
         },
+    {
+        "Type": "Object",
+        "Name": "Keyholder_without_key",
+        "ID": 981,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+    {
+        "Type": "Object",
+        "Name": "Keyholder_with_key",
+        "ID": 982,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+    {
+        "Type": "Object",
+        "Name": "Status_gray",
+        "ID": 500,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+    {
+        "Type": "Object",
+        "Name": "Status_yellow",
+        "ID": 550,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+    {
+        "Type": "Object",
+        "Name": "Status_green",
+        "ID": 555,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
 
     {
         "Type": "Object",

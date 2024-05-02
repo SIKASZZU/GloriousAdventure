@@ -184,6 +184,16 @@ class MapData:
             if not (puzzle_x, puzzle_y) in MapData.puzzle_pieces:
                 MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
 
+        # Maze keyholders
+        MapData.keyholders = []
+        for i in range(2):
+            keyholder_x = random.randint(3, (size - 3))
+            keyholder_y = random.randint(3, (size - 3))
+            MapData.converted_maze[keyholder_x][keyholder_y] = 981
+
+            if not (keyholder_x, keyholder_y) in MapData.keyholders:
+                MapData.keyholders.append((keyholder_x, keyholder_y))
+
         MapData.search_paths(MapData.converted_maze)
         
         if MapData.create_save_puzzle:
