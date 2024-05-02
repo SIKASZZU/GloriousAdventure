@@ -106,7 +106,7 @@ class UniversalVariables:
     light_range = 420
     opposite_light_range = 75
     walls = []  # Collision boxide seinad
-    last_input = str
+    last_input = 's'
 
 
     # ******************** MAZE ******************** #

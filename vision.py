@@ -111,11 +111,9 @@ def draw_shadows(self, screen, visible_points):
 def draw_light_source_and_rays(self, screen, position, light_range):
     light_source = position
     visible_points = []
-    corners_to_check = set()
     vision_step = 5
 
-    # Define angles based on the player's last input
-    if len(str(UniversalVariables.last_input)) == 3:
+    if len(UniversalVariables.last_input) == 3:
         main_angles = range(0, 360 + vision_step)
         opposite_angles = range(0, 0)
     
@@ -157,10 +155,7 @@ def draw_light_source_and_rays(self, screen, position, light_range):
 
             closest_intersection = None
             for wall in UniversalVariables.walls:
-                corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]),
-                            (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
-                for corner in corners:
-                    corners_to_check.add(corner)
+                corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]), (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
 
                 segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
                 for seg_start, seg_end in segments:
