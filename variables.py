@@ -76,9 +76,6 @@ class UniversalVariables:
     # Mängu heli tugevus
     sound_volume: int = 0.01
 
-    # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-    enemy_path_update_tick = 10 + random.randint(-5, 5)
-
     # Mängu max tick rate
     FPS = 600
 
@@ -140,6 +137,9 @@ class UniversalVariables:
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
     enemy_speed = 0.05  # Enemy kiirus grid size'ina
+
+    # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
+    enemy_path_update_tick = 10 + random.randint(-5, 5)
 
     # if mapdata is done, create enemy spawnpoints
     @staticmethod
