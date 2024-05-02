@@ -47,32 +47,36 @@ class Collisions:
                 pass
             else:
                 if self.click_window_x and self.click_window_y:
-                    if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
+                    try:
+                        if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
 
-                        # Kinniste uste ID'd
-                        if object_id in [94, 95, 96, 97]:
-                            
-                            # For opening the door remove one key from inventory
-                            if 'Maze_Key' in Inventory.inventory:
-                                if UniversalVariables.maze_counter >= 2:
-                                    UniversalVariables.final_maze = True
-                                    
-                                if Collisions.keylock == 0:
-                                    Collisions.keylock += 1
+                            # Kinniste uste ID'd
+                            if object_id in [94, 95, 96, 97]:
 
-                                    # Sellega saab suuna kätte, '94: 3' - vasakule
-                                    locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-                                    location = locations[object_id]
+                                # For opening the door remove one key from inventory
+                                if 'Maze_Key' in Inventory.inventory:
+                                    if UniversalVariables.maze_counter >= 2:
+                                        UniversalVariables.final_maze = True
 
-                                    grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+                                    if Collisions.keylock == 0:
+                                        Collisions.keylock += 1
 
-                                    j = (grid_y // 39) * 39  # Y koordinaat
-                                    i = (grid_x // 39) * 39  # X kooridnaat
+                                        # Sellega saab suuna kätte, '94: 3' - vasakule
+                                        locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                        location = locations[object_id]
 
-                                    if location == 1 or location == 2:
-                                        AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
-                                    else:   # 3, 4
-                                        AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                                        grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+
+                                        j = (grid_y // 39) * 39  # Y koordinaat
+                                        i = (grid_x // 39) * 39  # X kooridnaat
+
+                                        if location == 1 or location == 2:
+                                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
+                                        else:   # 3, 4
+                                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+
+                    except TypeError: pass
+
                                     
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE]:
