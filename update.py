@@ -97,24 +97,16 @@ class PlayerUpdate:
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
 
-        player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
-        player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
-
-        try:
-            if self.terrain_data[player_grid_y][player_grid_x] != 0:
-                print(type(self.terrain_data[player_grid_y][player_grid_x]))
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
-                else:
-                    self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+        if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
+            if is_idle:
+                self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
             else:
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
-                else:
-                    self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
-        except Exception as e: 
-            print(f'Error {e}, defualt self.frame created')
-            self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+        else:
+            if is_idle:
+                self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+            else:
+                self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
 
     def render_player(self) -> None:
         """ Renderib ainult playeri. """
