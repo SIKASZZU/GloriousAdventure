@@ -9,13 +9,12 @@ from variables import UniversalVariables
 
 
 ### TODO:
-# ghost collision
-# kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
+    # ghost collision
+    # kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
 
 
 class Enemy:
-    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
-                                         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"), (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
 
@@ -44,7 +43,7 @@ class Enemy:
 
                     # Spawn an enemy
                     Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = Enemy.ghost_image, \
-                        spawn_point[1], \
+                    spawn_point[1], \
                         spawn_point[0]
 
                     spawned_enemy_count += 1
@@ -197,9 +196,6 @@ class Enemy:
                         direction = 'up'
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
-
-            else:
-                pass
 
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """

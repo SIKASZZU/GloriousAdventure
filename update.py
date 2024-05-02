@@ -22,11 +22,25 @@ class PlayerUpdate:
         'images/Player/Idle_Left.png', 'images/Player/Idle_Right.png', 'images/Player/Idle_Up.png', 'images/Player/Idle_Down.png'
     ])
 
+    # *** swimming *** #
+    sprite_sheets_swimming, animations_swimming = load_sprite_sheets([
+        'images/Player/Swim/Left_swimming.png', 'images/Player/Swim/Right_swimming.png', 'images/Player/Swim/Up_swimming.png', 'images/Player/Swim/Down_swimming.png'
+    ])
+
+    sprite_sheets_idle_swimming, animations_idle_swimming = load_sprite_sheets([
+        'images/Player/Swim/Idle_Left_swimming.png', 'images/Player/Swim/Idle_Right_swimming.png', 'images/Player/Swim/Idle_Up_swimming.png', 'images/Player/Swim/Idle_Down_swimming.png'
+    ])
+
     animation_speeds = [10, 10, 10, 10]
 
     # Teeb idle ja mitte idle animatsioone
     animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
     idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
+                                                    animation_speeds)
+
+    # *** swimming *** #
+    swimming_animation_manager = AnimationManager(sprite_sheets_swimming, animations, animation_speeds)
+    idle_swimming_animation_manager = AnimationManager(sprite_sheets_idle_swimming, animations_idle,
                                                     animation_speeds)
 
     def update_player(self) -> None:
@@ -82,11 +96,18 @@ class PlayerUpdate:
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
-
-        if is_idle:
-            self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
-        else:
-            self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+        try:
+            if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
+                if is_idle:
+                    self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                else:
+                    self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+            else:
+                if is_idle:
+                    self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+                else:
+                    self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+        except Exception as e: print(f'Error @ update.py: {e}')
 
 
     def render_player(self) -> None:
@@ -232,6 +253,7 @@ class EssentsialsUpdate:
         """Utility function to render text on the screen."""
         text_surface = self.font.render(text, True, color)
         UniversalVariables.text_sequence.append((text_surface, position))
+
 
     def render_general(self):
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
