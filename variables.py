@@ -74,7 +74,7 @@ class UniversalVariables:
     screen_y: int = 1020
 
     # Mängu heli tugevus
-    sound_volume: int = 0.01
+    sound_volume: int = 0.05
 
     # Mängu max tick rate
     FPS = 600
@@ -119,14 +119,20 @@ class UniversalVariables:
     maze_counter = 1
     enemy_counter = 0
     final_maze = bool
+    final_maze_key_slots: set = set()
+
+    # Portali avamiseks loeb mitu teatud blocki on maailmas
+    Status_gray_slot_count = 0
+    Status_yellow_slot_count = 0
+    Status_green_slot_count = 0
 
 
     # ******************** Render ******************** #
     map_list = [['maze'], ['glade']]
     blits_sequence = []
     text_sequence = []
-    no_terrain_background_items = [98, 99, 999 ,988, None]
-    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None]
+    no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982,]
+    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555]
 
     offset_x: int = 0
     offset_y: int = 0

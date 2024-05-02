@@ -9,6 +9,21 @@ from variables import UniversalVariables
 from components import StaminaComponent
 from mazecalculation import AddingMazeAtPosition
 from camera import Camera
+from audio import Tile_Sounds  # insert_key_audio, pop_key_audio, portal_open_audio
+def find_number_in_list_of_lists(list_of_lists, number):
+    for row_index, sublist in enumerate(list_of_lists):
+        for col_index, element in enumerate(sublist):
+            if element == number:
+                return row_index, col_index  # Number found, return its coordinates
+    return None  # Number not found, return None
+
+def count_occurrences_in_list_of_lists(list_of_lists, number):
+    count = 0
+    for sublist in list_of_lists:
+        for element in sublist:
+            if element == number:
+                count += 1
+    return count
 
 class Collisions:
 
@@ -39,18 +54,56 @@ class Collisions:
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
+            if self.click_window_x and self.click_window_y:
+                try:
+                    if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
+                        # Kinniste uste ID'd
 
-            # Clickides saab avada ukse - uue maze
-            if EssentsialsUpdate.day_night_text != 'Day':
-                ### TODO: not open door at night WRITE ON SCREEN
-                
-                pass
-            else:
-                if self.click_window_x and self.click_window_y:
-                    try:
-                        if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:
+                        terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
+                        terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
-                            # Kinniste uste ID'd
+                        count = count_occurrences_in_list_of_lists(self.terrain_data, 550)
+
+                        if count > 7:
+                            for i in range(8):
+                                x, y = find_number_in_list_of_lists(self.terrain_data, 550)
+                                self.terrain_data[x][y] = 555
+
+                                if i == 7:
+                                    Tile_Sounds.portal_open_audio(self)
+
+                        if object_id == 981:
+                            if 'Maze_Key' in Inventory.inventory and UniversalVariables.final_maze == True:
+                                    Tile_Sounds.insert_key_audio(self)
+
+                                    self.terrain_data[terrain_grid_y][terrain_grid_x] = 982
+                                    # ObjectManagement.remove_object_from_inv('Maze_Key')
+
+                                    x, y = find_number_in_list_of_lists(self.terrain_data, 500)
+
+                                    self.terrain_data[x][y] = 550
+
+                            else: return
+
+                        if object_id == 982:
+                            if count_occurrences_in_list_of_lists(self.terrain_data, 555):
+                                return
+
+                            else:
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981
+                                Tile_Sounds.pop_key_audio(self)
+
+                                ObjectManagement.add_object_from_inv('Maze_Key')
+
+                                x, y = find_number_in_list_of_lists(self.terrain_data, 550)
+                                self.terrain_data[x][y] = 500
+
+
+                        # Clickides saab avada ukse - uue maze
+                        if EssentsialsUpdate.day_night_text != 'Day':
+                            return
+
+                        else:
                             if object_id in [94, 95, 96, 97]:
 
                                 # For opening the door remove one key from inventory
@@ -75,7 +128,7 @@ class Collisions:
                                         else:   # 3, 4
                                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
 
-                    except TypeError: pass
+                except TypeError: pass
 
                                     
             if self.player_rect.colliderect(collision_object_rect):

@@ -96,17 +96,20 @@ class ObjectManagement:
         except RuntimeError as e:
             print("\nError in file: objects.py, add_object_to_inv", e)
 
+    def add_object_from_inv(item):
+        if item in Inventory.inventory:
+            # Kui ese on juba inventoris, suurendab eseme kogust
+            Inventory.inventory[item] += 1
+        else:
+            # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
+            Inventory.inventory[item] = 1
 
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :
             Inventory.inventory[item] -= 1
         
         if Inventory.inventory[item] == 0:
-            print()
-            print(Inventory.inventory)
-            print(Inventory.inventory['Maze_Key'])
-            del Inventory.inventory['Maze_Key']
-            print(Inventory.inventory)
+            del Inventory.inventory[item]
 
 
     def place_and_render_object(self) -> None:

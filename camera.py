@@ -38,6 +38,7 @@ class Camera:
         Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + 450 - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
         Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + 450 - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
+
     def click_on_screen(self):
         if self.click_position:
             self.click_window_x = self.click_position[0] - Camera.player_window_x
