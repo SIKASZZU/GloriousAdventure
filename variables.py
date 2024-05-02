@@ -141,6 +141,7 @@ class UniversalVariables:
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 10 + random.randint(-5, 5)
 
+
     # if mapdata is done, create enemy spawnpoints
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
