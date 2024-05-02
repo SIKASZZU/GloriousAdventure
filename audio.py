@@ -25,6 +25,9 @@ class Player_audio:
     water_channel = pygame.mixer.Channel(2)  # Seob 2. channeli veega
     maze_channel = pygame.mixer.Channel(3)  # Seob 3. channeli maze'iga
 
+    player_channel = pygame.mixer.Channel(5)  # Seob 5. channeli playeriga
+
+
     death_counter = 0
     current_health: int = None
 
@@ -130,7 +133,8 @@ class Player_audio:
 
         # Kui playeri kaotab elusi siis käid 'Player_hit' heli
         if Player_audio.current_health > self.player.health.get_health() > 0:
-            Player_audio.player_hit_sound.play()
+
+            Player_audio.player_channel.play(Player_audio.player_hit_sound)
             Player_audio.current_health = self.player.health.get_health()
 
         else:
@@ -138,7 +142,11 @@ class Player_audio:
 
     def player_death_audio(self) -> None:
         if self.player.health.get_health() <= 0 and Player_audio.death_counter == 0:
-            Player_audio.player_death_sound.play()
+
+            if Player_audio.player_channel.get_busy():
+                Player_audio.player_channel.stop()
+
+            Player_audio.player_channel.play(Player_audio.player_death_sound)
             Player_audio.death_counter += 1
 
         else:
