@@ -21,12 +21,12 @@ class Player_audio:
     ]
     current_grass_sound_index = 0
 
+    # 1 - 10 on player channel'id
     grass_channel = pygame.mixer.Channel(1)  # Seob 1. channeli groundiga
     water_channel = pygame.mixer.Channel(2)  # Seob 2. channeli veega
     maze_channel = pygame.mixer.Channel(3)  # Seob 3. channeli maze'iga
 
-    player_channel = pygame.mixer.Channel(5)  # Seob 5. channeli playeriga
-
+    player_channel = pygame.mixer.Channel(4)  # Seob 4. channeli playeriga
 
     death_counter = 0
     current_health: int = None
@@ -66,9 +66,10 @@ class Player_audio:
             if keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] or keys[pygame.K_w]:
                 if self.terrain_data[player_grid_y][player_grid_x] in Player_audio.ground_sound_list:
                     if not Player_audio.grass_channel.get_busy():
-
-                        Player_audio.grass_channel.play(Player_audio.grass_sounds[Player_audio.current_grass_sound_index])
-                        Player_audio.current_grass_sound_index = (Player_audio.current_grass_sound_index + 1) % len(Player_audio.grass_sounds)
+                        Player_audio.grass_channel.play(
+                            Player_audio.grass_sounds[Player_audio.current_grass_sound_index])
+                        Player_audio.current_grass_sound_index = (Player_audio.current_grass_sound_index + 1) % len(
+                            Player_audio.grass_sounds)
 
                     # Kaotab muud liikumise helid ära, mis seonduvad player'iga
                     if Player_audio.water_channel.get_busy():
@@ -156,3 +157,46 @@ class Player_audio:
         Player_audio.player_movement_audio(self)
         Player_audio.player_hurt_audio(self)
         Player_audio.player_death_audio(self)
+
+
+class Tile_Sounds:
+    pygame.mixer.init()
+
+    insert_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_To_Slot.mp3')
+    pop_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_From_Slot.mp3')
+    portal_open_sound = pygame.mixer.Sound('audio/Tile_Sounds/Portal_Open_Sound.mp3')
+
+    insert_key_channel = pygame.mixer.Channel(5)  # Seob 5. channeli võtme sisestamisega
+    pop_key_channel = pygame.mixer.Channel(6)  # Seob 6. channeli võtme eemaldamisega
+    portal_channel = pygame.mixer.Channel(7)  # Seob 7. channeli portali avamisega
+
+    audio_list = [insert_key_sound, pop_key_sound, portal_open_sound]
+
+    for audio_name in audio_list:
+        if type(audio_name) == list:
+            audio_name.set_volume(0.0)
+            audio_name.play()
+            audio_name.stop()
+
+            print(audio_name)
+
+            # Muudab kogu mängu audio ära vastavalt sound_volume'ile
+            audio_name.set_volume(UniversalVariables.sound_volume)
+
+    @staticmethod
+    def portal_open_audio() -> None:
+        Tile_Sounds.portal_channel.play(Tile_Sounds.portal_open_sound)
+
+    @staticmethod
+    def insert_key_audio() -> None:
+        Tile_Sounds.insert_key_channel.play(Tile_Sounds.insert_key_sound)
+
+        if Tile_Sounds.pop_key_channel.get_busy():
+            Tile_Sounds.pop_key_channel.stop()
+
+    @staticmethod
+    def pop_key_audio() -> None:
+        Tile_Sounds.pop_key_channel.play(Tile_Sounds.pop_key_sound)
+
+        if Tile_Sounds.insert_key_channel.get_busy():
+            Tile_Sounds.insert_key_channel.stop()
