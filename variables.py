@@ -67,10 +67,14 @@ class Decorators:
 
 
 class UniversalVariables:
-    # ******************** SCREEN ******************** #
+    # ******************** Settings ******************** #
     screen_x: int = 1650
     screen_y: int = 1020
+    sound_volume: int = 0.05
 
+    FPS = 600
+
+    # ******************** Screen ******************** #
     screen = pygame.display.set_mode((screen_x, screen_y))
     jagatis = 15
     block_size: int = screen_x // jagatis
@@ -82,10 +86,7 @@ class UniversalVariables:
     screen_x_08 = screen_x * 0.8
     screen_y_08 = screen_y * 0.8
 
-    FPS = 600
-
     # ******************** PLAYER ******************** #
-
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
 

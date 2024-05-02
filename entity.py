@@ -56,12 +56,10 @@ class Enemy:
                         break
 
         for enemy in Enemy.spawned_enemy_dict.values():
-            print(enemy)
             enemy_x = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_x
             enemy_y = enemy[2] * UniversalVariables.block_size + UniversalVariables.offset_y
 
             UniversalVariables.screen.blit(enemy[0], (enemy_x, enemy_y))
-
 
     @staticmethod
     def despawn():
@@ -81,7 +79,7 @@ class Enemy:
                 del Enemy.spawned_enemy_dict[enemy_name]
 
             Enemy.enemy_in_range.clear()
-    
+
 
     @staticmethod
     def custom_round(number):
@@ -122,7 +120,7 @@ class Enemy:
                         queue.append(((new_x, new_y), new_path))
 
         return None
-    
+
 
     def move(self):
         """ Move enemies based on their individual decisions."""
@@ -130,7 +128,7 @@ class Enemy:
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y = enemy_info
             direction = None
-            
+
             for enemy_name_, dir_ in Enemy.enemy_in_range:
                 if enemy_name == enemy_name_:
                     direction = dir_
@@ -145,26 +143,24 @@ class Enemy:
                 if path:
                     next_grid = ((path[0][1] - enemy_grid[1]) , (path[0][0] - enemy_grid[0]))  # Calculate position of next grid to determine to direction of entity's movement
                     next_x, next_y = x, y
-                    if next_grid[0] == 1: 
+                    if next_grid[0] == 1:
                         next_x += 0.05
 
-                    elif next_grid[0] == -1: 
+                    elif next_grid[0] == -1:
                         next_x -= 0.05
 
-                    elif next_grid[1] == 1: 
+                    elif next_grid[1] == 1:
                         next_y += 0.05
 
-                    elif next_grid[1] == -1: 
+                    elif next_grid[1] == -1:
                         next_y -= 0.05
 
                     next_x, next_y = round(next_x, 3), round(next_y, 3)
 
 
                     if next_x == x and next_y != y:
-                        print('next')
                         if str(next_x).endswith('.5'): next_x = math.ceil(next_x)
                     if next_y == y and next_x != x:
-                        print('nexty')
                         if str(next_y).endswith('.5'): next_y = math.ceil(next_y)
 
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
@@ -188,7 +184,7 @@ class Enemy:
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75 and self.player.health.get_health() > 0:
                     Enemy.attack(self, 3)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
@@ -205,10 +201,9 @@ class Enemy:
 
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
-
     def attack(self, damage):
         """ Kui Ghost on playeri peal siis saab damage'i. """
-        
+
         if Enemy.damage_delay >= 60:
             self.player.health.damage(damage)
             Enemy.damage_delay = 0

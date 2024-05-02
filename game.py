@@ -19,7 +19,7 @@ from update import EssentsialsUpdate  # check_pressed_keys, render_general
 from update import PlayerUpdate  # update_player, render_player, render_HUD
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
-
+from audio import Player_audio  # player_audio_update
 
 class Game:
     pygame.init()
@@ -94,6 +94,8 @@ class Game:
         self.player.health.check_health()
         Enemy.update(self)
         # Inventory.call_inventory(self)  # doesn't visualize, just calculates
+
+        Player_audio.player_audio_update(self)
 
     def call_visuals(self):
         RenderPictures.map_render(self)  # Renderib terraini
