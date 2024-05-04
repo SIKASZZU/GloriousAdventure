@@ -83,7 +83,6 @@ class Game:
     def call_technical(self):
         PlayerUpdate.update_player(self)  # Uuendab mängija asukohta, ja muid asju
         Camera.box_target_camera(self)  # Kaamera
-        StaminaComponent.stamina_bar_update(self)  # Stamina bar
 
         # collision things
         Collisions.collison_terrain(self)
@@ -133,8 +132,10 @@ class Game:
         pygame.display.update()
         self.clock.tick(UniversalVariables.FPS)
     
-    def printing():
+    def printing(self):
         Inventory.print_inventory()
+        Camera.print_clicks(self)
+        self.player.health.print_health()
 
     def run(self):
 
@@ -147,7 +148,7 @@ class Game:
             Game.call_visuals(self)
             Game.check_keys(self)
             Game.refresh_loop(self)
-            Game.printing()
+            Game.printing(self)
 
 if __name__ == "__main__":
     game = Game()
