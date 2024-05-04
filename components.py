@@ -17,10 +17,12 @@ class HealthComponent:
     def print_health(self):
         """ Print out player's current health. """
 
-        if self.current_health <= 0:
-            print("Player dead")
+        self.current_health = HealthComponent.get_health(self)
+
+        if self.current_health <= 0: print("Player dead")
         elif self.previous_health != self.current_health:
             print('Player HP:', self.current_health)
+            self.previous_health = self.current_health
 
     def damage(self, amount):
         self.current_health = max(self.current_health - amount, self.min_health)
@@ -38,12 +40,10 @@ class HealthComponent:
         if self.current_health <= 0:
             return
             # Death screen... (restart game option)
-        
+
         if self.health_cooldown_timer >= 220:
             HealthComponent.regenerate_health(self)
             self.health_cooldown_timer = 100
-
-        self.previous_health = self.current_health
 
     def get_health(self):
         return self.current_health
@@ -93,26 +93,25 @@ class StaminaComponent:
             stamina_rect = pygame.Rect(0, 0, 0, 0)
             stamina_bar_border = pygame.Rect(0, 0, 0, 0)
 
-        try:
-            if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
-                StaminaComponent.stamina_bar_decay += 1
+        if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
+            StaminaComponent.stamina_bar_decay += 1
 
-            else:
-                HUD_class.stamina_bar_size = self.player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
-                stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6,
-                                            UniversalVariables.screen_y - 75,
-                                            HUD_class.stamina_bar_size_bg + 12,
-                                            15)  # Kui staminat kulub, ss on background taga
-
-                stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6,
-                                                UniversalVariables.screen_y - 75,
-                                                HUD_class.stamina_bar_size_border + 12,
-                                                15)  # K6igi stamina baride ymber border
-
-                stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6,
+        else:
+            HUD_class.stamina_bar_size = self.player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
+            stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6,
                                         UniversalVariables.screen_y - 75,
-                                        HUD_class.stamina_bar_size + 12, 15)
-        except AttributeError as ae: print('Error @ components.py', ae)
+                                        HUD_class.stamina_bar_size_bg + 12,
+                                        15)  # Kui staminat kulub, ss on background taga
+
+            stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6,
+                                            UniversalVariables.screen_y - 75,
+                                            HUD_class.stamina_bar_size_border + 12,
+                                            15)  # K6igi stamina baride ymber border
+
+            stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6,
+                                    UniversalVariables.screen_y - 75,
+                                    HUD_class.stamina_bar_size + 12, 15)
+
 
 class SpeedComponent:
     def __init__(self, base_speed, max_speed, min_speed):
