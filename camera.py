@@ -16,6 +16,8 @@ class Camera:
     click_x: int = None
     click_y: int = None
 
+    click_info_available = False  # for printing func
+
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
 
@@ -51,4 +53,13 @@ class Camera:
 
             if abs(self.click_window_x) < player_range and abs(self.click_window_y) < player_range:
                 Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
+                Camera.click_info_available = True 
+            else:
+                Camera.click_x, Camera.click_y = None, None
 
+    def print_clicks(self):
+        """ Prints out the user's click information relative to terrain coordinates and screen."""
+
+        if Camera.click_info_available:
+            print(f"Click is within player's reach. \n   Click terrain x,y: ({Camera.click_x, Camera.click_y}) \n   Click window x,y: {self.click_position}")
+            Camera.click_info_available = False  # reset loop

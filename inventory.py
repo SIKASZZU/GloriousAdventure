@@ -30,6 +30,8 @@ class Inventory:
 
     @staticmethod
     def print_inventory() -> None:
+        """ Prints out the contents of the inventory."""
+
         if Inventory.inventory != Inventory.previous_inv:
             print('Inventory contains:\n   ', Inventory.inventory)
             Inventory.previous_inv = Inventory.inventory.copy()
