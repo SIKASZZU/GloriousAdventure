@@ -26,6 +26,15 @@ class Inventory:
     check_slot_delay: int = 0
     craftable_items = {}
 
+    previous_inv = None
+
+    @staticmethod
+    def print_inventory() -> None:
+        if Inventory.inventory != Inventory.previous_inv:
+            print('Inventory contains:\n   ', Inventory.inventory)
+            Inventory.previous_inv = Inventory.inventory.copy()
+
+
     def handle_mouse_click(self) -> None:
         """ Lubab invis ja craftimises clicke kasutada
         ja lisab ka viite CHECK_DELAY_THRESHOLD  """

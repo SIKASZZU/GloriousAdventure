@@ -132,6 +132,10 @@ class Game:
 
         pygame.display.update()
         self.clock.tick(UniversalVariables.FPS)
+    
+    def printing():
+        print('')  # print new line
+        Inventory.print_inventory()
 
     def run(self):
 
@@ -144,6 +148,7 @@ class Game:
             Game.call_visuals(self)
             Game.check_keys(self)
             Game.refresh_loop(self)
+            Game.printing()
 
 if __name__ == "__main__":
     game = Game()
