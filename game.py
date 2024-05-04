@@ -134,7 +134,6 @@ class Game:
         self.clock.tick(UniversalVariables.FPS)
     
     def printing():
-        print('')  # print new line
         Inventory.print_inventory()
 
     def run(self):
