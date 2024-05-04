@@ -13,13 +13,14 @@ class HealthComponent:
         self.current_health = max(min_health, min(max_health, max_health))
         self.health_cooldown_timer = 0
         self.previous_health = self.current_health
+        self.player_dead_flag = False
 
     def print_health(self):
         """ Print out player's current health. """
 
         self.current_health = HealthComponent.get_health(self)
 
-        if self.current_health <= 0: print("Player dead")
+        if not self.player_dead_flag and self.current_health <= 0: print("Player dead"); self.player_dead_flag = True
         elif self.previous_health != self.current_health:
             print('Player HP:', self.current_health)
             self.previous_health = self.current_health
