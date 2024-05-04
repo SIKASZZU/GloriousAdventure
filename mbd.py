@@ -5,9 +5,9 @@ from camera import Camera
 
 def event_mousebuttondown(self, event):
     if event.type == pygame.MOUSEBUTTONDOWN:
-        self.click_position = event.pos  # window clicking reg.
 
         if event.button == 1:  # Left mouse click
+            self.click_position = event.pos  # window clicking reg.
             Camera.click_on_screen(self)
 
         elif event.button == 4:  # Scroll +
