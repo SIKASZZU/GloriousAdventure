@@ -75,6 +75,9 @@ class ImageLoader:
                 elif image_name.startswith("Maze_Ground_"):
                     image_path = f"images/Objects/{image_name}.png"
 
+                elif image_name.startswith("Endgate"):
+                    image_path = f"images/Objects/{image_name}.png"
+
                 if image_path:
                     loaded_image = pygame.image.load(image_path)
                     converted_image = loaded_image.convert_alpha()

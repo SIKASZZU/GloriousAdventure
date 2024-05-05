@@ -120,12 +120,7 @@ class UniversalVariables:
     enemy_counter = 0
     final_maze = bool
     final_maze_key_slots: set = set()
-
-    # Portali avamiseks loeb mitu teatud blocki on maailmas
-    Status_gray_slot_count = 0
-    Status_yellow_slot_count = 0
-    Status_green_slot_count = 0
-
+    portal_frames: list = []
 
     # ******************** Render ******************** #
     map_list = [['maze'], ['glade']]

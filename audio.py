@@ -165,12 +165,14 @@ class Tile_Sounds:
     insert_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_To_Slot.mp3')
     pop_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_From_Slot.mp3')
     portal_open_sound = pygame.mixer.Sound('audio/Tile_Sounds/Portal_Open_Sound.mp3')
+    portal_close_sound = pygame.mixer.Sound('audio/Tile_Sounds/Portal_Close_Sound.mp3')
 
     insert_key_channel = pygame.mixer.Channel(5)  # Seob 5. channeli võtme sisestamisega
     pop_key_channel = pygame.mixer.Channel(6)  # Seob 6. channeli võtme eemaldamisega
     portal_channel = pygame.mixer.Channel(7)  # Seob 7. channeli portali avamisega
+    portal_channel_close = pygame.mixer.Channel(0)  # Seob 7. channeli portali avamisega
 
-    audio_list = [insert_key_sound, pop_key_sound, portal_open_sound]
+    audio_list = [insert_key_sound, pop_key_sound, portal_open_sound, portal_close_sound]
 
     for audio_name in audio_list:
         audio_name.set_volume(0.0)
@@ -181,7 +183,16 @@ class Tile_Sounds:
         audio_name.set_volume(UniversalVariables.sound_volume)
 
     def portal_open_audio(self) -> None:
+        if Tile_Sounds.portal_channel_close.get_busy():
+            Tile_Sounds.portal_channel_close.stop()
+
         Tile_Sounds.portal_channel.play(Tile_Sounds.portal_open_sound)
+
+    def portal_close_audio(self) -> None:
+        if Tile_Sounds.portal_channel.get_busy():
+            Tile_Sounds.portal_channel.stop()
+
+        Tile_Sounds.portal_channel_close.play(Tile_Sounds.portal_close_sound)
 
     def insert_key_audio(self) -> None:
         Tile_Sounds.insert_key_channel.play(Tile_Sounds.insert_key_sound)

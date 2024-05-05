@@ -34,10 +34,42 @@ def reset_clicks(self):
         self.click_window_x = None
         self.click_window_y = None
 
+def gray_yellow(self, color):
+    if color == 'gray':
+        x, y = find_number_in_list_of_lists(self.terrain_data, 550)
+        self.terrain_data[x][y] = 500
+        reset_clicks(self)
+
+    if color == 'yellow':
+        x, y = find_number_in_list_of_lists(self.terrain_data, 500)
+        self.terrain_data[x][y] = 550
+        reset_clicks(self)
+
+def yellow_green(self, color):
+    if color == 'yellow':
+        for i in range(8):
+            x, y = find_number_in_list_of_lists(self.terrain_data, 555)
+            self.terrain_data[x][y] = 550
+            reset_clicks(self)
+
+        gray_yellow(self, 'gray')
+
+
+    elif color == 'green':
+        for i in range(8):
+            x, y = find_number_in_list_of_lists(self.terrain_data, 550)
+            Collisions.portal_frames.add((x, y))
+
+            self.terrain_data[x][y] = 555
+            reset_clicks(self)
+
+
 class Collisions:
 
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
-    keylock = 0
+    keylock: int = 0
+
+    portal_frames: set = set()
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -70,46 +102,48 @@ class Collisions:
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
                         print('self.terrain_data[terrain_grid_y][terrain_grid_x]', self.terrain_data[terrain_grid_y][terrain_grid_x])
+                        count_filled_keyholders = count_occurrences_in_list_of_lists(self.terrain_data, 982)
 
-                        count = count_occurrences_in_list_of_lists(self.terrain_data, 550)
-
-                        if count > 7:
-                            for i in range(8):
-                                x, y = find_number_in_list_of_lists(self.terrain_data, 550)
-                                self.terrain_data[x][y] = 555
-
-                                if i == 7: 
-                                    Tile_Sounds.portal_open_audio(self)
-                       
-                        if object_id == 981:
+                        if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory: # and UniversalVariables.final_maze == True:
                                 print('No available Maze key in inventory. ')
                                 reset_clicks(self)
                                 return
 
-                            else: 
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 982
-                                ObjectManagement.remove_object_from_inv('Maze_Key')
-                                Tile_Sounds.insert_key_audio(self)
-
-                                x, y = find_number_in_list_of_lists(self.terrain_data, 500)
-                                self.terrain_data[x][y] = 550
-                                reset_clicks(self)
-                                
-
-                        if object_id == 982:
-                            if count_occurrences_in_list_of_lists(self.terrain_data, 555):
-                                reset_clicks(self)
-                                return
-
+                            # Kui clickid tühja keysloti peale ja key on invis
                             else:
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981
-                                ObjectManagement.add_object_from_inv('Maze_Key')
-                                Tile_Sounds.pop_key_audio(self)
 
-                            x, y = find_number_in_list_of_lists(self.terrain_data, 550)
-                            self.terrain_data[x][y] = 500
-                            reset_clicks(self)
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
+                                ObjectManagement.remove_object_from_inv('Maze_Key')
+
+                                Tile_Sounds.insert_key_audio(self)
+                                gray_yellow(self, 'yellow')
+
+                        # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
+                        if object_id == 982:
+                            if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
+                                Collisions.portal_frames = set()  # Clearib portal frame'ide listi ära
+
+                                Tile_Sounds.portal_close_audio(self)
+                                Tile_Sounds.pop_key_audio(self)
+                                yellow_green(self, 'yellow')
+
+                            else:  # Kui slotist võtad key ära
+                                ObjectManagement.add_object_from_inv('Maze_Key')
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
+
+                                Tile_Sounds.pop_key_audio(self)
+                                gray_yellow(self, 'gray')
+
+                        # Ootab õiget aega kuna portal valmis teha
+                        if count_occurrences_in_list_of_lists(self.terrain_data, 550) >= 8:
+                            Tile_Sounds.portal_open_audio(self)
+
+                            # Teeb portali roheliseks
+                            for i in range(8):
+                                yellow_green(self, 'green')
+
 
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd

@@ -176,7 +176,7 @@ class MapData:
 
         # Maze's puzzle pieces
         MapData.puzzle_pieces = []
-        for i in range(3):
+        for i in range(60):
             puzzle_x = random.randint(3, (size - 3))
             puzzle_y = random.randint(3, (size - 3))
             MapData.converted_maze[puzzle_x][puzzle_y] = 10
@@ -186,7 +186,7 @@ class MapData:
 
         # Maze keyholders
         MapData.keyholders = []
-        for i in range(2):
+        for i in range(60):
             keyholder_x = random.randint(3, (size - 3))
             keyholder_y = random.randint(3, (size - 3))
             MapData.converted_maze[keyholder_x][keyholder_y] = 981

@@ -150,6 +150,7 @@ class Game:
             Game.refresh_loop(self)
             Game.printing(self)
 
+
 if __name__ == "__main__":
     game = Game()
     game.run()
