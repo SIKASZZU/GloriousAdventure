@@ -173,15 +173,12 @@ class Tile_Sounds:
     audio_list = [insert_key_sound, pop_key_sound, portal_open_sound]
 
     for audio_name in audio_list:
-        if type(audio_name) == list:
-            audio_name.set_volume(0.0)
-            audio_name.play()
-            audio_name.stop()
+        audio_name.set_volume(0.0)
+        audio_name.play()
+        audio_name.stop()
 
-            print(audio_name)
-
-            # Muudab kogu mängu audio ära vastavalt sound_volume'ile
-            audio_name.set_volume(UniversalVariables.sound_volume)
+        # Muudab kogu mängu audio ära vastavalt sound_volume'ile
+        audio_name.set_volume(UniversalVariables.sound_volume)
 
     def portal_open_audio(self) -> None:
         Tile_Sounds.portal_channel.play(Tile_Sounds.portal_open_sound)
