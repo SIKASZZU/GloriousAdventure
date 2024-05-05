@@ -27,6 +27,13 @@ def count_occurrences_in_list_of_lists(list_of_lists, number):
                 count += 1
     return count
 
+
+def reset_clicks(self):
+    if self.click_window_x and self.click_window_y:
+        # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni
+        self.click_window_x = None
+        self.click_window_y = None
+
 class Collisions:
 
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
@@ -59,10 +66,10 @@ class Collisions:
             if self.click_window_x and self.click_window_y:
                 try:
                     if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:  # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
-                        # Kinniste uste ID'd
 
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
+                        print('self.terrain_data[terrain_grid_y][terrain_grid_x]', self.terrain_data[terrain_grid_y][terrain_grid_x])
 
                         count = count_occurrences_in_list_of_lists(self.terrain_data, 550)
 
@@ -74,20 +81,25 @@ class Collisions:
                                 if i == 7: 
                                     Tile_Sounds.portal_open_audio(self)
                        
-                        print('self.terrain_data[terrain_grid_y][terrain_grid_x]', self.terrain_data[terrain_grid_y][terrain_grid_x])
                         if object_id == 981:
-                            if 'Maze_Key' in Inventory.inventory: # and UniversalVariables.final_maze == True:
+                            if not 'Maze_Key' in Inventory.inventory: # and UniversalVariables.final_maze == True:
+                                print('No available Maze key in inventory. ')
+                                reset_clicks(self)
+                                return
+
+                            else: 
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 982
                                 ObjectManagement.remove_object_from_inv('Maze_Key')
                                 Tile_Sounds.insert_key_audio(self)
 
                                 x, y = find_number_in_list_of_lists(self.terrain_data, 500)
                                 self.terrain_data[x][y] = 550
-
-                            else: return
+                                reset_clicks(self)
+                                
 
                         if object_id == 982:
                             if count_occurrences_in_list_of_lists(self.terrain_data, 555):
+                                reset_clicks(self)
                                 return
 
                             else:
@@ -95,17 +107,25 @@ class Collisions:
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 Tile_Sounds.pop_key_audio(self)
 
-                                x, y = find_number_in_list_of_lists(self.terrain_data, 550)
-                                self.terrain_data[x][y] = 500
+                            x, y = find_number_in_list_of_lists(self.terrain_data, 550)
+                            self.terrain_data[x][y] = 500
+                            reset_clicks(self)
 
                         # Clickides saab avada ukse - uue maze
-                        if object_id in [94, 95, 96, 97]:
+                        if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentsialsUpdate.day_night_text != 'Day':
+                                print("Can't open new maze during night. ")
+                                reset_clicks(self)
                                 return
 
                             # For opening the door remove one key from inventory
                             else:
-                                if 'Maze_Key' in Inventory.inventory:
+                                if not 'Maze_Key' in Inventory.inventory:
+                                    print('No available Maze key in inventory. ')
+                                    reset_clicks(self)
+                                    return
+                                
+                                else:
                                     if UniversalVariables.maze_counter >= 2:
                                         UniversalVariables.final_maze = True
 
@@ -125,6 +145,7 @@ class Collisions:
                                             AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
                                         else:   # 3, 4
                                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                                        reset_clicks(self)
 
                 except TypeError: pass
 
@@ -141,11 +162,7 @@ class Collisions:
                     else: 
                         Collisions.render_after = False
 
-        # Peale checkimist clearib click x/y history ära
-        if self.click_window_x and self.click_window_y:
-            # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni
-            self.click_window_x = None
-            self.click_window_y = None
+        reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
         Collisions.collision_hitbox(self)
 
