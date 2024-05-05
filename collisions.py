@@ -58,7 +58,6 @@ def yellow_green(self, color):
     elif color == 'green':
         for i in range(8):
             x, y = find_number_in_list_of_lists(self.terrain_data, 550)
-            Collisions.portal_frames.add((x, y))
 
             self.terrain_data[x][y] = 555
             reset_clicks(self)
@@ -68,8 +67,6 @@ class Collisions:
 
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock: int = 0
-
-    portal_frames: set = set()
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -123,7 +120,6 @@ class Collisions:
                         if object_id == 982:
                             if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
-                                Collisions.portal_frames = set()  # Clearib portal frame'ide listi ära
 
                                 Tile_Sounds.portal_close_audio(self)
                                 Tile_Sounds.pop_key_audio(self)
