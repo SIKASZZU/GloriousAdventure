@@ -38,35 +38,42 @@ class MapData:
             return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
     
-    # Create end maze
-    def final_maze_creation(start_side):
-        maze = []
-        with open('final_maze.txt', 'r') as file:
-            maze = [[int(x) if x.strip().lower() != 'none' else None
-                     for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
-                    for line in file if line.strip()]
+    @staticmethod
+    def file_to_maze(file_name: str, side: str =None):
 
-        size = len(maze)
-    
-        # Set the start point
-        if start_side == 'left':
-            start_0 = (size // 2, 0)
-            start_1 = (size // 2 - 1, 0)
-            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
-        elif start_side == 'top':
-            start_0 = (0, size // 2)
-            start_1 = (0, size // 2 - 1)
-            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
-        elif start_side == 'right':
-            start_0 = (size // 2, size - 1)
-            start_1 = (size // 2 - 1, size - 1)
-            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
-        elif start_side == 'bottom':
-            start_0 = (size - 1, size // 2)
-            start_1 = (size - 1, size // 2 - 1)
-            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
-    
-        return maze
+        if side is None:
+            with open('glade.txt', 'r') as file_name:
+                return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                        for line in file_name if line.strip()]
+
+        else:
+            maze = []
+            with open(file_name, 'r') as file_name:
+                maze = [[int(x) if x.strip().lower() != 'none' else None
+                         for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                        for line in file_name if line.strip()]
+
+            size = len(maze)
+
+            # Set the start point
+            if side == 'left':
+                start_0 = (size // 2, 0)
+                start_1 = (size // 2 - 1, 0)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+            elif side == 'top':
+                start_0 = (0, size // 2)
+                start_1 = (0, size // 2 - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+            elif side == 'right':
+                start_0 = (size // 2, size - 1)
+                start_1 = (size // 2 - 1, size - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+            elif side == 'bottom':
+                start_0 = (size - 1, size // 2)
+                start_1 = (size - 1, size // 2 - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+
+            return maze
 
 
     def maze_generation(shape, res):
@@ -186,7 +193,7 @@ class MapData:
 
         # Maze keyholders
         MapData.keyholders = []
-        for i in range(2):
+        for i in range(50):
             keyholder_x = random.randint(3, (size - 3))
             keyholder_y = random.randint(3, (size - 3))
             MapData.converted_maze[keyholder_x][keyholder_y] = 981
@@ -261,11 +268,18 @@ class MapData:
         # Your existing method to generate data based on the item type
 
         if item.endswith('maze'):
-            if item == 'final_maze': return MapData.final_maze_creation(start_side)
-            else: return MapData.create_maze_with_perlin_noise(start_side)
-        
+            if item == 'final_maze':
+                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+
+            elif UniversalVariables.maze_counter == 1:
+                item = 'blade_maze'
+                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+
+            else:
+                return MapData.create_maze_with_perlin_noise(start_side)
+
         elif item == 'glade':
-            return MapData.glade_creation()
+            return MapData.file_to_maze(file_name=f'{item}.txt')  # Glade'il pole start side
 
         elif item == 'place':
             # Assuming 'place' is a grid of None values
@@ -276,7 +290,6 @@ class MapData:
         else:
             # Handle other cases or raise an error
             raise ValueError("Unknown item type")
-
 
     def map_list_to_map(self, start_side='bottom'):
         difference = []
