@@ -103,6 +103,7 @@ class Collisions:
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
+
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
                                 print('No available Maze key in inventory. ')
@@ -125,9 +126,8 @@ class Collisions:
                                 Tile_Sounds.insert_key_audio(self)
                                 gray_yellow(self, 'yellow')
 
-                        # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
-                        if object_id == 982:
 
+                        if object_id == 982:
                             if UniversalVariables.final_maze != True:
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotti
@@ -136,9 +136,8 @@ class Collisions:
                                 Tile_Sounds.insert_key_audio(self)
                                 reset_clicks(self)
 
-                            if count_occurrences_in_list_of_lists(self.terrain_data,
-                                                                  555) and count_occurrences_in_list_of_lists(
-                                    self.terrain_data, 982) <= 8:
+                            # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
+                            if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
@@ -152,6 +151,7 @@ class Collisions:
 
                                 Tile_Sounds.pop_key_audio(self)
                                 gray_yellow(self, 'gray')
+
 
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
@@ -193,19 +193,26 @@ class Collisions:
                                                                                 grid_y)  # Vaatab y coordinaati
                                         reset_clicks(self)
 
-                        if UniversalVariables.final_maze == True and UniversalVariables.portal_frames > 0:
-                            _ = UniversalVariables.portal_frames
-                            for i in range(_):
-                                gray_yellow(self, 'yellow')
-                                UniversalVariables.portal_frames -= 1
 
-                            count_occurrences_in_list_of_lists(self.terrain_data, 550)
+                        if UniversalVariables.final_maze == True:
+                            if UniversalVariables.portal_frames > 0:
+                                _ = UniversalVariables.portal_frames
+                                for i in range(_):
+                                    gray_yellow(self, 'yellow')
 
-                        # Teeb portali valmis
-                        if count_occurrences_in_list_of_lists(self.terrain_data, 550) >= 8:
-                            Tile_Sounds.portal_open_audio(self)
+                                    UniversalVariables.portal_frames -= 1
+                                    print('i', i)
 
-                            yellow_green(self, 'green')
+                                    if i == 7:
+                                        UniversalVariables.portal_frames = 0
+                                        break
+
+                            # Teeb portali valmis
+                            if count_occurrences_in_list_of_lists(self.terrain_data, 982) >= 8:
+                                Tile_Sounds.portal_open_audio(self)
+
+                                yellow_green(self, 'green')
+
 
                 except TypeError:
                     pass
