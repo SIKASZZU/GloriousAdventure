@@ -118,27 +118,30 @@ class Collisions:
 
                         # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
                         if object_id == 982:
-                            if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
+                            
+                            # kui on olemas green, ja count on v2iksem ss disable
+                            if UniversalVariables.final_maze == True:
+                                if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+                                    Tile_Sounds.portal_close_audio(self)
+                                    yellow_green(self, 'yellow')
+                                    
+                                    self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
+                                    Tile_Sounds.pop_key_audio(self)
+                                    ObjectManagement.add_object_from_inv('Maze_Key')
 
-                                Tile_Sounds.portal_close_audio(self)
-                                Tile_Sounds.pop_key_audio(self)
-                                yellow_green(self, 'yellow')
-
-                            else:  # Kui slotist võtad key ära
-                                ObjectManagement.add_object_from_inv('Maze_Key')
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
-
-                                Tile_Sounds.pop_key_audio(self)
-                                gray_yellow(self, 'gray')
+                                else:  
+                                    gray_yellow(self, 'gray')
+                                    
+                                    self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
+                                    Tile_Sounds.pop_key_audio(self)
+                                    ObjectManagement.add_object_from_inv('Maze_Key')
 
                         # Ootab õiget aega kuna portal valmis teha
                         if count_occurrences_in_list_of_lists(self.terrain_data, 550) >= 8:
                             Tile_Sounds.portal_open_audio(self)
 
                             # Teeb portali roheliseks
-                            for i in range(8):
-                                yellow_green(self, 'green')
+                            yellow_green(self, 'green')
 
 
                         # Clickides saab avada ukse - uue maze
