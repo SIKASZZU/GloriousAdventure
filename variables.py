@@ -120,7 +120,7 @@ class UniversalVariables:
     enemy_counter = 0
     final_maze = bool
     final_maze_key_slots: set = set()
-    portal_frames: list = []
+    portal_frames: int = 0
 
     # ******************** Render ******************** #
     map_list = [['maze'], ['glade']]

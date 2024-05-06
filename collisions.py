@@ -98,8 +98,6 @@ class Collisions:
 
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
-                        print('self.terrain_data[terrain_grid_y][terrain_grid_x]', self.terrain_data[terrain_grid_y][terrain_grid_x])
-                        count_filled_keyholders = count_occurrences_in_list_of_lists(self.terrain_data, 982)
 
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory: # and UniversalVariables.final_maze == True:
@@ -107,9 +105,16 @@ class Collisions:
                                 reset_clicks(self)
                                 return
 
+                            if UniversalVariables.final_maze != True:
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
+                                ObjectManagement.remove_object_from_inv('Maze_Key')
+                                UniversalVariables.portal_frames += 1
+
+                                Tile_Sounds.insert_key_audio(self)
+                                reset_clicks(self)
+
                             # Kui clickid tühja keysloti peale ja key on invis
                             else:
-
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
                                 ObjectManagement.remove_object_from_inv('Maze_Key')
 
@@ -118,7 +123,17 @@ class Collisions:
 
                         # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
                         if object_id == 982:
+
+                            if UniversalVariables.final_maze != True:
+                                ObjectManagement.add_object_from_inv('Maze_Key')
+                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotti
+                                UniversalVariables.portal_frames -= 1
+
+                                Tile_Sounds.insert_key_audio(self)
+                                reset_clicks(self)
+
                             if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+                                ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
                                 Tile_Sounds.portal_close_audio(self)
@@ -132,15 +147,6 @@ class Collisions:
                                 Tile_Sounds.pop_key_audio(self)
                                 gray_yellow(self, 'gray')
 
-                        # Ootab õiget aega kuna portal valmis teha
-                        if count_occurrences_in_list_of_lists(self.terrain_data, 550) >= 8:
-                            Tile_Sounds.portal_open_audio(self)
-
-                            # Teeb portali roheliseks
-                            for i in range(8):
-                                yellow_green(self, 'green')
-
-
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentsialsUpdate.day_night_text != 'Day':
@@ -152,6 +158,7 @@ class Collisions:
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
                                     print('No available Maze key in inventory. ')
+
                                     reset_clicks(self)
                                     return
                                 
@@ -176,6 +183,20 @@ class Collisions:
                                         else:   # 3, 4
                                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
                                         reset_clicks(self)
+
+                        if UniversalVariables.final_maze == True and UniversalVariables.portal_frames > 0:
+                            _ = UniversalVariables.portal_frames
+                            for i in range(_):
+                                gray_yellow(self, 'yellow')
+                                UniversalVariables.portal_frames -= 1
+
+                            count_occurrences_in_list_of_lists(self.terrain_data, 550)
+
+                        # Teeb portali valmis
+                        if count_occurrences_in_list_of_lists(self.terrain_data, 550) >= 8:
+                            Tile_Sounds.portal_open_audio(self)
+
+                            yellow_green(self, 'green')
 
                 except TypeError: pass
 

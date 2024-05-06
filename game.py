@@ -148,7 +148,7 @@ class Game:
             Game.call_visuals(self)
             Game.check_keys(self)
             Game.refresh_loop(self)
-            Game.printing(self)
+            # Game.printing(self)
 
 
 if __name__ == "__main__":
