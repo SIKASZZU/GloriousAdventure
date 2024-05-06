@@ -46,7 +46,7 @@ class Game:
     
     # ******************** RANDOM/DEBUG ******************** #
     print__hp = 0
-
+    restrict_looping = False
 
     def __init__(self):
         glade_data = None
@@ -137,6 +137,11 @@ class Game:
         Camera.print_clicks(self)
         self.player.health.print_health()
 
+    def custom_addition():
+        if Game.restrict_looping == False:
+            ObjectManagement.add_object_from_inv("Maze_Key", 1000)
+            Game.restrict_looping = True
+            
     def run(self):
 
         while True:
@@ -148,7 +153,9 @@ class Game:
             Game.call_visuals(self)
             Game.check_keys(self)
             Game.refresh_loop(self)
-            # Game.printing(self)
+
+            Game.printing(self)
+            Game.custom_addition()
 
 
 if __name__ == "__main__":

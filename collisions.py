@@ -11,6 +11,7 @@ from mazecalculation import AddingMazeAtPosition
 from camera import Camera
 from audio import Tile_Sounds  # insert_key_audio, pop_key_audio, portal_open_audio
 
+
 def find_number_in_list_of_lists(list_of_lists, number):
     for row_index, sublist in enumerate(list_of_lists):
         for col_index, element in enumerate(sublist):
@@ -34,6 +35,7 @@ def reset_clicks(self):
         self.click_window_x = None
         self.click_window_y = None
 
+
 def gray_yellow(self, color):
     if color == 'gray':
         x, y = find_number_in_list_of_lists(self.terrain_data, 550)
@@ -44,6 +46,7 @@ def gray_yellow(self, color):
         x, y = find_number_in_list_of_lists(self.terrain_data, 500)
         self.terrain_data[x][y] = 550
         reset_clicks(self)
+
 
 def yellow_green(self, color):
     if color == 'yellow':
@@ -64,7 +67,6 @@ def yellow_green(self, color):
 
 
 class Collisions:
-
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock: int = 0
 
@@ -77,7 +79,8 @@ class Collisions:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
             obj_collision_box = (
-            collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y)
+                collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id,
+                collision_box_offset_x, collision_box_offset_y)
 
             terrain_x: int = collision_box_x - collision_box_offset_x
             terrain_y: int = collision_box_y - collision_box_offset_y
@@ -90,7 +93,8 @@ class Collisions:
 
                     interaction_boxes[object_id] = (width, height)
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
+                                                height)  # See on täpsemate arvudega, kui self.collision_box
 
             if self.click_window_x and self.click_window_y:
                 try:
@@ -100,7 +104,7 @@ class Collisions:
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
                         if object_id == 981:  # Paneb key
-                            if not 'Maze_Key' in Inventory.inventory: # and UniversalVariables.final_maze == True:
+                            if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
                                 print('No available Maze key in inventory. ')
                                 reset_clicks(self)
                                 return
@@ -132,7 +136,9 @@ class Collisions:
                                 Tile_Sounds.insert_key_audio(self)
                                 reset_clicks(self)
 
-                            if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+                            if count_occurrences_in_list_of_lists(self.terrain_data,
+                                                                  555) and count_occurrences_in_list_of_lists(
+                                    self.terrain_data, 982) <= 8:
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
@@ -161,7 +167,7 @@ class Collisions:
 
                                     reset_clicks(self)
                                     return
-                                
+
                                 else:
                                     if UniversalVariables.maze_counter >= 2:
                                         UniversalVariables.final_maze = True
@@ -170,7 +176,8 @@ class Collisions:
                                         Collisions.keylock += 1
 
                                         # Sellega saab suuna kätte, '94: 3' - vasakule
-                                        locations = {95: 1, 97: 2, 94: 3, 96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                        locations = {95: 1, 97: 2, 94: 3,
+                                                     96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                                         location = locations[object_id]
 
                                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
@@ -179,9 +186,11 @@ class Collisions:
                                         i = (grid_x // 39) * 39  # X kooridnaat
 
                                         if location == 1 or location == 2:
-                                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id, grid_y)  # Vaatab x coordinaati
-                                        else:   # 3, 4
-                                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id, grid_y)  # Vaatab y coordinaati
+                                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id,
+                                                                                grid_y)  # Vaatab x coordinaati
+                                        else:  # 3, 4
+                                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
+                                                                                grid_y)  # Vaatab y coordinaati
                                         reset_clicks(self)
 
                         if UniversalVariables.final_maze == True and UniversalVariables.portal_frames > 0:
@@ -198,7 +207,8 @@ class Collisions:
 
                             yellow_green(self, 'green')
 
-                except TypeError: pass
+                except TypeError:
+                    pass
 
             if self.player_rect.colliderect(collision_object_rect):
                 if keys[pygame.K_SPACE]:
@@ -210,23 +220,23 @@ class Collisions:
                 else:
                     if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
                         Collisions.render_after = True
-                    else: 
+                    else:
                         Collisions.render_after = False
 
         reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
         Collisions.collision_hitbox(self)
 
-
     def collision_hitbox(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         for \
                 collision_box_x, collision_box_y, \
-                collision_box_width, collision_box_height,\
-                object_id, collision_box_offset_x,\
-                collision_box_offset_y in UniversalVariables.collision_boxes:
+                        collision_box_width, collision_box_height, \
+                        object_id, collision_box_offset_x, \
+                        collision_box_offset_y in UniversalVariables.collision_boxes:
 
-            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width,
+                                                  collision_box_height)
 
             # Kui player jookseb siis ta ei lähe läbi objektide
             if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
@@ -240,9 +250,9 @@ class Collisions:
 
                 # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
                 dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
-                            UniversalVariables.player_width / 2 + collision_box_width / 2)
+                        UniversalVariables.player_width / 2 + collision_box_width / 2)
                 dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
-                            UniversalVariables.player_height / 2 + collision_box_height / 2)
+                        UniversalVariables.player_height / 2 + collision_box_height / 2)
 
                 # Horisontaalne kokkupuude
                 if abs(dx) > abs(dy):
@@ -262,7 +272,6 @@ class Collisions:
                     else:
                         UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
 
-
     def collison_terrain(self) -> None:
         keys = pygame.key.get_pressed()
 
@@ -270,22 +279,24 @@ class Collisions:
         player_grid_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
-        for i in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
-            for j in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
+        for i in range(player_grid_col - RenderPictures.render_range,
+                       player_grid_col + RenderPictures.render_range + 1):
+            for j in range(player_grid_row - RenderPictures.render_range,
+                           player_grid_row + RenderPictures.render_range + 1):
 
                 # Vaatab terrain recti ja playeri collisoneid
-                terrain_rect = pygame.Rect(j * UniversalVariables.block_size, i * UniversalVariables.block_size, UniversalVariables.block_size, UniversalVariables.block_size)
+                terrain_rect = pygame.Rect(j * UniversalVariables.block_size, i * UniversalVariables.block_size,
+                                           UniversalVariables.block_size, UniversalVariables.block_size)
                 if self.player_rect.colliderect(terrain_rect):
                     sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
-                        keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
-                        keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
-                        keys[pygame.K_LSHIFT] and keys[pygame.K_s]
+                                keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
+                                keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
+                                keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                     # Kontrollib kas terrain block jääb faili terrain_data piiridesse
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
 
                         in_water = self.terrain_data[i][j] == 0
 
-                        
                         if in_water != True:
                             # Player asub maal
                             if sprinting:
