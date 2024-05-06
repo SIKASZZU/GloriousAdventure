@@ -449,6 +449,16 @@ items_list = [
         "Render_when": (block_size * -1)
         },
 
+    {
+        "Type": "Object",
+        "Name": "Endgate",
+        "ID": 1000,
+        "Breakable": False,
+        "Object_width": int(block_size * 2),
+        "Object_height": int(block_size * 2),
+        "Render_when": (block_size * -1)
+        },
+
 ]
 
 # Testida asju mis on seotud ainult item'ga

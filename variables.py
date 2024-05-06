@@ -126,8 +126,8 @@ class UniversalVariables:
     map_list = [['maze'], ['glade']]
     blits_sequence = []
     text_sequence = []
-    no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982,]
-    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555]
+    no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982]
+    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555, 1000]
 
     offset_x: int = 0
     offset_y: int = 0

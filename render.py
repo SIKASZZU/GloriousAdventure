@@ -133,6 +133,10 @@ class RenderPictures:
                             if terrain_value == 10 or terrain_value == 11:
                                 image = ImageLoader.load_image('Maze_Ground_Keyhole')
 
+                            # Loadib Key ja keyholeiga groundi
+                            if terrain_value == 1000:
+                                image = ImageLoader.load_image('Maze_Ground')
+
 
                             position = (i, j)  # Using grid indices directly for the position
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
@@ -237,7 +241,9 @@ class CreateCollisionBoxes:
                          5: 2,
                          2: 3,
                          4: 4,
-                         7: 5}  # Last to be rendered
+                         7: 5,
+                         988: 6, 
+                         1000: 7}  # Last to be rendered
 
         # Sort the collision_boxes list based on the custom sort order
         UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,

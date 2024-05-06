@@ -144,6 +144,8 @@ class Collisions:
                                 Tile_Sounds.portal_close_audio(self)
                                 Tile_Sounds.pop_key_audio(self)
                                 yellow_green(self, 'yellow')
+                                x, y = find_number_in_list_of_lists(self.terrain_data, 1000)
+                                self.terrain_data[x][y] = 988
 
                             else:  # Kui slotist võtad key ära
                                 ObjectManagement.add_object_from_inv('Maze_Key')
@@ -210,9 +212,9 @@ class Collisions:
                             # Teeb portali valmis
                             if count_occurrences_in_list_of_lists(self.terrain_data, 982) >= 8:
                                 Tile_Sounds.portal_open_audio(self)
-
                                 yellow_green(self, 'green')
-
+                                x, y = find_number_in_list_of_lists(self.terrain_data, 555)
+                                self.terrain_data[x+1][y] = 1000
 
                 except TypeError:
                     pass
