@@ -430,6 +430,26 @@ items_list = [
 
     {
         "Type": "Object",
+        "Name": "Maze_Wall",
+        "ID": 900,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Maze_Start_Bottom",
+        "ID": 909,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+    },
+
+    {
+        "Type": "Object",
         "Name": "Final_Maze_Ground",
         "ID": 988,
         "Breakable": False,
