@@ -148,6 +148,7 @@ class Collisions:
                                 self.terrain_data[x][y] = 988
 
                                 UniversalVariables.portal_list = []
+                                UniversalVariables.portal_frame_rect = None
 
                             else:  # Kui slotist võtad key ära
                                 ObjectManagement.add_object_from_inv('Maze_Key')
