@@ -45,36 +45,53 @@ class PlayerUpdate:
 
     def update_player(self) -> None:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
-        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
+        if UniversalVariables.cutscene:  # Check if cutscene is active
+            keys = pygame.key.get_pressed()  # Track keyboard inputs
 
-        # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
-        new_player_x: int = UniversalVariables.player_x
-        new_player_y: int = UniversalVariables.player_y
-
-        if keys[pygame.K_LSHIFT]:
-            self.frame_delay = 10  # Adjust running speed
-        else:
-            self.frame_delay = 7  # Default walking speed
-
-        if keys[pygame.K_d]:
-            self.animation_index = 1  # Right animation
-            UniversalVariables.last_input = 'd'
-        if keys[pygame.K_a]:
-            self.animation_index = 0  # Left animation
-            UniversalVariables.last_input = 'a'
-        if keys[pygame.K_s]:
-            self.animation_index = 3  # Down animation
-            UniversalVariables.last_input = 's'
-            if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
-            if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
-        if keys[pygame.K_w]:
             self.animation_index = 2  # Up animation
             UniversalVariables.last_input = 'w'
-            if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
-            if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
 
-        x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
-        y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
+            x = 0 * int(keys[pygame.K_a]) + 0 * int(keys[pygame.K_d])
+            y = 0 * int(keys[pygame.K_w]) + 0 * int(keys[pygame.K_s])
+
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    # Handle pressing Escape during cutscene
+                    UniversalVariables.cutscene = False  # Deactivate cutscene
+
+
+        else:
+            keys = pygame.key.get_pressed()  # Track keyboard inputs
+
+            # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
+            new_player_x: int = UniversalVariables.player_x
+            new_player_y: int = UniversalVariables.player_y
+
+            if keys[pygame.K_LSHIFT]:
+                self.frame_delay = 10  # Adjust running speed
+            else:
+                self.frame_delay = 7  # Default walking speed
+
+            if keys[pygame.K_d]:
+                self.animation_index = 1  # Right animation
+                UniversalVariables.last_input = 'd'
+            if keys[pygame.K_a]:
+                self.animation_index = 0  # Left animation
+                UniversalVariables.last_input = 'a'
+            if keys[pygame.K_s]:
+                self.animation_index = 3  # Down animation
+                UniversalVariables.last_input = 's'
+                if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
+                if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
+            if keys[pygame.K_w]:
+                self.animation_index = 2  # Up animation
+                UniversalVariables.last_input = 'w'
+                if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
+                if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
+
+            x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
+            y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
 
         magnitude = math.sqrt(x ** 2 + y ** 2)
         if magnitude == 0:
@@ -120,7 +137,9 @@ class PlayerUpdate:
             (self.frame, player_position_adjusted)
             # Add other blit operations here if they exist in the same rendering context.
         ]
-        UniversalVariables.screen.blits(blit_operations, doreturn=False)
+
+        if UniversalVariables.cutscene == False:
+            UniversalVariables.screen.blits(blit_operations, doreturn=False)
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
         player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
@@ -266,6 +285,7 @@ class EssentsialsUpdate:
 
 
     def render_general(self):
+        Inventory.call_inventory(self)
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
         ui_elements = [

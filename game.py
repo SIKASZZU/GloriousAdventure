@@ -144,7 +144,7 @@ class Game:
             Game.restrict_looping = True
             
     def run(self):
-
+        xxx = 0
         while True:
             Game.events(self)
             Game.load_variables(self)
@@ -157,17 +157,21 @@ class Game:
 
             # Game.printing(self)
             Game.custom_addition()
-
+            xxx += 1
 
             if UniversalVariables.portal_frame_rect:
 
                 if UniversalVariables.portal_frame_rect.colliderect(self.player_rect):
-                    UniversalVariables.player_x = 0
-                    UniversalVariables.player_y = 0
+                    UniversalVariables.cutscene = True
+                    xxx = 0
+
+                    UniversalVariables.portal_frame_rect = None
+                    UniversalVariables.portal_list = []
 
                 pygame.display.flip()
 
-            print(UniversalVariables.portal_frame_rect)
+            if xxx == 100:
+                UniversalVariables.cutscene = False
 
 if __name__ == "__main__":
     game = Game()

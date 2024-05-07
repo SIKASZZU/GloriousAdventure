@@ -102,7 +102,7 @@ class UniversalVariables:
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     health_status = None
-    player_range = block_size * 1.5
+    player_range = block_size * 15
 
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
@@ -122,6 +122,8 @@ class UniversalVariables:
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 
+
+    cutscene = False
     portal_frame_rect = None
     portal_list = []
 

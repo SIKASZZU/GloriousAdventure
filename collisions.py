@@ -204,9 +204,7 @@ class Collisions:
                                 _ = UniversalVariables.portal_frames
                                 for i in range(_):
                                     gray_yellow(self, 'yellow')
-
                                     UniversalVariables.portal_frames -= 1
-                                    print('i', i)
 
                                     if i == 7:
                                         UniversalVariables.portal_frames = 0

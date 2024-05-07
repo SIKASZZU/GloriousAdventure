@@ -69,17 +69,19 @@ class Inventory:
 
     def handle_crafting_click(self, x: int, y: int) -> None:
         """ Lubab hiit kasutades craftida """
+        try:
+            for item_name, rect in Inventory.craftable_items_display_rects.items():
+                if rect.collidepoint(x, y):
+                    crafted_item = Inventory.craft_item(self, item_name)  # Pass 'self' and 'item_name'
+                    if crafted_item:
+                        # Eemaldab invist craftitud itemi tegemiseks vajalikud materjalid
+                        for required_item, required_amount in items_list[item_name]["Recipe"].items():
+                            Inventory.remove_item(self, required_item, required_amount)  # Pass 'self'
 
-        for item_name, rect in Inventory.craftable_items_display_rects.items():
-            if rect.collidepoint(x, y):
-                crafted_item = Inventory.craft_item(self, item_name)  # Pass 'self' and 'item_name'
-                if crafted_item:
-                    # Eemaldab invist craftitud itemi tegemiseks vajalikud materjalid
-                    for required_item, required_amount in items_list[item_name]["Recipe"].items():
-                        Inventory.remove_item(self, required_item, required_amount)  # Pass 'self'
+                        # Lisab craftitud itemi invi
+                        Inventory.add_item(self, crafted_item)
 
-                    # Lisab craftitud itemi invi
-                    Inventory.add_item(self, crafted_item)
+        except AttributeError: return
 
     def check_slot(self, index: int) -> None:
         """Checks what's in the inventory's selected slot."""
@@ -121,35 +123,34 @@ class Inventory:
         total_rows: int = 6  # Max: 9
         total_cols: int = 3  # Max: 9
 
-        # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
-        rect_x: int = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2 + UniversalVariables.offset_x
-        rect_y: int = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4 + UniversalVariables.offset_y
+        # Calculate inventory position relative to player and screen size
+        rect_x: int = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2  # Siia ei tohi offsetti panna
+        rect_y: int = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4  # Siia ei tohi offsetti panna
 
-        right_side: int = UniversalVariables.screen.get_size()[0] - (Camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6 # 1000 - (100 * 2) = 800
-        left_side: int = Camera.camera_borders['left'] * 2 # 100
+        right_side: int = UniversalVariables.screen.get_size()[0] - (
+                    Camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
+        left_side: int = Camera.camera_borders['left'] * 2
 
-        if rect_x >= right_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
+        if rect_x >= right_side:
             rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + UniversalVariables.offset_x
-
-        elif rect_x >= left_side:  # invi visuaalselt n2itamine vasakul, kui see paremast 22rest v2lja l2heb
+        elif rect_x >= left_side:
             rect_x = UniversalVariables.player_x + UniversalVariables.block_size * 2 / 2 + UniversalVariables.offset_x
 
+        # Create inventory rectangles
         for rows in range(total_rows):
             for cols in range(total_cols):
                 rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
                 Inventory.inventory_display_rects.append(rect)
 
-
-
     def render_inventory(self) -> None:
         """ Callib calculate_inventory,
         renderib invi, invis olevad
         itemid ja nende kogused """
-        if not Inventory.inventory_display_rects:
-            Inventory.calculate_inventory(self)
+        Inventory.calculate_inventory(self)
 
         # Tekitab semi-transparent recti
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)
+        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+                                 pygame.SRCALPHA)
         overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
 
         # Mustad boxid itemite ümber
@@ -174,17 +175,23 @@ class Inventory:
 
                     # Paneb itembi invi boxi keskele
                     item_image_rect = item_image.get_rect(center=item_rect.center)
-                # font, numbrid itemite loetlemiseks
-                font = pygame.font.Font(None, 20)
-                text = font.render(str(count), True, 'Black')
-                text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
 
-                # Displayb resized itemit
-                blit_operations = [
-                    (item_image, item_image_rect.topleft),
-                    (text, text_rect)
-                ]
-                UniversalVariables.screen.blits(blit_operations, doreturn=False)
+                    # font, numbrid itemite loetlemiseks
+                    font = pygame.font.Font(None, 20)
+                    text = font.render(str(count), True, 'Black')
+                    text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
+
+                    # Displayb resized itemit
+                    blit_operations = []
+                    if item_image:
+                        blit_operations.append((item_image, item_image_rect.topleft))
+                    if text:
+                        blit_operations.append((text, text_rect.topleft))
+
+                    try:
+                        UniversalVariables.screen.blits(blit_operations, doreturn=False)
+                    except Exception as e:
+                        print(f"Error blitting: {e}")
 
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida
