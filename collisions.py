@@ -147,6 +147,8 @@ class Collisions:
                                 x, y = find_number_in_list_of_lists(self.terrain_data, 1000)
                                 self.terrain_data[x][y] = 988
 
+                                UniversalVariables.portal_list = []
+
                             else:  # Kui slotist võtad key ära
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
@@ -216,10 +218,16 @@ class Collisions:
                                     return
 
                                 else:
+                                    UniversalVariables.portal_list = []
                                     Tile_Sounds.portal_open_audio(self)
                                     yellow_green(self, 'green')
                                     x, y = find_number_in_list_of_lists(self.terrain_data, 555)
                                     self.terrain_data[x+1][y] = 1000
+                                    portal_y, portal_x =\
+                                        ((x+1) * UniversalVariables.block_size) + UniversalVariables.block_size / 2,\
+                                        (y * UniversalVariables.block_size) + UniversalVariables.block_size / 2
+
+                                    UniversalVariables.portal_list.append((portal_x, portal_y))
 
                 except TypeError:
                     pass

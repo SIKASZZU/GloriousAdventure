@@ -90,6 +90,7 @@ class Game:
         
         CreateCollisionBoxes.object_list_creation(self)  # Creatib UniversalVariables.collision_boxes
         vision.find_boxes_in_window()
+
         self.player.health.check_health()
         Enemy.update(self)
         # Inventory.call_inventory(self)  # doesn't visualize, just calculates
@@ -157,6 +158,16 @@ class Game:
             # Game.printing(self)
             Game.custom_addition()
 
+
+            if UniversalVariables.portal_frame_rect:
+
+                if UniversalVariables.portal_frame_rect.colliderect(self.player_rect):
+                    UniversalVariables.player_x = 0
+                    UniversalVariables.player_y = 0
+
+                pygame.display.flip()
+
+            print(UniversalVariables.portal_frame_rect)
 
 if __name__ == "__main__":
     game = Game()

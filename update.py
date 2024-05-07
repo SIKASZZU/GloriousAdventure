@@ -128,9 +128,19 @@ class PlayerUpdate:
                                   UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
         self.player_rect = player_rect
 
+
+        if UniversalVariables.portal_list != []:
+            x, y = int(UniversalVariables.portal_list[0][0]), int(UniversalVariables.portal_list[0][1])
+            UniversalVariables.portal_frame_rect = pygame.Rect(x + UniversalVariables.offset_x,
+                                                           y + UniversalVariables.offset_y,
+                                                           UniversalVariables.block_size, UniversalVariables.block_size)
+
         # renderib playeri hitboxi
         if (ObjectManagement.hitbox_count % 2) != 0:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
+
+            if UniversalVariables.portal_list != []:
+                pygame.draw.rect(UniversalVariables.screen, "orange", UniversalVariables.portal_frame_rect, 2)
 
 
     def render_HUD(self) -> None:

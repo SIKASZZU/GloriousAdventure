@@ -122,6 +122,9 @@ class UniversalVariables:
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 
+    portal_frame_rect = None
+    portal_list = []
+
     # ******************** Render ******************** #
     map_list = [['maze'], ['glade']]
     blits_sequence = []
