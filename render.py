@@ -67,7 +67,7 @@ class RenderPictures:
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         try:
-            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items:
+            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
                 RenderPictures.render_range = 2
                 i_range_0, i_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 j_range_0, j_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
