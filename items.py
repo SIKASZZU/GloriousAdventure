@@ -260,6 +260,50 @@ items_list = [
         },
     {
         "Type": "Object",
+        "Name": "Maze_Blade",
+        "ID": 9099,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0.5, 0.5, 0.75, 0.75],
+        "Object_width": int(block_size * 0.25),
+        "Object_height": int(block_size * 0.25),
+        "Render_when": -block_size
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Blade_Changer_On",
+        "ID": 989,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Blade_Changer_Off",
+        "ID": 989,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Blade_Stationary",
+        "ID": 900,
+        "Breakable": False,
+        "Block_vision": True,
+        "Collision_box": [0, 0, 1, 1],
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+        },
+    {
+        "Type": "Object",
         "Name": "Maze_Start_Left",
         "ID": 90,
         "Breakable": False,
