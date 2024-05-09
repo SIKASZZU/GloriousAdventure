@@ -25,23 +25,28 @@ class ObjectManagement:
                         try:
                             # Kontrollib kas jääb mapi sissse
                             if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
-                                position = (grid_col, grid_row)
+
 
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
                                 if object_id == 10: 
                                     self.terrain_data[grid_row][grid_col] = 11
+                                    
+                                    position = (grid_col, grid_row)
                                     image = ImageLoader.load_image("Maze_Ground_Keyhole")
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, object_id)
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, 11)
 
                                 elif object_id == 7:
+                                    print('object_id',object_id)
                                     self.terrain_data[grid_row][grid_col] = 107
+
+                                    position = (grid_col, grid_row)
                                     image = ImageLoader.load_image("Farmland")
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, object_id)
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, 107)
 
                                 else: 
                                     self.terrain_data[grid_row][grid_col] = 1
-                                    # mida me siin resizeme >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
+                                    # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
 
 
                                 ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
