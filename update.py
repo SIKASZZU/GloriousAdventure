@@ -6,7 +6,6 @@ from images import ImageLoader
 from HUD import HUD_class
 from inventory import Inventory
 from sprite import AnimationManager
-from objects import ObjectManagement
 from sprite import load_sprite_sheets
 from components import StaminaComponent
 from variables import UniversalVariables
@@ -155,7 +154,7 @@ class PlayerUpdate:
                                                            UniversalVariables.block_size, UniversalVariables.block_size)
 
         # renderib playeri hitboxi
-        if (ObjectManagement.hitbox_count % 2) != 0:
+        if (UniversalVariables.hitbox_count % 2) != 0:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
@@ -268,7 +267,7 @@ class EssentsialsUpdate:
         # H key, HITBOX KEY
         if keys[pygame.K_h] and not self.h_pressed:
             self.h_pressed = True
-            ObjectManagement.hitbox_count += 1
+            UniversalVariables.hitbox_count += 1
         elif not keys[pygame.K_h]: self.h_pressed = False
 
         # J KEY, LIGHT ON/OFF KEY
