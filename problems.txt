@@ -1,2 +1,20 @@
 # glade
     minnes glade'is playeriga vasakule v6i yles vastu seina, ss tekib vision cone.
+
+# resolutsioon, player asukoht
+    pst, kui muuta resolutsiooni, ss kaamera box ei luba vmdgi playeril mingist ekraani osast edasi minna, vaid liigutab kaamerat.
+    Player location on monitoril fixed vmdgi. M6ne resoltusiooniga on player windowi keskel aga m6nega yleval 22res. 
+    
+# images
+    FARMLAND
+        farmlandi image on perses, kui player v6tab wheati, tekib topelt image ja not resized.
+    
+    MAZE_GROUND, UKSED
+        renderis If statement, et uste alla maze ground teha, ei tee midagi/
+                """ 
+                ### PROBLEM: SEE KOODI LOOP JA IF STATEMENT EI TEE MIDAGI
+                # YLEMINE LINE "if terrain_value in UniversalVariables.no_terrain_background_items:" teeb M_Groundi uste alla!!!!!!
+                """
+                
+        Uksed pole resized, maze keyholderid pole resized, objektid ka mitte.
+    
