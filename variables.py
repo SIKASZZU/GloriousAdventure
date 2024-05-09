@@ -70,8 +70,8 @@ class UniversalVariables:
     # ******************** Settings ******************** #
 
     # Windowi suurus x, y
-    screen_x: int = 1650
-    screen_y: int = 1020
+    screen_x: int = 1280  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
+    screen_y: int = 720
 
     # Mängu heli tugevus
     sound_volume: int = 0.05
@@ -146,6 +146,9 @@ class UniversalVariables:
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 10 + random.randint(-5, 5)
+
+    # ******************** Counters ******************** #
+    hitbox_count: int = 0
 
 
     # if mapdata is done, create enemy spawnpoints

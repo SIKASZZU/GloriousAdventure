@@ -3,11 +3,9 @@ from items import items_list
 from images import ImageLoader
 from inventory import Inventory
 from variables import UniversalVariables
-
+from render import RenderPictures  # resize images
 
 class ObjectManagement:
-
-    hitbox_count: int = 0
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_collision_box: tuple[int, ...],
                                   object_id: int = None) -> None:
@@ -28,16 +26,27 @@ class ObjectManagement:
                             # Kontrollib kas jääb mapi sissse
                             if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
 
+
                                 # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
                                 # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
                                 if object_id == 10: 
                                     self.terrain_data[grid_row][grid_col] = 11
+                                    
+                                    position = (grid_col, grid_row)
+                                    image = ImageLoader.load_image("Maze_Ground_Keyhole")
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, 11)
 
                                 elif object_id == 7:
+                                    print('object_id',object_id)
                                     self.terrain_data[grid_row][grid_col] = 107
+
+                                    position = (grid_col, grid_row)
+                                    image = ImageLoader.load_image("Farmland")
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, 107)
 
                                 else: 
                                     self.terrain_data[grid_row][grid_col] = 1
+                                    # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
 
 
                                 ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
@@ -158,7 +167,7 @@ class ObjectManagement:
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width * UniversalVariables.block_size / 109,
                                       object_height * UniversalVariables.block_size / 109)
 
-            if (ObjectManagement.hitbox_count % 2) != 0:
+            if (UniversalVariables.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,
                                                          collision_box_height)
                 if object_breakable:

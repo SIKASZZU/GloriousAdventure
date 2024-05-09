@@ -63,7 +63,7 @@ class RenderPictures:
         # Use the camera's position to determine the render range
         camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
         camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
-
+        
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         try:
@@ -71,10 +71,9 @@ class RenderPictures:
                 RenderPictures.render_range = 2
                 i_range_0, i_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 j_range_0, j_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
-
             else:
                 RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
-                    UniversalVariables.block_size) // 5
+                UniversalVariables.block_size) // 5
                 i_range_0, i_range_1  = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
                 j_range_0, j_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
 
@@ -86,14 +85,13 @@ class RenderPictures:
                     terrain_y: int = i * UniversalVariables.block_size + UniversalVariables.offset_y
 
                     # Salvestab koordinaadid listi, et neid saaks hiljem kasutada object list renderis
-                    try:
-                        self.row.append((j, i)),
-                    except IndexError:
-                        pass
+                    self.row.append((j, i))
 
                     # Kontrollib kas terrain block jääb faili terrain_data piiridesse
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                         terrain_value = self.terrain_data[i][j]
+                        position = (i, j)  # Using grid indices directly for the position
+                        
                         if terrain_value == None: pass
 
                         if terrain_value == 933 and not door_id == 933 or terrain_value == 977 and not door_id == 977:
@@ -108,49 +106,56 @@ class RenderPictures:
                             image_name = "Maze_Wall_" + str(random.randint(0, 9))
                             image = ImageLoader.load_image(image_name)
 
-                            position = (i, j)  # Using grid indices directly for the position
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                        # if terrain_value == 98:
-                        #     image_name = "Maze_Ground_" + str(random.randint(0, 1))
-                        #     image = ImageLoader.load_image(image_name)
-                        #
-                        #     position = (i, j)  # Using grid indices directly for the position
-                        #     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                        if terrain_value == 98:
+                            image = ImageLoader.load_image("Maze_Ground")
+                    
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
 
                         else:
                             if terrain_value in UniversalVariables.no_terrain_background_items:
                                 image = ImageLoader.load_image("Maze_Ground")
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             else:
-                                image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
-                                image = ImageLoader.load_image(image_name)
 
                                 door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 977, 933]
 
+                                ### PROBLEM: SEE KOODI LOOP JA IF STATEMENT EI TEE MIDAGI
+                                    # YLEMINE LINE "if terrain_value in UniversalVariables.no_terrain_background_items:" teeb M_Groundi uste alla!!!!!!
                                 if terrain_value in door_ids:
 
                                     for value in door_ids:
                                         if terrain_value == int(value):
                                             image = ImageLoader.load_image("Maze_Ground")
+                                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                                 # Loadib Wheat'i ja Farmland'i
                                 if terrain_value == 7 or terrain_value == 107:
                                     image = ImageLoader.load_image("Farmland")
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                                 # Loadib Key ja keyholeiga groundi
                                 if terrain_value == 10 or terrain_value == 11:
                                     image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                                # Loadib Key ja keyholeiga groundi
+                                # Loadib Endgate'i
                                 if terrain_value == 1000:
                                     image = ImageLoader.load_image('Maze_Ground')
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                
+                                if terrain_value in [981, 982]:
+                                    if terrain_value == 981: image = ImageLoader.load_image('Keyholder_without_key')
+                                    else: image = ImageLoader.load_image('Keyholder_with_key')
 
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                                position = (i, j)  # Using grid indices directly for the position
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                     terrain_value)
+                                image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                                image = ImageLoader.load_image(image_name)
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
