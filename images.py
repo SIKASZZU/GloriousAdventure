@@ -62,49 +62,52 @@ class ImageLoader:
 
                 image_path = None
 
-                # Peab siin ära LOADima, sest neid ei ole item_list'is
-                if image_name.startswith("Ground_"):
-                    image_path = f"images/Objects/Ground/{image_name}.png"
-
-                elif image_name.startswith("Water_"):
-                    image_path = f"images/Objects/Water/{image_name}.png"
-
-                elif image_name.startswith("Maze_Wall_"):
-                    image_path = f"images/Objects/{image_name}.png"
-
-                elif image_name.startswith("Maze_Ground_"):
-                    image_path = f"images/Objects/{image_name}.png"
-
-                elif image_name.startswith("Endgate"):
-                    image_path = f"images/Objects/{image_name}.png"
-
-                if image_path:
-                    loaded_image = pygame.image.load(image_path)
-                    converted_image = loaded_image.convert_alpha()
-                    ImageLoader.loaded_item_images[image_name] = converted_image
-                    print(f"{image_path} pre-loaded successfully.")
-                    return converted_image
-
                 for item in items_list:
                     name = item.get("Name")
 
-                    # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
-                    if name == image_name:
-                        item_type = item.get("Type")
+                    object_width = item.get("Object_width")
+                    object_height = item.get("Object_height")
+                    # Peab siin ära LOADima, sest neid ei ole item_list'is
+                    if image_name.startswith("Ground_"):
+                        image_path = f"images/Objects/Ground/{image_name}.png"
+                        name = "Ground"
 
-                        if item_type == "Object":
-                            image_path = f"images/Objects/{image_name}.png"
-                        elif item_type == "Mineral":
-                            image_path = f"images/Items/Minerals/{image_name}.png"
-                        elif item_type == "Tool":
-                            image_path = f"images/Items/Tools/{image_name}.png"
+                    elif image_name.startswith("Water_"):
+                        image_path = f"images/Objects/Water/{image_name}.png"
+                        name = "Water"
 
-                        if image_path:
-                            loaded_image = pygame.image.load(image_path)
-                            converted_image = loaded_image.convert_alpha()
-                            ImageLoader.loaded_item_images[image_name] = converted_image
-                            print(f"{image_path} pre-loaded successfully.")
-                            return converted_image
+                    elif image_name.startswith("Maze_Wall_"):
+                        image_path = f"images/Objects/{image_name}.png"
+                        name = "Maze_Wall"
+
+                    elif image_name.startswith("Maze_Ground_"):
+                        image_path = f"images/Objects/{image_name}.png"
+                        name = "Maze_Ground"
+
+                    elif image_name.startswith("Endgate"):
+                        image_path = f"images/Objects/{image_name}.png"
+                        name = "Endgate"
+                    if image_path == None:
+                        # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
+                        if name == image_name:
+                            item_type = item.get("Type")
+
+                            if item_type == "Object":
+                                image_path = f"images/Objects/{image_name}.png"
+                            elif item_type == "Mineral":
+                                image_path = f"images/Items/Minerals/{image_name}.png"
+                            elif item_type == "Tool":
+                                image_path = f"images/Items/Tools/{image_name}.png"
+
+                    if image_path:
+                        loaded_image = pygame.image.load(image_path)
+                        resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
+
+                        converted_image = resized_image.convert_alpha()
+                        ImageLoader.loaded_item_images[image_name] = converted_image
+
+                        print(f"{image_path} resized and pre-loaded successfully.")
+                        return converted_image
 
                 print(f"Error: '{image_name}' image not found.")
                 return None
