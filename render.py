@@ -7,6 +7,7 @@ from images import ImageLoader
 from update import EssentsialsUpdate
 from variables import UniversalVariables
 
+
 class RenderPictures:
     render_range: int = 0
     render_terrain_data: list = []
@@ -32,11 +33,7 @@ class RenderPictures:
         """
 
         if image:
-            scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
-            current_entry = [scaled_image, (terrain_x, terrain_y)]
-
-            if current_entry not in UniversalVariables.blits_sequence:
-                UniversalVariables.blits_sequence.append(current_entry)
+            current_entry = [image, (terrain_x, terrain_y)]
 
             occupied_positions_key = f"occupied_positions_{terrain_value}"
 
@@ -46,7 +43,7 @@ class RenderPictures:
             occupied_positions = getattr(RenderPictures, occupied_positions_key)
 
             if position not in occupied_positions:
-                occupied_positions[position] = scaled_image
+                occupied_positions[position] = image
             else:
                 scaled_saved_image = pygame.transform.scale(occupied_positions[position],
                                                             (UniversalVariables.block_size,
@@ -61,20 +58,24 @@ class RenderPictures:
         RenderPictures.render_terrain_data: list = []
 
         # Use the camera's position to determine the render range
-        camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
-        camera_grid_col = int((Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
-        
+        camera_grid_row = int(
+            (Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
+        camera_grid_col = int(
+            (Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
+
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         try:
-            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
+            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or \
+                    self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][
+                player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
                 RenderPictures.render_range = 2
                 i_range_0, i_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 j_range_0, j_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
             else:
                 RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (
-                UniversalVariables.block_size) // 5
-                i_range_0, i_range_1  = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
+                    UniversalVariables.block_size) // 5
+                i_range_0, i_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
                 j_range_0, j_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
 
             for i in range(i_range_0, i_range_1):
@@ -91,7 +92,7 @@ class RenderPictures:
                     if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
                         terrain_value = self.terrain_data[i][j]
                         position = (i, j)  # Using grid indices directly for the position
-                        
+
                         if terrain_value == None: pass
 
                         if terrain_value == 933 and not door_id == 933 or terrain_value == 977 and not door_id == 977:
@@ -110,59 +111,67 @@ class RenderPictures:
 
                         if terrain_value == 98:
                             image = ImageLoader.load_image("Maze_Ground")
-                    
+
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
 
                         else:
                             if terrain_value in UniversalVariables.no_terrain_background_items:
                                 image = ImageLoader.load_image("Maze_Ground")
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                 terrain_value)
 
                             else:
 
                                 door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 977, 933]
 
                                 ### PROBLEM: SEE KOODI LOOP JA IF STATEMENT EI TEE MIDAGI
-                                    # YLEMINE LINE "if terrain_value in UniversalVariables.no_terrain_background_items:" teeb M_Groundi uste alla!!!!!!
+                                # YLEMINE LINE "if terrain_value in UniversalVariables.no_terrain_background_items:" teeb M_Groundi uste alla!!!!!!
                                 if terrain_value in door_ids:
 
                                     for value in door_ids:
                                         if terrain_value == int(value):
                                             image = ImageLoader.load_image("Maze_Ground")
-                                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position,
+                                                                             image, terrain_value)
 
                                 # Loadib Wheat'i ja Farmland'i
                                 if terrain_value == 7 or terrain_value == 107:
                                     image = ImageLoader.load_image("Farmland")
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                     terrain_value)
 
                                 # Loadib Key ja keyholeiga groundi
                                 if terrain_value == 10 or terrain_value == 11:
                                     image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                     terrain_value)
 
                                 # Loadib Endgate'i
                                 if terrain_value == 1000:
                                     image = ImageLoader.load_image('Maze_Ground')
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-                                
-                                if terrain_value in [981, 982]:
-                                    if terrain_value == 981: image = ImageLoader.load_image('Keyholder_without_key')
-                                    else: image = ImageLoader.load_image('Keyholder_with_key')
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                     terrain_value)
 
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                if terrain_value in [981, 982]:
+                                    if terrain_value == 981:
+                                        image = ImageLoader.load_image('Keyholder_without_key')
+                                    else:
+                                        image = ImageLoader.load_image('Keyholder_with_key')
+
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                     terrain_value)
 
                                 image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                                 image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                 terrain_value)
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
 
         except IndexError:
             return
-
 
 
 class CreateCollisionBoxes:
@@ -196,7 +205,6 @@ class CreateCollisionBoxes:
                 collision_box = item.get("Collision_box")
                 object_collision_boxes[id] = collision_box
 
-
         for row in RenderPictures.render_terrain_data:
             for x, y in row:
                 if 0 <= y < len(self.terrain_data) and 0 <= x < len(self.terrain_data[0]):
@@ -225,7 +233,6 @@ class CreateCollisionBoxes:
                                 terrain_y: int = y * UniversalVariables.block_size
                                 object_id: int = self.terrain_data[y][x]
 
-
                                 # Võtab õige itemi collision_box'i
                                 collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
 
@@ -251,7 +258,7 @@ class CreateCollisionBoxes:
                                         CreateCollisionBoxes.terrain_data_minerals += 1
                                     CreateCollisionBoxes.display_collision_box_decay += 1
                     except Exception as e:
-                        #print(f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
+                        # print(f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
                         pass
 
         # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
@@ -260,7 +267,7 @@ class CreateCollisionBoxes:
                          2: 3,
                          4: 4,
                          7: 5,
-                         988: 6, 
+                         988: 6,
                          1000: 7}  # Last to be rendered
 
         # Sort the collision_boxes list based on the custom sort order
