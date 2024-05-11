@@ -124,8 +124,6 @@ class ObjectManagement:
     def place_and_render_object(self) -> None:
         """ Visuaalselt paneb objekti maailma (image). """
 
-        interaction_boxes = {}  # Object id, pilt, ja pildi suurus
-
         # Check if block size has changed
         if UniversalVariables.prev_block_size != UniversalVariables.block_size:
             # Update the previous block size
@@ -151,8 +149,6 @@ class ObjectManagement:
                         # Load the image
 
                         object_image = ImageLoader.load_image(object_image_name)
-
-                        interaction_boxes[object_id] = (object_image, object_width, object_height)
 
             if object_image:
                 position: tuple = (terrain_x, terrain_y)

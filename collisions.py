@@ -73,8 +73,6 @@ class Collisions:
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
 
-        interaction_boxes = {}  # Object id, pilt, ja pildi suurus
-
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
@@ -90,8 +88,6 @@ class Collisions:
                     width = item.get("Object_width")
                     height = item.get("Object_height")
                     render_when = item.get("Render_when")
-
-                    interaction_boxes[object_id] = (width, height)
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
                                                 height)  # See on täpsemate arvudega, kui self.collision_box
