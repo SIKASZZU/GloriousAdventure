@@ -157,15 +157,15 @@ class ObjectManagement:
             if object_image:
                 position: tuple = (terrain_x, terrain_y)
                 scaled_object_image = pygame.transform.scale(object_image, (
-                    object_width * UniversalVariables.block_size / 109,
-                    object_height * UniversalVariables.block_size / 109))
+                    object_width,
+                    object_height))
                 UniversalVariables.screen.blit(scaled_object_image, position)
 
             else:
                 pass
 
-            object_rect = pygame.Rect(terrain_x, terrain_y, object_width * UniversalVariables.block_size / 109,
-                                      object_height * UniversalVariables.block_size / 109)
+            object_rect = pygame.Rect(terrain_x, terrain_y, object_width,
+                                      object_height)
 
             if (UniversalVariables.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,
