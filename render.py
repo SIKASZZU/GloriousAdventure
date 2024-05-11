@@ -114,47 +114,45 @@ class RenderPictures:
 
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
+                        door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 977, 933]
+                        if terrain_value in UniversalVariables.no_terrain_background_items or terrain_value in door_ids:
+                            for value in door_ids:
+                                    terrain_value == int(value)
+                            image = ImageLoader.load_image("Maze_Ground")
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                terrain_value)
 
-                        else:
-                            door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 977, 933]
-                            if terrain_value in UniversalVariables.no_terrain_background_items or terrain_value in door_ids:
-                                for value in door_ids:
-                                        terrain_value == int(value)
-                                image = ImageLoader.load_image("Maze_Ground")
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                 terrain_value)
+                        # Loadib Wheat'i ja Farmland'i
+                        if terrain_value == 7 or terrain_value == 107:
+                            image = ImageLoader.load_image("Farmland")
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                terrain_value)
 
-                            # Loadib Wheat'i ja Farmland'i
-                            if terrain_value == 7 or terrain_value == 107:
-                                image = ImageLoader.load_image("Farmland")
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                    terrain_value)
+                        # Loadib Key ja keyholeiga groundi
+                        if terrain_value == 10 or terrain_value == 11:
+                            image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                terrain_value)
 
-                            # Loadib Key ja keyholeiga groundi
-                            if terrain_value == 10 or terrain_value == 11:
-                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                    terrain_value)
+                        # Loadib Endgate'i
+                        if terrain_value == 1000:
+                            image = ImageLoader.load_image('Maze_Ground')
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                terrain_value)
 
-                            # Loadib Endgate'i
-                            if terrain_value == 1000:
-                                image = ImageLoader.load_image('Maze_Ground')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                    terrain_value)
+                        if terrain_value in [981, 982]:
+                            if terrain_value == 981:
+                                image = ImageLoader.load_image('Keyholder_without_key')
+                            else:
+                                image = ImageLoader.load_image('Keyholder_with_key')
 
-                            if terrain_value in [981, 982]:
-                                if terrain_value == 981:
-                                    image = ImageLoader.load_image('Keyholder_without_key')
-                                else:
-                                    image = ImageLoader.load_image('Keyholder_with_key')
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
+                                                                terrain_value)
 
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                    terrain_value)
-
-                            if terrain_value == 1 or terrain_value == 0:
-                                image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                        if terrain_value == 1 or terrain_value == 0:
+                            image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                            image = ImageLoader.load_image(image_name)
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
