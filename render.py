@@ -14,7 +14,6 @@ class RenderPictures:
     occupied_positions: dict = {}
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
-    door_id = None  # glade ukse avamine, sulgemine
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
@@ -56,8 +55,9 @@ class RenderPictures:
         #  NOTE:
         #    COL == J == X
         #    ROW == I == Y
+        #    M6tle koordinaatteljestikule. Kui X muutub, muutub column. Kui muutub Y, siis muutub row.
 
-        door_id = RenderPictures.door_id
+        door_ids: list = UniversalVariables.door_ids
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
@@ -94,19 +94,30 @@ class RenderPictures:
                         if terrain_value == None: pass
                         else:
                             image = None
+                            
+                            # BACKGROUNDI LISAMINE KUHU VAJA
                             if 0 <= terrain_value <= 10:
-                                if terrain_value == 7:  image = ImageLoader.load_image("Farmland")
+                                if terrain_value == 7:  image = ImageLoader.load_image('Farmland')
+                                elif terrain_value == 10:  image = ImageLoader.load_image('Maze_Ground_Keyhole')
                                 else:
-                                
-                                    image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
+                                    image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
                                     image = ImageLoader.load_image(image_name)
+                        
+                            elif terrain_value in door_ids:  image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                             
-                            
-                            elif terrain_value not in UniversalVariables.no_terrain_background_items:
-                                image = ImageLoader.load_image("Maze_Ground")
-                                #RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                            elif terrain_value not in UniversalVariables.no_terrain_background_items:  pass
+
+                            # ma ei tea, mida see otseselt sisse spawnib. Mingid objektid, mida object.py's ei spawni.
+                            else:
+                                for item in items_list:
+                                    if terrain_value == item.get('ID'):
+                                        image_name = item.get('Name')
                                 
-                            # Visualiseerib pilte
+                                # special case, sest walle on meil 9 erinevat tykki.
+                                if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
+                                
+                                image = ImageLoader.load_image(image_name)
+                                
                             if image != None:
                                 if position not in RenderPictures.occupied_positions:
 
