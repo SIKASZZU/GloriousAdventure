@@ -37,6 +37,7 @@ class ObjectManagement:
                                     self.terrain_data[grid_row][grid_col] = 107
 
                                 else: 
+                                    position: tuple = (terrain_x, terrain_y)
                                     self.terrain_data[grid_row][grid_col] = 1
                                     # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
 
@@ -97,6 +98,7 @@ class ObjectManagement:
         except RuntimeError as e:
             print("\nError in file: objects.py, add_object_to_inv", e)
 
+    # temporary add func?
     def add_object_from_inv(item, amount=1):
         if item in Inventory.inventory:
             # Kui ese on juba inventoris, suurendab eseme kogust
@@ -104,6 +106,7 @@ class ObjectManagement:
         else:
             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: amount
             Inventory.inventory[item] = amount
+
 
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :
@@ -131,36 +134,28 @@ class ObjectManagement:
             for item in items_list:
                 if item.get("Type") == "Object" and item.get("ID") == object_id:
                     object_breakable = None
-                    if item.get("Name") == "Maze_Wall": pass
+                    object_image_name = item.get("Name")
+                    if object_image_name == "Maze_Wall": pass
+
                     else:
-                        object_image_name = item.get("Name")
                         object_width = item.get("Object_width")
                         object_height = item.get("Object_height")
                         object_breakable = item.get("Breakable")
 
-                        # Load the image
-
                         object_image = ImageLoader.load_image(object_image_name)
-
-            if object_image:
-                position: tuple = (terrain_x, terrain_y)
-                scaled_object_image = pygame.transform.scale(object_image, (
-                    object_width,
-                    object_height))
-                UniversalVariables.screen.blit(scaled_object_image, position)
-
-            else:
+    
+                        if object_image:
+                            position: tuple = (terrain_x, terrain_y)
+                            scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
+                            UniversalVariables.screen.blit(scaled_object_image, position)
+            else:  
                 pass
 
-            object_rect = pygame.Rect(terrain_x, terrain_y, object_width,
-                                      object_height)
-
+            object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
+            
             if (UniversalVariables.hitbox_count % 2) != 0:
-                ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,
-                                                         collision_box_height)
-                if object_breakable:
-                    pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,
-                                     1)  # Teeb roosa outline objecti ümber
+                ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,

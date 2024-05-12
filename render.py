@@ -153,6 +153,11 @@ class RenderPictures:
                             image_name = "Ground_" + str(random.randint(0, 19)) if terrain_value != 0 else "Water_0"
                             image = ImageLoader.load_image(image_name)
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                        
+                        image_name = "Ground_" + str(random.randint(0, 19))
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
