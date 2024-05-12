@@ -47,6 +47,7 @@ class Game:
     # ******************** RANDOM/DEBUG ******************** #
     print__hp = 0
     restrict_looping = False
+    old_counter = int
 
     def __init__(self):
         glade_data = None
@@ -118,11 +119,17 @@ class Game:
 
         EssentsialsUpdate.check_pressed_keys(self)  # vaatab, luurab vajutatud keysid
 
-    def reset_lists():
+    def reset_lists(self):
         ''' Before new loop, reset image sequences. '''
 
         UniversalVariables.text_sequence = []
         UniversalVariables.blits_sequence = []
+        
+        if UniversalVariables.maze_counter != self.old_counter:  
+            RenderPictures.occupied_positions: dict = {}
+            self.old_counter = UniversalVariables.maze_counter
+            print('changed', self.old_counter)
+            
 
     def refresh_loop(self):
         """ Set and reset stuff for new loop. """
@@ -148,7 +155,7 @@ class Game:
         while True:
             Game.events(self)
             Game.load_variables(self)
-            Game.reset_lists()
+            Game.reset_lists(self)
             
             Game.call_technical(self)
             Game.call_visuals(self)
