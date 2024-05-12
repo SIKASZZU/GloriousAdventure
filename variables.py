@@ -133,6 +133,7 @@ class UniversalVariables:
     text_sequence = []
     no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982]
     no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555, 1000]
+    door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
 
     offset_x: int = 0
     offset_y: int = 0
