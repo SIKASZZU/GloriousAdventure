@@ -47,7 +47,6 @@ class Game:
     # ******************** RANDOM/DEBUG ******************** #
     print__hp = 0
     restrict_looping = False
-    old_counter = int
 
     def __init__(self):
         glade_data = None
@@ -124,12 +123,6 @@ class Game:
 
         UniversalVariables.text_sequence = []
         UniversalVariables.blits_sequence = []
-        
-        if UniversalVariables.maze_counter != self.old_counter:  
-            RenderPictures.occupied_positions: dict = {}
-            self.old_counter = UniversalVariables.maze_counter
-            print('changed', self.old_counter)
-            
 
     def refresh_loop(self):
         """ Set and reset stuff for new loop. """

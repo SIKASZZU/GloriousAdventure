@@ -71,7 +71,7 @@ class RenderPictures:
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or \
                     self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][
                         player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
-                RenderPictures.render_range = 2
+                RenderPictures.render_range = 5
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
             else:
@@ -107,7 +107,7 @@ class RenderPictures:
                             
                             elif terrain_value not in UniversalVariables.no_terrain_background_items:  pass
 
-                            # ma ei tea, mida see otseselt sisse spawnib. Mingid objektid, mida object.py's ei spawni.
+                            # ma ei tea, mida see otseselt sisse spawnib. Mingid objektid, mida object.py's ei spawni probably.
                             else:
                                 for item in items_list:
                                     if terrain_value == item.get('ID'):
@@ -115,23 +115,9 @@ class RenderPictures:
                                 
                                 # special case, sest walle on meil 9 erinevat tykki.
                                 if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
-                                
+                    
                                 image = ImageLoader.load_image(image_name)
-                                
-                            if image != None:
-                                if position not in RenderPictures.occupied_positions:
-
-                                    scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
-                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_image,(terrain_x, terrain_y)])
-
-                                    RenderPictures.occupied_positions[position] = scaled_image
-                                else:
-                                    scaled_image = RenderPictures.occupied_positions[position]
-                                    scaled_saved_image = pygame.transform.scale(scaled_image, (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                                    if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
+                            RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
