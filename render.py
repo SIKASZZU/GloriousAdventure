@@ -97,13 +97,20 @@ class RenderPictures:
                             
                             # BACKGROUNDI LISAMINE KUHU VAJA
                             if 0 <= terrain_value <= 10:
-                                if terrain_value == 7:  image = ImageLoader.load_image('Farmland')
-                                elif terrain_value == 10:  image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                if terrain_value == 7:  
+                                    image = ImageLoader.load_image('Farmland')
+                                    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                                elif terrain_value == 10:  
+                                    image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                                 else:
                                     image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
                                     image = ImageLoader.load_image(image_name)
+                                    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                         
-                            elif terrain_value in door_ids:  image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                            elif terrain_value in door_ids:  
+                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
                             elif terrain_value not in UniversalVariables.no_terrain_background_items:  pass
 

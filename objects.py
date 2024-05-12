@@ -136,6 +136,7 @@ class ObjectManagement:
                     object_breakable = None
                     object_image_name = item.get("Name")
                     if object_image_name == "Maze_Wall": pass
+                    elif object_image_name == "Maze_Ground": pass
 
                     else:
                         object_width = item.get("Object_width")
@@ -148,8 +149,6 @@ class ObjectManagement:
                             position: tuple = (terrain_x, terrain_y)
                             scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
                             UniversalVariables.screen.blit(scaled_object_image, position)
-            else:  
-                pass
 
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             
