@@ -57,7 +57,6 @@ class RenderPictures:
         #    ROW == I == Y
         #    M6tle koordinaatteljestikule. Kui X muutub, muutub column. Kui muutub Y, siis muutub row.
 
-        door_ids: list = UniversalVariables.door_ids
         UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
@@ -106,15 +105,27 @@ class RenderPictures:
                                 else:
                                     image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
                                     image = ImageLoader.load_image(image_name)
-                                    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
-                        
-                            elif terrain_value in door_ids:  
+
+                                    # Ground pildile eraldi render, et see asi ei muutuks objekti eemaldamisel
+                                    if position not in RenderPictures.occupied_positions:
+
+                                        scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
+                                        if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                            UniversalVariables.blits_sequence.append([scaled_image,(terrain_x, terrain_y)])
+
+                                        RenderPictures.occupied_positions[position] = scaled_image
+                                    else:
+                                        scaled_image = RenderPictures.occupied_positions[position]
+                                        scaled_saved_image = pygame.transform.scale(scaled_image, (UniversalVariables.block_size, UniversalVariables.block_size))
+
+                                        if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                            UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
+
+                            elif terrain_value in UniversalVariables.door_ids:  
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
-                            elif terrain_value not in UniversalVariables.no_terrain_background_items:  pass
-
-                            # ma ei tea, mida see otseselt sisse spawnib. Mingid objektid, mida object.py's ei spawni probably.
+                            # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
                                 for item in items_list:
                                     if terrain_value == item.get('ID'):
@@ -124,7 +135,7 @@ class RenderPictures:
                                 if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
                     
                                 image = ImageLoader.load_image(image_name)
-                            RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
