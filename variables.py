@@ -77,7 +77,7 @@ class UniversalVariables:
     sound_volume: int = 0.05
 
     # Mängu max tick rate
-    FPS = 600
+    FPS = 60
 
 
     # ******************** Screen ******************** #
@@ -102,7 +102,7 @@ class UniversalVariables:
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     health_status = None
-    player_range = block_size * 15
+    player_range = block_size * 1.5
 
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
@@ -132,7 +132,7 @@ class UniversalVariables:
     blits_sequence = []
     text_sequence = []
     no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982]
-    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555, 1000]
+    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 988, None, 500, 550, 555, 1000]
     door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
 
     offset_x: int = 0
@@ -143,7 +143,7 @@ class UniversalVariables:
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
-    enemy_speed = 0.05  # Enemy kiirus grid size'ina
+    enemy_speed = 0.03  # Enemy kiirus grid size'ina
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 10 + random.randint(-5, 5)

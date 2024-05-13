@@ -193,7 +193,7 @@ class MapData:
 
         # Maze keyholders
         MapData.keyholders = []
-        for i in range(50):
+        for i in range(2):
             keyholder_x = random.randint(3, (size - 3))
             keyholder_y = random.randint(3, (size - 3))
             MapData.converted_maze[keyholder_x][keyholder_y] = 981
@@ -271,9 +271,9 @@ class MapData:
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
-            elif UniversalVariables.maze_counter == 5:
-                item = 'blade_maze'
-                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+            # elif UniversalVariables.maze_counter == 5:
+            #     item = 'blade_maze'
+            #     return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
             else:
                 return MapData.create_maze_with_perlin_noise(start_side)

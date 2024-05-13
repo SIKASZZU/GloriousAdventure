@@ -27,7 +27,7 @@ class Game:
 
     # ******************** PLAYER *******ds************* #
     player_rect = None  # seda ei pea olema, aga mdea, suht perses. Code settib r2igelt self argumente, mida ei eksisteeri
-    player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=40, max_speed=10, min_speed=1)
+    player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1)
 
     # ******************** FPS, FONT ******************** #w
     clock = pygame.time.Clock()  # fps
@@ -111,7 +111,7 @@ class Game:
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD_class (health- ,food- ,stamina bar)
         EssentsialsUpdate.render_general(self)  # render inv, display text
-        # EssentsialsUpdate.calculate_daylight_strength(self)  # DAYLIGHT CHANGE
+        EssentsialsUpdate.calculate_daylight_strength(self)  # DAYLIGHT CHANGE
 
     def check_keys(self):
         """ Check for which keys are pressed. """
@@ -156,7 +156,7 @@ class Game:
             Game.refresh_loop(self)
 
             # Game.printing(self)
-            Game.custom_addition()
+            # Game.custom_addition()
             xxx += 1
 
             if UniversalVariables.portal_frame_rect:

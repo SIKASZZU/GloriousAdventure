@@ -57,7 +57,7 @@ class RenderPictures:
         #    ROW == I == Y
         #    M6tle koordinaatteljestikule. Kui X muutub, muutub column. Kui muutub Y, siis muutub row.
 
-        UniversalVariables.screen.fill('white')
+        # UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
         # Use the camera's position to determine the render range
