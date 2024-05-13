@@ -70,7 +70,7 @@ class RenderPictures:
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or \
                     self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][
                         player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
-                RenderPictures.render_range = 5
+                RenderPictures.render_range = 2
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
             else:
