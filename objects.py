@@ -134,12 +134,12 @@ class ObjectManagement:
             for item in MineralItem.instances:
                 if item.id == object_id:
                     object_image_name = item.name
+                    # print('object_image_name', object_image_name)
 
                     object_width = item.width
                     object_height = item.height
 
-                    object_image = ImageLoader.load_image(object_image_name)
-
+                    object_image = ImageLoader.load_item_image(object_image_name)
                     if object_image:
                         position: tuple = (terrain_x, terrain_y)
                         scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))

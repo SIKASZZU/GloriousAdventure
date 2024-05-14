@@ -165,7 +165,7 @@ class Inventory:
             pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect)
 
             if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
-                item_image = ImageLoader.load_image(item_name)
+                item_image = ImageLoader.load_item_image(item_name)
 
                 if item_image is not None:
                     # Resize itemi inventory
@@ -257,7 +257,7 @@ class Inventory:
     #             pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)
 
     #             # Pre-loading pildi, peformance säästmiseks
-    #             object_image = ImageLoader.load_image(item_name)
+    #             object_image = ImageLoader.load_item_image(item_name)
 
     #             # Muudab pildi suurust vastavalt inventory sloti suurusele
     #             if object_image is not None:

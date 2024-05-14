@@ -185,12 +185,12 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
 
         # Health bari keskele icon (Heart.png)
-        heart_icon = ImageLoader.load_gui_image("Health")
+        heart_icon = ImageLoader.load_hud_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
         UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
         
         # Food bari keskele icon (Food.png)
-        food_icon = ImageLoader.load_gui_image("Food")
+        food_icon = ImageLoader.load_hud_image("Food")
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 

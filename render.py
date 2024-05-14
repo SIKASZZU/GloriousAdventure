@@ -96,17 +96,18 @@ class RenderPictures:
                             # BACKGROUNDI LISAMINE KUHU VAJA
                             if 0 <= terrain_value <= 10:
                                 if terrain_value == 7:  
-                                    image = ImageLoader.load_image('Farmland')
+                                    image = ImageLoader.load_item_image('Farmland')
                                     RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                                 elif terrain_value == 10:  
-                                    image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                    image = ImageLoader.load_item_image('Maze_Ground_Keyhole')
                                     RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                                 else:
                                     image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
-                                    image = ImageLoader.load_image(image_name)
+                                    image = ImageLoader.load_item_image(image_name)
 
                                     # Ground pildile eraldi render, et see asi ei muutuks objekti eemaldamisel
                                     if position not in RenderPictures.occupied_positions:
+                                        print(image)
 
                                         scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
@@ -130,12 +131,12 @@ class RenderPictures:
                                 image_name = 'Maze_Wall_' + str(random.randint(0,9))
                 
                             #if terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
-                            #    image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                            #    image = ImageLoader.load_item_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                             #    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                         
 
                             if image_name != None: 
-                                image = ImageLoader.load_image(image_name)
+                                image = ImageLoader.load_item_image(image_name)
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)

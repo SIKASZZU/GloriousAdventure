@@ -45,7 +45,7 @@ class Decorators:
     # ütleb mis funci kutsutakse, rida ja argumendid
     def log_calls_with_location(func):
         """ Ütleb mis funci kutsuti, mis failist, mis reast, kõik argumendid. Näiteks:
-         Calling load_image from objects.py at line 109 with arguments: 'Oak_Tree' """
+         Calling load_item_image from objects.py at line 109 with arguments: 'Oak_Tree' """
 
         def wrapper(*args, **kwargs):
             frame = inspect.currentframe().f_back
