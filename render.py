@@ -2,9 +2,8 @@ import pygame
 import random
 
 from camera import Camera
-from items import items_list
+from items import ObjectItem
 from images import ImageLoader
-from update import EssentsialsUpdate
 from variables import UniversalVariables
 
 
@@ -127,15 +126,17 @@ class RenderPictures:
                             
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
-                                for item in items_list:
-                                    if terrain_value == item.get('ID'):
-                                        image_name = item.get('Name')
+                                for item in ObjectItem.instances:
+                                    if terrain_value == item.id:
+                                        image_name = item.name
+                                        print(image_name)
                                 
-                                # special case, sest walle on meil 9 erinevat tykki.
-                                if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
+                                        # special case, sest walle on meil 9 erinevat tykki.
+                                        if image_name == 'Maze_Wall': 
+                                            image_name = 'Maze_Wall_' + str(random.randint(0,9))
                     
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
+                                        image = ImageLoader.load_image(image_name)
+                                        RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -167,13 +168,6 @@ class CreateCollisionBoxes:
         # 5: [0, 0, 0, 0],
         # 6: [0, 0, 0, 0]
         # }
-
-        # Lisab listi ID, collision_box'i
-        for item in items_list:
-            if item.get("Type") == "Object":
-                id = item.get("ID")
-                collision_box = item.get("Collision_box")
-                object_collision_boxes[id] = collision_box
 
         for row in RenderPictures.render_terrain_data:
             for x, y in row:

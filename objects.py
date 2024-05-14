@@ -1,5 +1,5 @@
 import pygame
-from items import items_list
+from items import MineralItem
 from images import ImageLoader
 from inventory import Inventory
 from variables import UniversalVariables
@@ -14,7 +14,7 @@ class ObjectManagement:
 
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
-            for item_data in items_list:
+            for item_data in MineralItem.instances:
                 if object_id == item_data["ID"]:
                     if item_data["Breakable"] != True:
                         pass
@@ -67,7 +67,7 @@ class ObjectManagement:
         item_count: dict[str, int] = {}
 
         # itemi lisamine playeri inventorisse
-        for item_data in items_list:
+        for item_data in MineralItem.instances:
             if object_id == item_data["ID"]:
                 items_found.add(item_data["Name"])
 
@@ -79,7 +79,7 @@ class ObjectManagement:
             for item_name in items_found_copy:
                 item_count[item_name] = 0
 
-                for item_data in items_list:
+                for item_data in MineralItem.instances:
                     if object_id == item_data["ID"] and item_data["Name"] in items_found:
                         item_count[item_data["Name"]] += 1
                         items_found.remove(item_data["Name"])
@@ -131,30 +131,25 @@ class ObjectManagement:
             object_width = 0
             object_height = 0
 
-            for item in items_list:
-                if item.get("Type") == "Object" and item.get("ID") == object_id:
-                    object_breakable = None
-                    object_image_name = item.get("Name")
-                    if object_image_name == "Maze_Wall": pass
-                    elif object_image_name == "Maze_Ground": pass
+            for item in MineralItem.instances:
+                if item.id == object_id:
+                    object_image_name = item.name
 
-                    else:
-                        object_width = item.get("Object_width")
-                        object_height = item.get("Object_height")
-                        object_breakable = item.get("Breakable")
+                    object_width = item.width
+                    object_height = item.height
 
-                        object_image = ImageLoader.load_image(object_image_name)
-    
-                        if object_image:
-                            position: tuple = (terrain_x, terrain_y)
-                            scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
-                            UniversalVariables.screen.blit(scaled_object_image, position)
+                    object_image = ImageLoader.load_image(object_image_name)
+
+                    if object_image:
+                        position: tuple = (terrain_x, terrain_y)
+                        scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
+                        UniversalVariables.screen.blit(scaled_object_image, position)
 
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             
             if (UniversalVariables.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,1)  # Teeb roosa outline objecti ümber
+                pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,

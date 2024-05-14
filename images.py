@@ -1,7 +1,6 @@
 import pygame
-from items import items_list
+from items import ObjectItem
 from typing import Dict, Optional
-from variables import Decorators
 
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
@@ -62,11 +61,11 @@ class ImageLoader:
 
                 image_path = None
 
-                for item in items_list:
-                    name = item.get("Name")
+                for item in ObjectItem.instances:
+                    name = item.name
 
-                    object_width = item.get("Object_width")
-                    object_height = item.get("Object_height")
+                    object_width = item.width
+                    object_height = item.height
                     # Peab siin ära LOADima, sest neid ei ole item_list'is
                     if image_name.startswith("Ground_"):
                         image_path = f"images/Objects/Ground/{image_name}.png"
@@ -90,7 +89,7 @@ class ImageLoader:
                     if image_path == None:
                         # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
                         if name == image_name:
-                            item_type = item.get("Type")
+                            item_type = item.type
 
                             if item_type == "Object":
                                 image_path = f"images/Objects/{image_name}.png"

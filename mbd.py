@@ -1,17 +1,17 @@
 import pygame
 from variables import UniversalVariables
 from camera import Camera
-import items
+from items import ObjectItem, BLOCK_SIZE
 
 
 def update_object_dimensions():
-    for item in items.items_list:
-        if "Object_width" in item:
-            item["Object_width"] = int(item["Object_width"] * UniversalVariables.block_size / items.block_size)
-        if "Object_height" in item:
-            item["Object_height"] = int(item["Object_height"] * UniversalVariables.block_size / items.block_size)
+    for item in ObjectItem.instances:
+        if item.width in item:
+            item.width = int(item.width * UniversalVariables.block_size / BLOCK_SIZE)
+        if item.height in item:
+            item.height = int(item.height * UniversalVariables.block_size / BLOCK_SIZE)
 
-    items.block_size = UniversalVariables.block_size  # Update block_size in items module
+    BLOCK_SIZE = UniversalVariables.block_size  # Update block_size in items module
 
 
 def event_mousebuttondown(self, event):
