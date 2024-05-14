@@ -18,7 +18,7 @@ from menu import Menu, PauseMenu  # main_menu, PauseMenu: settings_menu
 from update import EssentsialsUpdate  # check_pressed_keys, render_general
 from update import PlayerUpdate  # update_player, render_player, render_HUD
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
-from collisions import Collisions  # check_collisions, collison_terrain, collision_hitbox
+from collisions import Collisions, reset_clicks  # check_collisions, collison_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
 
 class Game:
@@ -158,6 +158,15 @@ class Game:
             # Game.printing(self)
             Game.custom_addition()
             xxx += 1
+            if Camera.click_on_screen(self):
+                barrel_x, barrel_y = Camera.click_on_screen(self)
+                barrel_x, barrel_y = int(barrel_x // UniversalVariables.block_size), int(barrel_y // UniversalVariables.block_size)
+                if self.terrain_data[barrel_y][barrel_x] == 1001:
+                    self.terrain_data[barrel_y][barrel_x] = 1002
+
+                barrel_x, barrel_y = None, None
+
+                reset_clicks(self)
 
             if UniversalVariables.portal_frame_rect:
 

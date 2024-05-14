@@ -154,7 +154,7 @@ class ObjectManagement:
             
             if (UniversalVariables.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,1)  # Teeb roosa outline objecti ümber
+                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,

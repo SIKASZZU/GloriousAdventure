@@ -236,7 +236,7 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
-    
+
 {
         "Type": "Object",
         "Name": "Maze_Ground",
@@ -521,6 +521,26 @@ items_list = [
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
         "Render_when": (block_size * -1)
+        },
+{
+        "Type": "Object",
+        "Name": "Loot_Barrel",
+        "ID": 1001,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+        },
+{
+        "Type": "Object",
+        "Name": "Opened_Loot_Barrel",
+        "ID": 1002,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
         },
 
 ]

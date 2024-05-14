@@ -70,8 +70,8 @@ class UniversalVariables:
     # ******************** Settings ******************** #
 
     # Windowi suurus x, y
-    screen_x: int = 1280  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-    screen_y: int = 720
+    screen_x: int = 1600  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
+    screen_y: int = 1000
 
     # Mängu heli tugevus
     sound_volume: int = 0.05

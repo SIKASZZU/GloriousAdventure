@@ -69,6 +69,7 @@ def yellow_green(self, color):
 class Collisions:
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock: int = 0
+    object_dict = {}
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -84,10 +85,16 @@ class Collisions:
             terrain_y: int = collision_box_y - collision_box_offset_y
 
             for item in items_list:
-                if item.get("Type") == "Object" and item.get("ID") == object_id:
-                    width = item.get("Object_width")
-                    height = item.get("Object_height")
-                    render_when = item.get("Render_when")
+                if item.get("Type") == "Object":
+                    Collisions.object_dict[item.get("ID")] = item
+
+            # Check if the object ID exists in the dictionary
+            if object_id in Collisions.object_dict:
+                # Retrieve properties for the object ID
+                object_properties = Collisions.object_dict[object_id]
+                width = object_properties.get("Object_width")
+                height = object_properties.get("Object_height")
+                render_when = object_properties.get("Render_when")
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
                                                 height)  # See on täpsemate arvudega, kui self.collision_box

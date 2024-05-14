@@ -30,6 +30,7 @@ class MapData:
     puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
+    loot = []
     repetition_lock = 0
 
     # Create glade
@@ -200,6 +201,17 @@ class MapData:
 
             if not (keyholder_x, keyholder_y) in MapData.keyholders:
                 MapData.keyholders.append((keyholder_x, keyholder_y))
+
+        # Maze keyholders
+        MapData.loot = []
+        if random.choice([False, True]):
+            for i in range(3):
+                loot_x = random.randint(3, (size - 3))
+                loot_y = random.randint(3, (size - 3))
+                MapData.converted_maze[loot_x][loot_y] = 1001
+
+                if not (loot_x, loot_y) in MapData.loot:
+                    MapData.loot.append((loot_x, loot_y))
 
         MapData.search_paths(MapData.converted_maze)
         
