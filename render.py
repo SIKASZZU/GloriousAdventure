@@ -121,7 +121,7 @@ class RenderPictures:
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
-                            elif terrain_value in UniversalVariables.door_ids:  
+                            elif terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             

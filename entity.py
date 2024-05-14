@@ -97,7 +97,9 @@ class Enemy:
         """ Check if coordinates (x, y) are valid in the maze. """
         x, y = int(x), int(y)
 
-        return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) and self.terrain_data[x][y] != 99
+        return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) \
+            and self.terrain_data[x][y] != 99 and self.terrain_data[x][y] != 933 and self.terrain_data[x][y] != 977\
+            and self.terrain_data[x][y] != 981 and self.terrain_data[x][y] != 982
 
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
