@@ -6,10 +6,8 @@ from items import ObjectItem, BLOCK_SIZE
 
 def update_object_dimensions():
     for item in ObjectItem.instances:
-        if item.width in item:
-            item.width = int(item.width * UniversalVariables.block_size / BLOCK_SIZE)
-        if item.height in item:
-            item.height = int(item.height * UniversalVariables.block_size / BLOCK_SIZE)
+        item.width = int(item.width * UniversalVariables.block_size / BLOCK_SIZE)
+        item.height = int(item.height * UniversalVariables.block_size / BLOCK_SIZE)
 
     BLOCK_SIZE = UniversalVariables.block_size  # Update block_size in items module
 

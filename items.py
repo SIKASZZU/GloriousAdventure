@@ -56,7 +56,7 @@ class ToolItem(Item):
 water = ObjectItem(
     name="Water_0",
     id=0,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=None,  
@@ -64,7 +64,7 @@ water = ObjectItem(
 grass = ObjectItem(
     name="Ground",
     id=1,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=None,  
@@ -79,25 +79,26 @@ grass = ObjectItem(
 #     render_when=None,  
 # )
 
-farmland = ObjectItem(
-    name="Farmland",
-    id=6,
-    collision_box=[0, 0, 1, 1],
-    width=int(BLOCK_SIZE * 1),
-    height=int(BLOCK_SIZE * 1),
-    render_when=None,  
-)
 
-wall_background = ObjectItem(
+Maze_Ground = ObjectItem(
     name="Maze_Ground",
     id=98,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=None,  
 )
 
-wall = ObjectItem(
+Farmland = ObjectItem(
+    name="Farmland",
+    id=7,
+    collision_box=None,
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1)  
+)
+
+Maze_Wall = ObjectItem(
     name="Maze_Wall",
     id=99,
     collision_box=[0, 0, 1, 1],
@@ -109,7 +110,7 @@ wall = ObjectItem(
 Maze_Start_Top = ObjectItem(
     name="Maze_Start_Top",
     id=91,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=0,
@@ -118,7 +119,7 @@ Maze_Start_Top = ObjectItem(
 Maze_Start_Right = ObjectItem(
     name="Maze_Start_Right",
     id=92,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=0,
@@ -127,7 +128,7 @@ Maze_Start_Right = ObjectItem(
 Maze_Start_Bottom = ObjectItem(
     name="Maze_Start_Bottom",
     id=93,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=0,
@@ -136,7 +137,7 @@ Maze_Start_Bottom = ObjectItem(
 Maze_Start_Bottom_Glade = ObjectItem(
     name="Maze_Start_Bottom",
     id=933,
-    collision_box=[0, 0, 1, 1],
+    collision_box=None,
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=0,
@@ -185,6 +186,51 @@ Maze_End_Bottom_Glade = ObjectItem(
     width=int(BLOCK_SIZE * 1),
     height=int(BLOCK_SIZE * 1),
     render_when=0,
+)
+
+Keyholder_without_key = ObjectItem(
+    name="Keyholder_without_key",
+    id=981,
+    collision_box=[0, 0, 1, 1],
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1),
+)
+
+Keyholder_with_key = ObjectItem(
+    name="Keyholder_with_key",
+    id=982,
+    collision_box=[0, 0, 1, 1],
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1),
+)
+
+Status_gray = ObjectItem(
+    name="Status_gray",
+    id=500,
+    collision_box=None,
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1),
+)
+
+Status_yellow = ObjectItem(
+    name="Status_yellow",
+    id=550,
+    collision_box=None,
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1),
+)
+
+Status_green = ObjectItem(
+    name="Status_green",
+    id=555,
+    collision_box=None,
+    width=int(BLOCK_SIZE * 1),
+    height=int(BLOCK_SIZE * 1),
+    render_when=int(BLOCK_SIZE * -1),
 )
 
 ###################################################### MINERALS ###################################################

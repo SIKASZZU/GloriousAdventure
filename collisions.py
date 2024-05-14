@@ -74,7 +74,6 @@ class Collisions:
         keys = pygame.key.get_pressed()
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
-            print(UniversalVariables.collision_boxes)
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
             obj_collision_box = (
@@ -89,9 +88,9 @@ class Collisions:
                     width = item.width
                     height = item.height
                     render_when = item.render_when
+                    if render_when == None: render_when = 0
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
-                                                height)  # See on täpsemate arvudega, kui self.collision_box
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)  # See on täpsemate arvudega, kui self.collision_box
 
             if self.click_window_x and self.click_window_y:
                 try:
@@ -99,6 +98,8 @@ class Collisions:
 
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
+
+                        print(self.terrain_data[terrain_grid_y][terrain_grid_x])
 
 
                         if object_id == 981:  # Paneb key

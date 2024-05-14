@@ -89,9 +89,9 @@ class RenderPictures:
                         terrain_y: int = row * UniversalVariables.block_size + UniversalVariables.offset_y
                         position = (col, row)  # Using grid indices directly for the position
                         
+                        image_name = None
                         if terrain_value == None: pass
                         else:
-                            image = None
                             
                             # BACKGROUNDI LISAMINE KUHU VAJA
                             if 0 <= terrain_value <= 10:
@@ -120,23 +120,23 @@ class RenderPictures:
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
-                            elif terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
-                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                            # print('terrain_value', terrain_value)
+                            for item in ObjectItem.instances:
+                                if terrain_value == item.id:
+                                    image_name = item.name
                             
-                            # Spawnib maze ground, wall ja vist veel asju, mdea.
-                            else:
-                                for item in ObjectItem.instances:
-                                    if terrain_value == item.id:
-                                        image_name = item.name
-                                        print(image_name)
-                                
-                                        # special case, sest walle on meil 9 erinevat tykki.
-                                        if image_name == 'Maze_Wall': 
-                                            image_name = 'Maze_Wall_' + str(random.randint(0,9))
-                    
-                                        image = ImageLoader.load_image(image_name)
-                                        RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
+                            # special case, sest walle on meil 9 erinevat tykki.
+                            if image_name == 'Maze_Wall': 
+                                image_name = 'Maze_Wall_' + str(random.randint(0,9))
+                
+                            #if terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
+                            #    image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                            #    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                        
+
+                            if image_name != None: 
+                                image = ImageLoader.load_image(image_name)
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -168,6 +168,11 @@ class CreateCollisionBoxes:
         # 5: [0, 0, 0, 0],
         # 6: [0, 0, 0, 0]
         # }
+        # Lisab listi ID, collision_box'i
+        for item in ObjectItem.instances:
+            id = item.id
+            collision_box = item.collision_box
+            object_collision_boxes[id] = collision_box
 
         for row in RenderPictures.render_terrain_data:
             for x, y in row:

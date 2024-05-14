@@ -155,7 +155,7 @@ class Game:
             Game.check_keys(self)
             Game.refresh_loop(self)
 
-            # Game.printing(self)
+            Game.printing(self)
             Game.custom_addition()
             xxx += 1
 
