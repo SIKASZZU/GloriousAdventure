@@ -15,41 +15,38 @@ class ObjectManagement:
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
             for item_data in MineralItem.instances:
-                if object_id == item_data["ID"]:
-                    if item_data["Breakable"] != True:
-                        pass
-                    else:
-                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
-                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
+                if object_id == item_data.id:
+                    grid_col: int = int(terrain_x // UniversalVariables.block_size)
+                    grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
-                        try:
-                            # Kontrollib kas jääb mapi sissse
-                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                    try:
+                        # Kontrollib kas jääb mapi sissse
+                        if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
 
 
-                                # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
-                                # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 10: 
-                                    self.terrain_data[grid_row][grid_col] = 11
+                            # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
+                            # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
+                            if object_id == 10:
+                                self.terrain_data[grid_row][grid_col] = 11
 
-                                elif object_id == 7:
-                                    print('object_id',object_id)
-                                    self.terrain_data[grid_row][grid_col] = 107
-
-                                else: 
-                                    position: tuple = (terrain_x, terrain_y)
-                                    self.terrain_data[grid_row][grid_col] = 1
-                                    # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
-
-
-                                ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+                            elif object_id == 7:
+                                print('object_id',object_id)
+                                self.terrain_data[grid_row][grid_col] = 107
 
                             else:
-                                print("Invalid grid indices:", grid_row,
-                                      grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                position: tuple = (terrain_x, terrain_y)
+                                self.terrain_data[grid_row][grid_col] = 1
+                                # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
 
-                        except Exception as e:
-                            print("IndexError: objects.py, remove_object_at_position", e)
+
+                            ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+
+                        else:
+                            print("Invalid grid indices:", grid_row,
+                                  grid_col)  # Kui ei jää mapi sisse siis prindib errori
+
+                    except Exception as e:
+                        print("IndexError: objects.py, remove_object_at_position", e)
 
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
