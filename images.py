@@ -119,28 +119,29 @@ class ImageLoader:
         # Vaatab kõik itemid läbi
         for item_list in [ObjectItem.instances, MineralItem.instances, ToolItem.instances]:
             for item in item_list:
+                image_path = None
                 if item.name.startswith("Ground_"):
                     image_path = f"images/Objects/Ground/{item.name}.png"
                     name = "Ground"
 
-                elif item.name.startswith("Water_"):
-                    image_path = f"images/Objects/Water/{item.name}.png"
-                    name = "Water"
+                # elif item.name.startswith("Water_"):
+                #     image_path = f"images/Objects/Water/{item.name}.png"
+                #     name = "Water"
 
-                elif item.name.startswith("Maze_Wall_"):
+                if item.name.startswith("Maze_Wall_"):
                     image_path = f"images/Objects/{item.name}.png"
                     name = "Maze_Wall"
 
-                elif item.name.startswith("Maze_Ground_"):
+                if item.name.startswith("Maze_Ground_"):
                     image_path = f"images/Objects/{item.name}.png"
                     name = "Maze_Ground"
 
-                elif item.name.startswith("Endgate"):
+                if item.name.startswith("Endgate"):
                     image_path = f"images/Objects/{item.name}.png"
                     name = "Endgate"
-
-                print(item_name) 
-                return load_and_store(image_path)
+                print(image_path)
+                if image_path != None:
+                    return load_and_store(image_path)
 
         # Kui itemit ei ole olemas
         print(f"Error: '{item_name}' image not found.")

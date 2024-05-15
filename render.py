@@ -142,7 +142,7 @@ class RenderPictures:
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
 
-        except IndexError:
+        except Exception:
             return
 
 
