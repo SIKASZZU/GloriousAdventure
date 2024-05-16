@@ -84,7 +84,7 @@ class UniversalVariables:
     screen = pygame.display.set_mode((screen_x, screen_y))
 
     # Block size muutmiseks kui zoomitakse sisse või välja
-    jagatis = 15
+    jagatis:float = 15
     block_size: int = screen_x // jagatis
     prev_block_size: int = 0
 
@@ -93,8 +93,8 @@ class UniversalVariables:
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
 
-    player_hitbox_offset_x = 0.29 * player_width
-    player_hitbox_offset_y = 0.22 * player_height
+    player_hitbox_offset_x: float = 0.29 * player_width
+    player_hitbox_offset_y: float = 0.22 * player_height
 
     
     # Playeri koordinaatide arvutamine
@@ -102,22 +102,42 @@ class UniversalVariables:
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     health_status = None
-    player_range = block_size * 15
+    player_range: int = block_size * 15
+
+
+    # ******************** Screen ******************** #
+
+    loot_size: int = 3  # Mitu erinevat asja barrelist saab
+    loot_set: set[tuple[str, int]] = set()  # Asjad mida võib saada barrelist
+
+    loot =[
+        ("Stick", random.randint(2, 5)),
+        ("Stone_Shard", 1),
+        ("Wood_Pickaxe", 1),
+        ("Oak_Planks", random.randint(2, 3)),
+        #("Coal", 1),
+        ("Small_Rock_Sword", 1),
+        ("Oak_Planks", random.randint(2, 3)),
+        ("Oak_Wood", random.randint(1, 2)),
+    ]
+
+    for tuple in loot:
+        loot_set.add(tuple)
 
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision
 
 
     # ******************** VISION ******************** #
-    light_range = 420
-    opposite_light_range = 75
-    walls = []  # Collision boxide seinad
-    last_input = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
+    light_range: int = 420
+    opposite_light_range: int = 75
+    walls: list = []  # Collision boxide seinad
+    last_input: str = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
 
     # ******************** MAZE ******************** #
-    maze_counter = 1
-    enemy_counter = 0
+    maze_counter: int = 1
+    enemy_counter: int = 0
     final_maze = bool
     final_maze_key_slots: set = set()
     portal_frames: int = 0
@@ -131,9 +151,31 @@ class UniversalVariables:
     map_list = [['maze'], ['glade']]
     blits_sequence = []
     text_sequence = []
-    no_terrain_background_items = [98, 99, 999 ,988, None, 500, 550, 555, 981, 982]
-    no_shadow_needed = [0, 1, 2, 4, 7, 9, 107, 933, 988, None, 500, 550, 555, 1000]
-    door_ids = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
+
+    render_range_small: list = [
+        10, 11,
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 977,
+        98, 99,
+        981, 982,
+        1001, 1002,
+
+    ]
+    no_terrain_background_items: list = [
+        None,
+        98, 99,
+        981, 982,
+        500, 550, 555, 988, 999,
+
+    ]
+
+    no_shadow_needed: list = [
+        None,
+        0, 1, 2, 4, 7, 107, 9,
+        500, 550, 555, 988, 999, 1000,
+        1001, 1002,
+    ]
+
+    door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
 
     offset_x: int = 0
     offset_y: int = 0
