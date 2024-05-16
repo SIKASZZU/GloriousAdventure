@@ -100,14 +100,24 @@ class ImageLoader:
                                 image_path = f"images/Items/Tools/{image_name}.png"
 
                     if image_path:
-                        loaded_image = pygame.image.load(image_path)
-                        resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
+                        if image_path.startswith("images/Objects"):
+                            loaded_image = pygame.image.load(image_path)
+                            resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
 
-                        converted_image = resized_image.convert_alpha()
-                        ImageLoader.loaded_item_images[image_name] = converted_image
+                            converted_image = resized_image.convert_alpha()
+                            ImageLoader.loaded_item_images[image_name] = converted_image
 
-                        print(f"{image_path} resized and pre-loaded successfully.")
-                        return converted_image
+                            print(f"{image_path} resized and pre-loaded successfully.")
+                            return converted_image
+
+                        else:
+                            loaded_image = pygame.image.load(image_path)
+                            converted_image = loaded_image.convert_alpha()
+                            ImageLoader.loaded_item_images[image_name] = converted_image
+
+                            print(f"{image_path} resized and pre-loaded successfully.")
+                            return converted_image
+
 
                 print(f"Error: '{image_name}' image not found.")
                 return None
