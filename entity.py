@@ -4,7 +4,7 @@ from collections import deque
 
 from camera import Camera
 from images import ImageLoader
-from update import EssentsialsUpdate
+from update import EssentialsUpdate
 from variables import UniversalVariables
 import random
 
@@ -27,7 +27,7 @@ class Enemy:
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
-        if not Enemy.spawned_enemy_dict and EssentsialsUpdate.day_night_text == 'Night':
+        if not Enemy.spawned_enemy_dict and EssentialsUpdate.day_night_text == 'Night':
             UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
 
             # Player grid calculation
@@ -70,7 +70,7 @@ class Enemy:
         """ Despawns enemies during the day.  """
         """ Doesn't despawn detected enemies. """
 
-        if EssentsialsUpdate.day_night_text == 'Day':
+        if EssentialsUpdate.day_night_text == 'Day':
             detected_enemies = {enemy_name for enemy_name, _ in Enemy.enemy_in_range}
 
             enemies_to_remove = set()
