@@ -145,34 +145,35 @@ class UniversalVariables:
 
     cutscene = False
     portal_frame_rect = None
-    portal_list = []
+    portal_list: list = []
 
     # ******************** Render ******************** #
-    map_list = [['maze'], ['glade']]
-    blits_sequence = []
-    text_sequence = []
+    map_list: list = [['maze'], ['glade']]
+    blits_sequence: list = []
+    text_sequence: list = []
 
     render_range_small: list = [
-        10, 11,
-        90, 91, 92, 93, 93, 94, 95, 96, 97, 977,
-        98, 99,
-        981, 982,
-        1001, 1002,
-
+        10, 11,  # Key
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 977,  # Uksed
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        1001, 1002,  # Barrel
+        #
     ]
     no_terrain_background_items: list = [
         None,
-        98, 99,
-        981, 982,
-        500, 550, 555, 988, 999,
-
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        500, 550, 555, 988, 999,  # Portal, ground, wall
+        #
     ]
 
     no_shadow_needed: list = [
         None,
-        0, 1, 2, 4, 7, 107, 9,
-        500, 550, 555, 988, 999, 1000,
-        1001, 1002,
+        0, 1, 2, 4, 7, 107, 9,  # Mineralid
+        500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
+        1001, 1002,  # Barrel
+        #
     ]
 
     door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
