@@ -3,7 +3,7 @@ import pygame
 from items import items_list
 from inventory import Inventory
 from render import RenderPictures
-from update import EssentsialsUpdate
+from update import EssentialsUpdate
 from objects import ObjectManagement
 from variables import UniversalVariables
 from components import StaminaComponent
@@ -132,7 +132,6 @@ class Collisions:
 
                         if object_id == 982:
                             if UniversalVariables.final_maze != True:
-                                ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotti
                                 UniversalVariables.portal_frames -= 1
 
@@ -163,7 +162,7 @@ class Collisions:
 
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
-                            if EssentsialsUpdate.day_night_text != 'Day':
+                            if EssentialsUpdate.day_night_text != 'Day':
                                 print("Can't open new maze during night. ")
                                 reset_clicks(self)
                                 return
