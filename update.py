@@ -294,10 +294,16 @@ class EssentialsUpdate:
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
 
-            ("TODO list:", (UniversalVariables.screen_x - 200, 5), "orange"),  # Example with specified position and color
-            ("Maze mobs - spider", (UniversalVariables.screen_x - 250, 35), "orange"),  # Example with specified position and color
-            ("Maze geiger? / Blade maze", (UniversalVariables.screen_x - 275, 65), "orange"),  # Example with specified position and color
-            ("Final maze asja edasi teha", (UniversalVariables.screen_x - 275, 95), "orange"),  # Example with specified position and color
+            ("TODO list:", (5, UniversalVariables.screen_y - 260), "orange"),  # Example with specified position and color
+            ("Maze mobs - spider.", (10, UniversalVariables.screen_y - 220), "orange"),  # Example with specified position and color
+            ("Maze geiger? / Blade maze.", (10, UniversalVariables.screen_y - 190), "orange"),  # Example with specified position and color
+            ("Final maze asja edasi teha.", (10, UniversalVariables.screen_y - 160), "orange"),  # Example with specified position and color
+            ("Itemite ülesvõtmise delay,", (10, UniversalVariables.screen_y - 130), "orange"),
+            ("breaking animation vms teha.", (10, UniversalVariables.screen_y - 100), "orange"),
+            ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 70), "orange"),
+            ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 40), "orange"),
+
+            # Example with specified position and color
 
         ]
 
