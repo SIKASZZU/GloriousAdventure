@@ -293,7 +293,13 @@ class EssentialsUpdate:
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
-            ]
+
+            ("TODO list:", (UniversalVariables.screen_x - 200, 5), "orange"),  # Example with specified position and color
+            ("Maze mobs - spider", (UniversalVariables.screen_x - 250, 35), "orange"),  # Example with specified position and color
+            ("Maze geiger? / Blade maze", (UniversalVariables.screen_x - 275, 65), "orange"),  # Example with specified position and color
+            ("Final maze asja edasi teha", (UniversalVariables.screen_x - 275, 95), "orange"),  # Example with specified position and color
+
+        ]
 
         for element in ui_elements:
             text = element[0]
