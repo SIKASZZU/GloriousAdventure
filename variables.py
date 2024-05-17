@@ -167,7 +167,6 @@ class UniversalVariables:
         None,
         0, 1, 2, 4, 7, 107, 9,  # Mineralid
         500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
-        1001, 1002,  # Barrel
         #
     ]
 
