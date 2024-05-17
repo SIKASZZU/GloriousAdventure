@@ -112,22 +112,27 @@ class Collisions:
                                 print('No available Maze key in inventory. ')
                                 reset_clicks(self)
                                 return
-
-                            if UniversalVariables.final_maze != True:
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                                ObjectManagement.remove_object_from_inv('Maze_Key')
-                                UniversalVariables.portal_frames += 1
-
-                                Tile_Sounds.insert_key_audio(self)
-                                reset_clicks(self)
-
-                            # Kui clickid tühja keysloti peale ja key on invis
                             else:
-                                self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                                ObjectManagement.remove_object_from_inv('Maze_Key')
+                                UniversalVariables.ui_elements.append(
+                                    "In the labyrinth's depths, scattered keyholders await, "
+                                    "each craving its matching key. Unlock their secrets to "
+                                    "unveil the gateway to the mystical sanctum beyond."
+                                )
+                                if UniversalVariables.final_maze != True:
+                                    self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
+                                    ObjectManagement.remove_object_from_inv('Maze_Key')
+                                    UniversalVariables.portal_frames += 1
 
-                                Tile_Sounds.insert_key_audio(self)
-                                gray_yellow(self, 'yellow')
+                                    Tile_Sounds.insert_key_audio(self)
+                                    reset_clicks(self)
+
+                                # Kui clickid tühja keysloti peale ja key on invis
+                                else:
+                                    self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
+                                    ObjectManagement.remove_object_from_inv('Maze_Key')
+
+                                    Tile_Sounds.insert_key_audio(self)
+                                    gray_yellow(self, 'yellow')
 
 
                         if object_id == 982:
@@ -140,6 +145,13 @@ class Collisions:
 
                             # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
                             if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+
+                                UniversalVariables.ui_elements.append(
+                                    "Yet, with every passing moment, the portal's brilliance wanes, "
+                                    "its ethereal glow dimming until it flickers and fades into darkness once more, "
+                                    "sealing away the mysteries of the sanctum."
+                                )
+
                                 ObjectManagement.add_object_from_inv('Maze_Key')
                                 self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
@@ -219,6 +231,11 @@ class Collisions:
                                     return
 
                                 else:
+                                    UniversalVariables.ui_elements.append(
+                                        "As the final key slides into place, the portal shimmers open, "
+                                        "revealing its arcane depths. A resounding hum fills the air, "
+                                        "echoing through the labyrinth as the portal's magic pulses with newfound life."
+                                    )
                                     UniversalVariables.portal_list = []
                                     Tile_Sounds.portal_open_audio(self)
                                     yellow_green(self, 'green')

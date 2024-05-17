@@ -106,23 +106,18 @@ class UniversalVariables:
 
 
     # ******************** Screen ******************** #
+    ui_elements:list = []
 
-    loot_size: int = 3  # Mitu erinevat asja barrelist saab
-    loot_set: set[tuple[str, int]] = set()  # Asjad mida võib saada barrelist
-
-    loot =[
-        ("Stick", random.randint(2, 5)),
+    loot = [
+        ("Stick", (2, 5)),
         ("Stone_Shard", 1),
         ("Wood_Pickaxe", 1),
-        ("Oak_Planks", random.randint(2, 3)),
-        #("Coal", 1),
+        ("Oak_Planks", (2, 3)),
         ("Small_Rock_Sword", 1),
-        ("Oak_Planks", random.randint(2, 3)),
-        ("Oak_Wood", random.randint(1, 2)),
+        ("Oak_Planks", (2, 3)),
+        ("Oak_Wood", (1, 2)),
     ]
 
-    for tuple in loot:
-        loot_set.add(tuple)
 
     # ******************** COLLISION ******************** #
     collision_boxes: list = []  # collision

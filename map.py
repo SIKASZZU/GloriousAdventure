@@ -194,7 +194,7 @@ class MapData:
 
         # Maze keyholders
         MapData.keyholders = []
-        for i in range(2):
+        for i in range(50):
             keyholder_x = random.randint(3, (size - 3))
             keyholder_y = random.randint(3, (size - 3))
             MapData.converted_maze[keyholder_x][keyholder_y] = 981
@@ -204,8 +204,8 @@ class MapData:
 
         # Maze keyholders
         MapData.loot = []
-        if random.choice([False, True]):
-            for i in range(random.randint(1, 3)):
+        if random.choice([True]):
+            for i in range(random.randint(10, 30)):
                 loot_x = random.randint(3, (size - 3))
                 loot_y = random.randint(3, (size - 3))
                 MapData.converted_maze[loot_x][loot_y] = 1001
