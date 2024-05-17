@@ -154,7 +154,7 @@ class PlayerUpdate:
                                                            UniversalVariables.block_size, UniversalVariables.block_size)
 
         # renderib playeri hitboxi
-        if (UniversalVariables.hitbox_count % 2) != 0:
+        if (UniversalVariables.hitbox_count % 2) != 0 and UniversalVariables.debug_mode:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
@@ -277,10 +277,14 @@ class EssentialsUpdate:
         elif not keys[pygame.K_j]: self.j_pressed = False
 
 
-    def render_gui_text(self, text, position, color=(100, 255, 100)):
+    def render_gui_text(self, text, position, color=(100, 255, 100), debug=False):
         """Utility function to render text on the screen."""
-        text_surface = self.font.render(text, True, color)
-        UniversalVariables.text_sequence.append((text_surface, position))
+        if debug == False:
+            text_surface = self.font.render(text, True, color)
+            UniversalVariables.text_sequence.append((text_surface, position))
+        if UniversalVariables.debug_mode == True:
+            text_surface = self.font.render(text, True, color)
+            UniversalVariables.text_sequence.append((text_surface, position))
 
 
     def render_general(self):
@@ -288,20 +292,23 @@ class EssentialsUpdate:
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
         ui_elements = [
-            ("H - Show hitboxes", (800, 5)),  # Example with specified position and color
-            ("J - Switch light", (800, 35)),  # Example with specified position and color
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
 
-            ("TODO list:", (5, UniversalVariables.screen_y - 260), "orange"),  # Example with specified position and color
-            ("Maze mobs - spider.", (10, UniversalVariables.screen_y - 220), "orange"),  # Example with specified position and color
-            ("Maze geiger? / Blade maze.", (10, UniversalVariables.screen_y - 190), "orange"),  # Example with specified position and color
-            ("Final maze asja edasi teha.", (10, UniversalVariables.screen_y - 160), "orange"),  # Example with specified position and color
-            ("Itemite ülesvõtmise delay,", (10, UniversalVariables.screen_y - 130), "orange"),
-            ("breaking animation vms teha.", (10, UniversalVariables.screen_y - 100), "orange"),
-            ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 70), "orange"),
-            ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 40), "orange"),
+            ("H - Show hitboxes", (UniversalVariables.screen_x / 2, 5), "orange", True),  # Example with specified position and color
+            ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "orange", True),  # Example with specified position and color
+            ("TODO list:", (5, UniversalVariables.screen_y - 350), "orange", True),  # Example with specified position and color
+            ("Maze mobs - spider.", (10, UniversalVariables.screen_y - 300), "orange", True),  # Example with specified position and color
+            ("Maze geiger? / Blade maze.", (10, UniversalVariables.screen_y - 270), "orange", True),  # Example with specified position and color
+            ("Final maze asja edasi teha.", (10, UniversalVariables.screen_y - 240), "orange", True),  # Example with specified position and color
+            ("Itemite ülesvõtmise delay,", (10, UniversalVariables.screen_y - 210), "orange", True),
+            ("breaking animation vms teha.", (10, UniversalVariables.screen_y - 190), "orange", True),
+            ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 160), "orange", True),
+            ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 130), "orange", True),
+            ("Enemy ära fixida, vahepeal mingi safespot??", (10, UniversalVariables.screen_y - 100), "orange", True),
+            ("Selected item elude kõrvale", (10, UniversalVariables.screen_y - 70), "orange", True),
+            ("-", (10, UniversalVariables.screen_y - 40), "orange", True),
 
             # Example with specified position and color
 
@@ -311,6 +318,10 @@ class EssentialsUpdate:
             text = element[0]
             position = element[1] if len(element) > 1 else None
             color = element[2] if len(element) > 2 else (100, 255, 100)  # Default color white if not specified
+            if len(element) == 4:
+                debug_mode = element[3]
 
             # Call the improved render_text function with the specified parameters
-            EssentialsUpdate.render_gui_text(self, text, position=position, color=color)
+                EssentialsUpdate.render_gui_text(self, text, position=position, color=color, debug=debug_mode)
+            else:
+                EssentialsUpdate.render_gui_text(self, text, position=position, color=color)

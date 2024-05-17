@@ -4,239 +4,132 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = False
+    debug_mode = True
+
+    # ******************** Settings ******************** #
+
+    # Windowi suurus x, y
+    screen_x: int = 1366  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
+    screen_y: int = 768
+
+    # Mängu heli tugevus
+    sound_volume: int = 0.05
+
+    # Mängu max tick rate
+
+    # ******************** Screen ******************** #
+    screen = pygame.display.set_mode((screen_x, screen_y))
+
+    # Block size muutmiseks kui zoomitakse sisse või välja
+    jagatis: float = 15
+    block_size: int = screen_x // jagatis
+    prev_block_size: int = 0
 
     if debug_mode:
-
-        # ******************** Settings ******************** #
-
-        # Windowi suurus x, y
-        screen_x: int = 1600  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-        screen_y: int = 1000
-
-        # Mängu heli tugevus
-        sound_volume: int = 0.05
-
         # Mängu max tick rate
         FPS = 600
 
-
-        # ******************** Screen ******************** #
-        screen = pygame.display.set_mode((screen_x, screen_y))
-
-        # Block size muutmiseks kui zoomitakse sisse või välja
-        jagatis:float = 15
-        block_size: int = screen_x // jagatis
-        prev_block_size: int = 0
-
-
-        # ******************** PLAYER ******************** #
-        player_height: int = block_size * 0.65
-        player_width: int = block_size * 0.65
-
-        player_hitbox_offset_x: float = 0.29 * player_width
-        player_hitbox_offset_y: float = 0.22 * player_height
-
-
-        # Playeri koordinaatide arvutamine
-        player_x: int = random.randint(1 * block_size, 38 * block_size)
-        player_y: int = random.randint(40 * block_size, 77 * block_size)
-
-        health_status = None
         player_range: int = block_size * 15
 
-
-        # ******************** Screen ******************** #
-        ui_elements:list = []
-
-        loot = [
-            ("Stick", (2, 5)),
-            ("Stone_Shard", 1),
-            ("Wood_Pickaxe", 1),
-            ("Oak_Planks", (2, 3)),
-            ("Small_Rock_Sword", 1),
-            ("Oak_Planks", (2, 3)),
-            ("Oak_Wood", (1, 2)),
-        ]
-
-
-        # ******************** COLLISION ******************** #
-        collision_boxes: list = []  # collision
-
-
-        # ******************** VISION ******************** #
-        light_range: int = 420
-        opposite_light_range: int = 75
-        walls: list = []  # Collision boxide seinad
-        last_input: str = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
-
-
-        # ******************** MAZE ******************** #
-        maze_counter: int = 1
-        enemy_counter: int = 0
-        final_maze = bool
-        final_maze_key_slots: set = set()
-        portal_frames: int = 0
-
-
-        cutscene = False
-        portal_frame_rect = None
-        portal_list: list = []
-
-        # ******************** Render ******************** #
-        map_list: list = [['maze'], ['glade']]
-        blits_sequence: list = []
-        text_sequence: list = []
-
-        render_range_small: list = [
-            10, 11,  # Key
-            90, 91, 92, 93, 93, 94, 95, 96, 97, 977,  # Uksed
-            98, 99,  # Ground ja Wall
-            981, 982,  # Keyholder
-            1001, 1002,  # Barrel
-            #
-        ]
-        no_terrain_background_items: list = [
-            None,
-            98, 99,  # Ground ja Wall
-            981, 982,  # Keyholder
-            500, 550, 555, 988, 999,  # Portal, ground, wall
-            #
-        ]
-
-        no_shadow_needed: list = [
-            None,
-            0, 1, 2, 4, 7, 107, 9,  # Mineralid
-            500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
-            #
-        ]
-
-        door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
-
-        offset_x: int = 0
-        offset_y: int = 0
-
-        # ******************** Enemy ******************** #
-        enemy_spawnpoint_list = set()
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
-        # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-        enemy_path_update_tick = 10 + random.randint(-5, 5)
-
-        # ******************** Counters ******************** #
-        hitbox_count: int = 0
 
     else:
-        if debug_mode:
-            # ******************** Settings ******************** #
+        # Mängu max tick rate
+        FPS = 60
 
-            # Windowi suurus x, y
-            screen_x: int = 1600  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-            screen_y: int = 1000
+        player_range: int = block_size * 1.5
 
-            # Mängu heli tugevus
-            sound_volume: int = 0.05
+        enemy_speed = 0.03  # Enemy kiirus grid size'ina
 
-            # Mängu max tick rate
-            FPS = 600
 
-            # ******************** Screen ******************** #
-            screen = pygame.display.set_mode((screen_x, screen_y))
+    # ******************** PLAYER ******************** #
+    player_height: int = block_size * 0.65
+    player_width: int = block_size * 0.65
 
-            # Block size muutmiseks kui zoomitakse sisse või välja
-            jagatis: float = 15
-            block_size: int = screen_x // jagatis
-            prev_block_size: int = 0
+    player_hitbox_offset_x: float = 0.29 * player_width
+    player_hitbox_offset_y: float = 0.22 * player_height
 
-            # ******************** PLAYER ******************** #
-            player_height: int = block_size * 0.65
-            player_width: int = block_size * 0.65
+    # Playeri koordinaatide arvutamine
+    player_x: int = random.randint(1 * block_size, 38 * block_size)
+    player_y: int = random.randint(40 * block_size, 77 * block_size)
 
-            player_hitbox_offset_x: float = 0.29 * player_width
-            player_hitbox_offset_y: float = 0.22 * player_height
+    health_status = None
 
-            # Playeri koordinaatide arvutamine
-            player_x: int = random.randint(1 * block_size, 38 * block_size)
-            player_y: int = random.randint(40 * block_size, 77 * block_size)
+    # ******************** Screen ******************** #
+    ui_elements: list = []
 
-            health_status = None
-            player_range: int = block_size * 15
+    loot = [
+        ("Stick", (2, 5)),
+        ("Stone_Shard", 1),
+        ("Wood_Pickaxe", 1),
+        ("Oak_Planks", (2, 3)),
+        ("Small_Rock_Sword", 1),
+        ("Oak_Planks", (2, 3)),
+        ("Oak_Wood", (1, 2)),
+    ]
 
-            # ******************** Screen ******************** #
-            ui_elements: list = []
+    # ******************** COLLISION ******************** #
+    collision_boxes: list = []  # collision
 
-            loot = [
-                ("Stick", (2, 5)),
-                ("Stone_Shard", 1),
-                ("Wood_Pickaxe", 1),
-                ("Oak_Planks", (2, 3)),
-                ("Small_Rock_Sword", 1),
-                ("Oak_Planks", (2, 3)),
-                ("Oak_Wood", (1, 2)),
-            ]
+    # ******************** VISION ******************** #
+    light_range: int = 420
+    opposite_light_range: int = 75
+    walls: list = []  # Collision boxide seinad
+    last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
-            # ******************** COLLISION ******************** #
-            collision_boxes: list = []  # collision
+    # ******************** MAZE ******************** #
+    maze_counter: int = 1
+    enemy_counter: int = 0
+    final_maze = bool
+    final_maze_key_slots: set = set()
+    portal_frames: int = 0
 
-            # ******************** VISION ******************** #
-            light_range: int = 420
-            opposite_light_range: int = 75
-            walls: list = []  # Collision boxide seinad
-            last_input: str = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
+    cutscene = False
+    portal_frame_rect = None
+    portal_list: list = []
 
-            # ******************** MAZE ******************** #
-            maze_counter: int = 1
-            enemy_counter: int = 0
-            final_maze = bool
-            final_maze_key_slots: set = set()
-            portal_frames: int = 0
+    # ******************** Render ******************** #
+    map_list: list = [['maze'], ['glade']]
+    blits_sequence: list = []
+    text_sequence: list = []
 
-            cutscene = False
-            portal_frame_rect = None
-            portal_list: list = []
+    render_range_small: list = [
+        10, 11,  # Key
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 977,  # Uksed
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        1001, 1002,  # Barrel
+        #
+    ]
+    no_terrain_background_items: list = [
+        None,
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        500, 550, 555, 988, 999,  # Portal, ground, wall
+        #
+    ]
 
-            # ******************** Render ******************** #
-            map_list: list = [['maze'], ['glade']]
-            blits_sequence: list = []
-            text_sequence: list = []
+    no_shadow_needed: list = [
+        None,
+        0, 1, 2, 4, 7, 107, 9,  # Mineralid
+        500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
+        #
+    ]
 
-            render_range_small: list = [
-                10, 11,  # Key
-                90, 91, 92, 93, 93, 94, 95, 96, 97, 977,  # Uksed
-                98, 99,  # Ground ja Wall
-                981, 982,  # Keyholder
-                1001, 1002,  # Barrel
-                #
-            ]
-            no_terrain_background_items: list = [
-                None,
-                98, 99,  # Ground ja Wall
-                981, 982,  # Keyholder
-                500, 550, 555, 988, 999,  # Portal, ground, wall
-                #
-            ]
+    door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
 
-            no_shadow_needed: list = [
-                None,
-                0, 1, 2, 4, 7, 107, 9,  # Mineralid
-                500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
-                #
-            ]
+    offset_x: int = 0
+    offset_y: int = 0
 
-            door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
+    # ******************** Enemy ******************** #
+    enemy_spawnpoint_list = set()
 
-            offset_x: int = 0
-            offset_y: int = 0
+    # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
+    enemy_path_update_tick = 10 + random.randint(-5, 5)
 
-            # ******************** Enemy ******************** #
-            enemy_spawnpoint_list = set()
-            enemy_speed = 0.05  # Enemy kiirus grid size'ina
-
-            # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-            enemy_path_update_tick = 10 + random.randint(-5, 5)
-
-            # ******************** Counters ******************** #
-            hitbox_count: int = 0
+    # ******************** Counters ******************** #
+    hitbox_count: int = 0
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):

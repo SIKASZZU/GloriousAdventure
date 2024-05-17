@@ -1,7 +1,6 @@
 import pygame
 from items import items_list
 from typing import Dict, Optional
-from variables import Decorators
 
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}

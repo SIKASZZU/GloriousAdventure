@@ -4,7 +4,6 @@ from images import ImageLoader
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
-from variables import Decorators
 
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):

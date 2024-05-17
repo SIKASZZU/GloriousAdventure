@@ -31,7 +31,7 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=40, max_speed=10, min_speed=1)
+        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1)
         self.player_rect = None  # Player rect to be set in the game
 
         self.screen = UniversalVariables.screen
@@ -262,22 +262,19 @@ class Game:
 
     def run(self):
         xxx = 0
+        self.load_variables()
+
         while True:
             self.events()
 
-            self.load_variables()
             self.reset_lists()
             self.call_technical()
             self.call_visuals()
 
-            self.check_keys()
             self.render_general()
             self.handle_fading_texts()  # Render fading text after everything else
 
             self.refresh_loop()
-
-            self.custom_addition()
-            xxx += 1
 
             if UniversalVariables.portal_frame_rect:
                 if UniversalVariables.portal_frame_rect.colliderect(self.player_rect):
@@ -291,6 +288,15 @@ class Game:
             if xxx == 100:
                 UniversalVariables.cutscene = False
 
+
+                # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # Fpsside testimiseks
+
+
+            xxx += 1
+            if UniversalVariables.debug_mode:
+                self.player.speed.base_speed = 20
+                self.check_keys()
+                self.custom_addition()
 
 if __name__ == "__main__":
     game = Game()
