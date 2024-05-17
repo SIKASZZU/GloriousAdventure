@@ -119,21 +119,26 @@ class RenderPictures:
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
+
                             elif terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
+                            elif terrain_value == 933 or terrain_value == 977:
+                                if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
+                                else: self.terrain_data[position[1]][position[0]] = 933
+
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
                                 for item in items_list:
                                     if terrain_value == item.get('ID'):
                                         image_name = item.get('Name')
-                                
+                                     
                                 # special case, sest walle on meil 9 erinevat tykki.
                                 if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
                     
                                 image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
