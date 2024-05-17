@@ -4,7 +4,7 @@ import random
 from camera import Camera
 from items import items_list
 from images import ImageLoader
-from update import EssentsialsUpdate
+from update import EssentialsUpdate
 from variables import UniversalVariables
 
 
@@ -57,7 +57,7 @@ class RenderPictures:
         #    ROW == I == Y
         #    M6tle koordinaatteljestikule. Kui X muutub, muutub column. Kui muutub Y, siis muutub row.
 
-        # UniversalVariables.screen.fill('white')
+        UniversalVariables.screen.fill('white')
         RenderPictures.render_terrain_data: list = []
 
         # Use the camera's position to determine the render range
@@ -67,9 +67,7 @@ class RenderPictures:
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         try:
-            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.no_terrain_background_items or \
-                    self.terrain_data[player_grid_y][player_grid_x] > 89 and self.terrain_data[player_grid_y][
-                        player_grid_x] < 100 or self.terrain_data[player_grid_y][player_grid_x] == 933:
+            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
                 RenderPictures.render_range = 2
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
                 col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
@@ -121,21 +119,26 @@ class RenderPictures:
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
-                            elif terrain_value in UniversalVariables.door_ids:  
+
+                            elif terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
+                            elif terrain_value == 933 or terrain_value == 977:
+                                if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
+                                else: self.terrain_data[position[1]][position[0]] = 933
+
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
                                 for item in items_list:
                                     if terrain_value == item.get('ID'):
                                         image_name = item.get('Name')
-                                
+                                     
                                 # special case, sest walle on meil 9 erinevat tykki.
                                 if image_name.startswith('Maze_Wall'): image_name = 'Maze_Wall_' + str(random.randint(0,9))
                     
                                 image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)            
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position,image, terrain_value)            
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -222,7 +225,6 @@ class CreateCollisionBoxes:
                                         collision_box_x, collision_box_y, collision_box_width, collision_box_height,
                                         object_id, collision_box_offset_x,
                                         collision_box_offset_y)
-
                                     if new_object not in UniversalVariables.collision_boxes:
                                         UniversalVariables.collision_boxes.append(new_object)
                                         CreateCollisionBoxes.terrain_data_minerals += 1
