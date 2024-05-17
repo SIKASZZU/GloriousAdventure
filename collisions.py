@@ -109,7 +109,10 @@ class Collisions:
 
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
-                                print('No available Maze key in inventory. ')
+                                UniversalVariables.ui_elements.append(
+                                    "A faint whisper of magic stirs as your fingers graze the mysterious object, "
+                                    "hinting at a hidden connection waiting to be unveiled.")
+
                                 reset_clicks(self)
                                 return
                             else:
@@ -183,7 +186,6 @@ class Collisions:
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
                                     print('No available Maze key in inventory. ')
-
                                     reset_clicks(self)
                                     return
 

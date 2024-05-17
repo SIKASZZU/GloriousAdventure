@@ -67,7 +67,7 @@ class Game:
         #     "such riches are often fiercely guarded."
         # )
 
-        self.shown_texts = set()  # Track shown text elements
+        self.shown_texts = set()
         self.text_fade_duration = 700  # Duration of each fade in milliseconds
         self.text_elements = []  # Store text elements with their fade state
 
@@ -141,6 +141,9 @@ class Game:
         start_time = pygame.time.get_ticks()
         duration = len(text) * 0.05 * 1000  # Duration based on text length
 
+        # Remove the currently displayed text element, if any
+        self.text_elements = []
+
         self.text_elements.append(
             (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
 
@@ -153,59 +156,47 @@ class Game:
             if fade_in:
                 if elapsed_time < 500:  # Fade in for 0.5 seconds
                     alpha = (elapsed_time / 500) * 255
-                    for text_surface in text_surfaces:
-                        text_surface.set_alpha(alpha)  # Text alpha increases
-                    self.screen.blit(background_surface, background_rect)
-                    for text_surface, text_rect in zip(text_surfaces, text_rects):
-                        centered_text_rect = text_rect.copy()
-                        centered_text_rect.centerx = background_rect.centerx
-                        centered_text_rect.top = background_rect.top + text_rect.top
-                        self.screen.blit(text_surface, centered_text_rect.topleft)
-                    new_text_elements.append(
-                        (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
                 elif elapsed_time < duration + 500:  # Stay at full opacity for text length * 0.05 seconds
-                    for text_surface in text_surfaces:
-                        text_surface.set_alpha(255)  # Text alpha remains constant
-                    self.screen.blit(background_surface, background_rect)
-                    for text_surface, text_rect in zip(text_surfaces, text_rects):
-                        centered_text_rect = text_rect.copy()
-                        centered_text_rect.centerx = background_rect.centerx
-                        centered_text_rect.top = background_rect.top + text_rect.top
-                        self.screen.blit(text_surface, centered_text_rect.topleft)
-                    new_text_elements.append(
-                        (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
+                    alpha = 255
                 elif elapsed_time < duration + 1000:  # Fade out for 0.5 seconds
-                    fade_out_time = elapsed_time - (duration + 500)
-                    alpha = 255 - (fade_out_time / 500) * 255
-                    for text_surface in text_surfaces:
-                        text_surface.set_alpha(alpha)  # Text alpha decreases
-                    self.screen.blit(background_surface, background_rect)
-                    for text_surface, text_rect in zip(text_surfaces, text_rects):
-                        centered_text_rect = text_rect.copy()
-                        centered_text_rect.centerx = background_rect.centerx
-                        centered_text_rect.top = background_rect.top + text_rect.top
-                        self.screen.blit(text_surface, centered_text_rect.topleft)
-                    new_text_elements.append(
-                        (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
+                    alpha = 255 - ((elapsed_time - (duration + 500)) / 500) * 255
                 else:
-                    # Fade out complete, do not re-add to new_text_elements
-                    pass
+                    continue  # Fade out complete, do not re-add to new_text_elements
+
+                # Blit the background once
+                background_surface.set_alpha(min(alpha, 100))  # Limit alpha to 100
+                self.screen.blit(background_surface, background_rect)
+
+                # Blit each line of text
+                for text_surface, text_rect in zip(text_surfaces, text_rects):
+                    text_surface.set_alpha(min(alpha, 255))  # Limit alpha to 255 for text
+                    centered_text_rect = text_rect.copy()
+                    centered_text_rect.centerx = background_rect.centerx
+                    centered_text_rect.top = background_rect.top + text_rect.top
+                    self.screen.blit(text_surface, centered_text_rect.topleft)
+
+                new_text_elements.append(
+                    (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
             else:
                 if elapsed_time < 500:  # Fade out for 0.5 seconds
                     alpha = 255 - (elapsed_time / 500) * 255
-                    for text_surface in text_surfaces:
-                        text_surface.set_alpha(alpha)  # Text alpha decreases
-                    self.screen.blit(background_surface, background_rect)
-                    for text_surface, text_rect in zip(text_surfaces, text_rects):
-                        centered_text_rect = text_rect.copy()
-                        centered_text_rect.centerx = background_rect.centerx
-                        centered_text_rect.top = background_rect.top + text_rect.top
-                        self.screen.blit(text_surface, centered_text_rect.topleft)
-                    new_text_elements.append(
-                        (background_surface, background_rect, text_surfaces, text_rects, start_time, False, duration))
                 else:
-                    # Fade out complete, do not re-add to new_text_elements
-                    pass
+                    continue  # Fade out complete, do not re-add to new_text_elements
+
+                # Blit the background once
+                background_surface.set_alpha(min(alpha, 100))  # Limit alpha to 100
+                self.screen.blit(background_surface, background_rect)
+
+                # Blit each line of text
+                for text_surface, text_rect in zip(text_surfaces, text_rects):
+                    text_surface.set_alpha(min(alpha, 255))  # Limit alpha to 255 for text
+                    centered_text_rect = text_rect.copy()
+                    centered_text_rect.centerx = background_rect.centerx
+                    centered_text_rect.top = background_rect.top + text_rect.top
+                    self.screen.blit(text_surface, centered_text_rect.topleft)
+
+                new_text_elements.append(
+                    (background_surface, background_rect, text_surfaces, text_rects, start_time, False, duration))
 
         self.text_elements = new_text_elements
 
@@ -288,15 +279,16 @@ class Game:
             if xxx == 100:
                 UniversalVariables.cutscene = False
 
-
-                # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # Fpsside testimiseks
-
-
-            xxx += 1
             if UniversalVariables.debug_mode:
+                UniversalVariables.ui_elements.append("!        Debug mode - True        !")
+
                 self.player.speed.base_speed = 20
                 self.check_keys()
                 self.custom_addition()
+            # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # Fpsside testimiseks
+
+
+            xxx += 1
 
 if __name__ == "__main__":
     game = Game()
