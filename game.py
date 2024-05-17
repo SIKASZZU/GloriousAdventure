@@ -223,6 +223,16 @@ class Game:
             PlayerUpdate.render_player(self)
             ObjectManagement.place_and_render_object(self)
 
+
+        # Equipped item slot
+        if UniversalVariables.equipped_item:
+            item, value = UniversalVariables.equipped_item
+            Inventory.render_inventory_slot(self, item, value)
+        else:
+            item, value = None, 0
+            Inventory.render_inventory_slot(self, item, value)
+
+
         Enemy.spawn(self)
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
@@ -248,13 +258,12 @@ class Game:
 
     def custom_addition(self):
         if not self.restrict_looping:
-            ObjectManagement.add_object_from_inv("Maze_Key", 1000)
+            ObjectManagement.add_object_from_inv("Maze_Key", 100)
             self.restrict_looping = True
 
     def run(self):
         xxx = 0
         self.load_variables()
-
         while True:
             self.events()
 
@@ -276,16 +285,18 @@ class Game:
 
                 pygame.display.flip()
 
+
             if xxx == 100:
                 UniversalVariables.cutscene = False
 
+            # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
 
                 self.player.speed.base_speed = 20
                 self.check_keys()
                 self.custom_addition()
-            # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # Fpsside testimiseks
+            # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
 
 
             xxx += 1

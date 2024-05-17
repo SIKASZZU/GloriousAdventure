@@ -44,6 +44,10 @@ class UniversalVariables():
 
 
     # ******************** PLAYER ******************** #
+    old_equipped_item = None
+    old_equipped_item_item_type = None
+    equipped_item: tuple = ()  # Käes oleva itemi trackimiseks
+
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
 

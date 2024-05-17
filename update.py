@@ -307,8 +307,8 @@ class EssentialsUpdate:
             ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 160), "orange", True),
             ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 130), "orange", True),
             ("Enemy ära fixida, vahepeal mingi safespot??", (10, UniversalVariables.screen_y - 100), "orange", True),
-            ("Selected item elude kõrvale", (10, UniversalVariables.screen_y - 70), "orange", True),
-            ("-", (10, UniversalVariables.screen_y - 40), "orange", True),
+            ("Selected item ---- Ilusamaks tegema", (10, UniversalVariables.screen_y - 70), "orange", True),
+            ("Max item stack - 99", (10, UniversalVariables.screen_y - 40), "orange", True),
 
             # Example with specified position and color
 
