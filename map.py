@@ -77,7 +77,7 @@ class MapData:
             return maze
 
 
-    def maze_generation(shape, res):
+    def block_maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
             return 1*t**7 - 5*t**0 + 1*t**1
@@ -107,11 +107,12 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
+
     @staticmethod
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
         resolution = MapData.resolution
-        noise = MapData.maze_generation((size, size), resolution)
+        noise = MapData.block_maze_generation((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
@@ -293,8 +294,8 @@ class MapData:
         if item.endswith('maze'):
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
-
-            elif UniversalVariables.maze_counter == 5:
+            
+            elif UniversalVariables.maze_counter == 1:
                 item = 'blade_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 

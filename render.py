@@ -67,14 +67,14 @@ class RenderPictures:
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         try:
-            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
-                RenderPictures.render_range = 2
-                row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
-                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
-            else:
-                RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size) // 5
-                row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
-                col_range_0, col_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
+            #if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
+            #    RenderPictures.render_range = 2
+            #    row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
+            #    col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
+            #else:
+            RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size) // 5
+            row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
+            col_range_0, col_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
 
             for row in range(row_range_0, row_range_1):
                 self.row: list[tuple[int, int], ...] = []
