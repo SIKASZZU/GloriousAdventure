@@ -1,6 +1,6 @@
 import pygame
 
-from images import ImageLoader
+from images import ImageLoader, ImageCache
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
@@ -26,6 +26,7 @@ class Inventory:
     craftable_items = {}
 
     previous_inv = None
+    text_cache = {}  # Cache rendered text surfaces
 
     @staticmethod
     def print_inventory() -> None:
@@ -90,10 +91,11 @@ class Inventory:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
 
-                UniversalVariables.equipped_item =  (item, value)
+
+                UniversalVariables.equipped_item =  item
 
         except IndexError:
-            UniversalVariables.equipped_item = (None, 0)
+            UniversalVariables.equipped_item = None
 
         Inventory.last_clicked_slot = index  # Updateb viimast clicki
 
@@ -313,26 +315,24 @@ class Inventory:
             # Remove items with a count of zero from the inventory
             Inventory.inventory = {k: v for k, v in Inventory.inventory.items() if v > 0}
 
-    def render_inventory_slot(self, item_name, item_count=1):
+    def render_inventory_slot(self, item_name):
         slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
-        position = UniversalVariables.screen_x // 2 - 200, UniversalVariables.screen_y - 50
-        # Render slot image
-        UniversalVariables.screen.blit(slot_image, position)
+        position = (UniversalVariables.screen_x // 2 - 200, UniversalVariables.screen_y - 50)
+
+        # List to hold all blit operations
+        blit_operations = [(slot_image, position)]
 
         if item_name is None or item_count == 0:
+            UniversalVariables.screen.blits(blit_operations)
             return  # Don't render anything if item is None or count is 0
 
+        # Update equipped item type if the item has changed
         if UniversalVariables.old_equipped_item != item_name:
-
-            UniversalVariables.old_equipped_item_item_type = None
-            for item in items_list:
-                if item["Name"] == item_name:
-                    UniversalVariables.old_equipped_item_item_type = item["Type"]
-                    break
-
+            UniversalVariables.old_equipped_item_item_type = next(
+                (item["Type"] for item in items_list if item["Name"] == item_name), None)
             UniversalVariables.old_equipped_item = item_name
 
-        item_image = ImageLoader.load_image(f"{item_name}")
+        item_image = ImageLoader.load_image(item_name)
 
         # Resize item image to fit within slot dimensions
         max_item_size = (slot_image.get_width() - 20, slot_image.get_height() - 20)
@@ -342,14 +342,19 @@ class Inventory:
         item_x = position[0] + (slot_image.get_width() - resized_item_image.get_width()) // 2
         item_y = position[1] + (slot_image.get_height() - resized_item_image.get_height()) // 2
 
-        # Blit resized item image onto slot image if count is not 0
-        if item_count != 0:
-            UniversalVariables.screen.blit(resized_item_image, (item_x, item_y))
+        # Add item image to blit operations
+        blit_operations.append((resized_item_image, (item_x, item_y)))
 
-        # Render item count at top left corner of slot if count is greater than 1
+        # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
         if UniversalVariables.old_equipped_item_item_type != "Tool":
-            font = pygame.font.Font(None, 20)  # Set font and size
-            text_surface = font.render(str(item_count), True, (0, 0, 0))  # Render text with black color
-            text_rect = text_surface.get_rect(topleft=(position[0] + 5, position[1] + 5))  # Calculate position
-            UniversalVariables.screen.blit(text_surface, text_rect)  # Blit text onto screen
+            text = str(Inventory.inventory[item_name])
+            if text not in Inventory.text_cache:
+                font = pygame.font.Font(None, 20)
+                Inventory.text_cache[text] = font.render(text, True, (0, 0, 0))  # Render text with black color
 
+            text_surface = Inventory.text_cache[text]
+            text_rect = text_surface.get_rect(topleft=(position[0] + 5, position[1] + 5))  # Calculate position
+            blit_operations.append((text_surface, text_rect.topleft))
+
+        # Perform all blit operations
+        UniversalVariables.screen.blits(blit_operations)

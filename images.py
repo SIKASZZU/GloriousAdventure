@@ -1,6 +1,7 @@
 import pygame
 from items import items_list
 from typing import Dict, Optional
+from functools import lru_cache
 
 class ImageLoader:
     loaded_item_images: Dict[str, pygame.Surface] = {}
@@ -124,3 +125,16 @@ class ImageLoader:
         except FileNotFoundError:
             print(f"Error: '{image_path}' image not found.")
             return None
+
+
+class ImageCache:
+    @staticmethod
+    @lru_cache(maxsize=128)
+    def load_item_image(item_name):
+        return ImageLoader.load_image(item_name)
+
+    @staticmethod
+    @lru_cache(maxsize=128)
+    def load_resized_item_image(item_name, max_size):
+        item_image = ImageLoader.load_image(item_name)
+        return pygame.transform.scale(item_image, max_size)

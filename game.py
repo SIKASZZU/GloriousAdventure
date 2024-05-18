@@ -226,11 +226,11 @@ class Game:
 
         # Equipped item slot
         if UniversalVariables.equipped_item:
-            item, value = UniversalVariables.equipped_item
-            Inventory.render_inventory_slot(self, item, value)
+            item = UniversalVariables.equipped_item
+            Inventory.render_inventory_slot(self, item)
         else:
-            item, value = None, 0
-            Inventory.render_inventory_slot(self, item, value)
+            item = None
+            Inventory.render_inventory_slot(self, item)
 
 
         Enemy.spawn(self)
