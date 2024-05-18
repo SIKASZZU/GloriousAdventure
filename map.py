@@ -41,6 +41,7 @@ class MapData:
     
     @staticmethod
     def file_to_maze(file_name: str, side: str =None):
+        print(file_name)
 
         if side is None:
             with open('glade.txt', 'r') as file_name:
@@ -53,7 +54,6 @@ class MapData:
                 maze = [[int(x) if x.strip().lower() != 'none' else None
                          for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                         for line in file_name if line.strip()]
-
             size = len(maze)
 
             # Set the start point
@@ -292,10 +292,11 @@ class MapData:
         # Your existing method to generate data based on the item type
 
         if item.endswith('maze'):
+            print(item)
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
             
-            elif UniversalVariables.maze_counter == 1:
+            elif UniversalVariables.maze_counter == 2:
                 item = 'blade_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
