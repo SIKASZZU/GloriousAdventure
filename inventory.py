@@ -322,7 +322,7 @@ class Inventory:
         # List to hold all blit operations
         blit_operations = [(slot_image, position)]
 
-        if item_name is None or item_count == 0:
+        if item_name is None:
             UniversalVariables.screen.blits(blit_operations)
             return  # Don't render anything if item is None or count is 0
 
