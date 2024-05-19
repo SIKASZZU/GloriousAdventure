@@ -91,7 +91,6 @@ class UniversalVariables():
     portal_frames: int = 0
 
     blades_spawned = False
-    print('cancer')
     already_looped_blades = None
     
     cutscene = False
