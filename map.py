@@ -41,8 +41,6 @@ class MapData:
     
     @staticmethod
     def file_to_maze(file_name: str, side: str =None):
-        print(file_name)
-        print(side)
 
         if side is None:
             with open('glade.txt', 'r') as file_name:
@@ -79,7 +77,6 @@ class MapData:
             sides = ['top', 'bottom', 'left', 'right']
             sides.remove(side)
             for side in sides:
-                print('Looping side:', side)
 
                 if side == 'left':
                     end_0 = ((size // 2), 0)
@@ -100,12 +97,6 @@ class MapData:
                     end_0 = (size-1, (size // 2))
                     end_1 = (size-1, (size // 2) - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97            
-            
-            
-            
-            print(start_0, start_1)
-
-            for row in maze: print(row)
 
             return maze
 
