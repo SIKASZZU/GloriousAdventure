@@ -39,7 +39,6 @@ class Loot:
         while count > 0:
             obtained_loot, obtained_count = Loot.get_random_loot(self)
             count -= 1
-            print("obtained_loot", obtained_loot, "obtained_count", obtained_count)
             ObjectManagement.add_object_from_inv(obtained_loot, obtained_count)
 
     def loot_update(self):

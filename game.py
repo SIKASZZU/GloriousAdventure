@@ -223,6 +223,10 @@ class Game:
             PlayerUpdate.render_player(self)
             ObjectManagement.place_and_render_object(self)
 
+        Enemy.spawn(self)
+        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+        PlayerUpdate.render_HUD(self)  # Render HUD
+        EssentialsUpdate.render_general(self)  # Render other elements
 
         # Equipped item slot
         if UniversalVariables.equipped_item:
@@ -231,12 +235,6 @@ class Game:
         else:
             item = None
             Inventory.render_inventory_slot(self, item)
-
-
-        Enemy.spawn(self)
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
-        PlayerUpdate.render_HUD(self)  # Render HUD
-        EssentialsUpdate.render_general(self)  # Render other elements
 
     def check_keys(self):
         EssentialsUpdate.check_pressed_keys(self)  # Check pressed keys
