@@ -90,6 +90,10 @@ class UniversalVariables():
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 
+    blades_spawned = False
+    print('cancer')
+    already_looped_blades = None
+    
     cutscene = False
     portal_frame_rect = None
     portal_list: list = []

@@ -331,6 +331,7 @@ class MapData:
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
             
             elif UniversalVariables.maze_counter == 2:
+                UniversalVariables.blades_spawned = True
                 item = 'blade_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 

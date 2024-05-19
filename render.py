@@ -6,7 +6,7 @@ from items import items_list
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables
-
+from blade import change_blades
 
 class RenderPictures:
     render_range: int = 0
@@ -66,6 +66,7 @@ class RenderPictures:
 
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+
         try:
             #if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
             #    RenderPictures.render_range = 2
@@ -139,6 +140,8 @@ class RenderPictures:
                     
                                 image = ImageLoader.load_image(image_name)
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position,image, terrain_value)            
+                            
+                            if UniversalVariables.blades_spawned == True:  change_blades(self)
 
                 RenderPictures.render_terrain_data.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -246,3 +249,5 @@ class CreateCollisionBoxes:
         UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,
                                                     key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
 
+
+if __name__ == '__main__':  print('Ran render.py')
