@@ -149,8 +149,9 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if UniversalVariables.final_maze == True:
+        if UniversalVariables.final_maze == True and UniversalVariables.final_maze_spawned == False:
             maze_type = 'final_maze'
+            UniversalVariables.final_maze_spawned = True
 
         else:
             maze_type = AddingMazeAtPosition.maze_type

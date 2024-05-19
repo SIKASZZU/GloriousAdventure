@@ -86,6 +86,7 @@ class UniversalVariables():
     maze_counter: int = 1
     enemy_counter: int = 0
     final_maze = bool
+    final_maze_spawned = False  # safety measure, et rohkem kui yhte final mazei ei tekiks.
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 

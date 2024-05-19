@@ -56,23 +56,23 @@ class MapData:
                         for line in file_name if line.strip()]
             size = len(maze)
 
-            # Set the start point
-            if side == 'left':
-                start_0 = (size // 2, 0)
-                start_1 = (size // 2 - 1, 0)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
-            elif side == 'top':
-                start_0 = (0, size // 2)
-                start_1 = (0, size // 2 - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
-            elif side == 'right':
-                start_0 = (size // 2, size - 1)
-                start_1 = (size // 2 - 1, size - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
-            elif side == 'bottom':
-                start_0 = (size - 1, size // 2)
-                start_1 = (size - 1, size // 2 - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+            ## Set the start point
+            #if side == 'left':
+            #    start_0 = (size // 2, 0)
+            #    start_1 = (size // 2 - 1, 0)
+            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+            #elif side == 'top':
+            #    start_0 = (0, size // 2)
+            #    start_1 = (0, size // 2 - 1)
+            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+            #elif side == 'right':
+            #    start_0 = (size // 2, size - 1)
+            #    start_1 = (size // 2 - 1, size - 1)
+            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+            #elif side == 'bottom':
+            #    start_0 = (size - 1, size // 2)
+            #    start_1 = (size - 1, size // 2 - 1)
+            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
 
             return maze
 
@@ -292,7 +292,6 @@ class MapData:
         # Your existing method to generate data based on the item type
 
         if item.endswith('maze'):
-            print(item)
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
             
