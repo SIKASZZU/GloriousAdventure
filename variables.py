@@ -108,7 +108,7 @@ class UniversalVariables():
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
         1001, 1002,  # Barrel
-        989, 989_98, 9099, 9099_98,  # Blade walls, grounds
+        989, 989_98, 9099, 9099_98, 900,  # Blade walls, grounds
     ]
     
     no_terrain_background_items: list = [
