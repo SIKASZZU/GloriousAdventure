@@ -42,6 +42,7 @@ class MapData:
     @staticmethod
     def file_to_maze(file_name: str, side: str =None):
         print(file_name)
+        print(side)
 
         if side is None:
             with open('glade.txt', 'r') as file_name:
@@ -56,23 +57,55 @@ class MapData:
                         for line in file_name if line.strip()]
             size = len(maze)
 
-            ## Set the start point
-            #if side == 'left':
-            #    start_0 = (size // 2, 0)
-            #    start_1 = (size // 2 - 1, 0)
-            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
-            #elif side == 'top':
-            #    start_0 = (0, size // 2)
-            #    start_1 = (0, size // 2 - 1)
-            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
-            #elif side == 'right':
-            #    start_0 = (size // 2, size - 1)
-            #    start_1 = (size // 2 - 1, size - 1)
-            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
-            #elif side == 'bottom':
-            #    start_0 = (size - 1, size // 2)
-            #    start_1 = (size - 1, size // 2 - 1)
-            #    maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+            # Set the start point
+            if side == 'left':
+                start_0 = (size // 2, 0)
+                start_1 = (size // 2 - 1, 0)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+            elif side == 'top':
+                start_0 = (0, size // 2)
+                start_1 = (0, size // 2 - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+            elif side == 'right':
+                start_0 = (size // 2, size - 1)
+                start_1 = (size // 2 - 1, size - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+            elif side == 'bottom':
+                start_0 = (size - 1, size // 2)
+                start_1 = (size - 1, size // 2 - 1)
+                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+           
+            # Set the end points on the remaining three sides
+            sides = ['top', 'bottom', 'left', 'right']
+            sides.remove(side)
+            for side in sides:
+                print('Looping side:', side)
+
+                if side == 'left':
+                    end_0 = ((size // 2), 0)
+                    end_1 = ((size // 2) - 1, 0)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 94, 94
+
+                elif side == 'top':
+                    end_0 = (0, (size // 2))
+                    end_1 = (0, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
+
+                elif side == 'right':
+                    end_0 = ((size // 2), size-1)
+                    end_1 = ((size // 2) - 1, size-1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
+
+                elif side == 'bottom':
+                    end_0 = (size-1, (size // 2))
+                    end_1 = (size-1, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97            
+            
+            
+            
+            print(start_0, start_1)
+
+            for row in maze: print(row)
 
             return maze
 
@@ -128,6 +161,8 @@ class MapData:
 
         # Ensure outer walls
         # AFTER outer wall one block must be pathway
+
+        ### TODO: siin on mingi string numbrid, neid pole vaja ning siis pole vaja ka "row_integers = row.astype(int)"
         maze[0, :] = maze[-1, :] = '99'
         maze[:, 0] = maze[:, -1] = '99'
 
