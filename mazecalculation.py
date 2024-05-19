@@ -46,8 +46,6 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_top:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
-        print(len(map_list[0]))
-        print(len(map_list[1]))
 
         # Kui row_index on võrdne mapis map_list'is olevale listide
         # arvuga siis lisab igale list'is olevale row'ile place'i.
