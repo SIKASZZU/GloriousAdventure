@@ -297,7 +297,6 @@ items_list = [
         "ID": 9099_98,
         "Breakable": False,
         "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 0.25),
         "Object_height": int(block_size * 0.25),
         "Render_when": -block_size
@@ -308,7 +307,6 @@ items_list = [
         "ID": 989_98,
         "Breakable": False,
         "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
