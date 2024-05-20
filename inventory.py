@@ -317,10 +317,11 @@ class Inventory:
 
     def render_inventory_slot(self, item_name):
         slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
-        position = (UniversalVariables.screen_x // 2 - 200, UniversalVariables.screen_y - 50)
+        position = (UniversalVariables.screen_x - 850, UniversalVariables.screen_y - 51)
+        resized_slot_image = pygame.transform.scale(slot_image, (slot_image.get_width() * 0.9 , slot_image.get_height() * 0.9))
 
         # List to hold all blit operations
-        blit_operations = [(slot_image, position)]
+        blit_operations = [(resized_slot_image, position)]
 
         if item_name is None:
             UniversalVariables.screen.blits(blit_operations)
@@ -335,12 +336,12 @@ class Inventory:
         item_image = ImageLoader.load_image(item_name)
 
         # Resize item image to fit within slot dimensions
-        max_item_size = (slot_image.get_width() - 20, slot_image.get_height() - 20)
+        max_item_size = (resized_slot_image.get_width() - 15, resized_slot_image.get_height() - 15)
         resized_item_image = pygame.transform.scale(item_image, max_item_size)
 
         # Calculate position to center item image
-        item_x = position[0] + (slot_image.get_width() - resized_item_image.get_width()) // 2
-        item_y = position[1] + (slot_image.get_height() - resized_item_image.get_height()) // 2
+        item_x = position[0] + (resized_slot_image.get_width() - resized_item_image.get_width()) // 2
+        item_y = position[1] + (resized_slot_image.get_height() - resized_item_image.get_height()) // 2
 
         # Add item image to blit operations
         blit_operations.append((resized_item_image, (item_x, item_y)))
