@@ -219,37 +219,54 @@ class MapData:
             _keyholders = 2
             _loot = random.randint(1, 3)
 
+        def is_dead_end(maze, x, y):
+            walls = 0
+            if maze[x-1][y] == 99:
+                walls += 1
+            if maze[x+1][y] == 99:
+                walls += 1
+            if maze[x][y-1] == 99:
+                walls += 1
+            if maze[x][y+1] == 99:
+                walls += 1
+            return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
+
         # Maze's puzzle pieces
         MapData.puzzle_pieces = []
         for i in range(_puzzle_pieces):
-            puzzle_x = random.randint(3, (size - 3))
-            puzzle_y = random.randint(3, (size - 3))
-            MapData.converted_maze[puzzle_x][puzzle_y] = 10
-
-            if not (puzzle_x, puzzle_y) in MapData.puzzle_pieces:
-                MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
-
+            while True:
+                puzzle_x = random.randint(3, (size - 3))
+                puzzle_y = random.randint(3, (size - 3))
+                if not is_dead_end(MapData.converted_maze, puzzle_x, puzzle_y):
+                    MapData.converted_maze[puzzle_x][puzzle_y] = 10
+                    if (puzzle_x, puzzle_y) not in MapData.puzzle_pieces:
+                        MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
+                    break
+                
         # Maze keyholders
         MapData.keyholders = []
         for i in range(_keyholders):
-            keyholder_x = random.randint(3, (size - 3))
-            keyholder_y = random.randint(3, (size - 3))
-            MapData.converted_maze[keyholder_x][keyholder_y] = 981
-
-            if not (keyholder_x, keyholder_y) in MapData.keyholders:
-                MapData.keyholders.append((keyholder_x, keyholder_y))
-
-        # Maze keyholders
+            while True:
+                keyholder_x = random.randint(3, (size - 3))
+                keyholder_y = random.randint(3, (size - 3))
+                if not is_dead_end(MapData.converted_maze, keyholder_x, keyholder_y):
+                    MapData.converted_maze[keyholder_x][keyholder_y] = 981
+                    if (keyholder_x, keyholder_y) not in MapData.keyholders:
+                        MapData.keyholders.append((keyholder_x, keyholder_y))
+                    break
+                
+        # Maze loot
         MapData.loot = []
         if random.choice([True]):
-
             for i in range(_loot):
-                loot_x = random.randint(3, (size - 3))
-                loot_y = random.randint(3, (size - 3))
-                MapData.converted_maze[loot_x][loot_y] = 1001
-
-                if not (loot_x, loot_y) in MapData.loot:
-                    MapData.loot.append((loot_x, loot_y))
+                while True:
+                    loot_x = random.randint(3, (size - 3))
+                    loot_y = random.randint(3, (size - 3))
+                    if not is_dead_end(MapData.converted_maze, loot_x, loot_y):
+                        MapData.converted_maze[loot_x][loot_y] = 1001
+                        if (loot_x, loot_y) not in MapData.loot:
+                            MapData.loot.append((loot_x, loot_y))
+                        break
 
         MapData.search_paths(MapData.converted_maze)
         
