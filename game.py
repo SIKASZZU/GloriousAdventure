@@ -22,6 +22,7 @@ from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions, reset_clicks  # check_collisions, collision_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
 from loot import Loot  # loot_update
+from blade import change_blades
 
 
 class Game:
@@ -213,6 +214,7 @@ class Game:
         self.player.health.check_health()
         Enemy.update(self)
         Player_audio.player_audio_update(self)
+        change_blades(self)
 
     def call_visuals(self):
         RenderPictures.map_render(self)  # Render terrain
