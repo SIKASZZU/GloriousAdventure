@@ -52,7 +52,6 @@ def change_blades(self):
                 # Muudab vertikaalsed usked maze groundiks.
                 for index in range(closed_vertical_door_count):
                     row, col = find_number_in_list_of_lists(self.terrain_data, 9099)
-                    print(self.terrain_data[row][col])
                     self.terrain_data[row][col] = 9099_98
 
                 # Horisontaalsed usked tekivad
