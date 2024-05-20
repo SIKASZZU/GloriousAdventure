@@ -86,9 +86,13 @@ class UniversalVariables():
     maze_counter: int = 1
     enemy_counter: int = 0
     final_maze = bool
+    final_maze_spawned = False  # safety measure, et rohkem kui yhte final mazei ei tekiks.
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 
+    blades_spawned = False
+    already_looped_blades = None
+    
     cutscene = False
     portal_frame_rect = None
     portal_list: list = []
@@ -104,8 +108,9 @@ class UniversalVariables():
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
         1001, 1002,  # Barrel
-        #
+        989, 989_98, 9099, 9099_98, 900,  # Blade walls, grounds
     ]
+    
     no_terrain_background_items: list = [
         None,
         98, 99,  # Ground ja Wall

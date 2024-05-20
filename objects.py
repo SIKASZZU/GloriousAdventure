@@ -137,6 +137,7 @@ class ObjectManagement:
                     object_image_name = item.get("Name")
                     if object_image_name == "Maze_Wall": pass
                     elif object_image_name == "Maze_Ground": pass
+                    elif object_image_name == "Maze_Blade": pass
 
                     else:
                         object_width = item.get("Object_width")

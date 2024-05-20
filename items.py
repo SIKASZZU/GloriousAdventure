@@ -226,7 +226,7 @@ items_list = [
 ### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
 ### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
 
-{
+        {
         "Type": "Object",
         "Name": "Farmland",
         "ID": 107,
@@ -236,8 +236,7 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
-
-{
+    {
         "Type": "Object",
         "Name": "Maze_Ground",
         "ID": 98,
@@ -258,20 +257,21 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
+    ### maze blade
     {
         "Type": "Object",
         "Name": "Maze_Blade",
         "ID": 9099,
         "Breakable": False,
         "Block_vision": True,
-        "Collision_box": [0.5, 0.5, 0.75, 0.75],
+        "Collision_box": [0, 0, 1, 1],
         "Object_width": int(block_size * 0.25),
         "Object_height": int(block_size * 0.25),
         "Render_when": -block_size
         },
     {
         "Type": "Object",
-        "Name": "Maze_Blade_Changer_On",
+        "Name": "Maze_Blade",
         "ID": 989,
         "Breakable": False,
         "Block_vision": True,
@@ -282,18 +282,7 @@ items_list = [
         },
     {
         "Type": "Object",
-        "Name": "Maze_Blade_Changer_Off",
-        "ID": 989,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Blade_Stationary",
+        "Name": "Maze_Blade",
         "ID": 900,
         "Breakable": False,
         "Block_vision": True,
@@ -302,6 +291,27 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
+    {
+        "Type": "Object",
+        "Name": "Maze_Ground",
+        "ID": 9099_98,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 0.25),
+        "Object_height": int(block_size * 0.25),
+        "Render_when": -block_size
+        },
+    {
+        "Type": "Object",
+        "Name": "Maze_Ground",
+        "ID": 989_98,
+        "Breakable": False,
+        "Block_vision": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+        },
+    ###
     {
         "Type": "Object",
         "Name": "Maze_Start_Left",
@@ -471,17 +481,6 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
         },
-
-    {
-        "Type": "Object",
-        "Name": "Maze_Wall",
-        "ID": 900,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-    },
-
     {
         "Type": "Object",
         "Name": "Maze_Start_Bottom",
@@ -491,7 +490,6 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
     },
-
     {
         "Type": "Object",
         "Name": "Final_Maze_Ground",
@@ -501,7 +499,6 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
         },
-
     {
         "Type": "Object",
         "Name": "Void",
@@ -512,7 +509,6 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
         },
-
     {
         "Type": "Object",
         "Name": "Endgate",
@@ -522,7 +518,7 @@ items_list = [
         "Object_height": int(block_size * 2),
         "Render_when": (block_size * -1)
         },
-{
+    {
         "Type": "Object",
         "Name": "Loot_Barrel",
         "ID": 1001,
@@ -532,7 +528,7 @@ items_list = [
         "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
-{
+    {
         "Type": "Object",
         "Name": "Opened_Loot_Barrel",
         "ID": 1002,

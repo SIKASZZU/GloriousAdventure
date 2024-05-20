@@ -20,6 +20,7 @@ from update import EssentialsUpdate  # check_pressed_keys, render_general
 from update import PlayerUpdate  # update_player, render_player, render_HUD
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions, reset_clicks  # check_collisions, collision_terrain, collision_hitbox
+from blade import change_blades
 from audio import Player_audio  # player_audio_update
 from loot import Loot  # loot_update
 
@@ -213,6 +214,7 @@ class Game:
         self.player.health.check_health()
         Enemy.update(self)
         Player_audio.player_audio_update(self)
+        change_blades(self)
 
     def call_visuals(self):
         RenderPictures.map_render(self)  # Render terrain
@@ -222,6 +224,8 @@ class Game:
         else:
             PlayerUpdate.render_player(self)
             ObjectManagement.place_and_render_object(self)
+        Enemy.spawn(self)
+        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
 
         Enemy.spawn(self)
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)

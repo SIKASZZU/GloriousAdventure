@@ -7,7 +7,6 @@ from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables
 
-
 class RenderPictures:
     render_range: int = 0
     render_terrain_data: list = []
@@ -66,6 +65,7 @@ class RenderPictures:
 
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+
         try:
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
                 RenderPictures.render_range = 2
@@ -246,3 +246,5 @@ class CreateCollisionBoxes:
         UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,
                                                     key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
 
+
+if __name__ == '__main__':  print('Ran render.py')

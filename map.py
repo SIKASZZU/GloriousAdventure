@@ -53,7 +53,6 @@ class MapData:
                 maze = [[int(x) if x.strip().lower() != 'none' else None
                          for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                         for line in file_name if line.strip()]
-
             size = len(maze)
 
             # Set the start point
@@ -73,11 +72,36 @@ class MapData:
                 start_0 = (size - 1, size // 2)
                 start_1 = (size - 1, size // 2 - 1)
                 maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+           
+            # Set the end points on the remaining three sides
+            sides = ['top', 'bottom', 'left', 'right']
+            sides.remove(side)
+            for side in sides:
+
+                if side == 'left':
+                    end_0 = ((size // 2), 0)
+                    end_1 = ((size // 2) - 1, 0)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 94, 94
+
+                elif side == 'top':
+                    end_0 = (0, (size // 2))
+                    end_1 = (0, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
+
+                elif side == 'right':
+                    end_0 = ((size // 2), size-1)
+                    end_1 = ((size // 2) - 1, size-1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
+
+                elif side == 'bottom':
+                    end_0 = (size-1, (size // 2))
+                    end_1 = (size-1, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97            
 
             return maze
 
 
-    def maze_generation(shape, res):
+    def block_maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
             return 1*t**7 - 5*t**0 + 1*t**1
@@ -107,11 +131,12 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
+
     @staticmethod
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
         resolution = MapData.resolution
-        noise = MapData.maze_generation((size, size), resolution)
+        noise = MapData.block_maze_generation((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
@@ -127,6 +152,8 @@ class MapData:
 
         # Ensure outer walls
         # AFTER outer wall one block must be pathway
+
+        ### TODO: siin on mingi string numbrid, neid pole vaja ning siis pole vaja ka "row_integers = row.astype(int)"
         maze[0, :] = maze[-1, :] = '99'
         maze[:, 0] = maze[:, -1] = '99'
 
@@ -293,8 +320,9 @@ class MapData:
         if item.endswith('maze'):
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
-
-            elif UniversalVariables.maze_counter == 5:
+            
+            elif UniversalVariables.maze_counter == 2:
+                UniversalVariables.blades_spawned = True
                 item = 'blade_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
