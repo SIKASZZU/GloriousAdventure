@@ -92,15 +92,16 @@ class Enemy:
         else:
             return math.ceil(number)
 
-    # TODO: pathfinding eraldi faili viia
     def is_valid(self, x, y):
         """ Check if coordinates (x, y) are valid in the maze. """
         x, y = int(x), int(y)
-
-        return 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x]) \
-            and self.terrain_data[x][y] != 99 and self.terrain_data[x][y] != 933 and self.terrain_data[x][y] != 977\
-            and self.terrain_data[x][y] != 981 and self.terrain_data[x][y] != 982
-
+        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze stuff
+                                  9099, 989, 900]         # blade stuff
+        in_terrain_bounds = 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x])
+        
+        if in_terrain_bounds and self.terrain_data[x][y] not in enemy_restricted_areas:
+            return True
+            
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
 
@@ -123,8 +124,6 @@ class Enemy:
 
         return None
 
-    import random
-
     @staticmethod
     def move(self):
         """ Move enemies based on their individual decisions."""
@@ -139,19 +138,38 @@ class Enemy:
                     break
 
             if direction:
+                
                 enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
-                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
-                               Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+                if enemy_name not in Enemy.path_ticks or Enemy.path[enemy_name] is None or \
+                    Enemy.path_ticks[enemy_name] >= UniversalVariables.enemy_path_update_tick:
+                    
+                        player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
+                                    Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+                        
+                        Enemy.path[enemy_name] = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+                        Enemy.path_ticks[enemy_name] = 0
+                
+                if Enemy.path[enemy_name] == None:
+                    pass
 
-                # Update path after certain number of ticks or if path is None
-                if enemy_name not in Enemy.path_ticks or Enemy.path_ticks[enemy_name] >= UniversalVariables.enemy_path_update_tick \
-                        or Enemy.path[enemy_name] is None:
-                    Enemy.path[enemy_name] = Enemy.find_path_bfs(self, enemy_grid, player_grid)
-                    Enemy.path_ticks[enemy_name] = 0
+                elif len(Enemy.path[enemy_name]) <= 1:
+                    # Otsib playerit koordinaatidega
+                    next_x, next_y = x, y
+                    if direction == 'right':
+                        next_x += 0.03
+                    elif direction == 'left':
+                        next_x -= 0.03
+                    elif direction == 'down':
+                        next_y += 0.03
+                    elif direction == 'up':
+                        next_y -= 0.03
 
-                if Enemy.path[enemy_name]:
-                    next_grid = (
-                        (Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
+                    next_x, next_y = round(next_x, 3), round(next_y, 3)
+                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+                
+                else:
+                    # Otsib playerit grididega
+                    next_grid = ((Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
                     next_x, next_y = x, y
 
                     # Move enemy based on the next grid
@@ -160,14 +178,14 @@ class Enemy:
 
                     next_x, next_y = round(next_x, 3), round(next_y, 3)
 
-                    # Adjust position if needed
+                    # IMPROVE THIS>>> Entity positsiooni muutmine gridi keskele, sest muidu jookseb seinte sees.
                     if next_x == x and next_y != y:
                         if str(next_x).endswith('.5'):
                             next_x = math.ceil(next_x)
                     if next_y == y and next_x != x:
                         if str(next_y).endswith('.5'):
                             next_y = math.ceil(next_y)
-
+                
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
 
             # Increment path ticks
@@ -192,9 +210,10 @@ class Enemy:
             if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
                 direction: str = 'none'
 
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 and abs(
-                        distance_to_player_y_grid) < UniversalVariables.block_size * 0.75 and self.player.health.get_health() > 0:
-                    Enemy.attack(self, 3)
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
+                    and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                    if self.player.health.get_health() > 0:
+                        Enemy.attack(self, 3)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
@@ -207,7 +226,6 @@ class Enemy:
                         direction = 'down'
                     else:
                         direction = 'up'
-
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
     def attack(self, damage):
