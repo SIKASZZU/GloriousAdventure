@@ -91,7 +91,8 @@ class PlayerUpdate:
 
             x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
             y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
-
+        
+        # diagonaalspeedi kontrollimine. Selle funktsionaalsus tundub 6ige, aga ingame doesn't feel right... FPS influence maybe
         magnitude = math.sqrt(x ** 2 + y ** 2)
         if magnitude == 0:
             normalized_x, normalized_y = 0, 0  # Avoid division by zero
@@ -102,27 +103,30 @@ class PlayerUpdate:
         new_player_x = UniversalVariables.player_x + self.player.speed.current_speed * normalized_x
         new_player_y = UniversalVariables.player_y + self.player.speed.current_speed * normalized_y
 
-        # Kui seda pole siis player ei liigu mapi peal
-        # Uuendab playeri asukohta vastavalt keyboard inputile
-        UniversalVariables.player_x: int = new_player_x
-        UniversalVariables.player_y: int = new_player_y
+        if self.player.health.get_health() == 0 and UniversalVariables.debug_mode == True:  
+            UniversalVariables.last_input = 'None'
+        else:
+            UniversalVariables.player_x: int = new_player_x
+            UniversalVariables.player_y: int = new_player_y
         self.player_rect = pygame.Rect(UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x,
-                                       UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
-                                       (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
+                                    UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
+                                    (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
         try:
-            if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+            if UniversalVariables.last_input != 'None':
+                if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
+                    if is_idle:
+                        self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                    else:
+                        self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
                 else:
-                    self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
-            else:
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
-                else:
-                    self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+                    if is_idle:
+                        self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+                    else:
+                        self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+            else:  pass
         except Exception as e: print(f'Error @ update.py: {e}')
 
 
