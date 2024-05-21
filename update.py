@@ -103,11 +103,12 @@ class PlayerUpdate:
         new_player_x = UniversalVariables.player_x + self.player.speed.current_speed * normalized_x
         new_player_y = UniversalVariables.player_y + self.player.speed.current_speed * normalized_y
 
-        if self.player.health.get_health() == 0 and UniversalVariables.debug_mode == True:  
+        if self.player.health.get_health() == 0 and UniversalVariables.debug_mode == False:
             UniversalVariables.last_input = 'None'
         else:
             UniversalVariables.player_x: int = new_player_x
             UniversalVariables.player_y: int = new_player_y
+
         self.player_rect = pygame.Rect(UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x,
                                     UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
                                     (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
@@ -201,7 +202,7 @@ class PlayerUpdate:
 
 class EssentialsUpdate:
         
-    game_start_clock = (9, 0)
+    game_start_clock = (22, 0)
     time_update: int = 0
     game_day_count = 0
     day_night_text = 'Day'
