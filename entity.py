@@ -246,25 +246,42 @@ class Enemy:
 
     @staticmethod
     def collision_with_entities():
-        for enemy_id, enemy_info in Enemy.spawned_enemy_dict.items():
+        for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
-                                     enemy_info[2] * UniversalVariables.block_size, 73,
-                                     73)
+                                     enemy_info[2] * UniversalVariables.block_size, 73, 73)
 
             # Check for collisions between enemies
-            for other_enemy_id, other_enemy_info in Enemy.spawned_enemy_dict.items():
-                if enemy_id != other_enemy_id:
+            for other_enemy_name, other_enemy_info in list(Enemy.spawned_enemy_dict.items()):
+                if enemy_name != other_enemy_name:
                     other_enemy_rect = pygame.Rect(other_enemy_info[1] * UniversalVariables.block_size,
-                                                   other_enemy_info[2] * UniversalVariables.block_size, 73,
-                                                   73)
+                                                   other_enemy_info[2] * UniversalVariables.block_size, 73, 73)
                     if enemy_rect.colliderect(other_enemy_rect):
                         enemy_x = enemy_info[1]
                         enemy_y = enemy_info[2]
+                        
+                        other_enemy_x = other_enemy_info[1]
+                        other_enemy_y = other_enemy_info[2]
 
-                        enemy_x += random.uniform(-1, 1)
-                        enemy_y += random.uniform(-1, 1)
+                        # Calculate displacement vector
+                        dx = enemy_x - other_enemy_x
+                        dy = enemy_y - other_enemy_y
 
-                        Enemy.spawned_enemy_dict[enemy_id] = enemy_info[0], enemy_x, enemy_y
+                        if dx == 0 and dy == 0:
+                            dx = random.uniform(-1, 1)
+                            dy = random.uniform(-1, 1)
+
+                        # Normalize the displacement vector
+                        distance = (dx ** 2 + dy ** 2) ** 0.5
+                        dx /= distance
+                        dy /= distance
+
+                        # Move the enemy along the displacement vector
+                        displacement = 3.0  # See kontrollib, kaugele ta tagasi t6rjutakse
+                        enemy_x += dx * displacement
+                        enemy_y += dy * displacement
+
+                        # update position
+                        Enemy.spawned_enemy_dict[enemy_name] = (enemy_info[0], enemy_x, enemy_y)
 
     def update(self):
         Enemy.detection(self)
