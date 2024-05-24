@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = False
+    debug_mode = True
 
     # ******************** Settings ******************** #
 
@@ -126,7 +126,7 @@ class UniversalVariables():
         #
     ]
 
-    door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97, 933, 977]
+    door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97]
 
     offset_x: int = 0
     offset_y: int = 0

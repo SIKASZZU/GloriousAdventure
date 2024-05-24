@@ -127,6 +127,10 @@ class RenderPictures:
                             elif terrain_value == 933 or terrain_value == 977:
                                 if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
                                 else: self.terrain_data[position[1]][position[0]] = 933
+                                
+                                # 933, 977 pole door_ids listis, sest mudu broken door/night open/close thing.
+                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
 
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
