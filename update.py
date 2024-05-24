@@ -314,7 +314,6 @@ class EssentialsUpdate:
             ("breaking animation vms teha.", (10, UniversalVariables.screen_y - 190), "orange", True),
             ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 160), "orange", True),
             ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 130), "orange", True),
-            ("Enemy collision 2ra fixida", (10, UniversalVariables.screen_y - 100), "orange", True),
             ("Selected item ---- Ilusamaks tegema", (10, UniversalVariables.screen_y - 100), "orange", True),
             ("Max item stack - 99  +maze = - key    pickup delay - animation", (10, UniversalVariables.screen_y - 70), "orange", True),
 
