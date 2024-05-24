@@ -267,19 +267,21 @@ class EssentialsUpdate:
 
 
     def check_pressed_keys(self):
-        keys = pygame.key.get_pressed()
+        if UniversalVariables.debug_mode == True:
 
-        # H key, HITBOX KEY
-        # if keys[pygame.K_h] and not self.h_pressed:
-        #     self.h_pressed = True
-        #     UniversalVariables.hitbox_count += 1
-        # elif not keys[pygame.K_h]: self.h_pressed = False
+            keys = pygame.key.get_pressed()
 
-        # J KEY, LIGHT ON/OFF KEY
-        # if keys[pygame.K_j] and not self.j_pressed:
-        #     self.j_pressed = True
-        #     vision.vision_count += 1
-        # elif not keys[pygame.K_j]: self.j_pressed = False
+            # H key, HITBOX KEY
+            if keys[pygame.K_h] and not self.h_pressed:
+                self.h_pressed = True
+                UniversalVariables.hitbox_count += 1
+            elif not keys[pygame.K_h]: self.h_pressed = False
+
+            # J KEY, LIGHT ON/OFF KEY
+            if keys[pygame.K_j] and not self.j_pressed:
+                self.j_pressed = True
+                vision.vision_count += 1
+            elif not keys[pygame.K_j]: self.j_pressed = False
 
 
     def render_gui_text(self, text, position, color=(100, 255, 100), debug=False):
