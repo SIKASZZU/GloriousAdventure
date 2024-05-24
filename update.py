@@ -293,9 +293,6 @@ class EssentialsUpdate:
 
 
     def render_general(self):
-        Inventory.call_inventory(self)
-        if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
-
         ui_elements = [
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
