@@ -70,7 +70,7 @@ class RenderPictures:
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
                 RenderPictures.render_range = 2
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
-                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
+                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 3, player_grid_x + RenderPictures.render_range + 4
             else:
                 RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size) // 5
                 row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
@@ -127,6 +127,10 @@ class RenderPictures:
                             elif terrain_value == 933 or terrain_value == 977:
                                 if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
                                 else: self.terrain_data[position[1]][position[0]] = 933
+                                
+                                # 933, 977 pole door_ids listis, sest mudu broken door/night open/close thing.
+                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
 
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
