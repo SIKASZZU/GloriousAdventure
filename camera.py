@@ -57,6 +57,9 @@ class Camera:
             else:
                 Camera.click_x, Camera.click_y = None, None
 
+            return Camera.click_x, Camera.click_y
+        return
+
     def print_clicks(self):
         """ Prints out the user's click information relative to terrain coordinates and screen."""
 

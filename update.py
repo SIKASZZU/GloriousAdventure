@@ -91,7 +91,8 @@ class PlayerUpdate:
 
             x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
             y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
-
+        
+        # diagonaalspeedi kontrollimine. Selle funktsionaalsus tundub 6ige, aga ingame doesn't feel right... FPS influence maybe
         magnitude = math.sqrt(x ** 2 + y ** 2)
         if magnitude == 0:
             normalized_x, normalized_y = 0, 0  # Avoid division by zero
@@ -102,27 +103,31 @@ class PlayerUpdate:
         new_player_x = UniversalVariables.player_x + self.player.speed.current_speed * normalized_x
         new_player_y = UniversalVariables.player_y + self.player.speed.current_speed * normalized_y
 
-        # Kui seda pole siis player ei liigu mapi peal
-        # Uuendab playeri asukohta vastavalt keyboard inputile
-        UniversalVariables.player_x: int = new_player_x
-        UniversalVariables.player_y: int = new_player_y
+        if self.player.health.get_health() == 0 and UniversalVariables.debug_mode == False:
+            UniversalVariables.last_input = 'None'
+        else:
+            UniversalVariables.player_x: int = new_player_x
+            UniversalVariables.player_y: int = new_player_y
+
         self.player_rect = pygame.Rect(UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x,
-                                       UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
-                                       (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
+                                    UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
+                                    (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
         try:
-            if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+            if UniversalVariables.last_input != 'None':
+                if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
+                    if is_idle:
+                        self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                    else:
+                        self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
                 else:
-                    self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
-            else:
-                if is_idle:
-                    self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
-                else:
-                    self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+                    if is_idle:
+                        self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+                    else:
+                        self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+            else:  pass
         except Exception as e: print(f'Error @ update.py: {e}')
 
 
@@ -154,7 +159,7 @@ class PlayerUpdate:
                                                            UniversalVariables.block_size, UniversalVariables.block_size)
 
         # renderib playeri hitboxi
-        if (UniversalVariables.hitbox_count % 2) != 0:
+        if (UniversalVariables.hitbox_count % 2) != 0 and UniversalVariables.debug_mode:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
@@ -195,7 +200,7 @@ class PlayerUpdate:
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
 
-class EssentsialsUpdate:
+class EssentialsUpdate:
         
     game_start_clock = (9, 0)
     time_update: int = 0
@@ -204,18 +209,18 @@ class EssentsialsUpdate:
 
     # Function to calculate in-game time
     def calculate_time(self):
-        game_minute_lenght = 100  # mida väiksem,seda kiiremini aeg mängus möödub
-        day_night_text = EssentsialsUpdate.day_night_text
+        game_minute_lenght = 5  # mida väiksem,seda kiiremini aeg mängus möödub
+        day_night_text = EssentialsUpdate.day_night_text
 
-        time = EssentsialsUpdate.game_start_clock  # (9, 0)
-        days = EssentsialsUpdate.game_day_count
+        time = EssentialsUpdate.game_start_clock  # (9, 0)
+        days = EssentialsUpdate.game_day_count
         hours = time[0]
         minutes = time[1]
 
         # Check if new minute should be added to game's time
-        if game_minute_lenght <= EssentsialsUpdate.time_update:
+        if game_minute_lenght <= EssentialsUpdate.time_update:
             minutes += 1
-            EssentsialsUpdate.time_update = 0
+            EssentialsUpdate.time_update = 0
         
         # Update minutes -> hours, hours -> reset hours, minutes & add days
         if 60 <= minutes:
@@ -227,9 +232,9 @@ class EssentsialsUpdate:
             days += 1
 
         # Update variables
-        EssentsialsUpdate.time_update += 1
-        EssentsialsUpdate.game_day_count = days
-        EssentsialsUpdate.game_start_clock = (hours, minutes)
+        EssentialsUpdate.time_update += 1
+        EssentialsUpdate.game_day_count = days
+        EssentialsUpdate.game_start_clock = (hours, minutes)
 
         # Update day, night text next to game_day_count
         
@@ -237,14 +242,14 @@ class EssentsialsUpdate:
             day_night_text = 'Night'
         else: 
             day_night_text = 'Day'
-        EssentsialsUpdate.day_night_text = day_night_text
+        EssentialsUpdate.day_night_text = day_night_text
 
         if len(str(minutes)) == 1: minutes = f'0{minutes}'  # alati 2 nubrit minutite kohal
         return hours, minutes, days
     
 
     def calculate_daylight_strength(self):
-        hours = EssentsialsUpdate.game_start_clock[0]  # Get current time
+        hours = EssentialsUpdate.game_start_clock[0]  # Get current time
 
         # calculate daylight strength every interval
         if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
@@ -277,10 +282,14 @@ class EssentsialsUpdate:
         # elif not keys[pygame.K_j]: self.j_pressed = False
 
 
-    def render_gui_text(self, text, position, color=(100, 255, 100)):
+    def render_gui_text(self, text, position, color=(100, 255, 100), debug=False):
         """Utility function to render text on the screen."""
-        text_surface = self.font.render(text, True, color)
-        UniversalVariables.text_sequence.append((text_surface, position))
+        if debug == False:
+            text_surface = self.font.render(text, True, color)
+            UniversalVariables.text_sequence.append((text_surface, position))
+        if UniversalVariables.debug_mode == True:
+            text_surface = self.font.render(text, True, color)
+            UniversalVariables.text_sequence.append((text_surface, position))
 
 
     def render_general(self):
@@ -288,18 +297,36 @@ class EssentsialsUpdate:
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
         ui_elements = [
-            #("H - Show hitboxes", (800, 5)),  # Example with specified position and color
-            #("J - Switch light", (800, 35)),  # Example with specified position and color
             (f"{int(self.clock.get_fps())}", (5, 5)),  # FPS display
-            (f"Time {EssentsialsUpdate.calculate_time(self)[0]}:{EssentsialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
-            (f"{EssentsialsUpdate.day_night_text} {EssentsialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
-            ]
+            (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
+            (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
+
+            ("H - Show hitboxes", (UniversalVariables.screen_x / 2, 5), "orange", True),  # Example with specified position and color
+            ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "orange", True),  # Example with specified position and color
+            ("TODO list:", (5, UniversalVariables.screen_y - 350), "orange", True),  # Example with specified position and color
+            ("Maze mobs - spider.", (10, UniversalVariables.screen_y - 300), "orange", True),  # Example with specified position and color
+            ("Maze geiger? / Blade maze.", (10, UniversalVariables.screen_y - 270), "orange", True),  # Example with specified position and color
+            ("Final maze asja edasi teha.", (10, UniversalVariables.screen_y - 240), "orange", True),  # Example with specified position and color
+            ("Itemite ülesvõtmise delay,", (10, UniversalVariables.screen_y - 210), "orange", True),
+            ("breaking animation vms teha.", (10, UniversalVariables.screen_y - 190), "orange", True),
+            ("Note'id, et player oskas midagi teha,", (10, UniversalVariables.screen_y - 160), "orange", True),
+            ("press 'TAB' to open inventory vms...", (10, UniversalVariables.screen_y - 130), "orange", True),
+            ("Enemy collision 2ra fixida", (10, UniversalVariables.screen_y - 100), "orange", True),
+            ("Selected item ---- Ilusamaks tegema", (10, UniversalVariables.screen_y - 100), "orange", True),
+            ("Max item stack - 99  +maze = - key    pickup delay - animation", (10, UniversalVariables.screen_y - 70), "orange", True),
+
+            # Example with specified position and color
+
+        ]
 
         for element in ui_elements:
             text = element[0]
             position = element[1] if len(element) > 1 else None
             color = element[2] if len(element) > 2 else (100, 255, 100)  # Default color white if not specified
+            if len(element) == 4:
+                debug_mode = element[3]
 
             # Call the improved render_text function with the specified parameters
-            EssentsialsUpdate.render_gui_text(self, text, position=position, color=color)
-    
+                EssentialsUpdate.render_gui_text(self, text, position=position, color=color, debug=debug_mode)
+            else:
+                EssentialsUpdate.render_gui_text(self, text, position=position, color=color)

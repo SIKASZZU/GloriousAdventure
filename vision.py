@@ -57,15 +57,22 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 
 def draw_shadows(self, screen, visible_points):
-    shadow_color = 255
-    walls_hit_by_ray_color = 150
+    if UniversalVariables.debug_mode:
+        shadow_color = 0
+        walls_hit_by_ray_color = 0
+
+        # kas J - Light ON/OFF key on pressed
+        if (vision_count % 2) != 0:
+            shadow_color = 255
+            walls_hit_by_ray_color = 150
+
+    else:
+        shadow_color = 255
+        walls_hit_by_ray_color = 150
+
     BLOCK_SIZE = UniversalVariables.block_size
     no_shadow_needed = UniversalVariables.no_shadow_needed
 
-    # kas J - Light ON/OFF key on pressed
-    if (vision_count % 2) != 0:
-        shadow_color = 0
-        walls_hit_by_ray_color = 0
 
     # Create a shadow mask covering the entire screen
     shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha

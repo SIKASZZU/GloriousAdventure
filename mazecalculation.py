@@ -46,8 +46,6 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_top:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
-        print(len(map_list[0]))
-        print(len(map_list[1]))
 
         # Kui row_index on võrdne mapis map_list'is olevale listide
         # arvuga siis lisab igale list'is olevale row'ile place'i.
@@ -149,8 +147,9 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if UniversalVariables.final_maze and UniversalVariables.maze_counter == 2:
+        if UniversalVariables.final_maze == True and UniversalVariables.final_maze_spawned == False:
             maze_type = 'final_maze'
+            UniversalVariables.final_maze_spawned = True
 
         else:
             maze_type = AddingMazeAtPosition.maze_type

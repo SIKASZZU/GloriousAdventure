@@ -137,6 +137,7 @@ class ObjectManagement:
                     object_image_name = item.get("Name")
                     if object_image_name == "Maze_Wall": pass
                     elif object_image_name == "Maze_Ground": pass
+                    elif object_image_name == "Maze_Blade": pass
 
                     else:
                         object_width = item.get("Object_width")
@@ -154,7 +155,7 @@ class ObjectManagement:
             
             if (UniversalVariables.hitbox_count % 2) != 0:
                 ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect,1)  # Teeb roosa outline objecti ümber
+                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
     def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,

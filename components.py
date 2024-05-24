@@ -4,8 +4,8 @@ import time
 from HUD import HUD_class
 from variables import UniversalVariables
 
-
 class HealthComponent:
+    death_exit_timer = 0
 
     def __init__(self, max_health, min_health):
         self.max_health = max_health
@@ -39,12 +39,31 @@ class HealthComponent:
     def check_health(self):
         self.health_cooldown_timer += 1
         if self.current_health <= 0:
-            return
-            # Death screen... (restart game option)
+            HealthComponent.death()
 
         if self.health_cooldown_timer >= 220:
             HealthComponent.regenerate_health(self)
             self.health_cooldown_timer = 100
+
+    def death():
+        ### TODO: teha, et ei spammiks printi
+
+        print('Player has died')
+        UniversalVariables.ui_elements.append(
+                                    """     You have died!"""
+                                    """  Exiting game in 5 sec. """
+                                )
+        ### TODO: player moement disable.
+        if UniversalVariables.debug_mode == True:  
+            print('Debug mode, not closing the game. ')
+        else:
+            death_timer_limit = 300
+            print('Player has died')
+            print(f'Closing the game. {HealthComponent.death_exit_timer}/{death_timer_limit}')
+            if HealthComponent.death_exit_timer == death_timer_limit:
+                pygame.quit()
+            else:
+                HealthComponent.death_exit_timer += 1
 
     def get_health(self):
         return self.current_health

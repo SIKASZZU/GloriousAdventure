@@ -16,7 +16,7 @@ class Player_audio:
 
     # Preload'ib soundid groundi, puude, kivide, jne peal liikumiseks
     grass_sounds = [
-        pygame.mixer.Sound('audio/Tile_Sounds/Grass_left_Foot_Sound.mp3'),
+        pygame.mixer.Sound('audio/Tile_Sounds/Grass_Left_Foot_Sound.mp3'),
         pygame.mixer.Sound('audio/Tile_Sounds/Grass_Right_Foot_Sound.mp3'),
     ]
     current_grass_sound_index = 0

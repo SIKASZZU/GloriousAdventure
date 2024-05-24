@@ -1,10 +1,9 @@
 import pygame
 
-from images import ImageLoader
+from images import ImageLoader, ImageCache
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
-from variables import Decorators
 
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
@@ -27,6 +26,7 @@ class Inventory:
     craftable_items = {}
 
     previous_inv = None
+    text_cache = {}  # Cache rendered text surfaces
 
     @staticmethod
     def print_inventory() -> None:
@@ -90,10 +90,15 @@ class Inventory:
             if index != Inventory.last_clicked_slot:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
-                print(f'Inventory slot {index + 1} contains: {item} : {value}')
+
+
+                UniversalVariables.equipped_item =  item
+
         except IndexError:
-            print(f'Nothing in slot nr {index + 1}')
+            UniversalVariables.equipped_item = None
+
         Inventory.last_clicked_slot = index  # Updateb viimast clicki
+
 
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
@@ -310,3 +315,47 @@ class Inventory:
             # Remove items with a count of zero from the inventory
             Inventory.inventory = {k: v for k, v in Inventory.inventory.items() if v > 0}
 
+    def render_inventory_slot(self, item_name):
+        slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
+        position = (UniversalVariables.screen_x - 850, UniversalVariables.screen_y - 51)
+        resized_slot_image = pygame.transform.scale(slot_image, (slot_image.get_width() * 0.9 , slot_image.get_height() * 0.9))
+
+        # List to hold all blit operations
+        blit_operations = [(resized_slot_image, position)]
+
+        if item_name is None:
+            UniversalVariables.screen.blits(blit_operations)
+            return  # Don't render anything if item is None or count is 0
+
+        # Update equipped item type if the item has changed
+        if UniversalVariables.old_equipped_item != item_name:
+            UniversalVariables.old_equipped_item_item_type = next(
+                (item["Type"] for item in items_list if item["Name"] == item_name), None)
+            UniversalVariables.old_equipped_item = item_name
+
+        item_image = ImageLoader.load_image(item_name)
+
+        # Resize item image to fit within slot dimensions
+        max_item_size = (resized_slot_image.get_width() - 15, resized_slot_image.get_height() - 15)
+        resized_item_image = pygame.transform.scale(item_image, max_item_size)
+
+        # Calculate position to center item image
+        item_x = position[0] + (resized_slot_image.get_width() - resized_item_image.get_width()) // 2
+        item_y = position[1] + (resized_slot_image.get_height() - resized_item_image.get_height()) // 2
+
+        # Add item image to blit operations
+        blit_operations.append((resized_item_image, (item_x, item_y)))
+
+        # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
+        if UniversalVariables.old_equipped_item_item_type != "Tool":
+            text = str(Inventory.inventory[item_name])
+            if text not in Inventory.text_cache:
+                font = pygame.font.Font(None, 20)
+                Inventory.text_cache[text] = font.render(text, True, (0, 0, 0))  # Render text with black color
+
+            text_surface = Inventory.text_cache[text]
+            text_rect = text_surface.get_rect(topleft=(position[0] + 5, position[1] + 5))  # Calculate position
+            blit_operations.append((text_surface, text_rect.topleft))
+
+        # Perform all blit operations
+        UniversalVariables.screen.blits(blit_operations)

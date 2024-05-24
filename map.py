@@ -30,6 +30,7 @@ class MapData:
     puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
+    loot = []
     repetition_lock = 0
 
     # Create glade
@@ -52,7 +53,6 @@ class MapData:
                 maze = [[int(x) if x.strip().lower() != 'none' else None
                          for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                         for line in file_name if line.strip()]
-
             size = len(maze)
 
             # Set the start point
@@ -72,11 +72,36 @@ class MapData:
                 start_0 = (size - 1, size // 2)
                 start_1 = (size - 1, size // 2 - 1)
                 maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+           
+            # Set the end points on the remaining three sides
+            sides = ['top', 'bottom', 'left', 'right']
+            sides.remove(side)
+            for side in sides:
+
+                if side == 'left':
+                    end_0 = ((size // 2), 0)
+                    end_1 = ((size // 2) - 1, 0)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 94, 94
+
+                elif side == 'top':
+                    end_0 = (0, (size // 2))
+                    end_1 = (0, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
+
+                elif side == 'right':
+                    end_0 = ((size // 2), size-1)
+                    end_1 = ((size // 2) - 1, size-1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
+
+                elif side == 'bottom':
+                    end_0 = (size-1, (size // 2))
+                    end_1 = (size-1, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97            
 
             return maze
 
 
-    def maze_generation(shape, res):
+    def block_maze_generation(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
             return 1*t**7 - 5*t**0 + 1*t**1
@@ -106,11 +131,12 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
+
     @staticmethod
     def create_maze_with_perlin_noise(start_side):
         size = MapData.maze_size
         resolution = MapData.resolution
-        noise = MapData.maze_generation((size, size), resolution)
+        noise = MapData.block_maze_generation((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
@@ -126,6 +152,8 @@ class MapData:
 
         # Ensure outer walls
         # AFTER outer wall one block must be pathway
+
+        ### TODO: siin on mingi string numbrid, neid pole vaja ning siis pole vaja ka "row_integers = row.astype(int)"
         maze[0, :] = maze[-1, :] = '99'
         maze[:, 0] = maze[:, -1] = '99'
 
@@ -181,25 +209,64 @@ class MapData:
             row_list = row_integers.tolist()
             MapData.converted_maze.append(row_list)
 
+
+        if UniversalVariables.debug_mode:
+            _puzzle_pieces = 20
+            _keyholders = 20
+            _loot = 20
+        else:
+            _puzzle_pieces = 3
+            _keyholders = 2
+            _loot = random.randint(1, 3)
+
+        def is_dead_end(maze, x, y):
+            walls = 0
+            if maze[x-1][y] == 99:
+                walls += 1
+            if maze[x+1][y] == 99:
+                walls += 1
+            if maze[x][y-1] == 99:
+                walls += 1
+            if maze[x][y+1] == 99:
+                walls += 1
+            return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
+
         # Maze's puzzle pieces
         MapData.puzzle_pieces = []
-        for i in range(3):
-            puzzle_x = random.randint(3, (size - 3))
-            puzzle_y = random.randint(3, (size - 3))
-            MapData.converted_maze[puzzle_x][puzzle_y] = 10
-
-            if not (puzzle_x, puzzle_y) in MapData.puzzle_pieces:
-                MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
-
+        for i in range(_puzzle_pieces):
+            while True:
+                puzzle_x = random.randint(3, (size - 3))
+                puzzle_y = random.randint(3, (size - 3))
+                if not is_dead_end(MapData.converted_maze, puzzle_x, puzzle_y):
+                    MapData.converted_maze[puzzle_x][puzzle_y] = 10
+                    if (puzzle_x, puzzle_y) not in MapData.puzzle_pieces:
+                        MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
+                    break
+                
         # Maze keyholders
         MapData.keyholders = []
-        for i in range(2):
-            keyholder_x = random.randint(3, (size - 3))
-            keyholder_y = random.randint(3, (size - 3))
-            MapData.converted_maze[keyholder_x][keyholder_y] = 981
-
-            if not (keyholder_x, keyholder_y) in MapData.keyholders:
-                MapData.keyholders.append((keyholder_x, keyholder_y))
+        for i in range(_keyholders):
+            while True:
+                keyholder_x = random.randint(3, (size - 3))
+                keyholder_y = random.randint(3, (size - 3))
+                if not is_dead_end(MapData.converted_maze, keyholder_x, keyholder_y):
+                    MapData.converted_maze[keyholder_x][keyholder_y] = 981
+                    if (keyholder_x, keyholder_y) not in MapData.keyholders:
+                        MapData.keyholders.append((keyholder_x, keyholder_y))
+                    break
+                
+        # Maze loot
+        MapData.loot = []
+        if random.choice([True]):
+            for i in range(_loot):
+                while True:
+                    loot_x = random.randint(3, (size - 3))
+                    loot_y = random.randint(3, (size - 3))
+                    if not is_dead_end(MapData.converted_maze, loot_x, loot_y):
+                        MapData.converted_maze[loot_x][loot_y] = 1001
+                        if (loot_x, loot_y) not in MapData.loot:
+                            MapData.loot.append((loot_x, loot_y))
+                        break
 
         MapData.search_paths(MapData.converted_maze)
         
@@ -270,10 +337,11 @@ class MapData:
         if item.endswith('maze'):
             if item == 'final_maze':
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
-
-            # elif UniversalVariables.maze_counter == 5:
-            #     item = 'blade_maze'
-            #     return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+            
+            elif UniversalVariables.maze_counter == 2:
+                UniversalVariables.blades_spawned = True
+                item = 'blade_maze'
+                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
             else:
                 return MapData.create_maze_with_perlin_noise(start_side)
