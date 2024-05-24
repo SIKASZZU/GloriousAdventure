@@ -227,9 +227,9 @@ class Game:
 
         Enemy.spawn(self)
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+        EssentialsUpdate.calculate_daylight_strength(self)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
-        EssentialsUpdate.calculate_daylight_strength(self)
 
         # Equipped item slot
         if UniversalVariables.equipped_item:
