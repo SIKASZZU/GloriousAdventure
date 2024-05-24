@@ -23,7 +23,7 @@ from collisions import Collisions, reset_clicks  # check_collisions, collision_t
 from audio import Player_audio  # player_audio_update
 from loot import Loot  # loot_update
 from blade import change_blades
-
+from final_maze import Final_Maze
 
 class Game:
     def __init__(self):
@@ -262,7 +262,6 @@ class Game:
             self.restrict_looping = True
 
     def run(self):
-        xxx = 0
         self.load_variables()
         while True:
             self.events()
@@ -271,23 +270,15 @@ class Game:
             self.call_technical()
             self.call_visuals()
 
+            Inventory.call_inventory(self)
+            if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
+
+            Final_Maze.final_maze_update(self)
+
             self.render_general()
             self.handle_fading_texts()  # Render fading text after everything else
 
             self.refresh_loop()
-
-            if UniversalVariables.portal_frame_rect:
-                if UniversalVariables.portal_frame_rect.colliderect(self.player_rect):
-                    UniversalVariables.cutscene = True
-                    xxx = 0
-                    UniversalVariables.portal_frame_rect = None
-                    UniversalVariables.portal_list = []
-
-                pygame.display.flip()
-
-
-            if xxx == 100:
-                UniversalVariables.cutscene = False
 
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
@@ -298,8 +289,8 @@ class Game:
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
 
+            Final_Maze.delay += 1
 
-            xxx += 1
 
 if __name__ == "__main__":
     game = Game()
