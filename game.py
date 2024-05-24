@@ -229,6 +229,7 @@ class Game:
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
+        EssentialsUpdate.calculate_daylight_strength(self)
 
         # Equipped item slot
         if UniversalVariables.equipped_item:
@@ -257,9 +258,10 @@ class Game:
         self.player.health.print_health()
 
     def custom_addition(self):
-        if not self.restrict_looping:
-            ObjectManagement.add_object_from_inv("Maze_Key", 100)
-            self.restrict_looping = True
+        if UniversalVariables.debug_mode == True:
+            if not self.restrict_looping:
+                ObjectManagement.add_object_from_inv("Maze_Key", 100)
+                self.restrict_looping = True
 
     def run(self):
         xxx = 0
@@ -292,10 +294,7 @@ class Game:
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
-
                 self.player.speed.base_speed = 20
-                self.check_keys()
-                self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
 
 

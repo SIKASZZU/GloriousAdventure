@@ -249,21 +249,22 @@ class EssentialsUpdate:
     
 
     def calculate_daylight_strength(self):
-        hours = EssentialsUpdate.game_start_clock[0]  # Get current time
+        if UniversalVariables.debug_mode == False:
+            hours = EssentialsUpdate.game_start_clock[0]  # Get current time
 
-        # calculate daylight strength every interval
-        if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
-        if 21 <= hours < 22: self.daylight_strength = 125
-        elif 22 <= hours <= 23: self.daylight_strength = 175
-        elif 0 <= hours < 2: self.daylight_strength = 235
-        elif 2 <= hours < 5: self.daylight_strength = 215
-        elif 5 <= hours < 7: self.daylight_strength = 180
-        elif 7 <= hours < 8: self.daylight_strength = 110
-        elif 8 <= hours < 9: self.daylight_strength = 50  # Dawn (8 AM to 9:59 AM) 
-        else: self.daylight_strength = 0
-    
-        self.dim_surface.fill((0, 0, 0, self.daylight_strength))  # Update the alpha value of the dim surface
-        UniversalVariables.screen.blit(self.dim_surface, (0,0))
+            # calculate daylight strength every interval
+            if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
+            if 21 <= hours < 22: self.daylight_strength = 125
+            elif 22 <= hours <= 23: self.daylight_strength = 175
+            elif 0 <= hours < 2: self.daylight_strength = 235
+            elif 2 <= hours < 5: self.daylight_strength = 215
+            elif 5 <= hours < 7: self.daylight_strength = 180
+            elif 7 <= hours < 8: self.daylight_strength = 110
+            elif 8 <= hours < 9: self.daylight_strength = 50  # Dawn (8 AM to 9:59 AM) 
+            else: self.daylight_strength = 0
+        
+            self.dim_surface.fill((0, 0, 0, self.daylight_strength))  # Update the alpha value of the dim surface
+            UniversalVariables.screen.blit(self.dim_surface, (0,0))
 
 
     def check_pressed_keys(self):
