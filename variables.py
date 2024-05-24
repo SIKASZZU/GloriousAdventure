@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = True
+    debug_mode = False
 
     # ******************** Settings ******************** #
 

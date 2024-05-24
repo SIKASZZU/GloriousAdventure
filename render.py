@@ -70,7 +70,7 @@ class RenderPictures:
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
                 RenderPictures.render_range = 2
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
-                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 4
+                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 3, player_grid_x + RenderPictures.render_range + 4
             else:
                 RenderPictures.render_range: int = (UniversalVariables.screen_x + UniversalVariables.screen_y) // (UniversalVariables.block_size) // 5
                 row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
