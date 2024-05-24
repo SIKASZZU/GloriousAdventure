@@ -76,11 +76,12 @@ class Enemy:
             enemies_to_remove = set()
 
             for enemy_name, _ in Enemy.spawned_enemy_dict.items():
-                if enemy_name not in detected_enemies:
+                if enemy_name not in detected_enemies or Enemy.path[enemy_name] == None:
                     enemies_to_remove.add(enemy_name)  # ei saa koheselt removeida, peab tegema uue listi
 
             for enemy_name in enemies_to_remove:
                 del Enemy.spawned_enemy_dict[enemy_name]
+            
 
             Enemy.enemy_in_range.clear()
 
