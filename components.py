@@ -1,6 +1,7 @@
 import pygame
 import time
 
+import items
 from HUD import HUD_class
 from variables import UniversalVariables
 
@@ -67,7 +68,9 @@ class HealthComponent:
 
     def get_health(self):
         return self.current_health
-    
+
+    def __str__(self):
+        return f"Health: {self.current_health}/{self.max_health}"
 
 class StaminaComponent:
     stamina_bar_decay: int = 0
@@ -132,6 +135,8 @@ class StaminaComponent:
                                     UniversalVariables.screen_y - 75,
                                     HUD_class.stamina_bar_size + 12, 15)
 
+    def __str__(self):
+        return f"Stamina: {self.current_stamina}/{self.max_stamina}"
 
 class SpeedComponent:
     def __init__(self, base_speed, max_speed, min_speed):
@@ -148,6 +153,10 @@ class SpeedComponent:
         return self.current_speed
 
 
+    def __str__(self):
+        return f"Speed: {self.current_speed}"
+
+
 class Player:
     def __init__(self, max_health, min_health,
                  max_stamina, min_stamina,
@@ -160,3 +169,7 @@ class Player:
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
+
+    def __str__(self):
+        return f"{self.health}, {self.stamina}, {self.speed}"
+

@@ -274,7 +274,6 @@ class Game:
             if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
             Final_Maze.final_maze_update(self)
-
             self.render_general()
             self.handle_fading_texts()  # Render fading text after everything else
 
