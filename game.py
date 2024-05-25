@@ -271,6 +271,8 @@ class Game:
             self.call_technical()
             self.call_visuals()
 
+            HungerComponent.eat(self)
+
             Inventory.call_inventory(self)
             if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
