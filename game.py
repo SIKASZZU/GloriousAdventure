@@ -231,8 +231,8 @@ class Game:
         EssentialsUpdate.render_general(self)  # Render other elements
 
         # Equipped item slot
-        if UniversalVariables.equipped_item:
-            item = UniversalVariables.equipped_item
+        if UniversalVariables.current_equipped_item:
+            item = UniversalVariables.current_equipped_item
             Inventory.render_inventory_slot(self, item)
         else:
             item = None

@@ -90,10 +90,10 @@ class Inventory:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
 
-                UniversalVariables.equipped_item =  item
+                UniversalVariables.current_equipped_item =  item
 
         except IndexError:
-            UniversalVariables.equipped_item = None
+            UniversalVariables.current_equipped_item = None
 
         Inventory.last_clicked_slot = index  # Updateb viimast clicki
 

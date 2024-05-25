@@ -199,21 +199,21 @@ class HungerComponent:
 
     def eat(self):
         try:
-            if UniversalVariables.equipped_item:
+            if UniversalVariables.current_equipped_item:
                 for item in items.items_list:
-                    if item["Name"] == UniversalVariables.equipped_item:
+                    if item["Name"] == UniversalVariables.current_equipped_item:
                         if item["Type"] == "Food":
 
                             if HungerComponent.is_click_inside_player_rect(self):
-                                print("Eating:", UniversalVariables.equipped_item)
+                                print("Eating:", UniversalVariables.current_equipped_item)
 
                                 try:
-                                    if Inventory.inventory[UniversalVariables.equipped_item] > 0:
-                                        Inventory.inventory[UniversalVariables.equipped_item] -= 1
+                                    if Inventory.inventory[UniversalVariables.current_equipped_item] > 0:
+                                        Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
 
-                                    if Inventory.inventory[UniversalVariables.equipped_item] == 0:
-                                        del Inventory.inventory[UniversalVariables.equipped_item]
-                                        UniversalVariables.equipped_item = None
+                                    if Inventory.inventory[UniversalVariables.current_equipped_item] == 0:
+                                        del Inventory.inventory[UniversalVariables.current_equipped_item]
+                                        UniversalVariables.current_equipped_item = None
                                 except KeyError as KE:
                                     print(KE)
 
