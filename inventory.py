@@ -55,7 +55,7 @@ class Inventory:
                     # Vaatab kas click oli invis sees või mitte
                     for index, rect in enumerate(Inventory.inventory_display_rects):
                         if rect.collidepoint(mouse_x, mouse_y):
-                            if index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
+                            if index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
                                 Inventory.check_slot(self, index)
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
@@ -86,7 +86,7 @@ class Inventory:
         """Checks what's in the inventory's selected slot."""
 
         try:
-            if index:
+            if index != Inventory.last_clicked_slot:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
 
@@ -326,7 +326,7 @@ class Inventory:
         # List to hold all blit operations
         blit_operations = [(resized_slot_image, position)]
 
-        if item_name is None or item_name not in Inventory.inventory:
+        if item_name is None:
             UniversalVariables.screen.blits(blit_operations)
             return  # Don't render anything if item is None or count is 0
 
@@ -359,7 +359,6 @@ class Inventory:
             text_surface = Inventory.text_cache[text]
             text_rect = text_surface.get_rect(topleft=(position[0] + 5, position[1] + 5))  # Calculate position
             blit_operations.append((text_surface, text_rect.topleft))
-
 
         # Perform all blit operations
         UniversalVariables.screen.blits(blit_operations)
