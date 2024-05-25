@@ -334,7 +334,6 @@ class Inventory:
             return  # Don't render anything if item is None or count is 0
 
         # Update equipped item type if the item has changed
-        print(UniversalVariables.current_equipped_item)
         if UniversalVariables.current_equipped_item != item_name:
             UniversalVariables.current_equipped_item_item_type = next(
                 (item["Type"] for item in items_list if item["Name"] == item_name), None)
