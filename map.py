@@ -217,7 +217,7 @@ class MapData:
         else:
             _puzzle_pieces = 3
             _keyholders = 2
-            _loot = random.randint(1, 3)
+            _loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
 
         def is_dead_end(maze, x, y):
             walls = 0
