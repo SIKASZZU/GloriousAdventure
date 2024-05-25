@@ -334,10 +334,11 @@ class Inventory:
             return  # Don't render anything if item is None or count is 0
 
         # Update equipped item type if the item has changed
-        if UniversalVariables.old_equipped_item != item_name:
-            UniversalVariables.old_equipped_item_item_type = next(
+        print(UniversalVariables.current_equipped_item)
+        if UniversalVariables.current_equipped_item != item_name:
+            UniversalVariables.current_equipped_item_item_type = next(
                 (item["Type"] for item in items_list if item["Name"] == item_name), None)
-            UniversalVariables.old_equipped_item = item_name
+            UniversalVariables.current_equipped_item = item_name
 
         item_image = ImageLoader.load_image(item_name)
 
@@ -353,7 +354,7 @@ class Inventory:
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
-        if UniversalVariables.old_equipped_item_item_type != "Tool":
+        if UniversalVariables.current_equipped_item_item_type != "Tool":
             text = str(Inventory.inventory[item_name])
             if text not in Inventory.text_cache:
                 font = pygame.font.Font(None, 20)
