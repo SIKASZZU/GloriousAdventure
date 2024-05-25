@@ -249,6 +249,9 @@ class EssentialsUpdate:
     
 
     def calculate_daylight_strength(self):
+        """ See func edastab self.daylight_strengthi vision draw_shadowile."""
+        """ Draw_shadowis player_vision_conei valgustugevus self.daylight_strengthist """
+
         if UniversalVariables.debug_mode == False:
             hours = EssentialsUpdate.game_start_clock[0]  # Get current time
 
@@ -261,10 +264,7 @@ class EssentialsUpdate:
             elif 5 <= hours < 7: self.daylight_strength = 180
             elif 7 <= hours < 8: self.daylight_strength = 110
             elif 8 <= hours < 9: self.daylight_strength = 50  # Dawn (8 AM to 9:59 AM) 
-            else: self.daylight_strength = 0
-        
-            self.dim_surface.fill((0, 0, 0, self.daylight_strength))  # Update the alpha value of the dim surface
-            UniversalVariables.screen.blit(self.dim_surface, (0,0))
+            else: self.daylight_strength = 100
 
 
     def check_pressed_keys(self):
