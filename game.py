@@ -210,7 +210,7 @@ class Game:
         CreateCollisionBoxes.object_list_creation(self)  # Create collision boxes
         vision.find_boxes_in_window()
 
-        self.player.health.check_health()
+        self.player.health.check_health(self.player.hunger.current_hunger)
         Enemy.update(self)
         Player_audio.player_audio_update(self)
         change_blades(self)
@@ -281,17 +281,19 @@ class Game:
             self.handle_fading_texts()  # Render fading text after everything else
 
             self.refresh_loop()
+            HungerComponent.decrease_hunger(self)
 
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
                 self.player.speed.base_speed = 20
-                
+
                 # neil functionitel on juba sees, et kontrolliks debug modei
                 self.check_keys()
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
 
+                print(self.player)
             Final_Maze.delay += 1
 
 

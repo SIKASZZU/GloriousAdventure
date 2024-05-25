@@ -35,18 +35,20 @@ class HealthComponent:
         UniversalVariables.health_status = False
         HealthComponent.check_health(self)
 
-    def regenerate_health(self):
+    def regenerate_health(self, hunger):
         if self.current_health < self.max_health and self.current_health != 0:
-            self.current_health += 1
-            UniversalVariables.health_status = True
+            if hunger >= 12:
+                self.current_health += 1
+                HungerComponent.timer_for_next_update += 100
+                UniversalVariables.health_status = True
 
-    def check_health(self):
+    def check_health(self, hunger=None):
         self.health_cooldown_timer += 1
         if self.current_health <= 0:
             HealthComponent.death(self)
 
         if self.health_cooldown_timer >= 220:
-            HealthComponent.regenerate_health(self)
+            HealthComponent.regenerate_health(self, hunger)
             self.health_cooldown_timer = 100
 
     def death(self):
@@ -170,18 +172,23 @@ class HungerComponent:
         self.current_hunger = max(min_hunger, min(max_hunger, base_hunger))
 
     def get_hunger(self):
-        return self.current_hunger
+        return (self.current_hunger)
 
     def decrease_hunger(self):
-        if HungerComponent.timer_for_next_update == 100:
-            if self.player.hunger.current_hunger > 0:  # Check if hunger is greater than 0
-                self.player.hunger.current_hunger -= 1
-            HungerComponent.timer_for_next_update = 0
-        HungerComponent.timer_for_next_update += 1
-        # print(self.player.hunger.current_hunger)
+        if UniversalVariables.hunger_resistance:
+            UniversalVariables.hunger_resistance -= 1
+            if UniversalVariables.hunger_resistance <= 0:
+                UniversalVariables.hunger_resistance = None
+            return
+
+        else:
+            if HungerComponent.timer_for_next_update >= 400:
+                if self.player.hunger.current_hunger > 0:
+                    self.player.hunger.current_hunger -= 0.3
+                HungerComponent.timer_for_next_update = 0
+            HungerComponent.timer_for_next_update += 1
 
     def is_click_inside_player_rect(self):
-        print(self.click_position)
         if self.click_position != ():
             click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
             click_within_y = self.player_rect[1] < self.click_position[1] and self.click_position[1] < self.player_rect[1] + self.player_rect[3]
@@ -192,23 +199,43 @@ class HungerComponent:
             return False
 
     def eat(self):
-        if UniversalVariables.current_equipped_item != None:
-            for item in items.items_list:
-                if item["Name"] == UniversalVariables.current_equipped_item:
-                    if item["Type"] == "Food":
+        if UniversalVariables.current_equipped_item is not None:
+            if HungerComponent.is_click_inside_player_rect(self):
 
-                        if HungerComponent.is_click_inside_player_rect(self):
-                            print("Eating:", UniversalVariables.current_equipped_item)
-                            if Inventory.inventory[UniversalVariables.current_equipped_item] > 0:
-                                Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
+                for item in items.items_list:
+                    if item["Name"] == UniversalVariables.current_equipped_item and item["Type"] == "Food":
+                        satisfaction_gain = item.get("Satisfaction_Gain", 0)
 
+                        # Calculate new hunger value after eating
+                        new_hunger = self.player.hunger.current_hunger + satisfaction_gain
+
+                        # Ensure the new hunger value does not exceed max_hunger
+                        if new_hunger > self.player.hunger.max_hunger:
+                            self.player.hunger.current_hunger = self.player.hunger.max_hunger
+                        else:
+                            self.player.hunger.current_hunger = new_hunger
+
+                        # Reduce the quantity of the eaten item from inventory
+                        if Inventory.inventory.get(UniversalVariables.current_equipped_item, 0) > 0:
+                            Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
+
+                            # Remove the item from inventory if its quantity becomes zero
                             if Inventory.inventory[UniversalVariables.current_equipped_item] == 0:
                                 del Inventory.inventory[UniversalVariables.current_equipped_item]
                                 UniversalVariables.current_equipped_item = None
-                        self.click_position: tuple[int, int] = ()
+
+                        # Update satisfaction
+                        UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
+
+                        # Clear click position
+                        self.click_position = ()
 
     def __str__(self):
-        return f"Hunger: {self.current_hunger}/{self.max_hunger}"
+        rounded_hunger = round(self.current_hunger, 3)
+        if UniversalVariables.hunger_resistance is not None:
+            return f"Hunger: {rounded_hunger}/{self.max_hunger}, Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
+        else:
+            return f"Hunger: {rounded_hunger}/{self.max_hunger}"
 
 
 class Player:
@@ -231,4 +258,4 @@ class Player:
                                       min_hunger=min_hunger)
 
     def __str__(self):
-        return f"{self.health}, {self.stamina}, {self.speed}, {self.hunger}"
+        return f"\nPlayer stats:\n   {self.health},\n   {self.stamina},\n   {self.speed},\n   {self.hunger}"

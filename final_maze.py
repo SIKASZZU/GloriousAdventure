@@ -59,8 +59,47 @@ class Final_Maze:
             Final_Maze.delay = 0
 
         # Vaatab kuna peab cutscene'ist välja tulema
-        if abs(Final_Maze.y_11) == 9:
+        if abs(Final_Maze.y_11) == 10:
+
+            UniversalVariables.player_x = UniversalVariables.block_size * 40.75
+            UniversalVariables.player_y = UniversalVariables.block_size * 40.75
+
+            # self.terrain_data = Final_Maze.generate_map_with_portal(80)  # See teeb final boss mapi
+
             UniversalVariables.cutscene = False
+
+    def generate_map_with_portal(size=80):
+        import random
+        # Initialize the map with all 99s
+        map_grid = [[99 for _ in range(size)] for _ in range(size)]
+
+        # Fill the inside with 80% 99 and 20% 98
+        for i in range(1, size - 1):
+            for j in range(1, size - 1):
+                if random.random() < 0.9:
+                    map_grid[i][j] = 98
+                elif random.random() < 0.007:
+                    map_grid[i][j] = 1001
+                else:
+                    map_grid[i][j] = 99
+
+        # Place a 1x1 portal (value 1000) in the middle of the map
+        middle = size // 2
+        map_grid[middle][middle] = 1000
+
+        # Place five 98 blocks next to the portal
+        adjacent_positions = [
+            (middle - 1, middle),  # Above
+            (middle + 1, middle),  # Below
+            (middle, middle - 1),  # Left
+            (middle, middle + 1),  # Right
+            (middle - 1, middle - 1),  # Top-left diagonal
+        ]
+
+        for pos in adjacent_positions:
+            map_grid[pos[0]][pos[1]] = 98
+
+        return map_grid
 
     def final_maze_update(self) -> None:
         """Update final maze state."""

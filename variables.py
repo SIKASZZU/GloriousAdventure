@@ -58,7 +58,7 @@ class UniversalVariables():
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
     health_status = None
-
+    hunger_resistance = None
     # ******************** Screen ******************** #
     ui_elements: list = []
 
