@@ -7,7 +7,7 @@ from HUD import HUD_class
 from inventory import Inventory
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
-from components import StaminaComponent
+from components import StaminaComponent, HungerComponent
 from variables import UniversalVariables
 
 
@@ -91,7 +91,9 @@ class PlayerUpdate:
 
             x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
             y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
-        
+
+            HungerComponent.decrease_hunger(self)
+
         # diagonaalspeedi kontrollimine. Selle funktsionaalsus tundub 6ige, aga ingame doesn't feel right... FPS influence maybe
         magnitude = math.sqrt(x ** 2 + y ** 2)
         if magnitude == 0:

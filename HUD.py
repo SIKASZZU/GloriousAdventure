@@ -72,14 +72,21 @@ class HUD_class:
         food_bar_size_border: int = 100
         food_bar_size: int = 100
 
+
+        player_current_hunger = self.player.hunger.get_hunger()
+        player_max_hunger = self.player.hunger.max_hunger
+
+        val = player_current_hunger / player_max_hunger
+
+
         food_rect_bg = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
                                             food_bar_size_bg, 45)
         
         food_rect_border = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
                                                 food_bar_size_border, 45)
             
-        food_rect = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
-                                        food_bar_size, 45)
+        food_rect = pygame.Rect(half_w + 6, (HUD_class.screen_y) - (50 * val),
+                                        food_bar_size, 45 * val)
         
         # Iconi paigutamiseks bari keskkoha leidmine
         food_w_midpoint = food_rect_border[0] + (food_rect_border[2] // 2) - 25

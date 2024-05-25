@@ -7,6 +7,7 @@ from variables import UniversalVariables
 from camera import Camera
 from inventory import Inventory
 
+
 class HealthComponent:
     death_exit_timer = 0
 
@@ -23,7 +24,8 @@ class HealthComponent:
 
         self.current_health = HealthComponent.get_health(self)
 
-        if not self.player_dead_flag and self.current_health <= 0: print("Player dead"); self.player_dead_flag = True
+        if not self.player_dead_flag and self.current_health <= 0:
+            print("Player dead"); self.player_dead_flag = True
         elif self.previous_health != self.current_health:
             print('Player HP:', self.current_health)
             self.previous_health = self.current_health
@@ -53,9 +55,9 @@ class HealthComponent:
 
         print('Player has died')
         UniversalVariables.ui_elements.append(
-                                    """     You have died!"""
-                                    """  Exiting game in 5 sec. """
-                                )
+            """     You have died!"""
+            """  Exiting game in 5 sec. """
+        )
         ### TODO: player moement disable.
         if UniversalVariables.debug_mode == True:
             print('Debug mode, not closing the game. ')
@@ -74,6 +76,7 @@ class HealthComponent:
     def __str__(self):
         return f"Health: {self.current_health}/{self.max_health}"
 
+
 class StaminaComponent:
     stamina_bar_decay: int = 0
 
@@ -85,7 +88,6 @@ class StaminaComponent:
         self.timer = 0
         self.timer_regen = 0
         self.player = player  # Store the Player instance as an attribute
-
 
     def use_stamina(self, amount):
         self.current_stamina = round(max(self.current_stamina - amount, self.min_stamina), 3)
@@ -124,21 +126,22 @@ class StaminaComponent:
         else:
             HUD_class.stamina_bar_size = self.player.stamina.current_stamina * HUD_class.ratio  # arvutab stamina bari laiuse
             stamina_bar_bg = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_bg / 2) - 6,
-                                        UniversalVariables.screen_y - 75,
-                                        HUD_class.stamina_bar_size_bg + 12,
-                                        15)  # Kui staminat kulub, ss on background taga
+                                         UniversalVariables.screen_y - 75,
+                                         HUD_class.stamina_bar_size_bg + 12,
+                                         15)  # Kui staminat kulub, ss on background taga
 
             stamina_bar_border = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size_border / 2) - 6,
-                                            UniversalVariables.screen_y - 75,
-                                            HUD_class.stamina_bar_size_border + 12,
-                                            15)  # K6igi stamina baride ymber border
+                                             UniversalVariables.screen_y - 75,
+                                             HUD_class.stamina_bar_size_border + 12,
+                                             15)  # K6igi stamina baride ymber border
 
             stamina_rect = pygame.Rect(HUD_class.half_w - (HUD_class.stamina_bar_size / 2) - 6,
-                                    UniversalVariables.screen_y - 75,
-                                    HUD_class.stamina_bar_size + 12, 15)
+                                       UniversalVariables.screen_y - 75,
+                                       HUD_class.stamina_bar_size + 12, 15)
 
     def __str__(self):
         return f"Stamina: {self.current_stamina}/{self.max_stamina}"
+
 
 class SpeedComponent:
     def __init__(self, base_speed, max_speed, min_speed):
@@ -154,25 +157,34 @@ class SpeedComponent:
     def get_speed(self):
         return self.current_speed
 
-
     def __str__(self):
         return f"Speed: {self.current_speed}"
+
+
 class HungerComponent:
     last_click_x = None
     last_click_y = None
-
+    previous_player_x = None
+    previous_player_y = None
+    xxx = 0
     def __init__(self, base_hunger, max_hunger, min_hunger):
         self.base_hunger = base_hunger
         self.max_hunger = max_hunger
         self.min_hunger = min_hunger
         self.current_hunger = max(min_hunger, min(max_hunger, base_hunger))
 
-    # def set_hunger(self, hunger):
-    #     self.current_hunger = max(min(hunger, self.max_hunger), self.min_hunger)
-    #     return self.current_hunger
-    #
-    # def get_hunger(self):
-    #     return self.current_hunger
+    def get_hunger(self):
+        return self.current_hunger
+
+    def decrease_hunger(self):
+        if HungerComponent.xxx == 100:
+            if self.player.hunger.current_hunger > 0:  # Check if hunger is greater than 0
+                self.player.hunger.current_hunger -= 1
+            HungerComponent.previous_player_x = UniversalVariables.player_x
+            HungerComponent.previous_player_y = UniversalVariables.player_y
+            HungerComponent.xxx = 0
+        HungerComponent.xxx += 1
+        print(self.player.hunger.current_hunger)
 
     def is_click_inside_player_rect(self):
         Camera.click_on_screen(self)
@@ -182,7 +194,8 @@ class HungerComponent:
         HungerComponent.last_click_x = self.click_window_x - UniversalVariables.player_hitbox_offset_x
         HungerComponent.last_click_y = self.click_window_y - UniversalVariables.player_hitbox_offset_y
 
-        return 0 <= HungerComponent.last_click_x <= self.player_rect[2] and 0 <= HungerComponent.last_click_y <= self.player_rect[3]
+        return 0 <= HungerComponent.last_click_x <= self.player_rect[2] and 0 <= HungerComponent.last_click_y <= \
+            self.player_rect[3]
 
     def eat(self):
         try:
@@ -201,8 +214,8 @@ class HungerComponent:
                                     if Inventory.inventory[UniversalVariables.equipped_item] == 0:
                                         del Inventory.inventory[UniversalVariables.equipped_item]
                                         UniversalVariables.equipped_item = None
-                                except KeyError as KE: print(KE)
-
+                                except KeyError as KE:
+                                    print(KE)
 
             if self.click_window_x or HungerComponent.last_click_x or self.click_window_y or HungerComponent.last_click_y:
                 HungerComponent.last_click_x = None
@@ -216,16 +229,17 @@ class HungerComponent:
         except TypeError as error:
             print(error)
 
-    # def move(self, distance):
-    #     hunger_loss = distance * 0.1
-    #     self.current_hunger = max(self.current_hunger - hunger_loss, self.min_hunger)
-    #     return self.current_hunger
+    def __str__(self):
+        return f"Hunger: {self.current_hunger}/{self.max_hunger}"
 
 
 class Player:
     def __init__(self, max_health, min_health,
                  max_stamina, min_stamina,
-                 base_speed, max_speed, min_speed):
+                 base_speed, max_speed, min_speed,
+                 base_hunger, max_hunger, min_hunger
+
+                 ):
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
         self.stamina = StaminaComponent(max_stamina=max_stamina,
@@ -234,7 +248,9 @@ class Player:
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
+        self.hunger = HungerComponent(base_hunger=base_hunger,
+                                      max_hunger=max_hunger,
+                                      min_hunger=min_hunger)
 
     def __str__(self):
-        return f"{self.health}, {self.stamina}, {self.speed}"
-
+        return f"{self.health}, {self.stamina}, {self.speed}, {self.hunger}"

@@ -32,7 +32,7 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1)
+        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=10, min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0)
         self.player_rect = None  # Player rect to be set in the game
 
         self.screen = UniversalVariables.screen
@@ -279,7 +279,7 @@ class Game:
             self.handle_fading_texts()  # Render fading text after everything else
 
             self.refresh_loop()
-            HungerComponent.eat(self)
+
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
