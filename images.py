@@ -98,6 +98,8 @@ class ImageLoader:
                                 image_path = f"images/Items/Minerals/{image_name}.png"
                             elif item_type == "Tool":
                                 image_path = f"images/Items/Tools/{image_name}.png"
+                            elif item_type == "Food":
+                                image_path = f"images/Items/Foods/{image_name}.png"
 
                     if image_path:
                         if image_path.startswith("images/Objects"):

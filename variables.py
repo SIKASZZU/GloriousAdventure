@@ -64,13 +64,16 @@ class UniversalVariables():
     ui_elements: list = []
 
     loot = [
-        ("Stick", (2, 5)),
-        ("Stone_Shard", 1),
-        ("Wood_Pickaxe", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Small_Rock_Sword", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Oak_Wood", (1, 2)),
+        # ("Stick", (2, 5)),  # Kui itemil on range näiteks (2, 5) siis ta võtab random numbri nende seast - (2, 3, 4, 5)
+        # ("Stone_Shard", 1),
+        # ("Wood_Pickaxe", 1),
+        # ("Oak_Planks", (2, 3)),
+        # ("Small_Rock_Sword", 1),
+        # ("Oak_Planks", (2, 3)),
+        # ("Oak_Wood", (1, 2)),
+        ('Flashlight', 1),
+        #('Meat', 1),
+        ('Bread', (1, 2)),
     ]
 
     # ******************** COLLISION ******************** #
