@@ -4,7 +4,6 @@ import time
 import items
 from HUD import HUD_class
 from variables import UniversalVariables
-from camera import Camera
 from inventory import Inventory
 
 
@@ -162,11 +161,8 @@ class SpeedComponent:
 
 
 class HungerComponent:
-    last_click_x = None
-    last_click_y = None
-    previous_player_x = None
-    previous_player_y = None
-    xxx = 0
+
+    timer_for_next_update = 0
     def __init__(self, base_hunger, max_hunger, min_hunger):
         self.base_hunger = base_hunger
         self.max_hunger = max_hunger
@@ -177,57 +173,39 @@ class HungerComponent:
         return self.current_hunger
 
     def decrease_hunger(self):
-        if HungerComponent.xxx == 100:
+        if HungerComponent.timer_for_next_update == 100:
             if self.player.hunger.current_hunger > 0:  # Check if hunger is greater than 0
                 self.player.hunger.current_hunger -= 1
-            HungerComponent.previous_player_x = UniversalVariables.player_x
-            HungerComponent.previous_player_y = UniversalVariables.player_y
-            HungerComponent.xxx = 0
-        HungerComponent.xxx += 1
-        print(self.player.hunger.current_hunger)
+            HungerComponent.timer_for_next_update = 0
+        HungerComponent.timer_for_next_update += 1
+        # print(self.player.hunger.current_hunger)
 
     def is_click_inside_player_rect(self):
-        Camera.click_on_screen(self)
-        if self.click_window_x is None or self.click_window_y is None:
+        print(self.click_position)
+        if self.click_position != ():
+            click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
+            click_within_y = self.player_rect[1] < self.click_position[1] and self.click_position[1] < self.player_rect[1] + self.player_rect[3]
+            
+            if click_within_x and click_within_y:
+                return True
+        else:  
             return False
 
-        HungerComponent.last_click_x = self.click_window_x - UniversalVariables.player_hitbox_offset_x
-        HungerComponent.last_click_y = self.click_window_y - UniversalVariables.player_hitbox_offset_y
-
-        return 0 <= HungerComponent.last_click_x <= self.player_rect[2] and 0 <= HungerComponent.last_click_y <= \
-            self.player_rect[3]
-
     def eat(self):
-        try:
-            if UniversalVariables.current_equipped_item:
-                for item in items.items_list:
-                    if item["Name"] == UniversalVariables.current_equipped_item:
-                        if item["Type"] == "Food":
+        if UniversalVariables.current_equipped_item != None:
+            for item in items.items_list:
+                if item["Name"] == UniversalVariables.current_equipped_item:
+                    if item["Type"] == "Food":
 
-                            if HungerComponent.is_click_inside_player_rect(self):
-                                print("Eating:", UniversalVariables.current_equipped_item)
+                        if HungerComponent.is_click_inside_player_rect(self):
+                            print("Eating:", UniversalVariables.current_equipped_item)
+                            if Inventory.inventory[UniversalVariables.current_equipped_item] > 0:
+                                Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
 
-                                try:
-                                    if Inventory.inventory[UniversalVariables.current_equipped_item] > 0:
-                                        Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
-
-                                    if Inventory.inventory[UniversalVariables.current_equipped_item] == 0:
-                                        del Inventory.inventory[UniversalVariables.current_equipped_item]
-                                        UniversalVariables.current_equipped_item = None
-                                except KeyError as KE:
-                                    print(KE)
-
-            if self.click_window_x or HungerComponent.last_click_x or self.click_window_y or HungerComponent.last_click_y:
-                HungerComponent.last_click_x = None
-                HungerComponent.last_click_y = None
-                self.click_window_x = None
-                self.click_window_y = None
-
-            print(HungerComponent.last_click_x, HungerComponent.last_click_y)
-            print(self.click_window_x, self.click_window_y)
-
-        except TypeError as error:
-            print(error)
+                            if Inventory.inventory[UniversalVariables.current_equipped_item] == 0:
+                                del Inventory.inventory[UniversalVariables.current_equipped_item]
+                                UniversalVariables.current_equipped_item = None
+                        self.click_position: tuple[int, int] = ()
 
     def __str__(self):
         return f"Hunger: {self.current_hunger}/{self.max_hunger}"
