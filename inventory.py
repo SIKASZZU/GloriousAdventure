@@ -27,6 +27,7 @@ class Inventory:
 
     previous_inv = None
     text_cache = {}  # Cache rendered text surfaces
+    message_to_user = False
 
     @staticmethod
     def print_inventory() -> None:
@@ -103,6 +104,11 @@ class Inventory:
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
         visuaalselt glitchima on/off. """
+
+        if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False:
+            UniversalVariables.ui_elements.append(
+                """ Press TAB to open inventory. """)
+            Inventory.message_to_user = True
 
         Inventory.handle_mouse_click(self)
         keys = pygame.key.get_pressed()
@@ -328,10 +334,10 @@ class Inventory:
             return  # Don't render anything if item is None or count is 0
 
         # Update equipped item type if the item has changed
-        if UniversalVariables.old_equipped_item != item_name:
-            UniversalVariables.old_equipped_item_item_type = next(
+        if UniversalVariables.current_equipped_item != item_name:
+            UniversalVariables.current_equipped_item_item_type = next(
                 (item["Type"] for item in items_list if item["Name"] == item_name), None)
-            UniversalVariables.old_equipped_item = item_name
+            UniversalVariables.current_equipped_item = item_name
 
         item_image = ImageLoader.load_image(item_name)
 
@@ -347,7 +353,7 @@ class Inventory:
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
-        if UniversalVariables.old_equipped_item_item_type != "Tool":
+        if UniversalVariables.current_equipped_item_item_type != "Tool":
             text = str(Inventory.inventory[item_name])
             if text not in Inventory.text_cache:
                 font = pygame.font.Font(None, 20)

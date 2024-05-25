@@ -249,37 +249,40 @@ class EssentialsUpdate:
     
 
     def calculate_daylight_strength(self):
-        hours = EssentialsUpdate.game_start_clock[0]  # Get current time
+        """ See func edastab self.daylight_strengthi vision draw_shadowile."""
+        """ Draw_shadowis player_vision_conei valgustugevus self.daylight_strengthist """
 
-        # calculate daylight strength every interval
-        if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
-        if 21 <= hours < 22: self.daylight_strength = 125
-        elif 22 <= hours <= 23: self.daylight_strength = 175
-        elif 0 <= hours < 2: self.daylight_strength = 235
-        elif 2 <= hours < 5: self.daylight_strength = 215
-        elif 5 <= hours < 7: self.daylight_strength = 180
-        elif 7 <= hours < 8: self.daylight_strength = 110
-        elif 8 <= hours < 10: self.daylight_strength = 50  # Dawn (8 AM to 9:59 AM) 
-        else: self.daylight_strength = 0
-    
-        self.dim_surface.fill((0, 0, 0, self.daylight_strength))  # Update the alpha value of the dim surface
-        UniversalVariables.screen.blit(self.dim_surface, (0,0))
+        if UniversalVariables.debug_mode == False:
+            hours = EssentialsUpdate.game_start_clock[0]  # Get current time
+
+            # calculate daylight strength every interval
+            if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
+            if 21 <= hours < 22: self.daylight_strength = 125
+            elif 22 <= hours <= 23: self.daylight_strength = 175
+            elif 0 <= hours < 2: self.daylight_strength = 235
+            elif 2 <= hours < 5: self.daylight_strength = 215
+            elif 5 <= hours < 7: self.daylight_strength = 180
+            elif 7 <= hours < 8: self.daylight_strength = 110
+            elif 8 <= hours < 9: self.daylight_strength = 100  # Dawn (8 AM to 9:59 AM) 
+            else: self.daylight_strength = 100
 
 
     def check_pressed_keys(self):
-        keys = pygame.key.get_pressed()
+        if UniversalVariables.debug_mode == True:
 
-        # H key, HITBOX KEY
-        if keys[pygame.K_h] and not self.h_pressed:
-            self.h_pressed = True
-            UniversalVariables.hitbox_count += 1
-        elif not keys[pygame.K_h]: self.h_pressed = False
+            keys = pygame.key.get_pressed()
 
-        # J KEY, LIGHT ON/OFF KEY
-        if keys[pygame.K_j] and not self.j_pressed:
-            self.j_pressed = True
-            vision.vision_count += 1
-        elif not keys[pygame.K_j]: self.j_pressed = False
+            # H key, HITBOX KEY
+            if keys[pygame.K_h] and not self.h_pressed:
+                self.h_pressed = True
+                UniversalVariables.hitbox_count += 1
+            elif not keys[pygame.K_h]: self.h_pressed = False
+
+            # J KEY, LIGHT ON/OFF KEY
+            if keys[pygame.K_j] and not self.j_pressed:
+                self.j_pressed = True
+                vision.vision_count += 1
+            elif not keys[pygame.K_j]: self.j_pressed = False
 
 
     def render_gui_text(self, text, position, color=(100, 255, 100), debug=False):

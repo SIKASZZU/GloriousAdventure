@@ -25,12 +25,13 @@ def event_mousebuttondown(self, event):
 
             Camera.click_on_screen(self)
 
-        elif event.button == 4:  # Scroll +
-            UniversalVariables.block_size += 10
-            update_object_dimensions()
+        if UniversalVariables.debug_mode == True:
+            if event.button == 4:  # Scroll +
+                UniversalVariables.block_size += 10
+                update_object_dimensions()
 
-        elif event.button == 5:  # Scroll -
-            UniversalVariables.block_size -= 10
-            if UniversalVariables.block_size < 1:
-                UniversalVariables.block_size = 1
-            update_object_dimensions()
+            elif event.button == 5:  # Scroll -
+                UniversalVariables.block_size -= 10
+                if UniversalVariables.block_size < 1:
+                    UniversalVariables.block_size = 1
+                update_object_dimensions()

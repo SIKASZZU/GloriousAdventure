@@ -41,7 +41,6 @@ class Game:
 
         self.daylight_strength = 0
         self.dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA, 32)
-        self.dim_surface = self.dim_surface.convert_alpha()
 
         self.print_hp = 0
         self.restrict_looping = False
@@ -226,6 +225,7 @@ class Game:
             ObjectManagement.place_and_render_object(self)
 
         Enemy.spawn(self)
+        EssentialsUpdate.calculate_daylight_strength(self)
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
@@ -257,9 +257,10 @@ class Game:
         self.player.health.print_health()
 
     def custom_addition(self):
-        if not self.restrict_looping:
-            ObjectManagement.add_object_from_inv("Maze_Key", 100)
-            self.restrict_looping = True
+        if UniversalVariables.debug_mode == True:
+            if not self.restrict_looping:
+                ObjectManagement.add_object_from_inv("Maze_Key", 100)
+                self.restrict_looping = True
 
     def run(self):
         self.load_variables()
@@ -282,8 +283,9 @@ class Game:
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
-
                 self.player.speed.base_speed = 20
+                
+                # neil functionitel on juba sees, et kontrolliks debug modei
                 self.check_keys()
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks

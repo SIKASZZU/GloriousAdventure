@@ -44,8 +44,8 @@ class UniversalVariables():
 
 
     # ******************** PLAYER ******************** #
-    old_equipped_item = None
-    old_equipped_item_item_type = None
+    current_equipped_item = None
+    current_equipped_item_item_type = None
     equipped_item: tuple = ()  # Käes oleva itemi trackimiseks
 
     player_height: int = block_size * 0.65
@@ -64,13 +64,17 @@ class UniversalVariables():
     ui_elements: list = []
 
     loot = [
-        ("Stick", (2, 5)),
-        ("Stone_Shard", 1),
-        ("Wood_Pickaxe", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Small_Rock_Sword", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Oak_Wood", (1, 2)),
+        # ("Stick", (2, 5)),
+        # ("Stone_Shard", 1),
+        # ("Wood_Pickaxe", 1),
+        # ("Oak_Planks", (2, 3)),
+        # ("Small_Rock_Sword", 1),
+        # ("Oak_Planks", (2, 3)),
+        # ("Oak_Wood", (1, 2)),
+        ("Flashlight", 1),
+        ("Bread", (1, 2)),
+
+
     ]
 
     # ******************** COLLISION ******************** #
