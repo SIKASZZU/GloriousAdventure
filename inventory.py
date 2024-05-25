@@ -55,8 +55,12 @@ class Inventory:
                     # Vaatab kas click oli invis sees või mitte
                     for index, rect in enumerate(Inventory.inventory_display_rects):
                         if rect.collidepoint(mouse_x, mouse_y):
-                            if index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
+                            if index:
                                 Inventory.check_slot(self, index)
+
+                            elif index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
+                                Inventory.check_slot(self, index)
+
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
 
@@ -86,13 +90,19 @@ class Inventory:
         """Checks what's in the inventory's selected slot."""
 
         try:
-            if index != Inventory.last_clicked_slot:
+            if index:
+                item = list(Inventory.inventory.keys())[index]
+                value = list(Inventory.inventory.values())[index]
+
+                UniversalVariables.current_equipped_item =  item
+            elif index != Inventory.last_clicked_slot:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
 
                 UniversalVariables.current_equipped_item =  item
 
-        except IndexError:
+        except IndexError as IE:
+            print(IE)
             UniversalVariables.current_equipped_item = None
 
         Inventory.last_clicked_slot = index  # Updateb viimast clicki
@@ -320,7 +330,7 @@ class Inventory:
 
     def render_inventory_slot(self, item_name):
         slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
-        position = (UniversalVariables.screen_x - 850, UniversalVariables.screen_y - 51)
+        position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
         resized_slot_image = pygame.transform.scale(slot_image, (slot_image.get_width() * 0.9 , slot_image.get_height() * 0.9))
 
         # List to hold all blit operations

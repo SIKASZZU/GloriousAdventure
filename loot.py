@@ -35,7 +35,7 @@ class Loot:
             return selected_loot
 
     def gather_loot(self):
-        count = randint(1, 3)
+        count = randint(0, 3)
         while count > 0:
             obtained_loot, obtained_count = Loot.get_random_loot(self)
             count -= 1
