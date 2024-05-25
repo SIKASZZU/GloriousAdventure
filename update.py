@@ -263,7 +263,7 @@ class EssentialsUpdate:
             elif 2 <= hours < 5: self.daylight_strength = 215
             elif 5 <= hours < 7: self.daylight_strength = 180
             elif 7 <= hours < 8: self.daylight_strength = 110
-            elif 8 <= hours < 9: self.daylight_strength = 50  # Dawn (8 AM to 9:59 AM) 
+            elif 8 <= hours < 9: self.daylight_strength = 100  # Dawn (8 AM to 9:59 AM) 
             else: self.daylight_strength = 100
 
 
