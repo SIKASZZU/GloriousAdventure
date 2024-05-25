@@ -27,6 +27,7 @@ class Inventory:
 
     previous_inv = None
     text_cache = {}  # Cache rendered text surfaces
+    message_to_user = False
 
     @staticmethod
     def print_inventory() -> None:
@@ -103,6 +104,11 @@ class Inventory:
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
         visuaalselt glitchima on/off. """
+
+        if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False:
+            UniversalVariables.ui_elements.append(
+                """ Press TAB to open inventory. """)
+            Inventory.message_to_user = True
 
         Inventory.handle_mouse_click(self)
         keys = pygame.key.get_pressed()
