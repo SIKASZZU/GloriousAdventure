@@ -252,9 +252,8 @@ class Game:
         self.clock.tick(UniversalVariables.FPS)
 
     def printing(self):
-        Inventory.print_inventory()
         Camera.print_clicks(self)
-        self.player.health.print_health()
+        print(self.player)
 
     def custom_addition(self):
         if UniversalVariables.debug_mode == True:
@@ -293,7 +292,6 @@ class Game:
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
 
-                print(self.player)
             Final_Maze.delay += 1
 
 

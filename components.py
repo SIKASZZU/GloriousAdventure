@@ -177,7 +177,7 @@ class HungerComponent:
     def decrease_hunger(self):
         if UniversalVariables.hunger_resistance:
             UniversalVariables.hunger_resistance -= 1
-            if UniversalVariables.hunger_resistance <= 0:
+            if UniversalVariables.hunger_resistance >=0:
                 UniversalVariables.hunger_resistance = None
             return
 
@@ -258,4 +258,4 @@ class Player:
                                       min_hunger=min_hunger)
 
     def __str__(self):
-        return f"\nPlayer stats:\n   {self.health},\n   {self.stamina},\n   {self.speed},\n   {self.hunger}"
+        return f"Player stats:\n   {self.health},\n   {self.stamina},\n   {self.speed},\n   {self.hunger},\n   Inventory: {Inventory.inventory}\n"
