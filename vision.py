@@ -57,28 +57,23 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 
 def draw_shadows(self, screen, visible_points):
+    
     if UniversalVariables.debug_mode:
         shadow_color = 0
-        walls_hit_by_ray_color = 0
 
         # kas J - Light ON/OFF key on pressed
         if (vision_count % 2) != 0:
             shadow_color = 255
-            walls_hit_by_ray_color = 150
 
     else:
         shadow_color = 255
-        walls_hit_by_ray_color = 150
 
     BLOCK_SIZE = UniversalVariables.block_size
     no_shadow_needed = UniversalVariables.no_shadow_needed
 
-
     # Create a shadow mask covering the entire screen
-    shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
-
-    # Fill the shadow mask with shadow color
-    shadow_mask.fill((0, 0, 0, shadow_color))
+    self.shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
+    self.shadow_mask.fill((0, 0, 0, shadow_color))
 
     # Playeri gridi arvutamine
     player_x_row = int(UniversalVariables.player_x // BLOCK_SIZE)
@@ -86,18 +81,22 @@ def draw_shadows(self, screen, visible_points):
 
     UniversalVariables.light_range = 420
     UniversalVariables.opposite_light_range = 75
-    changed = 100
+    player_cone_light_strenght = self.daylight_strength
+    
     try:
         if self.terrain_data[player_y_col][player_x_row] in no_shadow_needed:
             UniversalVariables.light_range *= 6
             UniversalVariables.opposite_light_range *= 34
-            changed = 0
-    
+            player_cone_light_strenght -= 100  # -100, sest et gladeis 66sel ega p2eval kottpime ei oleks
+
     except IndexError as e: 
         print('Error @ vision.py, draw_shadows:', e)
-
+        
+    if UniversalVariables.current_equipped_item == 'Flashlight':  player_cone_light_strenght -= 70
+    if player_cone_light_strenght < 0:  player_cone_light_strenght = 0
+    
     vertices = [(int(x), int(y)) for x, y in visible_points]
-    pygame.draw.polygon(shadow_mask, (0, 0, 0, changed), vertices)  # visioni joonestamine
+    pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)  # visioni joonestamine
 
     # Get the squares hit by light rays
     squares_hit = set()
@@ -108,11 +107,12 @@ def draw_shadows(self, screen, visible_points):
 
     # Highlight wallid, mis saavad rayga pihta
     for square in squares_hit:
-        pygame.draw.rect(shadow_mask, (0, 0, 0, walls_hit_by_ray_color), \
+        walls_hit_by_ray_color = player_cone_light_strenght
+        pygame.draw.rect(self.shadow_mask, (0, 0, 0, walls_hit_by_ray_color), \
                          pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
 
     # Blit the shadow mask onto the screen
-    screen.blit(shadow_mask, (0, 0))
+    screen.blit(self.shadow_mask, (0, 0))
 
 
 def draw_light_source_and_rays(self, screen, position, light_range):

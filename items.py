@@ -220,6 +220,16 @@ items_list = [
         # "Placeable": True,
         # "Breakable": True,
     },
+    {
+        "Type": "Tool",
+        "Name": "Flashlight",
+        "ID": 31,
+    },
+    {
+        "Type": "Food",
+        "Name": "Bread",
+        "ID": 32,
+    },
 
     # Unbreakable Blocks - Items
 
