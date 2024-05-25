@@ -4,6 +4,8 @@ import time
 import items
 from HUD import HUD_class
 from variables import UniversalVariables
+from camera import Camera
+from inventory import Inventory
 
 class HealthComponent:
     death_exit_timer = 0
@@ -40,13 +42,13 @@ class HealthComponent:
     def check_health(self):
         self.health_cooldown_timer += 1
         if self.current_health <= 0:
-            HealthComponent.death()
+            HealthComponent.death(self)
 
         if self.health_cooldown_timer >= 220:
             HealthComponent.regenerate_health(self)
             self.health_cooldown_timer = 100
 
-    def death():
+    def death(self):
         ### TODO: teha, et ei spammiks printi
 
         print('Player has died')
@@ -55,7 +57,7 @@ class HealthComponent:
                                     """  Exiting game in 5 sec. """
                                 )
         ### TODO: player moement disable.
-        if UniversalVariables.debug_mode == True:  
+        if UniversalVariables.debug_mode == True:
             print('Debug mode, not closing the game. ')
         else:
             death_timer_limit = 300
@@ -155,6 +157,69 @@ class SpeedComponent:
 
     def __str__(self):
         return f"Speed: {self.current_speed}"
+class HungerComponent:
+    last_click_x = None
+    last_click_y = None
+
+    def __init__(self, base_hunger, max_hunger, min_hunger):
+        self.base_hunger = base_hunger
+        self.max_hunger = max_hunger
+        self.min_hunger = min_hunger
+        self.current_hunger = max(min_hunger, min(max_hunger, base_hunger))
+
+    # def set_hunger(self, hunger):
+    #     self.current_hunger = max(min(hunger, self.max_hunger), self.min_hunger)
+    #     return self.current_hunger
+    #
+    # def get_hunger(self):
+    #     return self.current_hunger
+
+    def is_click_inside_player_rect(self):
+        Camera.click_on_screen(self)
+        if self.click_window_x is None or self.click_window_y is None:
+            return False
+
+        HungerComponent.last_click_x = self.click_window_x - UniversalVariables.player_hitbox_offset_x
+        HungerComponent.last_click_y = self.click_window_y - UniversalVariables.player_hitbox_offset_y
+
+        return 0 <= HungerComponent.last_click_x <= self.player_rect[2] and 0 <= HungerComponent.last_click_y <= self.player_rect[3]
+
+    def eat(self):
+        try:
+            if UniversalVariables.equipped_item:
+                for item in items.items_list:
+                    if item["Name"] == UniversalVariables.equipped_item:
+                        if item["Type"] == "Food":
+
+                            if HungerComponent.is_click_inside_player_rect(self):
+                                print("Eating:", UniversalVariables.equipped_item)
+
+                                try:
+                                    if Inventory.inventory[UniversalVariables.equipped_item] > 0:
+                                        Inventory.inventory[UniversalVariables.equipped_item] -= 1
+
+                                    if Inventory.inventory[UniversalVariables.equipped_item] == 0:
+                                        del Inventory.inventory[UniversalVariables.equipped_item]
+                                        UniversalVariables.equipped_item = None
+                                except KeyError as KE: print(KE)
+
+
+            if self.click_window_x or HungerComponent.last_click_x or self.click_window_y or HungerComponent.last_click_y:
+                HungerComponent.last_click_x = None
+                HungerComponent.last_click_y = None
+                self.click_window_x = None
+                self.click_window_y = None
+
+            print(HungerComponent.last_click_x, HungerComponent.last_click_y)
+            print(self.click_window_x, self.click_window_y)
+
+        except TypeError as error:
+            print(error)
+
+    # def move(self, distance):
+    #     hunger_loss = distance * 0.1
+    #     self.current_hunger = max(self.current_hunger - hunger_loss, self.min_hunger)
+    #     return self.current_hunger
 
 
 class Player:

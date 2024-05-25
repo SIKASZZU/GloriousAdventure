@@ -24,7 +24,7 @@ from audio import Player_audio  # player_audio_update
 from loot import Loot  # loot_update
 from blade import change_blades
 from final_maze import Final_Maze
-
+from components import HungerComponent
 class Game:
     def __init__(self):
         pygame.init()
@@ -279,7 +279,7 @@ class Game:
             self.handle_fading_texts()  # Render fading text after everything else
 
             self.refresh_loop()
-
+            HungerComponent.eat(self)
             # ******************** DEBUG MODE ******************** #
             if UniversalVariables.debug_mode:
                 UniversalVariables.ui_elements.append("!        Debug mode - True        !")
