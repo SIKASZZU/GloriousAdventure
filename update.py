@@ -178,10 +178,9 @@ class PlayerUpdate:
             heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint = HUD_class.bar_visualization(self)
         
         # Renderib stamina-bari
-        if StaminaComponent.stamina_bar_decay < 50:
-            pygame.draw.rect(UniversalVariables.screen, '#273F87', stamina_bar_bg, 0, 7)
-            pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
-            pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#273F87', stamina_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
         # Renderib health-bari
         pygame.draw.rect(UniversalVariables.screen, '#662828', health_bar_bg, 0, 7)

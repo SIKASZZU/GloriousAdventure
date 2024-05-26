@@ -6,7 +6,7 @@ from render import RenderPictures
 from update import EssentialsUpdate
 from objects import ObjectManagement
 from variables import UniversalVariables
-from components import StaminaComponent
+from HUD import HUD_class
 from mazecalculation import AddingMazeAtPosition
 from camera import Camera
 from audio import Tile_Sounds  # insert_key_audio, pop_key_audio, portal_open_audio
@@ -348,7 +348,7 @@ class Collisions:
                                     self.player.speed.current_speed = self.player.speed.base_speed
                                 else:
                                     self.player.speed.current_speed = self.player.speed.base_speed * 2.5
-                                    StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                    HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed
@@ -364,7 +364,7 @@ class Collisions:
                                     self.player.speed.current_speed = self.player.speed.base_speed / 2
                                 else:
                                     self.player.speed.current_speed = self.player.speed.base_speed
-                                    StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                    HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed / 2
@@ -378,7 +378,7 @@ class Collisions:
                                 self.player.speed.current_speed = self.player.speed.base_speed / 2
                             else:
                                 self.player.speed.current_speed = self.player.speed.base_speed
-                                StaminaComponent.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                 self.player.stamina.use_stamina(0.05)
                         else:
                             self.player.speed.current_speed = self.player.speed.base_speed / 2
