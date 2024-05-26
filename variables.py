@@ -70,8 +70,8 @@ class UniversalVariables():
         #("Small_Rock_Sword", 1),
         #("Oak_Planks", (2, 3)),
         #("Oak_Wood", (1, 2)),
-        #("Flashlight", 1),
-        #("Bread", (2, 3)),
+        ("Flashlight", 1),
+        ("Bread", (2, 3)),
         ("Meat", (2, 3)),
     ]
 

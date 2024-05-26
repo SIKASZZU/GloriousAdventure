@@ -58,7 +58,7 @@ def get_line_segment_intersection(p0, p1, p2, p3):
 
 def draw_shadows(self, screen, visible_points):
     
-    if UniversalVariables.debug_mode:
+    if UniversalVariables.debug_mode == True:
         shadow_color = 0
 
         # kas J - Light ON/OFF key on pressed
