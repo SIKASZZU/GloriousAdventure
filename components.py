@@ -192,7 +192,7 @@ class HungerComponent:
             return
 
         else:
-            if HungerComponent.timer_for_next_update >= 400:
+            if HungerComponent.timer_for_next_update >= 300:
                 self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.3)
                 HungerComponent.timer_for_next_update = 0
 
