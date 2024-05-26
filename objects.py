@@ -12,44 +12,61 @@ class ObjectManagement:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
 
+
+
+
+
+
+
+
+
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
-            for item_data in items_list:
-                if object_id == item_data["ID"]:
-                    if item_data["Breakable"] != True:
-                        pass
+            for item in items_list:
+                item_name = item.get("Name")
+
+                if object_id == item["ID"]:
+                    if item["Breakable"] != True:
+                        return
                     else:
-                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
-                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
+                        if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
 
-                        try:
-                            # Kontrollib kas jääb mapi sissse
-                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                            grid_col: int = int(terrain_x // UniversalVariables.block_size)
+                            grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
-
-                                # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
-                                # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                if object_id == 10: 
-                                    self.terrain_data[grid_row][grid_col] = 11
-
-                                elif object_id == 7:
-                                    print('object_id',object_id)
-                                    self.terrain_data[grid_row][grid_col] = 107
-
-                                else: 
-                                    position: tuple = (terrain_x, terrain_y)
-                                    self.terrain_data[grid_row][grid_col] = 1
-                                    # mida me siin resizeme, mis pilti :D >:D 👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿👌🏿
+                            try:
+                                # Kontrollib kas jääb mapi sissse
+                                if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
 
 
-                                ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+                                    # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
+                                    # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
+                                    if object_id == 10:
+                                        self.terrain_data[grid_row][grid_col] = 11
 
-                            else:
-                                print("Invalid grid indices:", grid_row,
-                                      grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                    elif object_id == 7:
+                                        print('object_id',object_id)
+                                        self.terrain_data[grid_row][grid_col] = 107
 
-                        except Exception as e:
-                            print("IndexError: objects.py, remove_object_at_position", e)
+                                    else:
+                                        position: tuple = (terrain_x, terrain_y)
+                                        self.terrain_data[grid_row][grid_col] = 1
+
+                                    ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+
+                                else:
+                                    print("Invalid grid indices:", grid_row,
+                                          grid_col)  # Kui ei jää mapi sisse siis prindib errori
+
+                            except Exception as e:
+                                print("IndexError: objects.py, remove_object_at_position", e)
+
+                        else:
+                            text = "Not enough space in Inventory."
+                            UniversalVariables.ui_elements.append(text)
+
+                            if text in self.shown_texts:  # Check if the text is in the set before removing
+                                self.shown_texts.remove(text)
 
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
@@ -100,13 +117,16 @@ class ObjectManagement:
 
     # temporary add func?
     def add_object_from_inv(item, amount=1):
+
         if item in Inventory.inventory:
             # Kui ese on juba inventoris, suurendab eseme kogust
             Inventory.inventory[item] += amount
-        else:
+
+        elif Inventory.total_slots > len(Inventory.inventory):
             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: amount
             Inventory.inventory[item] = amount
 
+        else: return
 
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :

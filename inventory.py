@@ -28,6 +28,7 @@ class Inventory:
     previous_inv = None
     text_cache = {}  # Cache rendered text surfaces
     message_to_user = False
+    total_slots:int = 4
 
     @staticmethod
     def print_inventory() -> None:
@@ -135,11 +136,31 @@ class Inventory:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
 
+        if UniversalVariables.maze_counter == 1:
+            total_rows = 2
+            total_cols = 2
+
+        if UniversalVariables.maze_counter == 2:
+            total_rows = 3
+            total_cols = 2
+
+        if UniversalVariables.maze_counter == 3:
+            total_rows = 4
+            total_cols = 2
+
+        if UniversalVariables.maze_counter == 4:
+            total_rows = 5
+            total_cols = 2
+
+        if UniversalVariables.maze_counter >= 5:
+            total_rows = 6
+            total_cols = 3
+
+        Inventory.total_slots = total_rows * total_cols
+
         Inventory.inventory_display_rects = []
         rect_width: int = UniversalVariables.block_size / 2
         rect_height: int = UniversalVariables.block_size / 2
-        total_rows: int = 6  # Max: 9
-        total_cols: int = 3  # Max: 9
 
         # Calculate inventory position relative to player and screen size
         rect_x: int = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2  # Siia ei tohi offsetti panna
