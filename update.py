@@ -71,7 +71,7 @@ class PlayerUpdate:
                 self.frame_delay = 10  # Adjust running speed
                 if keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] or keys[pygame.K_w]:
                     if self.player.stamina.current_stamina >= 2:
-                        HungerComponent.timer_for_next_update += 2
+                        HungerComponent.hunger_timer += 2
             else:
                 self.frame_delay = 7  # Default walking speed
 

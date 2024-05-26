@@ -38,7 +38,7 @@ class HealthComponent:
         if self.current_health < self.max_health and self.current_health != 0:
             if hunger >= 12:
                 self.current_health += 1
-                HungerComponent.timer_for_next_update += 100
+                HungerComponent.hunger_timer += 100
                 UniversalVariables.health_status = True
 
     def check_health(self, hunger=None):
@@ -143,8 +143,8 @@ class SpeedComponent:
 
 
 class HungerComponent:
-
-    timer_for_next_update = 0
+    hunger_timer = 0
+    health_timer = 0
     def __init__(self, base_hunger, max_hunger, min_hunger):
         self.base_hunger = base_hunger
         self.max_hunger = max_hunger
@@ -161,12 +161,17 @@ class HungerComponent:
                 UniversalVariables.hunger_resistance = None
             return
 
+        elif self.player.hunger.current_hunger <= 0:
+            if HungerComponent.health_timer >= 250:
+                self.player.health.damage(0.5)
+                HungerComponent.health_timer = 0
+            HungerComponent.health_timer += 1
         else:
-            if HungerComponent.timer_for_next_update >= 300:
+            if HungerComponent.hunger_timer >= 300:
                 self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.3)
-                HungerComponent.timer_for_next_update = 0
+                HungerComponent.hunger_timer = 0
 
-            HungerComponent.timer_for_next_update += 1
+            HungerComponent.hunger_timer += 1
 
     def is_click_inside_player_rect(self):
         if self.click_position != ():
