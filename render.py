@@ -120,10 +120,14 @@ class RenderPictures:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
 
-                            elif terrain_value in UniversalVariables.door_ids or terrain_value == 1000:  
+                            elif terrain_value in UniversalVariables.door_ids:  
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
+                            elif terrain_value == 1000:  
+                                image = ImageLoader.load_image('Final_Maze_Ground_2')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+
                             elif terrain_value == 933 or terrain_value == 977:
                                 if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
                                 else: self.terrain_data[position[1]][position[0]] = 933
@@ -244,7 +248,8 @@ class CreateCollisionBoxes:
                          4: 4,
                          7: 5,
                          988: 6,
-                         1000: 7}  # Last to be rendered
+                         9882: 7,
+                         1000: 8}  # Last to be rendered
 
         # Sort the collision_boxes list based on the custom sort order
         UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,

@@ -527,6 +527,15 @@ items_list = [
         },
     {
         "Type": "Object",
+        "Name": "Final_Maze_Ground_2",
+        "ID": 9882,
+        "Breakable": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1)
+        },
+    {
+        "Type": "Object",
         "Name": "Void",
         "ID": 999,
         "Collision_box": [0, 0, 1, 1],
