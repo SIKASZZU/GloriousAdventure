@@ -179,17 +179,17 @@ class PlayerUpdate:
         
         # Renderib stamina-bari
         if StaminaComponent.stamina_bar_decay < 50:
-            pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', stamina_bar_bg, 0, 7)
+            pygame.draw.rect(UniversalVariables.screen, '#273F87', stamina_bar_bg, 0, 7)
             pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
             pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
         # Renderib health-bari
-        pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', health_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#662828', health_bar_bg, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, '#FF6666', health_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', health_bar_border, 3, 7)
         
         # Renderib food-bari
-        pygame.draw.rect(UniversalVariables.screen, '#F7F7F6', food_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#78684B', food_bar_bg, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
 
