@@ -71,7 +71,9 @@ class UniversalVariables():
         ("Oak_Planks", (2, 3)),
         ("Oak_Wood", (1, 2)),
         ("Flashlight", 1),
-        ("Bread", (1, 2)),
+        ("Bread", (2, 3)),
+        ("Meat", (2, 3)),
+        ("Glowstick", (2, 3)),
 
 
     ]
