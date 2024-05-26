@@ -162,12 +162,12 @@ class HungerComponent:
             return
 
         elif self.player.hunger.current_hunger <= 0:
-            if HungerComponent.health_timer >= 250:
+            if HungerComponent.health_timer >= 300:
                 self.player.health.damage(0.5)
                 HungerComponent.health_timer = 0
             HungerComponent.health_timer += 1
         else:
-            if HungerComponent.hunger_timer >= 300:
+            if HungerComponent.hunger_timer >= 250:
                 self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.3)
                 HungerComponent.hunger_timer = 0
 
