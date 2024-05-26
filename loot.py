@@ -11,8 +11,7 @@ class Loot:
 
     def toggle_loot_barrel(self):
         count = randint(0, 3)
-        if len(UniversalVariables.loot) < 3: inv_count = len(UniversalVariables.loot)
-        else: inv_count = 3
+        inv_count = len(UniversalVariables.loot)
 
         for item, quantity in UniversalVariables.loot:
             if item in Inventory.inventory:
@@ -25,7 +24,7 @@ class Loot:
             barrel_y = int(barrel_y // UniversalVariables.block_size)
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
 
-                    if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count:
+                    if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + count:
                         self.terrain_data[barrel_y][barrel_x] = 1002
                         Loot.gather_loot(self, count)
 

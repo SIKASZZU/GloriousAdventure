@@ -63,13 +63,13 @@ class UniversalVariables():
     ui_elements: list = []
 
     loot = [
-        # ("Stick", (2, 5)),
-        # ("Stone_Shard", 1),
-        # ("Wood_Pickaxe", 1),
-        # ("Oak_Planks", (2, 3)),
-        # ("Small_Rock_Sword", 1),
-        # ("Oak_Planks", (2, 3)),
-        # ("Oak_Wood", (1, 2)),
+        ("Stick", (2, 5)),
+        ("Stone_Shard", 1),
+        ("Wood_Pickaxe", 1),
+        ("Oak_Planks", (2, 3)),
+        ("Small_Rock_Sword", 1),
+        ("Oak_Planks", (2, 3)),
+        ("Oak_Wood", (1, 2)),
         ("Flashlight", 1),
         ("Bread", (1, 2)),
 

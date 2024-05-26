@@ -17,7 +17,7 @@ class HealthComponent:
         self.health_cooldown_timer = 0
         self.previous_health = self.current_health
         self.player_dead_flag = False
-
+        self.hunger = None
     def print_health(self):
         """ Print out player's current health. """
 
@@ -43,6 +43,7 @@ class HealthComponent:
                 UniversalVariables.health_status = True
 
     def check_health(self, hunger=None):
+        self.hunger = hunger
         self.health_cooldown_timer += 1
         if self.current_health <= 0:
             HealthComponent.death(self)
@@ -75,7 +76,16 @@ class HealthComponent:
         return self.current_health
 
     def __str__(self):
-        return f"Health: {self.current_health}/{self.max_health}"
+        if self.hunger is not None:
+            if self.hunger <= 12:
+                self.hunger = round(self.hunger, 3)
+                return f"Health: {self.current_health}/{self.max_health}, Regenerating Disabled, Too Hungry: {self.hunger}"
+
+            else:
+                return f"Health: {self.current_health}/{self.max_health}"
+
+        else:
+            return f"Health: {self.current_health}/{self.max_health}"
 
 
 class StaminaComponent:
@@ -177,25 +187,25 @@ class HungerComponent:
     def decrease_hunger(self):
         if UniversalVariables.hunger_resistance:
             UniversalVariables.hunger_resistance -= 1
-            if UniversalVariables.hunger_resistance <=0:
+            if UniversalVariables.hunger_resistance <= 0:
                 UniversalVariables.hunger_resistance = None
             return
 
         else:
             if HungerComponent.timer_for_next_update >= 400:
-                if self.player.hunger.current_hunger > 0:
-                    self.player.hunger.current_hunger -= 0.3
+                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.3)
                 HungerComponent.timer_for_next_update = 0
+
             HungerComponent.timer_for_next_update += 1
 
     def is_click_inside_player_rect(self):
         if self.click_position != ():
             click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
             click_within_y = self.player_rect[1] < self.click_position[1] and self.click_position[1] < self.player_rect[1] + self.player_rect[3]
-            
+
             if click_within_x and click_within_y:
                 return True
-        else:  
+        else:
             return False
 
     def eat(self):
@@ -206,28 +216,32 @@ class HungerComponent:
                     if item["Name"] == UniversalVariables.current_equipped_item and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)
 
-                        # Calculate new hunger value after eating
+                        # Arvutab uue hungeri 'current + söödud itemi Gain'
                         new_hunger = self.player.hunger.current_hunger + satisfaction_gain
 
-                        # Ensure the new hunger value does not exceed max_hunger
-                        if new_hunger > self.player.hunger.max_hunger:
+
+                        # Et playeri hunger ei läheks üle maxi ega alla min
+                        if new_hunger >= self.player.hunger.max_hunger:
                             self.player.hunger.current_hunger = self.player.hunger.max_hunger
+
+                        elif new_hunger <= self.player.hunger.min_hunger:
+                            self.player.hunger.current_hunger = self.player.hunger.min_hunger
+
                         else:
                             self.player.hunger.current_hunger = new_hunger
 
-                        # Reduce the quantity of the eaten item from inventory
+                        # Võtab söödud itemini invist ära
                         if Inventory.inventory.get(UniversalVariables.current_equipped_item, 0) > 0:
                             Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
 
-                            # Remove the item from inventory if its quantity becomes zero
-                            if Inventory.inventory[UniversalVariables.current_equipped_item] == 0:
+                            # Kustutab söödud itemi ära kui see on < 0
+                            if Inventory.inventory[UniversalVariables.current_equipped_item] <= 0:
                                 del Inventory.inventory[UniversalVariables.current_equipped_item]
                                 UniversalVariables.current_equipped_item = None
 
-                        # Update satisfaction
                         UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
 
-                        # Clear click position
+                        # Clear click pos
                         self.click_position = ()
 
     def __str__(self):
