@@ -361,6 +361,11 @@ class Inventory:
             UniversalVariables.screen.blits(blit_operations)
             return  # Don't render anything if item is None or count is 0
 
+        if item_name not in Inventory.inventory:
+            UniversalVariables.screen.blits(blit_operations)
+            UniversalVariables.current_equipped_item = None
+            return  # Don't render anything if item is None or count is 0
+
         # Update equipped item type if the item has changed
         if UniversalVariables.current_equipped_item != item_name:
             UniversalVariables.current_equipped_item_item_type = next(
@@ -381,6 +386,7 @@ class Inventory:
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
+
         if UniversalVariables.current_equipped_item_item_type != "Tool":
             text = str(Inventory.inventory[item_name])
             if text not in Inventory.text_cache:
