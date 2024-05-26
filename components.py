@@ -177,7 +177,7 @@ class HungerComponent:
     def decrease_hunger(self):
         if UniversalVariables.hunger_resistance:
             UniversalVariables.hunger_resistance -= 1
-            if UniversalVariables.hunger_resistance >=0:
+            if UniversalVariables.hunger_resistance <=0:
                 UniversalVariables.hunger_resistance = None
             return
 
