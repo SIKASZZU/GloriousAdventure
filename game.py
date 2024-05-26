@@ -259,8 +259,8 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                ObjectManagement.add_object_from_inv("Bread", 100)
-                ObjectManagement.add_object_from_inv("Bad_Bread", 100)
+                #ObjectManagement.add_object_from_inv("Bread", 100)
+                #ObjectManagement.add_object_from_inv("Bad_Bread", 100)
                 self.restrict_looping = True
 
     def run(self):

@@ -63,19 +63,16 @@ class UniversalVariables():
     ui_elements: list = []
 
     loot = [
-        ("Stick", (2, 5)),
-        ("Stone_Shard", 1),
-        ("Wood_Pickaxe", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Small_Rock_Sword", 1),
-        ("Oak_Planks", (2, 3)),
-        ("Oak_Wood", (1, 2)),
-        ("Flashlight", 1),
-        ("Bread", (2, 3)),
+        #("Stick", (2, 5)),
+        #("Stone_Shard", 1),
+        #("Wood_Pickaxe", 1),
+        #("Oak_Planks", (2, 3)),
+        #("Small_Rock_Sword", 1),
+        #("Oak_Planks", (2, 3)),
+        #("Oak_Wood", (1, 2)),
+        #("Flashlight", 1),
+        #("Bread", (2, 3)),
         ("Meat", (2, 3)),
-        ("Glowstick", (2, 3)),
-
-
     ]
 
     # ******************** COLLISION ******************** #
