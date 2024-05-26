@@ -271,5 +271,10 @@ class Player:
                                       max_hunger=max_hunger,
                                       min_hunger=min_hunger)
 
+    def apply_knockback(self, dx, dy):
+        knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...
+        UniversalVariables.player_x += dx * knockback_force
+        UniversalVariables.player_y += dy * knockback_force
+
     def __str__(self):
         return f"Player stats:\n   {self.health},\n   {self.stamina},\n   {self.speed},\n   {self.hunger},\n   Inventory: {Inventory.inventory}\n"

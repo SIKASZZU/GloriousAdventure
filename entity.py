@@ -20,9 +20,11 @@ class Enemy:
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
     enemy_in_range: set[tuple[str, str]] = set()
 
-    damage_delay: int = 30
+    damage_delay: int = 50  # esimese hiti jaoks, et esimene hit oleks kiirem kui teised
     path_ticks = {}
     path = {}
+    save_enemy_direction_x = int
+    save_enemy_direction_y = int
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
@@ -214,7 +216,7 @@ class Enemy:
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
                     and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
                     if self.player.health.get_health() > 0:
-                        Enemy.attack(self, 3)
+                        Enemy.attack(self, 3, enemy_x, enemy_y)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
@@ -229,11 +231,30 @@ class Enemy:
                         direction = 'up'
                 Enemy.enemy_in_range.add((enemy_name, direction))
 
-    def attack(self, damage):
+    def attack(self, damage, enemy_direct_x, enemy_direct_y):
         """ Kui Ghost on playeri peal siis saab damage'i. """
+        
+        if Enemy.damage_delay == 50:
+            Enemy.save_enemy_direction_x = enemy_direct_x
+            Enemy.save_enemy_direction_y = enemy_direct_y
 
         if Enemy.damage_delay >= 60:
             self.player.health.damage(damage)
+            
+            # Calculate knockback direction
+            dx = Camera.player_window_x - Enemy.save_enemy_direction_x
+            dy = Camera.player_window_y - Enemy.save_enemy_direction_y
+
+            if dx == 0 and dy == 0:
+                dx = random.uniform(-1, 1)
+                dy = random.uniform(-1, 1)
+
+            distance = (dx ** 2 + dy ** 2) ** 0.5
+            dx /= distance
+            dy /= distance
+
+            self.player.apply_knockback(dx, dy)
+
             Enemy.damage_delay = 0
         Enemy.damage_delay += 1
 
