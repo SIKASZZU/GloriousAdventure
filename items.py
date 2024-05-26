@@ -243,7 +243,7 @@ items_list = [
         "Type": "Food",
         "Name": "Meat",
         "ID": 34,
-        "Satisfaction_Gain": 200,  # Kui palju hunger bar juurde saab
+        "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": 350,  # Mitu ticki ei lähe hungerit
     },
 
