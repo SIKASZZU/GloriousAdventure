@@ -45,7 +45,6 @@ class ObjectManagement:
                                         self.terrain_data[grid_row][grid_col] = 11
 
                                     elif object_id == 7:
-                                        print('object_id',object_id)
                                         self.terrain_data[grid_row][grid_col] = 107
 
                                     else:
