@@ -210,7 +210,7 @@ class AddingMazeAtPosition:
 
         # Do stuff here after adding maze
         # print()
-        # ObjectManagement.remove_object_from_inv('Maze_Key')                          # remove maze key
+        ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
         UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
         # for row in UniversalVariables.map_list: print(row)  # print maze list
         # print(UniversalVariables.maze_counter)
