@@ -232,6 +232,13 @@ items_list = [
         "Satisfaction_Gain": 1.75,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": 200,  # Mitu ticki ei lähe hungerit
     },
+    {
+        "Type": "Food",
+        "Name": "Bad_Bread",
+        "ID": 32,
+        "Satisfaction_Gain": -1.75,  # Kui palju hunger bar juurde saab
+        "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
+    },
 
     # Unbreakable Blocks - Items
 
