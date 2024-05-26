@@ -259,8 +259,8 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                #ObjectManagement.add_object_from_inv("Bread", 100)
-                #ObjectManagement.add_object_from_inv("Bad_Bread", 100)
+                ObjectManagement.add_object_from_inv("Bread", 100)
+                ObjectManagement.add_object_from_inv("Bad_Bread", 100)
                 self.restrict_looping = True
 
     def run(self):
@@ -280,6 +280,7 @@ class Game:
             Final_Maze.final_maze_update(self)
             self.render_general()
             self.handle_fading_texts()  # Render fading text after everything else
+            ObjectManagement.add_object_from_inv("Bad_Bread", 100)
 
             self.refresh_loop()
             HungerComponent.decrease_hunger(self)

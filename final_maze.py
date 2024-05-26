@@ -61,9 +61,8 @@ class Final_Maze:
         # Vaatab kuna peab cutscene'ist välja tulema
         if abs(Final_Maze.y_11) == 10:
 
-            UniversalVariables.player_x = UniversalVariables.block_size * 40.75
-            UniversalVariables.player_y = UniversalVariables.block_size * 40.75
-
+            # UniversalVariables.player_x = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
+            # UniversalVariables.player_y = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
             # self.terrain_data = Final_Maze.generate_map_with_portal(80)  # See teeb final boss mapi
 
             UniversalVariables.cutscene = False
