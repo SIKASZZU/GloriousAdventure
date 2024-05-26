@@ -42,13 +42,13 @@ class Final_Maze:
 
             for x in range(original_x - RenderPictures.render_range * 2,
                            original_x + RenderPictures.render_range * 2 + 3):
-                self.terrain_data[x][y_0] = None
-                self.terrain_data[x][y_1] = None
+                self.terrain_data[x][y_0] = 999
+                self.terrain_data[x][y_1] = 999
 
             for y in range(original_y - RenderPictures.render_range * 2,
                            original_y + RenderPictures.render_range * 2 + 3):
-                self.terrain_data[x_0][y] = None
-                self.terrain_data[x_1][y] = None
+                self.terrain_data[x_0][y] = 999
+                self.terrain_data[x_1][y] = 999
 
             # Resetib uue rea jaoks x ja y
             Final_Maze.x_00 += 1

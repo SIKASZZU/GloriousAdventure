@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = False
+    debug_mode = True
 
     # ******************** Settings ******************** #
 
@@ -124,7 +124,7 @@ class UniversalVariables():
     no_shadow_needed: list = [
         None,
         0, 1, 2, 4, 7, 107, 9,  # Mineralid
-        500, 550, 555, 988, 999, 1000,  # Portal, ground, wall
+        500, 550, 555, 988, 9882, 999, 1000,  # Portal, ground, wall
         #
     ]
 
