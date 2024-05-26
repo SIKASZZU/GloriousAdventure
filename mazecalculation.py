@@ -4,6 +4,21 @@ from objects import ObjectManagement
 from camera import Camera
 
 
+def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=5):
+    # Search within the defined radius
+    coordinates = set()
+
+    for row_index in range(player_row - radius, player_row + radius):
+        for col_index in range(player_col - radius, player_col + radius):
+
+            if list_of_lists[row_index][col_index] == number:
+                coordinates.add((row_index, col_index))
+
+    return coordinates
+
+
+
+
 class AddingMazeAtPosition:
     row = []
     col = []
@@ -26,7 +41,16 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index] == 'glade':
-            print(f'add_maze_to_specific_position_left:{[col_index], [row_index]} - location is occupied by glade!')
+            # Arvutab algus row'i ja col'i self.terrain_data jaoks
+            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+            coordinates = find_number_in_radius(self.terrain_data, 95, player_row, player_col)
+
+            for tuple in coordinates:
+                start_row, start_col = tuple
+
+                self.terrain_data[start_row][start_col] = 933
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -60,7 +84,16 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index] == 'glade':
-            print(f'add_maze_to_specific_position_left:{[col_index], [row_index]} - location is occupied by glade!')
+            # Arvutab algus row'i ja col'i self.terrain_data jaoks
+            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+            coordinates = find_number_in_radius(self.terrain_data, 97, player_row, player_col)
+
+            for tuple in coordinates:
+                start_row, start_col = tuple
+
+                self.terrain_data[start_row][start_col] = 933
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -95,7 +128,17 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index] == 'glade':
-            print(f'add_maze_to_specific_position_left:{[col_index], [row_index]} - location is occupied by glade!')
+
+            # Arvutab algus row'i ja col'i self.terrain_data jaoks
+            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+            coordinates = find_number_in_radius(self.terrain_data, 94, player_row, player_col)
+
+            for tuple in coordinates:
+                start_row, start_col = tuple
+
+                self.terrain_data[start_row][start_col] = 933
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -127,7 +170,16 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade siis annab errori
         if map_list[row_index][col_index] == 'glade':
-            print(f'add_maze_to_specific_position_left:{[col_index], [row_index]} - location is occupied by glade!')
+            # Arvutab algus row'i ja col'i self.terrain_data jaoks
+            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+            coordinates = find_number_in_radius(self.terrain_data, 96, player_row, player_col)
+
+            for tuple in coordinates:
+                start_row, start_col = tuple
+
+                self.terrain_data[start_row][start_col] = 933
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
