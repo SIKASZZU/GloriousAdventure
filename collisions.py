@@ -179,14 +179,18 @@ class Collisions:
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentialsUpdate.day_night_text != 'Day':
-                                print("Can't open new maze during night. ")
+                                UniversalVariables.ui_elements.append(
+                                    """ Can't open new maze during night. """
+                                )
                                 reset_clicks(self)
                                 return
 
                             # For opening the door remove one key from inventory
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
-                                    print('No available Maze key in inventory. ')
+                                    UniversalVariables.ui_elements.append(
+                                    """ No available Maze key in inventory. """
+                                    )
                                     reset_clicks(self)
                                     return
 
