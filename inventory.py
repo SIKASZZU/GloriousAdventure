@@ -15,7 +15,6 @@ class Inventory:
 
     inventory_display_rects = []
     craftable_items_display_rects = []
-    last_clicked_slot = int  # V2hendab terminali spammi. Ei sp2mmi seda slotti, mida juba klikkis.
 
     inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
     inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
@@ -52,25 +51,17 @@ class Inventory:
                 if current_time - Inventory.check_slot_delay >= CHECK_DELAY_THRESHOLD:
                     Inventory.check_slot_delay = current_time  # Uuendab viimast check_slot_delay
                     clicked_inventory_item = False
-                    last_clicked_index = Inventory.last_clicked_slot  # Jätab viimase clicki aja meelde
 
                     # Vaatab kas click oli invis sees või mitte
                     for index, rect in enumerate(Inventory.inventory_display_rects):
                         if rect.collidepoint(mouse_x, mouse_y):
-                            if index:
-                                Inventory.check_slot(self, index, mouse_state[2])
-
-                            elif index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
-                                Inventory.check_slot(self, index,mouse_state[2])
-
+                            Inventory.check_slot(self, index, mouse_state[2])
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
 
                     if not clicked_inventory_item:
                         # Vaatab kas click on craftimis rectis
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
-
-                    Inventory.last_clicked_slot = index  # Uuendab last_clicked_slot
 
     def handle_crafting_click(self, x: int, y: int) -> None:
         """ Lubab hiit kasutades craftida """
@@ -97,44 +88,23 @@ class Inventory:
                 UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
             
             if delete_boolean == False:
-                if index:
-                    item = list(Inventory.inventory.keys())[index]
-                    value = list(Inventory.inventory.values())[index]
+                item = list(Inventory.inventory.keys())[index]
+                value = list(Inventory.inventory.values())[index]
+                UniversalVariables.current_equipped_item =  item
 
-                    UniversalVariables.current_equipped_item =  item
-                elif index != Inventory.last_clicked_slot:
-                    item = list(Inventory.inventory.keys())[index]
-                    value = list(Inventory.inventory.values())[index]
-
-                    UniversalVariables.current_equipped_item =  item
             else:
-                if index:
-                    item = list(Inventory.inventory.keys())[index]
-                    value = list(Inventory.inventory.values())[index]
-                    Inventory.inventory[item] -= 1
-                    print(value)
-                    if value <= 1:
-                        del Inventory.inventory[item]  
-                    else:
-                        UniversalVariables.current_equipped_item =  item
-
-
-                elif index != Inventory.last_clicked_slot:
-                    item = list(Inventory.inventory.keys())[index]
-                    value = list(Inventory.inventory.values())[index]
-                    Inventory.inventory[item] -= 1
-                    print(value)
-                    if value <= 1:
-                        del Inventory.inventory[item]
-                    else:
-                        UniversalVariables.current_equipped_item =  item
+                item = list(Inventory.inventory.keys())[index]
+                value = list(Inventory.inventory.values())[index]
+                Inventory.inventory[item] -= 1
+                if value <= 1:
+                    del Inventory.inventory[item]
+                    UniversalVariables.current_equipped_item = None  
+                else:
+                    UniversalVariables.current_equipped_item =  item
 
         except IndexError as IE:
             print(IE)
             UniversalVariables.current_equipped_item = None
-
-        Inventory.last_clicked_slot = index  # Updateb viimast clicki
-
 
     def call_inventory(self) -> None:
         """ Vajutades tabi ei hakka inventory
