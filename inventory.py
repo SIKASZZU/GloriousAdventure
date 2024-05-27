@@ -92,6 +92,10 @@ class Inventory:
         """Checks what's in the inventory's selected slot."""
 
         try:
+            if Inventory.first_time_click == False:
+                Inventory.first_time_click = True
+                UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
+            
             if delete_boolean == False:
                 if index:
                     item = list(Inventory.inventory.keys())[index]
@@ -103,26 +107,28 @@ class Inventory:
                     value = list(Inventory.inventory.values())[index]
 
                     UniversalVariables.current_equipped_item =  item
-
-                if Inventory.first_time_click == False:
-                    Inventory.first_time_click = True
-                    UniversalVariables.ui_elements.append(' Remove items from inventory with right click. (Mouse 3)')
             else:
                 if index:
                     item = list(Inventory.inventory.keys())[index]
                     value = list(Inventory.inventory.values())[index]
-                    print(item, value)
                     Inventory.inventory[item] -= 1
+                    print(value)
+                    if value <= 1:
+                        del Inventory.inventory[item]  
+                    else:
+                        UniversalVariables.current_equipped_item =  item
 
-                    UniversalVariables.current_equipped_item =  item
+
                 elif index != Inventory.last_clicked_slot:
                     item = list(Inventory.inventory.keys())[index]
                     value = list(Inventory.inventory.values())[index]
-                    print(item, value)
-
                     Inventory.inventory[item] -= 1
+                    print(value)
+                    if value <= 1:
+                        del Inventory.inventory[item]
+                    else:
+                        UniversalVariables.current_equipped_item =  item
 
-                    UniversalVariables.current_equipped_item =  item
         except IndexError as IE:
             print(IE)
             UniversalVariables.current_equipped_item = None
