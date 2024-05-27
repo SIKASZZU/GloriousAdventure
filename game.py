@@ -280,7 +280,6 @@ class Game:
             Final_Maze.final_maze_update(self)
             self.render_general()
             self.handle_fading_texts()  # Render fading text after everything else
-            ObjectManagement.add_object_from_inv("Bad_Bread", 100)
 
             self.refresh_loop()
             HungerComponent.decrease_hunger(self)
