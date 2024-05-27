@@ -28,6 +28,7 @@ class Inventory:
     previous_inv = None
     text_cache = {}  # Cache rendered text surfaces
     message_to_user = False
+    first_time_click = False
     total_slots:int = 4
 
     @staticmethod
@@ -45,7 +46,7 @@ class Inventory:
         CHECK_DELAY_THRESHOLD = 200  # Threshold slotide clickimiseks
         if (Inventory.inv_count % 2) != 0:
             mouse_state: tuple[bool, bool, bool] = pygame.mouse.get_pressed()
-            if mouse_state[0]:  # Vaatab kas keegi on hiire vasakut clicki vajutanud
+            if mouse_state[0] or mouse_state[2]:  # Left click ja right click
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 current_time = pygame.time.get_ticks()
                 if current_time - Inventory.check_slot_delay >= CHECK_DELAY_THRESHOLD:
@@ -57,10 +58,10 @@ class Inventory:
                     for index, rect in enumerate(Inventory.inventory_display_rects):
                         if rect.collidepoint(mouse_x, mouse_y):
                             if index:
-                                Inventory.check_slot(self, index)
+                                Inventory.check_slot(self, index, mouse_state[2])
 
                             elif index != last_clicked_index:  # Kontrollib millist sloti vajutati, kas on sama või mitte
-                                Inventory.check_slot(self, index)
+                                Inventory.check_slot(self, index,mouse_state[2])
 
                             clicked_inventory_item = True
                             break  # Exitib loopist kui keegi clickib
@@ -87,21 +88,41 @@ class Inventory:
 
         except AttributeError: return
 
-    def check_slot(self, index: int) -> None:
+    def check_slot(self, index: int, delete_boolean=False) -> None:
         """Checks what's in the inventory's selected slot."""
 
         try:
-            if index:
-                item = list(Inventory.inventory.keys())[index]
-                value = list(Inventory.inventory.values())[index]
+            if delete_boolean == False:
+                if index:
+                    item = list(Inventory.inventory.keys())[index]
+                    value = list(Inventory.inventory.values())[index]
 
-                UniversalVariables.current_equipped_item =  item
-            elif index != Inventory.last_clicked_slot:
-                item = list(Inventory.inventory.keys())[index]
-                value = list(Inventory.inventory.values())[index]
+                    UniversalVariables.current_equipped_item =  item
+                elif index != Inventory.last_clicked_slot:
+                    item = list(Inventory.inventory.keys())[index]
+                    value = list(Inventory.inventory.values())[index]
 
-                UniversalVariables.current_equipped_item =  item
+                    UniversalVariables.current_equipped_item =  item
 
+                if Inventory.first_time_click == False:
+                    Inventory.first_time_click = True
+                    UniversalVariables.ui_elements.append(' Remove items from inventory with right click. (Mouse 3)')
+            else:
+                if index:
+                    item = list(Inventory.inventory.keys())[index]
+                    value = list(Inventory.inventory.values())[index]
+                    print(item, value)
+                    Inventory.inventory[item] -= 1
+
+                    UniversalVariables.current_equipped_item =  item
+                elif index != Inventory.last_clicked_slot:
+                    item = list(Inventory.inventory.keys())[index]
+                    value = list(Inventory.inventory.values())[index]
+                    print(item, value)
+
+                    Inventory.inventory[item] -= 1
+
+                    UniversalVariables.current_equipped_item =  item
         except IndexError as IE:
             print(IE)
             UniversalVariables.current_equipped_item = None
