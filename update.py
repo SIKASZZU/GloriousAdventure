@@ -212,7 +212,8 @@ class EssentialsUpdate:
 
     # Function to calculate in-game time
     def calculate_time(self):
-        game_minute_lenght = 5  # mida väiksem,seda kiiremini aeg mängus möödub
+        if UniversalVariables.debug_mode == True:  game_minute_lenght = 5  # mida väiksem,seda kiiremini aeg mängus möödub
+        else:  game_minute_lenght = 75  # mida väiksem,seda kiiremini aeg mängus möödub
         day_night_text = EssentialsUpdate.day_night_text
 
         time = EssentialsUpdate.game_start_clock  # (9, 0)

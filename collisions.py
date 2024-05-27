@@ -70,6 +70,7 @@ class Collisions:
     render_after = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
     keylock: int = 0
     object_dict = {}
+    first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
 
     def check_collisions(self) -> None:
         keys = pygame.key.get_pressed()
@@ -178,14 +179,18 @@ class Collisions:
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentialsUpdate.day_night_text != 'Day':
-                                print("Can't open new maze during night. ")
+                                UniversalVariables.ui_elements.append(
+                                    """ Can't open new maze during night. """
+                                )
                                 reset_clicks(self)
                                 return
 
                             # For opening the door remove one key from inventory
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
-                                    print('No available Maze key in inventory. ')
+                                    UniversalVariables.ui_elements.append(
+                                    """ No available Maze key in inventory. """
+                                    )
                                     reset_clicks(self)
                                     return
 
@@ -253,6 +258,10 @@ class Collisions:
                     pass
 
             if self.player_rect.colliderect(collision_object_rect):
+                if Collisions.first_time_collision == False:
+                    Collisions.first_time_collision = True
+                    UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
+                
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
 

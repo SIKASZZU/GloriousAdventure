@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = True
+    debug_mode = False
 
     # ******************** Settings ******************** #
 
@@ -70,9 +70,9 @@ class UniversalVariables():
         #("Small_Rock_Sword", 1),
         #("Oak_Planks", (2, 3)),
         #("Oak_Wood", (1, 2)),
-        #("Flashlight", (0, 1)),
-        ("Bread", (1, 3)),
-        ("Meat", (1, 2)),
+        ("Flashlight", 1),
+        ("Bread", (2, 3)),
+        ("Meat", (2, 3)),
     ]
 
     # ******************** COLLISION ******************** #

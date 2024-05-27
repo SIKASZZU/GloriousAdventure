@@ -215,8 +215,8 @@ class MapData:
             _keyholders = 20
             _loot = 20
         else:
-            _puzzle_pieces = 3
-            _keyholders = 2
+            _puzzle_pieces = 6  # on vaja kindlasti rohkem, kui kaheksa
+            _keyholders = 4     # on vaja kaheksa
             _loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
 
         def is_dead_end(maze, x, y):
