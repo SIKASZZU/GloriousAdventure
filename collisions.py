@@ -258,7 +258,8 @@ class Collisions:
                     pass
 
             if self.player_rect.colliderect(collision_object_rect):
-                if Collisions.first_time_collision == False:
+                x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
+                if Collisions.first_time_collision == False and object_id not in x:
                     Collisions.first_time_collision = True
                     UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
                 
