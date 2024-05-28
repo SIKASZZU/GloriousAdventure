@@ -108,24 +108,31 @@ class Enemy:
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
 
-        queue = deque([(start, [])])
-        visited = set()
-        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze stuff
+                                  9099, 989, 900]         # blade stuff
+        if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in enemy_restricted_areas:
+            return None
+        else:
+            queue = deque([(start, [])])
+            visited = set()
+            directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
-        while queue:
-            (x, y), path = queue.popleft()
-            if (x, y) == end:
-                return path
 
-            if (x, y) not in visited:
-                visited.add((x, y))
-                for dx, dy in directions:
-                    new_x, new_y = x + dx, y + dy
-                    if Enemy.is_valid(self, new_x, new_y):
-                        new_path = path + [(new_x, new_y)]
-                        queue.append(((new_x, new_y), new_path))
 
-        return None
+            while queue:
+                (x, y), path = queue.popleft()
+                if (x, y) == end:
+                    return path
+
+                if (x, y) not in visited:
+                    visited.add((x, y))
+                    for dx, dy in directions:
+                        new_x, new_y = x + dx, y + dy
+                        if Enemy.is_valid(self, new_x, new_y):
+                            new_path = path + [(new_x, new_y)]
+                            queue.append(((new_x, new_y), new_path))
+
+            return None
 
     @staticmethod
     def move(self):
