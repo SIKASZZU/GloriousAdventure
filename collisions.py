@@ -357,7 +357,7 @@ class Collisions:
                                     self.player.stamina.stamina_regenerate(0.05)
                                     self.player.speed.current_speed = self.player.speed.base_speed
                                 else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed * 2.5
+                                    self.player.speed.current_speed = self.player.speed.base_speed * 1.5
                                     HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                     self.player.stamina.use_stamina(0.05)
                             else:
