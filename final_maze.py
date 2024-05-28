@@ -30,7 +30,10 @@ class Final_Maze:
 
     def change_ground(self) -> None:
         """Muudab groundi None'iks"""
+        
         original_x, original_y = find_number_in_list_of_lists(self.terrain_data, 1000)
+        
+        UniversalVariables.ui_elements.append("""   Thanks for playing.   """)
 
         # Muudab iga 20 ticki tagant groundi
         if Final_Maze.delay == 20:
@@ -58,14 +61,16 @@ class Final_Maze:
 
             Final_Maze.delay = 0
 
-        # Vaatab kuna peab cutscene'ist välja tulema
-        if abs(Final_Maze.y_11) == 10:
+            # Vaatab kuna peab cutscene'ist välja tulema
+            if abs(Final_Maze.y_11) == 10:
 
-            # UniversalVariables.player_x = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
-            # UniversalVariables.player_y = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
-            # self.terrain_data = Final_Maze.generate_map_with_portal(80)  # See teeb final boss mapi
+                # UniversalVariables.player_x = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
+                # UniversalVariables.player_y = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
+                # self.terrain_data = Final_Maze.generate_map_with_portal(80)  # See teeb final boss mapi
+                # Create a black surface
 
-            UniversalVariables.cutscene = False
+                UniversalVariables.cutscene = False
+                pygame.quit()
 
     def generate_map_with_portal(size=80):
         import random
