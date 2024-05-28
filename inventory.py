@@ -83,10 +83,6 @@ class Inventory:
         """Checks what's in the inventory's selected slot."""
 
         try:
-            if Inventory.first_time_click == False:
-                Inventory.first_time_click = True
-                UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
-            
             if delete_boolean == False:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
@@ -110,7 +106,7 @@ class Inventory:
         """ Vajutades tabi ei hakka inventory
         visuaalselt glitchima on/off. """
 
-        if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False:
+        if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False and Inventory.first_time_click != True:
             UniversalVariables.ui_elements.append(
                 """ Press TAB to open inventory. """)
             Inventory.message_to_user = True
@@ -118,6 +114,10 @@ class Inventory:
         Inventory.handle_mouse_click(self)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
+            if Inventory.first_time_click == False:
+                Inventory.first_time_click = True
+                UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
+            
             Inventory.tab_pressed = True
             Inventory.inv_count += 1
 
