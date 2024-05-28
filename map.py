@@ -335,7 +335,9 @@ class MapData:
         # Your existing method to generate data based on the item type
 
         if item.endswith('maze'):
-            if item == 'final_maze':
+            if UniversalVariables.maze_counter >= 3:
+                UniversalVariables.final_maze_spawned = True
+                item = 'final_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
             
             elif UniversalVariables.maze_counter == 2:
