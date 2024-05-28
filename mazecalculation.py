@@ -199,12 +199,10 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        maze_type = AddingMazeAtPosition.maze_type
         if UniversalVariables.final_maze == True and UniversalVariables.final_maze_spawned == False:
-            if 'final_maze' in UniversalVariables.map_list:
-                maze_type = 'final_maze'
-                UniversalVariables.final_maze_spawned = True
-
+            maze_type = 'final_maze'
+        else:
+            maze_type = AddingMazeAtPosition.maze_type
 
         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:
