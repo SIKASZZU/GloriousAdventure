@@ -12,14 +12,6 @@ class ObjectManagement:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
 
-
-
-
-
-
-
-
-
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
         if object_id is not None:
             for item in items_list:
@@ -64,7 +56,7 @@ class ObjectManagement:
                             text = "Not enough space in Inventory."
                             UniversalVariables.ui_elements.append(text)
 
-                            if text in self.shown_texts:  # Check if the text is in the set before removing
+                            if text in self.shown_texts:
                                 self.shown_texts.remove(text)
 
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
