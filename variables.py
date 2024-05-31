@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = False
+    debug_mode = True
 
     # ******************** Settings ******************** #
 
@@ -137,7 +137,7 @@ class UniversalVariables():
     enemy_spawnpoint_list = set()
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-    enemy_path_update_tick = 10 + random.randint(-5, 5)
+    enemy_path_update_tick = 5 + random.randint(-5, 5)
 
     # ******************** Counters ******************** #
     hitbox_count: int = 0

@@ -1,3 +1,5 @@
+import os
+import sys
 import numpy as np
 from skimage.transform import resize
 from collections import deque
@@ -5,6 +7,14 @@ import random
 import copy
 from variables import UniversalVariables
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class MapData:
     width = 40
@@ -33,47 +43,48 @@ class MapData:
     loot = []
     repetition_lock = 0
 
-    # Create glade
     def glade_creation():
-        with open('glade.txt', 'r') as file:
+        glade_file_path = resource_path('glade.txt')
+        with open(glade_file_path, 'r') as file:
             return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
-    
+
     @staticmethod
-    def file_to_maze(file_name: str, side: str =None):
-
+    def file_to_maze(file_name: str, side: str = None):
         if side is None:
-            with open('glade.txt', 'r') as file_name:
-                return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
-                        for line in file_name if line.strip()]
-
+            maze_file_path = resource_path('glade.txt')
         else:
-            maze = []
-            with open(file_name, 'r') as file_name:
-                maze = [[int(x) if x.strip().lower() != 'none' else None
-                         for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
-                        for line in file_name if line.strip()]
-            size = len(maze)
+            maze_file_path = resource_path(file_name)
 
-            # Set the start point
-            if side == 'left':
-                start_0 = (size // 2, 0)
-                start_1 = (size // 2 - 1, 0)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
-            elif side == 'top':
-                start_0 = (0, size // 2)
-                start_1 = (0, size // 2 - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
-            elif side == 'right':
-                start_0 = (size // 2, size - 1)
-                start_1 = (size // 2 - 1, size - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
-            elif side == 'bottom':
-                start_0 = (size - 1, size // 2)
-                start_1 = (size - 1, size // 2 - 1)
-                maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
-           
-            # Set the end points on the remaining three sides
+        maze = []
+        with open(maze_file_path, 'r') as file:
+            maze = [[int(x) if x.strip().lower() != 'none' else None
+                     for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                    for line in file if line.strip()]
+        size = len(maze)
+
+        # Set the start point
+        if side == 'left':
+            start_0 = (size // 2, 0)
+            start_1 = (size // 2 - 1, 0)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+        elif side == 'top':
+            start_0 = (0, size // 2)
+            start_1 = (0, size // 2 - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+        elif side == 'right':
+            start_0 = (size // 2, size - 1)
+            start_1 = (size // 2 - 1, size - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+        elif side == 'bottom':
+            start_0 = (size - 1, size // 2)
+            start_1 = (size - 1, size // 2 - 1)
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
+        
+        # compiler 
+        if side == None:
+            pass
+        else:
             sides = ['top', 'bottom', 'left', 'right']
             sides.remove(side)
             for side in sides:
@@ -388,11 +399,14 @@ class MapData:
             for sublist in UniversalVariables.map_list:
                 combined_rows = None
                 for item in sublist:
-                    current_data = MapData.get_data(item, start_side)
+                    if item == 'glade':  current_data = MapData.glade_creation()
+                    else:  current_data = MapData.get_data(item, start_side)
+                    
                     if combined_rows is None:
                         combined_rows = current_data
                     else:
                         combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
+                    #print(combined_rows)
                 new_map_data.extend(combined_rows)
             self.terrain_data = new_map_data
             MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed

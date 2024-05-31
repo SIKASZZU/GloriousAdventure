@@ -10,7 +10,7 @@ class Loot:
     obtained_loot_list = []
 
     def toggle_loot_barrel(self):
-        count = randint(0, 3)
+        count = randint(1, 3)
         inv_count = len(UniversalVariables.loot)
 
         for item, quantity in UniversalVariables.loot:

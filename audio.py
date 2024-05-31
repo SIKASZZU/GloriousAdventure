@@ -1,6 +1,19 @@
 import pygame
+import os
+import sys
+
 from variables import UniversalVariables
 
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class Player_audio:
     # Initialize pygame
@@ -8,16 +21,19 @@ class Player_audio:
 
     previous_ground_sound = None
 
-    player_hit_sound = pygame.mixer.Sound('audio/Player_Sounds/Player_Got_Hurt.wav')
-    player_death_sound = pygame.mixer.Sound('audio/Player_Sounds/Player_Died.wav')
 
-    maze_ground_sound = pygame.mixer.Sound('audio/Tile_Sounds/Maze_Ground_Sound.wav')
-    water_sound = pygame.mixer.Sound('audio/Tile_Sounds/Water_Sound.mp3')
 
-    # Preload'ib soundid groundi, puude, kivide, jne peal liikumiseks
+     #Load sounds with resource_path
+    player_hit_sound = pygame.mixer.Sound(resource_path('audio/Player_Sounds/Player_Got_Hurt.wav'))
+    player_death_sound = pygame.mixer.Sound(resource_path('audio/Player_Sounds/Player_Died.wav'))
+
+    maze_ground_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Maze_Ground_Sound.wav'))
+    water_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Water_Sound.mp3'))
+
+    # Preload sounds for ground, trees, rocks, etc.
     grass_sounds = [
-        pygame.mixer.Sound('audio/Tile_Sounds/Grass_Left_Foot_Sound.mp3'),
-        pygame.mixer.Sound('audio/Tile_Sounds/Grass_Right_Foot_Sound.mp3'),
+        pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Left_Foot_Sound.mp3')),
+        pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Right_Foot_Sound.mp3')),
     ]
     current_grass_sound_index = 0
 
@@ -162,10 +178,11 @@ class Player_audio:
 class Tile_Sounds:
     pygame.mixer.init()
 
-    insert_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_To_Slot.mp3')
-    pop_key_sound = pygame.mixer.Sound('audio/Tile_Sounds/Key_From_Slot.mp3')
-    portal_open_sound = pygame.mixer.Sound('audio/Tile_Sounds/Portal_Open_Sound.mp3')
-    portal_close_sound = pygame.mixer.Sound('audio/Tile_Sounds/Portal_Close_Sound.mp3')
+    insert_key_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Key_To_Slot.mp3'))
+    pop_key_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Key_From_Slot.mp3'))
+    portal_open_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Open_Sound.mp3'))
+    portal_close_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Close_Sound.mp3'))
+
 
     insert_key_channel = pygame.mixer.Channel(5)  # Seob 5. channeli võtme sisestamisega
     pop_key_channel = pygame.mixer.Channel(6)  # Seob 6. channeli võtme eemaldamisega

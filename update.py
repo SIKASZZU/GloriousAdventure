@@ -1,5 +1,7 @@
 import pygame
 import math
+import os
+import sys
 
 import vision
 from images import ImageLoader
@@ -11,24 +13,47 @@ from components import StaminaComponent, HungerComponent
 from variables import UniversalVariables
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class PlayerUpdate:
     # ******************** ANIMATION ******************** #
     sprite_sheets, animations = load_sprite_sheets([
-        'images/Player/Left.png', 'images/Player/Right.png', 'images/Player/Up.png', 'images/Player/Down.png'
+        resource_path('images/Player/Left.png'), 
+        resource_path('images/Player/Right.png'), 
+        resource_path('images/Player/Up.png'), 
+        resource_path('images/Player/Down.png')
     ])
 
     sprite_sheets_idle, animations_idle = load_sprite_sheets([
-        'images/Player/Idle_Left.png', 'images/Player/Idle_Right.png', 'images/Player/Idle_Up.png', 'images/Player/Idle_Down.png'
+        resource_path('images/Player/Idle_Left.png'), 
+        resource_path('images/Player/Idle_Right.png'), 
+        resource_path('images/Player/Idle_Up.png'), 
+        resource_path('images/Player/Idle_Down.png')
     ])
 
     # *** swimming *** #
     sprite_sheets_swimming, animations_swimming = load_sprite_sheets([
-        'images/Player/Swim/Left_swimming.png', 'images/Player/Swim/Right_swimming.png', 'images/Player/Swim/Up_swimming.png', 'images/Player/Swim/Down_swimming.png'
+        resource_path('images/Player/Swim/Left_swimming.png'), 
+        resource_path('images/Player/Swim/Right_swimming.png'), 
+        resource_path('images/Player/Swim/Up_swimming.png'), 
+        resource_path('images/Player/Swim/Down_swimming.png')
     ])
 
     sprite_sheets_idle_swimming, animations_idle_swimming = load_sprite_sheets([
-        'images/Player/Swim/Idle_Left_swimming.png', 'images/Player/Swim/Idle_Right_swimming.png', 'images/Player/Swim/Idle_Up_swimming.png', 'images/Player/Swim/Idle_Down_swimming.png'
+        resource_path('images/Player/Swim/Idle_Left_swimming.png'), 
+        resource_path('images/Player/Swim/Idle_Right_swimming.png'), 
+        resource_path('images/Player/Swim/Idle_Up_swimming.png'), 
+        resource_path('images/Player/Swim/Idle_Down_swimming.png')
     ])
+
 
     animation_speeds = [10, 10, 10, 10]
 
@@ -74,7 +99,6 @@ class PlayerUpdate:
                         HungerComponent.hunger_timer += 2
             else:
                 self.frame_delay = 7  # Default walking speed
-
             if keys[pygame.K_d]:
                 self.animation_index = 1  # Right animation
                 UniversalVariables.last_input = 'd'

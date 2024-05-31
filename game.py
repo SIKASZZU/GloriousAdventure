@@ -1,9 +1,11 @@
 import pygame
 import sys
 import textwrap
+import os
+import sys
 
 # Pythoni inbuilt/downloaded files
-from components import Player, StaminaComponent
+from components import Player
 
 # Oma enda failid
 from entity import Enemy
@@ -15,16 +17,26 @@ from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
 from render import CreateCollisionBoxes  # object_list_creation
 import vision  # find_boxes_in_window, draw_light_source_and_rays
-from menu import Menu, PauseMenu  # main_menu, PauseMenu: settings_menu
 from update import EssentialsUpdate  # check_pressed_keys, render_general
 from update import PlayerUpdate  # update_player, render_player, render_HUD
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
-from collisions import Collisions, reset_clicks  # check_collisions, collision_terrain, collision_hitbox
+from collisions import Collisions  # check_collisions, collision_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
-from loot import Loot  # loot_update
 from blade import change_blades
 from final_maze import Final_Maze
 from components import HungerComponent
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 class Game:
     def __init__(self):
         pygame.init()

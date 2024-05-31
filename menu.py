@@ -1,8 +1,17 @@
 import pygame
 import sys
+import os
 
 from variables import UniversalVariables
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class GameButton:
     def __init__(self, x: float, y: float, image: 'pygame.Surface', scale: float):
@@ -40,17 +49,17 @@ def load_and_resize_image(image_path: str) -> 'pygame.Surface':
 
 
 menu_images = {
-    "Play": load_and_resize_image("images/Menu_buttons/Play.png"),
-    "Settings": load_and_resize_image("images/Menu_buttons/Settings.png"),
-    "Store": load_and_resize_image("images/Menu_buttons/Store.png"),
-    "Quit": load_and_resize_image("images/Menu_buttons/Quit.png"),
-    "Graphics": load_and_resize_image("images/Menu_buttons/Graphics.png"),
-    "Audio": load_and_resize_image("images/Menu_buttons/Audio.png"),
-    "Controls": load_and_resize_image("images/Menu_buttons/Controls.png"),
-    "Back": load_and_resize_image("images/Menu_buttons/Back.png"),
-    "Resume": load_and_resize_image("images/Menu_buttons/Resume.png"),
-    "Save_&_Menu": load_and_resize_image("images/Menu_buttons/Save_&_Menu.png"),
-    "Save_&_Quit": load_and_resize_image("images/Menu_buttons/Save_&_Quit.png"),
+    "Play": load_and_resize_image(resource_path("images/Menu_buttons/Play.png")),
+    "Settings": load_and_resize_image(resource_path("images/Menu_buttons/Settings.png")),
+    "Store": load_and_resize_image(resource_path("images/Menu_buttons/Store.png")),
+    "Quit": load_and_resize_image(resource_path("images/Menu_buttons/Quit.png")),
+    "Graphics": load_and_resize_image(resource_path("images/Menu_buttons/Graphics.png")),
+    "Audio": load_and_resize_image(resource_path("images/Menu_buttons/Audio.png")),
+    "Controls": load_and_resize_image(resource_path("images/Menu_buttons/Controls.png")),
+    "Back": load_and_resize_image(resource_path("images/Menu_buttons/Back.png")),
+    "Resume": load_and_resize_image(resource_path("images/Menu_buttons/Resume.png")),
+    "Save_&_Menu": load_and_resize_image(resource_path("images/Menu_buttons/Save_&_Menu.png")),
+    "Save_&_Quit": load_and_resize_image(resource_path("images/Menu_buttons/Save_&_Quit.png")),
 }
 
 
@@ -69,7 +78,7 @@ class Menu:
     screen_x: int = UniversalVariables.screen_x
     screen_y: int = UniversalVariables.screen_y
 
-    image = "images/Main_Menu.jpg"
+    image = resource_path("images/Main_Menu.jpg")
     original_image = pygame.image.load(image).convert()
     main_menu_image = pygame.transform.scale(original_image, (UniversalVariables.screen_x, UniversalVariables.screen_y))
 

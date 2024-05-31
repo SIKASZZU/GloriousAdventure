@@ -98,8 +98,8 @@ class Enemy:
     def is_valid(self, x, y):
         """ Check if coordinates (x, y) are valid in the maze. """
         x, y = int(x), int(y)
-        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze stuff
-                                  9099, 989, 900]         # blade stuff
+        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze wall stuff
+                                  9099, 989, 900]         # blade wall stuff
         in_terrain_bounds = 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x])
         
         if in_terrain_bounds and self.terrain_data[x][y] not in enemy_restricted_areas:
@@ -108,16 +108,14 @@ class Enemy:
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
 
-        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze stuff
-                                  9099, 989, 900]         # blade stuff
+        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze wall stuff
+                                  9099, 989, 900]         # blade wall stuff
         if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in enemy_restricted_areas:
             return None
         else:
             queue = deque([(start, [])])
             visited = set()
             directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
-
 
             while queue:
                 (x, y), path = queue.popleft()
@@ -166,13 +164,13 @@ class Enemy:
                     # Otsib playerit koordinaatidega
                     next_x, next_y = x, y
                     if direction == 'right':
-                        next_x += 0.03
+                        next_x += UniversalVariables.enemy_speed
                     elif direction == 'left':
-                        next_x -= 0.03
+                        next_x -= UniversalVariables.enemy_speed
                     elif direction == 'down':
-                        next_y += 0.03
+                        next_y += UniversalVariables.enemy_speed
                     elif direction == 'up':
-                        next_y -= 0.03
+                        next_y -= UniversalVariables.enemy_speed
 
                     next_x, next_y = round(next_x, 3), round(next_y, 3)
                     Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
