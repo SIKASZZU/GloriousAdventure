@@ -26,8 +26,6 @@ class Final_Maze:
                 UniversalVariables.portal_frame_rect = None
                 UniversalVariables.portal_list = []
 
-            pygame.display.flip()
-
     def change_ground(self) -> None:
         """Muudab groundi None'iks"""
         
