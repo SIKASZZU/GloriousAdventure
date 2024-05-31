@@ -341,9 +341,9 @@ class MapData:
                         UniversalVariables.final_maze_spawned = True
                         return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
-            elif UniversalVariables.maze_counter == 2:
+
+            if item == 'blade_maze':
                 UniversalVariables.blades_spawned = True
-                item = 'blade_maze'
                 return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
             else:
@@ -360,7 +360,7 @@ class MapData:
 
         else:
             # Handle other cases or raise an error
-            raise ValueError("Unknown item type")
+            raise ValueError(f"Unknown item type: {item}")
 
     def map_list_to_map(self, start_side='bottom'):
         difference = []
