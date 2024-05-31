@@ -14,12 +14,12 @@ class ImageLoader:
         try:
             if image_name not in ImageLoader.loaded_item_images:
                 ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.png")
-                print(f"images/Gui/{image_name}.png pre-loaded successfully.")
+                # print(f"images/Gui/{image_name}.png pre-loaded successfully.")
 
             return ImageLoader.loaded_item_images[image_name]
 
         except FileNotFoundError:
-            print(f"Error: '{image_name.capitalize()}' image not found.")
+            # print(f"Error: '{image_name.capitalize()}' image not found.")
             return None
     @staticmethod
     def load_sprite_image(sprite: str) -> Optional[pygame.Surface]:
@@ -40,12 +40,12 @@ class ImageLoader:
             loaded_image = pygame.image.load(image_path)
             converted_image = loaded_image.convert_alpha()
             ImageLoader.loaded_sprite_images[sprite] = converted_image
-            print(f"{sprite} image ({image_path}) pre-loaded successfully.")
+            # print(f"{sprite} image ({image_path}) pre-loaded successfully.")
             return converted_image
 
         # Kui Sprite ei ole olemas
         except FileNotFoundError:
-            print(f"Error: '{image_path}' image not found.")
+            # print(f"Error: '{image_path}' image not found.")
             return None
 
     @staticmethod
@@ -109,7 +109,7 @@ class ImageLoader:
                             converted_image = resized_image.convert_alpha()
                             ImageLoader.loaded_item_images[image_name] = converted_image
 
-                            print(f"{image_path} resized and pre-loaded successfully.")
+                            # print(f"{image_path} resized and pre-loaded successfully.")
                             return converted_image
 
                         else:
@@ -117,15 +117,15 @@ class ImageLoader:
                             converted_image = loaded_image.convert_alpha()
                             ImageLoader.loaded_item_images[image_name] = converted_image
 
-                            print(f"{image_path} resized and pre-loaded successfully.")
+                            # print(f"{image_path} resized and pre-loaded successfully.")
                             return converted_image
 
 
-                print(f"Error: '{image_name}' image not found.")
+                # print(f"Error: '{image_name}' image not found.")
                 return None
 
         except FileNotFoundError:
-            print(f"Error: '{image_path}' image not found.")
+            # print(f"Error: '{image_path}' image not found.")
             return None
 
 
