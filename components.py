@@ -167,7 +167,16 @@ class HungerComponent:
             return
 
         elif self.player.hunger.current_hunger <= 0:
+
             if HungerComponent.health_timer <= 0:
+                if self.player.health.current_health > 0:
+                    text = "Starving."
+
+                    if text in self.shown_texts:
+                        self.shown_texts.remove(text)
+
+                    UniversalVariables.ui_elements.append(text)
+
                 self.player.health.damage(0.5)
                 HungerComponent.health_timer = 300
             HungerComponent.health_timer -= 1
