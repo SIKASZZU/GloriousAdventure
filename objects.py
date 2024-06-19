@@ -3,7 +3,6 @@ from items import items_list
 from images import ImageLoader
 from inventory import Inventory
 from variables import UniversalVariables
-from render import RenderPictures  # resize images
 
 class ObjectManagement:
 

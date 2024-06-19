@@ -78,16 +78,18 @@ class Collisions:
 
 
         for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, in UniversalVariables.collision_boxes:
-
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
             obj_collision_box = (collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id)
 
-            terrain_x: int = collision_box_x + UniversalVariables.offset_x   # LISASIN SIIA OFFSETI JUURDE, ENNE EI OLNUD. LISASIN KUNA OBJECTIS ON SAMA MOODI TERRAINI KOORDI LEIDMINE, IDK WTF
-            terrain_y: int = collision_box_y + UniversalVariables.offset_y
+            terrain_x: int = collision_box_x - UniversalVariables.offset_x   # LISASIN SIIA OFFSETI JUURDE, ENNE EI OLNUD. LISASIN KUNA OBJECTIS ON SAMA MOODI TERRAINI KOORDI LEIDMINE, IDK WTF
+            terrain_y: int = collision_box_y - UniversalVariables.offset_y
 
             for item in items_list:
                 if item.get("Type") == "Object":
                     Collisions.object_dict[item.get("ID")] = item
+
+            width  = 0
+            height = 0
 
             # Check if the object ID exists in the dictionary
             #print(Collisions.object_dict, 'f', object_id)
@@ -95,13 +97,14 @@ class Collisions:
             if object_id in Collisions.object_dict:
                 # Retrieve properties for the object ID
                 object_properties = Collisions.object_dict[object_id]
-                #print(object_properties)
                 width = object_properties.get("Object_width")
                 height = object_properties.get("Object_height")
                 render_when = object_properties.get("Render_when")
 
-                collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
-
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
+            #print(collision_object_rect)
+            
+            
             if self.click_window_x and self.click_window_y:
                 try:
                     if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:  # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
@@ -266,8 +269,9 @@ class Collisions:
 
                 except TypeError:
                     pass
-            
+            #print('self', self.player_rect)
             if self.player_rect.colliderect(collision_object_rect):
+                #print('collision')
                 x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
                 if Collisions.first_time_collision == False and object_id not in x:
                     Collisions.first_time_collision = True

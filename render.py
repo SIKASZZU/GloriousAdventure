@@ -14,10 +14,6 @@ class RenderPictures:
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
 
-    def render(self):
-        RenderPictures.map_render(self)
-        RenderPictures.object_render(self)
-
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
@@ -56,6 +52,11 @@ class RenderPictures:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
 
+    def render(self):
+        RenderPictures.map_render(self)
+        RenderPictures.object_render(self)
+
+
     def map_render(self) -> None:
         #  NOTE:
         #    COL == J == X
@@ -63,7 +64,7 @@ class RenderPictures:
         #    M6tle koordinaatteljestikule. Kui X muutub, muutub column. Kui muutub Y, siis muutub row.
 
         UniversalVariables.screen.fill('white')
-        RenderPictures.render_terrain_data: list = []
+        RenderPictures.terrain_in_view: list = []
 
         # Use the camera's position to determine the render range
         camera_grid_row = int((Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
@@ -175,43 +176,39 @@ class ObjectCreation:
         UniversalVariables.collision_boxes = []
         UniversalVariables.object_list = []
         
-        
         collision_item = []
         non_collision_item = []
-        objects_in_view = set()
-
-        # Lisab listi ID, collision_box'i
-        for in_view_grid in RenderPictures.terrain_in_view:
-            for x, y in in_view_grid:
-                objects_in_view.add(self.terrain_data[y][x])
 
         for item in items_list:
             if item.get("Type") == "Object":
                 object_id = item.get("ID")
-                if object_id in objects_in_view:
-                    #print(object_id)
 
-                    object_image_name = item.get("Name")
-                    object_image      = ImageLoader.load_image(object_image_name)
-                    breakability      = item.get('Breakable')
-                    object_width      =  item.get("Object_width")
-                    object_height     = item.get("Object_height")
-                    collision_box     = item.get("Collision_box")
+                object_image_name = item.get("Name")
+                object_image      = ImageLoader.load_image(object_image_name)
+                breakability      = item.get('Breakable')
+                object_width      = item.get("Object_width")
+                object_height     = item.get("Object_height")
+                collision_box     = item.get("Collision_box")
 
 
-                    if breakability == None:  breakability = False
-                    
-                    a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                    if object_image:
-                            
-                        if collision_box != None:  
-                            start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
-                            a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
+                if breakability == None:  breakability = False
+                
+                a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
+                if object_image:
+                        
+                    if collision_box != None:  
+                        start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
+                        a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
 
-                        # otsib itemeite collision boxe, et filtreerida neid.
-                        if a_item[2] is None:  non_collision_item.append(a_item)
-                        else:                  collision_item.append(a_item)
-        
+                    # otsib itemeite collision boxe, et filtreerida neid.
+                    if a_item in non_collision_item or a_item in collision_item:
+                        pass
+                    else:
+                        if a_item[2] is None:  
+                            non_collision_item.append(a_item)
+                        else:                  
+                            collision_item.append(a_item)
+
         ObjectCreation.collision_box_list_creation(self, collision_item)
         ObjectCreation.object_list_creation(self, non_collision_item)
 
@@ -268,8 +265,7 @@ class ObjectCreation:
                                 UniversalVariables.object_list.append(
                                     (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
                                     )
-                            break
-
+                                
                 # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
                 # 
                 # # Sort the collision_boxes list based on the custom sort order
