@@ -15,7 +15,7 @@ from render import RenderPictures  # map_render
 from event_handler import Event_handler
 from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
-from render import CreateCollisionBoxes  # object_list_creation
+from render import ObjectCreation  # object_list_creation
 import vision  # find_boxes_in_window, draw_light_source_and_rays
 from update import EssentialsUpdate  # check_pressed_keys, render_general
 from update import PlayerUpdate  # update_player, render_player, render_HUD
@@ -217,10 +217,11 @@ class Game:
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
 
-        Collisions.collison_terrain(self)
-        Collisions.check_collisions(self)  # Check player collisions
+        ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
+        
+        Collisions.collison_terrain(self)  # CHECK TERRAIN AND WATER COLLISION FOR MOVEMENT SPEED CALCULATIONS
+        Collisions.change_map_data(self)  # MUUDAB MINGI RANDOM STUFFI JA VAATAB KA KOLLISIONI PLAYERI JA OBJEKTIGA
 
-        CreateCollisionBoxes.object_list_creation(self)  # Create collision boxes
         vision.find_boxes_in_window()
 
         self.player.health.check_health(self.player.hunger.current_hunger)
@@ -228,14 +229,14 @@ class Game:
         Player_audio.player_audio_update(self)
         change_blades(self)
 
+
     def call_visuals(self):
-        RenderPictures.map_render(self)  # Render terrain
-        if Collisions.render_after:
-            ObjectManagement.place_and_render_object(self)  # Render objects
-            PlayerUpdate.render_player(self)  # Render player
-        else:
-            PlayerUpdate.render_player(self)
-            ObjectManagement.place_and_render_object(self)
+        RenderPictures.render(self)  # Render terrain
+        # if Collisions.render_after:
+        #     #ObjectManagement.place_and_render_object(self)  # Render objects
+        #     PlayerUpdate.render_player(self)  # Render player
+#        else:
+        PlayerUpdate.render_player(self)
 
         Enemy.spawn(self)
         EssentialsUpdate.calculate_daylight_strength(self)
@@ -317,7 +318,7 @@ class Game:
                 self.check_keys()
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
-                print(self.player)
+                # print(self.player)
 
             Final_Maze.delay += 1
 

@@ -9,10 +9,15 @@ from variables import UniversalVariables
 
 class RenderPictures:
     render_range: int = 0
-    render_terrain_data: list = []
+    terrain_in_view: list = []
     occupied_positions: dict = {}
     generated_ground_images: dict = {}
     generated_water_images: dict = {}
+
+    def render(self):
+        RenderPictures.map_render(self)
+        RenderPictures.object_render(self)
+
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
@@ -49,6 +54,7 @@ class RenderPictures:
 
                 if [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
+
 
     def map_render(self) -> None:
         #  NOTE:
@@ -148,112 +154,126 @@ class RenderPictures:
                                 image = ImageLoader.load_image(image_name)
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position,image, terrain_value)            
 
-                RenderPictures.render_terrain_data.append(self.row)
+                RenderPictures.terrain_in_view.append(self.row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
 
         except IndexError:
             return
 
 
-class CreateCollisionBoxes:
-    terrain_data_minerals: int = 0
-    display_collision_box_decay: int = 0
+    def object_render(self):
+        # render the bitch
+        for item in UniversalVariables.object_list:
+            position: tuple = (item[1], item[2])
+            scaled_object_image = pygame.transform.scale(item[5], (item[3], item[4]))
+            UniversalVariables.screen.blit(scaled_object_image, position)
 
-    def __init__(self):
-        self.terrain_data_minerals = 0
-        self.display_collision_box_decay = 0
 
-    def object_list_creation(self) -> None:
-        """ Teeb objectidele hitboxid. Kasutab items.py items_list'i. """
+class ObjectCreation:
 
-        CreateCollisionBoxes.terrain_data_minerals: int = 0
-        UniversalVariables.collision_boxes: list = []
-        CreateCollisionBoxes.display_collision_box_decay: int = 0
-
-        # Teeb listi mis hoiab itemi ID'd ja Collision_box'i
-        object_collision_boxes = {}
-        # object_collision_boxes = {
-        # 4: [0.85, 0.85, 0.35, 0.7],
-        # 2: [0.3, 0.25, 0.5, 0.4],
-        # 5: [0, 0, 0, 0],
-        # 6: [0, 0, 0, 0]
-        # }
+    def creating_lists(self):
+        UniversalVariables.collision_boxes = []
+        UniversalVariables.object_list = []
+        
+        
+        collision_item = []
+        non_collision_item = []
+        objects_in_view = set()
 
         # Lisab listi ID, collision_box'i
+        for in_view_grid in RenderPictures.terrain_in_view:
+            for x, y in in_view_grid:
+                objects_in_view.add(self.terrain_data[y][x])
+
         for item in items_list:
             if item.get("Type") == "Object":
-                id = item.get("ID")
-                collision_box = item.get("Collision_box")
-                object_collision_boxes[id] = collision_box
+                object_id = item.get("ID")
+                if object_id in objects_in_view:
+                    #print(object_id)
 
-        for row in RenderPictures.render_terrain_data:
+                    object_image_name = item.get("Name")
+                    object_image      = ImageLoader.load_image(object_image_name)
+                    breakability      = item.get('Breakable')
+                    object_width      =  item.get("Object_width")
+                    object_height     = item.get("Object_height")
+                    collision_box     = item.get("Collision_box")
+
+
+                    if breakability == None:  breakability = False
+                    
+                    a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
+                    if object_image:
+                            
+                        if collision_box != None:  
+                            start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
+                            a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
+
+                        # otsib itemeite collision boxe, et filtreerida neid.
+                        if a_item[2] is None:  non_collision_item.append(a_item)
+                        else:                  collision_item.append(a_item)
+        
+        ObjectCreation.collision_box_list_creation(self, collision_item)
+        ObjectCreation.object_list_creation(self, non_collision_item)
+
+
+    def collision_box_list_creation(self, collision_item) -> None:
+        """ 
+            Teeb collision boxid objektidele, millel on vaja collisionit. Roheline ruut. 
+            See list on vajalik visioni tegemisel.
+        """
+        start_corner_x = 0
+        start_corner_y = 0
+        end_corner_x   = 0
+        end_corner_y   = 0
+        object_id      = 0
+
+        for item in collision_item:
+            object_id, breakability, start_corner_x, start_corner_y, \
+                end_corner_x, end_corner_y, object_width, object_height, object_image = item 
+        
+        object_collision_boxes: dict = {}
+
+        object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
+
+        for row in RenderPictures.terrain_in_view:
             for x, y in row:
-                if 0 <= y < len(self.terrain_data) and 0 <= x < len(self.terrain_data[0]):
-                    try:
-                        # Vaatab kas itemi ID on dict'is:    object_collision_boxes = {}
-                        if self.terrain_data[y][x] in object_collision_boxes:
+                if self.terrain_data[y][x] in object_collision_boxes:
+                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                            if object_collision_boxes[self.terrain_data[y][x]] is None:
-                                terrain_x: int = x * UniversalVariables.block_size
-                                terrain_y: int = y * UniversalVariables.block_size
-                                object_id: int = self.terrain_data[y][x]
+                    _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
+                    collision_box_width = int(UniversalVariables.block_size * end_corner_width)
+                    collision_box_height = int(UniversalVariables.block_size * end_corner_height)
 
-                                if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
-                                    new_object: tuple[int, ...] = (
-                                        terrain_x, terrain_y, 0, 0,
-                                        object_id, 0,
-                                        0)
-
-                                    if new_object not in UniversalVariables.collision_boxes:
-                                        UniversalVariables.collision_boxes.append(new_object)
-                                        CreateCollisionBoxes.terrain_data_minerals += 1
-                                    CreateCollisionBoxes.display_collision_box_decay += 1
-
-                            else:
-                                terrain_x: int = x * UniversalVariables.block_size
-                                terrain_y: int = y * UniversalVariables.block_size
-                                object_id: int = self.terrain_data[y][x]
-
-                                # Võtab õige itemi collision_box'i
-                                collision_box = object_collision_boxes.get(object_id, [0, 0, 0, 0])
-
-                                # Arvutab hitboxi suuruse ja asukoha vastavalt camera / player / render offsetile
-                                collision_box_offset_x_mlp, collision_box_offset_y_mlp, collision_box_width_mlp, collision_box_height_mlp = collision_box
-                                collision_box_width = int(UniversalVariables.block_size * collision_box_width_mlp)
-                                collision_box_height = int(UniversalVariables.block_size * collision_box_height_mlp)
-
-                                collision_box_offset_x = int(UniversalVariables.block_size * collision_box_offset_x_mlp)
-                                collision_box_offset_y = int(UniversalVariables.block_size * collision_box_offset_y_mlp)
-
-                                collision_box_x: int = terrain_x + collision_box_offset_x
-                                collision_box_y: int = terrain_y + collision_box_offset_y
-
-                                if CreateCollisionBoxes.display_collision_box_decay <= CreateCollisionBoxes.terrain_data_minerals:
-                                    new_object: tuple[int, ...] = (
-                                        collision_box_x, collision_box_y, collision_box_width, collision_box_height,
-                                        object_id, collision_box_offset_x,
-                                        collision_box_offset_y)
-                                    if new_object not in UniversalVariables.collision_boxes:
-                                        UniversalVariables.collision_boxes.append(new_object)
-                                        CreateCollisionBoxes.terrain_data_minerals += 1
-                                    CreateCollisionBoxes.display_collision_box_decay += 1
-                    except Exception as e:
-                        # print(f'Error: {e}, render.py @ if terrain_data[y][x] in object_collision_boxes:')
-                        pass
-
-        # Teatud järjekorras laeb objektid sisse, et kivid oleksid ikka puude all jne.
-        id_sort_order = {6: 1,  # First to be rendered
-                         5: 2,
-                         2: 3,
-                         4: 4,
-                         7: 5,
-                         988: 6,
-                         9882: 7,
-                         1000: 8}  # Last to be rendered
-
-        # Sort the collision_boxes list based on the custom sort order
-        UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes,
-                                                    key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+                    new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
+                    if new_object not in UniversalVariables.collision_boxes:
+                        UniversalVariables.collision_boxes.append(new_object)
 
 
-if __name__ == '__main__':  print('Ran render.py')
+    def object_list_creation(self, non_collision_item) -> None:
+        for item in non_collision_item:
+            object_id, breakability, collision_box, object_width, object_height, object_image = item 
+        
+            if breakability == True:
+
+                for row in RenderPictures.terrain_in_view:
+                    for x, y in row:
+                        if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
+                            terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                            terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+
+                            new_object = (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
+
+                            if new_object not in UniversalVariables.object_list:
+                                UniversalVariables.object_list.append(
+                                    (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
+                                    )
+                            break
+
+                # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
+                # 
+                # # Sort the collision_boxes list based on the custom sort order
+                # UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
+
+
+if __name__ == '__main__':  ...

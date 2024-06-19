@@ -76,7 +76,8 @@ class UniversalVariables():
     ]
 
     # ******************** COLLISION ******************** #
-    collision_boxes: list = []  # collision
+    collision_boxes: list = []  # collisions
+    object_list: list = []  # objects
 
     # ******************** VISION ******************** #
     light_range: int = 420

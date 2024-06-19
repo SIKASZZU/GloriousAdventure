@@ -72,33 +72,35 @@ class Collisions:
     object_dict = {}
     first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
 
-    def check_collisions(self) -> None:
-        keys = pygame.key.get_pressed()
+    def change_map_data(self) -> None:
+        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
+        collision_object_rect = pygame.Rect(0,0,0,0)
 
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
+
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, in UniversalVariables.collision_boxes:
 
             # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
-            obj_collision_box = (
-                collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id,
-                collision_box_offset_x, collision_box_offset_y)
+            obj_collision_box = (collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id)
 
-            terrain_x: int = collision_box_x - collision_box_offset_x
-            terrain_y: int = collision_box_y - collision_box_offset_y
+            terrain_x: int = collision_box_x + UniversalVariables.offset_x   # LISASIN SIIA OFFSETI JUURDE, ENNE EI OLNUD. LISASIN KUNA OBJECTIS ON SAMA MOODI TERRAINI KOORDI LEIDMINE, IDK WTF
+            terrain_y: int = collision_box_y + UniversalVariables.offset_y
 
             for item in items_list:
                 if item.get("Type") == "Object":
                     Collisions.object_dict[item.get("ID")] = item
 
             # Check if the object ID exists in the dictionary
+            #print(Collisions.object_dict, 'f', object_id)
+            
             if object_id in Collisions.object_dict:
                 # Retrieve properties for the object ID
                 object_properties = Collisions.object_dict[object_id]
+                #print(object_properties)
                 width = object_properties.get("Object_width")
                 height = object_properties.get("Object_height")
                 render_when = object_properties.get("Render_when")
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
-                                                height)  # See on täpsemate arvudega, kui self.collision_box
+                collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
 
             if self.click_window_x and self.click_window_y:
                 try:
@@ -264,13 +266,13 @@ class Collisions:
 
                 except TypeError:
                     pass
-
+            
             if self.player_rect.colliderect(collision_object_rect):
                 x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
                 if Collisions.first_time_collision == False and object_id not in x:
                     Collisions.first_time_collision = True
                     UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
-                
+
                 if keys[pygame.K_SPACE]:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
 
@@ -283,54 +285,36 @@ class Collisions:
                     else:
                         Collisions.render_after = False
 
+
         reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
-        Collisions.collision_hitbox(self)
+        Collisions.player_hit_collision(self)
 
-    def collision_hitbox(self) -> None:
+
+    def player_hit_collision(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
-        for \
-                collision_box_x, collision_box_y, \
-                        collision_box_width, collision_box_height, \
-                        object_id, collision_box_offset_x, \
-                        collision_box_offset_y in UniversalVariables.collision_boxes:
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id in UniversalVariables.collision_boxes:
 
-            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width,
-                                                  collision_box_height)
+            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
 
             # Kui player jookseb siis ta ei lähe läbi objektide
-            if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
-                collision_move = 10
-
-            else:
-                collision_move = 4
+            if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:  collision_move = 10
+            else:  collision_move = 4
 
             # Kui läheb vastu hitboxi siis ei lase sellest läbi minna
             if self.player_rect.colliderect(collision_object_hitbox):
 
                 # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
-                dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
-                        UniversalVariables.player_width / 2 + collision_box_width / 2)
-                dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
-                        UniversalVariables.player_height / 2 + collision_box_height / 2)
+                dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (UniversalVariables.player_width / 2 + collision_box_width / 2)
+                dy = (self.player_rect.centery - collision_object_hitbox.centery) / (UniversalVariables.player_height / 2 + collision_box_height / 2)
 
-                # Horisontaalne kokkupuude
                 if abs(dx) > abs(dy):
-                    # Paremalt poolt
-                    if dx > 0:
-                        UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
-                    # Vasakultpoolt
-                    else:
-                        UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
+                    if dx > 0:  UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
+                    else:  UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
 
-                # Vertikaalne kokkupuude
                 else:
-                    # Alt
-                    if dy > 0:
-                        UniversalVariables.player_y += collision_move  # Liigutab mängijat alla
-                    # Ülevalt
-                    else:
-                        UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
+                    if dy > 0:  UniversalVariables.player_y += collision_move  # Liigutab mängijat alla
+                    else:  UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
 
     def collison_terrain(self) -> None:
         keys = pygame.key.get_pressed()

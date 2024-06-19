@@ -99,10 +99,8 @@ class ObjectManagement:
                         else:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
                             Inventory.inventory[item_data["Name"]] = 1
-
                         index = UniversalVariables.collision_boxes.index(obj_collision_box)
                         UniversalVariables.collision_boxes.pop(index)
-
         except RuntimeError as e:
             print("\nError in file: objects.py, add_object_to_inv", e)
 
@@ -135,10 +133,12 @@ class ObjectManagement:
             # Update the previous block size
             UniversalVariables.prev_block_size = UniversalVariables.block_size
 
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
-            terrain_x: int = (collision_box_x - collision_box_offset_x) + UniversalVariables.offset_x
-            terrain_y: int = (collision_box_y - collision_box_offset_y) + UniversalVariables.offset_y
-            object_image = None
+        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id in UniversalVariables.collision_boxes:
+            
+            terrain_x: int = collision_box_x + UniversalVariables.offset_x
+            terrain_y: int = collision_box_y + UniversalVariables.offset_y
+
+            object_image = None 
             object_width = 0
             object_height = 0
 
@@ -161,17 +161,16 @@ class ObjectManagement:
                             position: tuple = (terrain_x, terrain_y)
                             scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
                             UniversalVariables.screen.blit(scaled_object_image, position)
-
+            
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             
             if (UniversalVariables.hitbox_count % 2) != 0:
-                ObjectManagement.place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
+                ObjectManagement.render_collision_box(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
                 if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
 
 
-    def place_and_render_hitbox(self, collision_box_x, collision_box_y, collision_box_width,
-                                collision_box_height) -> None:
-        """ Renderib hitboxi objektitele. """
+    def render_collision_box(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height) -> None:
+        """ Renderib hitboxi objektitele. Green colored square. """
 
         collision_box_color: str = 'green'
         collision_box_x += UniversalVariables.offset_x

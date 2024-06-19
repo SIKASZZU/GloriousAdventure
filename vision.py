@@ -7,13 +7,12 @@ drawing_wall = False
 start_wall_pos = None
 light_range = UniversalVariables.light_range  # Range of the light source
 vision_count: int = 0
-transparent_boxes = []
 
 def find_boxes_in_window():
     UniversalVariables.walls = []
 
     # Need boxid on render rangei sees
-    for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id, offset_x, offset_y
+    for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id
         if vision_blocking_box[2] != 0 or vision_blocking_box[3] != 0: # width, height == 0: pass
 
             x = vision_blocking_box[0] + UniversalVariables.offset_x
@@ -28,10 +27,8 @@ def find_boxes_in_window():
             wall = (top_left, bottom_right)
             if wall not in UniversalVariables.walls:
                 UniversalVariables.walls.append(wall)
-        else:
-            transparent_boxes.append(vision_blocking_box)  # box, millel puudub collision, puudub shadow.
 
-
+                
 def get_line_segment_intersection(p0, p1, p2, p3):
     """
     Returns the point of intersection between two line segments if it exists.
