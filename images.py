@@ -27,11 +27,12 @@ class ImageLoader:
         """ Renderib Gui pildid """
         try:
             if image_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[image_name] = pygame.image.load(resource_path(f"images/Hud/{image_name}.png"))
-                print(f"images/Gui/{image_name}.png pre-loaded successfully.")
+                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.png")
+                # print(f"images/Gui/{image_name}.png pre-loaded successfully.")
+
             return ImageLoader.loaded_item_images[image_name]
         except FileNotFoundError:
-            print(f"Error: '{image_name.capitalize()}' image not found.")
+            # print(f"Error: '{image_name.capitalize()}' image not found.")
             return None
 
     @staticmethod
@@ -47,10 +48,10 @@ class ImageLoader:
             loaded_image = pygame.image.load(image_path)
             converted_image = loaded_image.convert_alpha()
             ImageLoader.loaded_sprite_images[sprite] = converted_image
-            print(f"{sprite} image ({image_path}) pre-loaded successfully.")
+            # print(f"{sprite} image ({image_path}) pre-loaded successfully.")
             return converted_image
         except FileNotFoundError:
-            print(f"Error: '{image_path}' image not found.")
+            # print(f"Error: '{image_path}' image not found.")
             return None
 
     @staticmethod
@@ -102,19 +103,22 @@ class ImageLoader:
                             resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
                             converted_image = resized_image.convert_alpha()
                             ImageLoader.loaded_item_images[image_name] = converted_image
-                            print(f"{image_path} resized and pre-loaded successfully.")
+
+                            # print(f"{image_path} resized and pre-loaded successfully.")
                             return converted_image
                         else:
                             loaded_image = pygame.image.load(image_path)
                             converted_image = loaded_image.convert_alpha()
                             ImageLoader.loaded_item_images[image_name] = converted_image
-                            print(f"{image_path} resized and pre-loaded successfully.")
+
+                            # print(f"{image_path} resized and pre-loaded successfully.")
                             return converted_image
 
-                print(f"Error: '{image_name}' image not found.")
+
+                # print(f"Error: '{image_name}' image not found.")
                 return None
         except FileNotFoundError:
-            print(f"Error: '{image_path}' image not found.")
+            # print(f"Error: '{image_path}' image not found.")
             return None
 
 class ImageCache:

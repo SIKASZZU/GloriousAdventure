@@ -78,7 +78,11 @@ class HealthComponent:
         if self.hunger is not None:
             if self.hunger <= 12:
                 self.hunger = round(self.hunger, 3)
-                return f"Health: {self.current_health}/{self.max_health}, Regenerating Disabled, Too Hungry: {self.hunger}"
+                if self.hunger <= 0:
+                    return f"Health: {self.current_health}/{self.max_health}\n     -- Starvation Damage: {HungerComponent.health_timer} ticks"
+
+                else:
+                    return f"Health: {self.current_health}/{self.max_health}\n     -- Regenerating Disabled, Too Hungry: {self.hunger}"
 
             else:
                 return f"Health: {self.current_health}/{self.max_health}"
@@ -143,8 +147,8 @@ class SpeedComponent:
 
 
 class HungerComponent:
-    hunger_timer = 0
-    health_timer = 0
+    hunger_timer = 100
+    health_timer = 300
     def __init__(self, base_hunger, max_hunger, min_hunger):
         self.base_hunger = base_hunger
         self.max_hunger = max_hunger
@@ -159,20 +163,31 @@ class HungerComponent:
             UniversalVariables.hunger_resistance -= 1
             if UniversalVariables.hunger_resistance <= 0:
                 UniversalVariables.hunger_resistance = None
+                HungerComponent.hunger_timer = 100
             return
 
         elif self.player.hunger.current_hunger <= 0:
-            if HungerComponent.health_timer >= 300:
+
+            if HungerComponent.health_timer <= 0:
+                if self.player.health.current_health > 0:
+                    text = "Starving."
+
+                    if text in self.shown_texts:
+                        self.shown_texts.remove(text)
+
+                    UniversalVariables.ui_elements.append(text)
+
                 self.player.health.damage(0.5)
-                HungerComponent.health_timer = 0
-            HungerComponent.health_timer += 1
+                HungerComponent.health_timer = 300
+            HungerComponent.health_timer -= 1
         else:
-            if HungerComponent.hunger_timer >= 250:
-                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.3)
-                HungerComponent.hunger_timer = 0
+            if HungerComponent.hunger_timer <= 0:
+                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.1)
+                HungerComponent.hunger_timer = 100
 
-            HungerComponent.hunger_timer += 1
-
+            HungerComponent.hunger_timer -= 1
+            if HungerComponent.health_timer < 300:
+                HungerComponent.health_timer = 300
     def is_click_inside_player_rect(self):
         if self.click_position != ():
             click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
@@ -221,10 +236,13 @@ class HungerComponent:
 
     def __str__(self):
         rounded_hunger = round(self.current_hunger, 3)
-        if UniversalVariables.hunger_resistance is not None:
-            return f"Hunger: {rounded_hunger}/{self.max_hunger}, Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
+        if rounded_hunger == self.min_hunger:
+            return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Starving"
         else:
-            return f"Hunger: {rounded_hunger}/{self.max_hunger}"
+            if UniversalVariables.hunger_resistance is not None:
+                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
+            else:
+                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {HungerComponent.hunger_timer} ticks"
 
 
 class Player:
@@ -252,4 +270,4 @@ class Player:
         UniversalVariables.player_y += dy * knockback_force
 
     def __str__(self):
-        return f"Player stats:\n   {self.health},\n   {self.stamina},\n   {self.speed},\n   {self.hunger},\n   Inventory: {Inventory.inventory}\n"
+        return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   Inventory: {Inventory.inventory}\n"

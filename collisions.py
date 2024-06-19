@@ -119,8 +119,7 @@ class Collisions:
                             else:
                                 UniversalVariables.ui_elements.append(
                                     "In the labyrinth's depths, scattered keyholders await, "
-                                    "each craving its matching key. Unlock their secrets to "
-                                    "unveil the gateway to the mystical sanctum beyond."
+                                    "each craving its matching key."
                                 )
                                 if UniversalVariables.final_maze != True:
                                     self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
@@ -179,18 +178,24 @@ class Collisions:
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentialsUpdate.day_night_text != 'Day':
-                                UniversalVariables.ui_elements.append(
-                                    """ Can't open new maze during night. """
-                                )
+
+                                text = ("Can't open new maze during night.")
+                                if text in self.shown_texts:
+                                    self.shown_texts.remove(text)
+                                UniversalVariables.ui_elements.append(text)
+
                                 reset_clicks(self)
                                 return
 
                             # For opening the door remove one key from inventory
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
-                                    UniversalVariables.ui_elements.append(
-                                    """ No available Maze key in inventory. """
-                                    )
+
+                                    text =  ("No available Maze key in inventory.")
+                                    if text in self.shown_texts:
+                                        self.shown_texts.remove(text)
+                                    UniversalVariables.ui_elements.append(text)
+
                                     reset_clicks(self)
                                     return
 
@@ -238,11 +243,14 @@ class Collisions:
                                     return
 
                                 else:
-                                    UniversalVariables.ui_elements.append(
-                                        "As the final key slides into place, the portal shimmers open, "
-                                        "revealing its arcane depths. A resounding hum fills the air, "
-                                        "echoing through the labyrinth as the portal's magic pulses with newfound life."
-                                    )
+                                    text = (
+                                            "As the final key slides into place, the portal shimmers open, "
+                                            "revealing its arcane depths. A resounding hum fills the air, "
+                                            "echoing through the labyrinth as the portal's magic pulses with newfound life."
+                                        )
+                                    if text not in self.shown_texts:
+                                        UniversalVariables.ui_elements.append(text)
+
                                     UniversalVariables.portal_list = []
                                     Tile_Sounds.portal_open_audio(self)
                                     yellow_green(self, 'green')

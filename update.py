@@ -144,17 +144,22 @@ class PlayerUpdate:
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
         try:
+            top_left = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // UniversalVariables.block_size)][int((self.player_rect.left + self.player_rect.width) // UniversalVariables.block_size)]
+            top_right = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // UniversalVariables.block_size)][int(self.player_rect.left // UniversalVariables.block_size)]
+            bottom_left = self.terrain_data[int(self.player_rect.top // UniversalVariables.block_size)][int((self.player_rect.left + self.player_rect.width) // UniversalVariables.block_size)]
+            bottom_right = self.terrain_data[int(self.player_rect.top // UniversalVariables.block_size)][int(self.player_rect.left // UniversalVariables.block_size)]
+
             if UniversalVariables.last_input != 'None':
-                if self.terrain_data[int(UniversalVariables.player_y // UniversalVariables.block_size)][int(UniversalVariables.player_x // UniversalVariables.block_size)] != 0:
-                    if is_idle:
-                        self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
-                    else:
-                        self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
-                else:
+                if top_left == 0 and top_right == 0 and bottom_left == 0 and bottom_right == 0:
                     if is_idle:
                         self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
                     else:
                         self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+                else:
+                    if is_idle:
+                        self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                    else:
+                        self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
             else:  pass
         except Exception as e: print(f'Error @ update.py: {e}')
 

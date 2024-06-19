@@ -12,7 +12,7 @@ from entity import Enemy
 from variables import UniversalVariables
 from camera import Camera  # box_target_camera
 from render import RenderPictures  # map_render
-from mbd import event_mousebuttondown
+from event_handler import Event_handler
 from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
 from render import CreateCollisionBoxes  # object_list_creation
@@ -91,7 +91,8 @@ class Game:
     def events(self):
         for event in pygame.event.get():
             self.event_game_state(event)
-            event_mousebuttondown(self, event)
+            Event_handler.handle_mouse_events(self, event)
+            Event_handler.handle_keyboard_events(self, event)
 
     def load_variables(self):
         UniversalVariables()
@@ -238,6 +239,17 @@ class Game:
 
         Enemy.spawn(self)
         EssentialsUpdate.calculate_daylight_strength(self)
+        if Inventory.crafting_menu_open:
+            Inventory.render_craftable_items(self)
+            if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
+                text = "Nothing to craft."
+
+                if text in self.shown_texts:
+                    self.shown_texts.remove(text)
+
+                UniversalVariables.ui_elements.append(text)
+                Inventory.crafting_menu_open = False
+
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
