@@ -89,7 +89,7 @@ class RenderPictures:
                 for col in range(col_range_0, col_range_1):
                     # Kontrollib kas terrain block jääb faili terrain_data piiridesse
                     if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
-                        self.row.append((col, row))  # Salvestab koordinaadid listi, et neid saaks hiljem kasutada object list renderis
+                        self.row.append((col, row))  # 25.06.24, keerasin col ja row ymber, sest collision box listi refactorimisel l2ks midagi pekki.
                         terrain_value = self.terrain_data[row][col]
                         terrain_x: int = col * UniversalVariables.block_size + UniversalVariables.offset_x
                         terrain_y: int = row * UniversalVariables.block_size + UniversalVariables.offset_y
@@ -173,18 +173,24 @@ class RenderPictures:
 class ObjectCreation:
 
     def creating_lists(self):
+        print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
+        print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
+
+
         UniversalVariables.collision_boxes = []
         UniversalVariables.object_list = []
         
-        collision_item = []
-        non_collision_item = []
+        collision_items = []
+        non_collision_items = []
 
         for item in items_list:
             if item.get("Type") == "Object":
                 object_id = item.get("ID")
 
                 object_image_name = item.get("Name")
+                #print(object_id, object_image_name)
                 object_image      = ImageLoader.load_image(object_image_name)
+                #print(object_id, object_image)
                 breakability      = item.get('Breakable')
                 object_width      = item.get("Object_width")
                 object_height     = item.get("Object_height")
@@ -194,23 +200,25 @@ class ObjectCreation:
                 if breakability == None:  breakability = False
                 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                if object_image:
+                #print(a_item)
+                #if object_image:
                         
-                    if collision_box != None:  
-                        start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
-                        a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
+                if collision_box != None:  
+                    start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
+                    a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
 
-                    # otsib itemeite collision boxe, et filtreerida neid.
-                    if a_item in non_collision_item or a_item in collision_item:
-                        pass
-                    else:
-                        if a_item[2] is None:  
-                            non_collision_item.append(a_item)
-                        else:                  
-                            collision_item.append(a_item)
+                # otsib itemeite collision boxe, et filtreerida neid.
+                # a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
+                if a_item in non_collision_items or a_item in collision_items:
+                    pass
+                else:
+                    if a_item[2] is None:  
+                        non_collision_items.append(a_item)
+                    else:                  
+                        collision_items.append(a_item)
 
-        ObjectCreation.collision_box_list_creation(self, collision_item)
-        ObjectCreation.object_list_creation(self, non_collision_item)
+        ObjectCreation.collision_box_list_creation(self, collision_items)
+        ObjectCreation.object_list_creation(self, non_collision_items)
 
 
     def collision_box_list_creation(self, collision_item) -> None:
@@ -224,17 +232,16 @@ class ObjectCreation:
         end_corner_y   = 0
         object_id      = 0
 
-        for item in collision_item:
-            object_id, breakability, start_corner_x, start_corner_y, \
-                end_corner_x, end_corner_y, object_width, object_height, object_image = item 
-        
         object_collision_boxes: dict = {}
-
-        object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
-
+        
+        for item in collision_item:
+            object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item 
+            object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
+        
         for row in RenderPictures.terrain_in_view:
             for x, y in row:
                 if self.terrain_data[y][x] in object_collision_boxes:
+                    object_id = self.terrain_data[y][x]
                     terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                     terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
@@ -243,13 +250,13 @@ class ObjectCreation:
                     collision_box_height = int(UniversalVariables.block_size * end_corner_height)
 
                     new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
+
                     if new_object not in UniversalVariables.collision_boxes:
                         UniversalVariables.collision_boxes.append(new_object)
 
-
     def object_list_creation(self, non_collision_item) -> None:
         for item in non_collision_item:
-            object_id, breakability, collision_box, object_width, object_height, object_image = item 
+            object_id, breakability, _, object_width, object_height, object_image = item 
         
             if breakability == True:
 
@@ -264,8 +271,7 @@ class ObjectCreation:
                             if new_object not in UniversalVariables.object_list:
                                 UniversalVariables.object_list.append(
                                     (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
-                                    )
-                                
+                                    )                              
                 # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
                 # 
                 # # Sort the collision_boxes list based on the custom sort order
