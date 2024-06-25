@@ -13,20 +13,20 @@ def find_boxes_in_window():
 
     # Need boxid on render rangei sees
     for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id
-        if vision_blocking_box[2] != 0 or vision_blocking_box[3] != 0: # width, height == 0: pass
+        #print(vision_blocking_box)
 
-            x = vision_blocking_box[0] + UniversalVariables.offset_x
-            y = vision_blocking_box[1] + UniversalVariables.offset_y
-            top_left = (x, y)
+        x = vision_blocking_box[0]# + UniversalVariables.offset_x
+        y = vision_blocking_box[1]# + UniversalVariables.offset_y
+        top_left = (x, y)
 
-            x = vision_blocking_box[0] + vision_blocking_box[2] + UniversalVariables.offset_x
-            y = vision_blocking_box[1] + vision_blocking_box[3] + UniversalVariables.offset_y
-            bottom_right = (x, y)
+        x = vision_blocking_box[0] + vision_blocking_box[2]# + UniversalVariables.offset_x
+        y = vision_blocking_box[1] + vision_blocking_box[3]# + UniversalVariables.offset_y
+        bottom_right = (x, y)
 
 
-            wall = (top_left, bottom_right)
-            if wall not in UniversalVariables.walls:
-                UniversalVariables.walls.append(wall)
+        wall = (top_left, bottom_right)
+        if wall not in UniversalVariables.walls:
+            UniversalVariables.walls.append(wall)
 
                 
 def get_line_segment_intersection(p0, p1, p2, p3):
