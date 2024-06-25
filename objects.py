@@ -123,50 +123,12 @@ class ObjectManagement:
         if Inventory.inventory[item] == 0:
             del Inventory.inventory[item]
 
-
-    def place_and_render_object(self) -> None:
-        """ Visuaalselt paneb objekti maailma (image). """
-
-        # Check if block size has changed
-        if UniversalVariables.prev_block_size != UniversalVariables.block_size:
-            # Update the previous block size
-            UniversalVariables.prev_block_size = UniversalVariables.block_size
-
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id in UniversalVariables.collision_boxes:
             
-            terrain_x: int = collision_box_x + UniversalVariables.offset_x
-            terrain_y: int = collision_box_y + UniversalVariables.offset_y
-
-            object_image = None 
-            object_width = 0
-            object_height = 0
-
-            for item in items_list:
-                if item.get("Type") == "Object" and item.get("ID") == object_id:
-                    object_breakable = None
-                    object_image_name = item.get("Name")
-                    if object_image_name == "Maze_Wall": pass
-                    elif object_image_name == "Maze_Ground": pass
-                    elif object_image_name == "Maze_Blade": pass
-
-                    else:
-                        object_width = item.get("Object_width")
-                        object_height = item.get("Object_height")
-                        object_breakable = item.get("Breakable")
-
-                        object_image = ImageLoader.load_image(object_image_name)
-    
-                        if object_image:
-                            position: tuple = (terrain_x, terrain_y)
-                            scaled_object_image = pygame.transform.scale(object_image, (object_width, object_height))
-                            UniversalVariables.screen.blit(scaled_object_image, position)
-            
-            object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-
     def render_boxes():
         if (UniversalVariables.render_boxes_counter % 2) != 0:
             ObjectManagement.render_collision_box()
             ObjectManagement.render_interaction_box()
+
 
     def render_collision_box() -> None:
         for box_item in UniversalVariables.collision_boxes:

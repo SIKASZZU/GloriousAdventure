@@ -76,8 +76,9 @@ class UniversalVariables():
     ]
 
     # ******************** COLLISION ******************** #
-    collision_boxes: list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
-    object_list:     list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+    collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
+    object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+    interactable_items: list = [94, 95, 96, 97, 981, 982]
 
     # ******************** VISION ******************** #
     light_range: int = 420

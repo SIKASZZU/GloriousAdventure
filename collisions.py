@@ -31,7 +31,7 @@ def count_occurrences_in_list_of_lists(list_of_lists, number):
 
 def reset_clicks(self):
     if self.click_window_x and self.click_window_y:
-        # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni
+       # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni, vist ikka peab
         self.click_window_x = None
         self.click_window_y = None
 
@@ -75,14 +75,18 @@ class Collisions:
     def change_map_data(self) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         collision_object_rect = pygame.Rect(0,0,0,0)
+        # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+        for terrain_x, terrain_y, object_width, object_height, _, object_id in UniversalVariables.object_list:
+            # print(len( UniversalVariables.object_list),  UniversalVariables.object_list)
 
+            # okei, tuleviku minule
 
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, in UniversalVariables.collision_boxes:
-            # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
-            obj_collision_box = (collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id)
+            obj_collision_box = (terrain_x, terrain_y, object_width, object_height, object_id)
 
-            terrain_x: int = collision_box_x - UniversalVariables.offset_x   # LISASIN SIIA OFFSETI JUURDE, ENNE EI OLNUD. LISASIN KUNA OBJECTIS ON SAMA MOODI TERRAINI KOORDI LEIDMINE, IDK WTF
-            terrain_y: int = collision_box_y - UniversalVariables.offset_y
+            terrain_x: int = terrain_x - UniversalVariables.offset_x   # LISASIN SIIA OFFSETI JUURDE, ENNE EI OLNUD. LISASIN KUNA OBJECTIS ON SAMA MOODI TERRAINI KOORDI LEIDMINE, IDK WTF
+            terrain_y: int = terrain_y - UniversalVariables.offset_y
+            # print(terrain_x, terrain_y)
+
 
             for item in items_list:
                 if item.get("Type") == "Object":
@@ -91,9 +95,6 @@ class Collisions:
             width  = 0
             height = 0
 
-            # Check if the object ID exists in the dictionary
-            #print(Collisions.object_dict, 'f', object_id)
-            
             if object_id in Collisions.object_dict:
                 # Retrieve properties for the object ID
                 object_properties = Collisions.object_dict[object_id]
@@ -104,14 +105,41 @@ class Collisions:
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, width, height)
             #print(collision_object_rect)
             
+            # print('self', self.player_rect)
+            # print(collision_object_rect)
+
+            if self.player_rect.colliderect(collision_object_rect):
+                # print('collision', self.player_rect, collision_object_rect )
+                x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
+                if Collisions.first_time_collision == False and object_id not in x:
+                    Collisions.first_time_collision = True
+                    UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
+
+                if keys[pygame.K_SPACE]:
+                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
+
+                if object_id == 99 or object_id == 98:
+                    Collisions.render_after = True
+
+                else:
+                    if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
+                        Collisions.render_after = True
+                    else:
+                        Collisions.render_after = False
             
             if self.click_window_x and self.click_window_y:
+                print()
+                #print('here', self.click_window_x, self.click_window_y)
+                print(terrain_x, terrain_y)
+                print('camera', Camera.click_x, Camera.click_y)
                 try:
+                    if terrain_x < Camera.click_x < terrain_x + width: print('X')
+                    if terrain_y < Camera.click_y < terrain_y + height: print('Y')
                     if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:  # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
-
+                        
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
-
+                        print('object', object_id)        
 
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
@@ -141,6 +169,7 @@ class Collisions:
 
                                     Tile_Sounds.insert_key_audio(self)
                                     gray_yellow(self, 'yellow')
+                            reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
 
                         if object_id == 982:
@@ -213,7 +242,7 @@ class Collisions:
 
                                         # Sellega saab suuna kätte, '94: 3' - vasakule
                                         locations = {95: 1, 97: 2, 94: 3,
-                                                     96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                                        96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                                         location = locations[object_id]
 
                                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
@@ -266,29 +295,10 @@ class Collisions:
                                         (y * UniversalVariables.block_size) + UniversalVariables.block_size / 2
 
                                     UniversalVariables.portal_list.append((portal_x, portal_y))
-
+                        
+                        reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
                 except TypeError:
                     pass
-            #print('self', self.player_rect)
-            if self.player_rect.colliderect(collision_object_rect):
-                #print('collision')
-                x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
-                if Collisions.first_time_collision == False and object_id not in x:
-                    Collisions.first_time_collision = True
-                    UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
-
-                if keys[pygame.K_SPACE]:
-                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
-
-                if object_id == 99 or object_id == 98:
-                    Collisions.render_after = True
-
-                else:
-                    if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
-                        Collisions.render_after = True
-                    else:
-                        Collisions.render_after = False
-
 
         reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 

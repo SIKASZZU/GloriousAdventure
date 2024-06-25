@@ -126,24 +126,22 @@ class RenderPictures:
                                         if [scaled_image,(terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
-
-                            #elif terrain_value in UniversalVariables.door_ids:  
-                                #...
-                                #image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
-                                #RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
-                            
                             elif terrain_value == 1000:  
                                 image = ImageLoader.load_image('Final_Maze_Ground_2')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
 
                             elif terrain_value == 933 or terrain_value == 977:
-                                if EssentialsUpdate.day_night_text == 'Night':  self.terrain_data[position[1]][position[0]] = 977
-                                else:  self.terrain_data[position[1]][position[0]] = 933
-                                
-                                # 933, 977 pole door_ids listis, sest mudu broken door/night open/close thing.
-                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                                # mu aju ytleb, et see elif lihtsalt 2ra kustutada, sest allpool on juba see, et laeb k6ik objekti id'de pealt sise
+                                # aga kui seda elifi ei ole, siis 66sel uksed kinni ei l2he, idk miks
 
+                                if EssentialsUpdate.day_night_text == 'Night':  
+                                    self.terrain_data[position[1]][position[0]] = 977
+                                    
+                                    image = ImageLoader.load_image('Maze_End_Bottom')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                    RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                                else:  
+                                    self.terrain_data[position[1]][position[0]] = 933
+                                
                             # Spawnib maze ground, wall ja vist veel asju, mdea.
                             else:
                                 for item in items_list:
@@ -174,9 +172,8 @@ class RenderPictures:
 class ObjectCreation:
 
     def creating_lists(self):
-        print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
-        print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
-
+        # print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
+        # print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
 
         UniversalVariables.collision_boxes = []
         UniversalVariables.object_list = []
@@ -189,9 +186,7 @@ class ObjectCreation:
                 object_id = item.get("ID")
 
                 object_image_name = item.get("Name")
-                #print(object_id, object_image_name)
                 object_image      = ImageLoader.load_image(object_image_name)
-                #print(object_id, object_image)
                 breakability      = item.get('Breakable')
                 object_width      = item.get("Object_width")
                 object_height     = item.get("Object_height")
@@ -201,7 +196,6 @@ class ObjectCreation:
                 if breakability == None:  breakability = False
                 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                #print(a_item)
                 #if object_image:
                         
                 if collision_box != None:  
@@ -213,10 +207,15 @@ class ObjectCreation:
                 if a_item in non_collision_items or a_item in collision_items:
                     pass
                 else:
-                    if a_item[2] is None:  # if collision box is none
+                    if a_item[2] is None or a_item[0]:  # if collision box is none or collision box item is clickable etc door, keyholder
                         non_collision_items.append(a_item)
                     else:                  
                         collision_items.append(a_item)
+        
+                        # lisa see pede box topelt, et oleks click v6imalus ja rohelist boxi ka
+                        if a_item[0] in UniversalVariables.interactable_items:
+                            non_collision_items.append(a_item)
+
 
         ObjectCreation.collision_box_list_creation(self, collision_items)
         ObjectCreation.object_list_creation(self, non_collision_items)
@@ -258,21 +257,27 @@ class ObjectCreation:
 
     def object_list_creation(self, non_collision_items) -> None:
         for item in non_collision_items:
-            object_id, _, _, object_width, object_height, object_image = item 
-            if object_id not in UniversalVariables.no_terrain_background_items:
+            
+            # see vajalik, sest hetkel on selline UniversalVariables.interactable_items abomination
+            if len(item) == 6:
+                object_id, _, _, object_width, object_height, object_image = item
+            elif len(item) == 9:
+                object_id, _, _, _, _, _, object_width, object_height, object_image = item
+            
+            #if object_id not in UniversalVariables.no_terrain_background_items:
                 
-                for row in RenderPictures.terrain_in_view:
-                    for x, y in row:
-                        if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
-                            terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                            terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            for row in RenderPictures.terrain_in_view:
+                for x, y in row:
+                    if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
+                        terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                        terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                            new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                        new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
 
-                            if new_object not in UniversalVariables.object_list:
-                                UniversalVariables.object_list.append(
-                                    (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
-                                    )                              
+                        if new_object not in UniversalVariables.object_list:
+                            UniversalVariables.object_list.append(
+                                (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                                )                              
                 # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
                 # 
                 # # Sort the collision_boxes list based on the custom sort order
