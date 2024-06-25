@@ -160,17 +160,13 @@ class RenderPictures:
         except IndexError:
             return
 
+    for item in UniversalVariables.object_list:
+        if item[4] is None:
+            continue
 
-    def object_render(self):
-        # render the bitch
-        for item in UniversalVariables.object_list:
-            print(item)
-            if item[5] in UniversalVariables.interactable_items:  # id in list
-                pass
-            else:
-                position: tuple = (item[0], item[1])  # x, y
-                scaled_object_image = pygame.transform.scale(item[4], (item[2], item[3]))  # image, sizes
-                UniversalVariables.screen.blit(scaled_object_image, position)
+        position = item[:2]  # x, y
+        scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
+        UniversalVariables.screen.blit(scaled_object_image, position)
 
 
 class ObjectCreation:
