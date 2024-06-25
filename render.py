@@ -52,11 +52,6 @@ class RenderPictures:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
 
-    def render(self):
-        RenderPictures.map_render(self)
-        RenderPictures.object_render(self)
-
-
     def map_render(self) -> None:
         #  NOTE:
         #    COL == J == X
@@ -160,13 +155,14 @@ class RenderPictures:
         except IndexError:
             return
 
-    for item in UniversalVariables.object_list:
-        if item[4] is None:
-            continue
+    def object_render():
+        for item in UniversalVariables.object_list:
+            if item[4] is None:
+                continue
 
-        position = item[:2]  # x, y
-        scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
-        UniversalVariables.screen.blit(scaled_object_image, position)
+            position = item[:2]  # x, y
+            scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
+            UniversalVariables.screen.blit(scaled_object_image, position)
 
 
 class ObjectCreation:

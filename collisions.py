@@ -126,12 +126,9 @@ class Collisions:
                         Collisions.render_after = True
                     else:
                         Collisions.render_after = False
-            
+
+
             if self.click_window_x and self.click_window_y:
-                print()
-                #print('here', self.click_window_x, self.click_window_y)
-                print(terrain_x, terrain_y)
-                print('camera', Camera.click_x, Camera.click_y)
                 try:
                     if terrain_x < Camera.click_x < terrain_x + width: print('X')
                     if terrain_y < Camera.click_y < terrain_y + height: print('Y')

@@ -231,13 +231,27 @@ class Game:
 
 
     def call_visuals(self):
-        RenderPictures.render(self)  # Render terrain
+        # RenderPictures.render(self)  # Render terrain
+        # ObjectManagement.render_boxes()
+        
         # if Collisions.render_after:
-        #     #ObjectManagement.place_and_render_object(self)  # Render objects
-        #     PlayerUpdate.render_player(self)  # Render player
-#        else:
+        #     RenderPictures.object_render
+        #     PlayerUpdate.render_player(self)
+        # else:
+        #     PlayerUpdate.render_player(self)
+        #     RenderPictures.object_render
+
+
+        RenderPictures.map_render(self)  # Render terrain
         ObjectManagement.render_boxes()
-        PlayerUpdate.render_player(self)
+
+        if Collisions.render_after:
+            RenderPictures.object_render()
+            PlayerUpdate.render_player(self)
+        else:
+            PlayerUpdate.render_player(self)
+            RenderPictures.object_render()
+
 
         Enemy.spawn(self)
         EssentialsUpdate.calculate_daylight_strength(self)
