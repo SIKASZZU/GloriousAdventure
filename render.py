@@ -127,17 +127,18 @@ class RenderPictures:
                                             UniversalVariables.blits_sequence.append([scaled_saved_image,(terrain_x, terrain_y)])
 
 
-                            elif terrain_value in UniversalVariables.door_ids:  
-                                image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
-                                RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
+                            #elif terrain_value in UniversalVariables.door_ids:  
+                                #...
+                                #image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
+                                #RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
                             
                             elif terrain_value == 1000:  
                                 image = ImageLoader.load_image('Final_Maze_Ground_2')  # MAZE GROUND BACKGROUNDI LISAMINE
                                 RenderPictures.image_to_sequence(self,terrain_x, terrain_y, position,image, terrain_value)
 
                             elif terrain_value == 933 or terrain_value == 977:
-                                if EssentialsUpdate.day_night_text == 'Night': self.terrain_data[position[1]][position[0]] = 977
-                                else: self.terrain_data[position[1]][position[0]] = 933
+                                if EssentialsUpdate.day_night_text == 'Night':  self.terrain_data[position[1]][position[0]] = 977
+                                else:  self.terrain_data[position[1]][position[0]] = 933
                                 
                                 # 933, 977 pole door_ids listis, sest mudu broken door/night open/close thing.
                                 image = ImageLoader.load_image('Maze_Ground')  # MAZE GROUND BACKGROUNDI LISAMINE
@@ -173,8 +174,8 @@ class RenderPictures:
 class ObjectCreation:
 
     def creating_lists(self):
-        # print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
-        # print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
+        print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
+        print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
 
 
         UniversalVariables.collision_boxes = []
@@ -212,7 +213,7 @@ class ObjectCreation:
                 if a_item in non_collision_items or a_item in collision_items:
                     pass
                 else:
-                    if a_item[2] is None:  
+                    if a_item[2] is None:  # if collision box is none
                         non_collision_items.append(a_item)
                     else:                  
                         collision_items.append(a_item)
@@ -221,7 +222,7 @@ class ObjectCreation:
         ObjectCreation.object_list_creation(self, non_collision_items)
 
 
-    def collision_box_list_creation(self, collision_item) -> None:
+    def collision_box_list_creation(self, collision_items) -> None:
         """ 
             Teeb collision boxid objektidele, millel on vaja collisionit. Roheline ruut. 
             See list on vajalik visioni tegemisel.
@@ -234,7 +235,7 @@ class ObjectCreation:
 
         object_collision_boxes: dict = {}
         
-        for item in collision_item:
+        for item in collision_items:
             object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item 
             object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
         
@@ -254,12 +255,12 @@ class ObjectCreation:
                     if new_object not in UniversalVariables.collision_boxes:
                         UniversalVariables.collision_boxes.append(new_object)
 
-    def object_list_creation(self, non_collision_item) -> None:
-        for item in non_collision_item:
-            object_id, breakability, _, object_width, object_height, object_image = item 
-        
-            if breakability == True:
 
+    def object_list_creation(self, non_collision_items) -> None:
+        for item in non_collision_items:
+            object_id, _, _, object_width, object_height, object_image = item 
+            if object_id not in UniversalVariables.no_terrain_background_items:
+                
                 for row in RenderPictures.terrain_in_view:
                     for x, y in row:
                         if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
