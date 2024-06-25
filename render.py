@@ -164,9 +164,13 @@ class RenderPictures:
     def object_render(self):
         # render the bitch
         for item in UniversalVariables.object_list:
-            position: tuple = (item[0], item[1])  # x, y
-            scaled_object_image = pygame.transform.scale(item[4], (item[2], item[3]))  # image, sizes
-            UniversalVariables.screen.blit(scaled_object_image, position)
+            print(item)
+            if item[5] in UniversalVariables.interactable_items:  # id in list
+                pass
+            else:
+                position: tuple = (item[0], item[1])  # x, y
+                scaled_object_image = pygame.transform.scale(item[4], (item[2], item[3]))  # image, sizes
+                UniversalVariables.screen.blit(scaled_object_image, position)
 
 
 class ObjectCreation:
@@ -207,7 +211,7 @@ class ObjectCreation:
                 if a_item in non_collision_items or a_item in collision_items:
                     pass
                 else:
-                    if a_item[2] is None or a_item[0]:  # if collision box is none or collision box item is clickable etc door, keyholder
+                    if a_item[2] is None:  # if collision box is none or collision box item is clickable etc door, keyholder
                         non_collision_items.append(a_item)
                     else:                  
                         collision_items.append(a_item)
