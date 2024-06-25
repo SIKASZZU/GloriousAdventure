@@ -9,7 +9,7 @@ from variables import UniversalVariables
 from HUD import HUD_class
 from mazecalculation import AddingMazeAtPosition
 from camera import Camera
-from audio import Tile_Sounds  # insert_key_audio, pop_key_audio, portal_open_audio
+from audio import Tile_Sounds, Player_audio  # insert_key_audio, pop_key_audio, portal_open_audio
 
 
 def find_number_in_list_of_lists(list_of_lists, number):
@@ -110,9 +110,12 @@ class Collisions:
 
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
-                                UniversalVariables.ui_elements.append(
-                                    "A faint whisper of magic stirs as your fingers graze the mysterious object, "
-                                    "hinting at a hidden connection waiting to be unveiled.")
+                                Player_audio.error_audio(self)
+
+                                text = "Shouldn't we put something here?"
+                                if text in self.shown_texts:
+                                    self.shown_texts.remove(text)
+                                UniversalVariables.ui_elements.append(text)
 
                                 reset_clicks(self)
                                 return
@@ -178,6 +181,7 @@ class Collisions:
                         # Clickides saab avada ukse - uue maze
                         if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
                             if EssentialsUpdate.day_night_text != 'Day':
+                                Player_audio.error_audio(self)
 
                                 text = ("Can't open new maze during night.")
                                 if text in self.shown_texts:
@@ -190,6 +194,7 @@ class Collisions:
                             # For opening the door remove one key from inventory
                             else:
                                 if not 'Maze_Key' in Inventory.inventory:
+                                    Player_audio.error_audio(self)
 
                                     text =  ("No available Maze key in inventory.")
                                     if text in self.shown_texts:

@@ -4,7 +4,7 @@ from images import ImageLoader, ImageCache
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list
-
+from audio import Player_audio
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
         Inventory.calculate_craftable_items(self)
@@ -82,6 +82,7 @@ class Inventory:
                             Inventory.add_item(self, crafted_item)
 
                     else:
+                        Player_audio.error_audio(self)
                         text = "Not enough space in Inventory."
                         UniversalVariables.ui_elements.append(text)
 

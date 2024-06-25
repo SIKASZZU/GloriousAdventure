@@ -5,7 +5,7 @@ from variables import UniversalVariables
 from objects import ObjectManagement  # add_object_from_inv
 from collisions import reset_clicks
 from inventory import Inventory
-
+from audio import Player_audio
 class Loot:
     obtained_loot_list = []
 
@@ -27,9 +27,12 @@ class Loot:
                     if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + count:
                         self.terrain_data[barrel_y][barrel_x] = 1002
                         Loot.gather_loot(self, count)
+                        Player_audio.opening_a_barrel_audio(self)
 
 
                     elif self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots < len(Inventory.inventory) + inv_count:
+                        Player_audio.opening_a_barrel_audio(self, False)
+
                         text = "Not enough space in Inventory."
                         UniversalVariables.ui_elements.append(text)
 

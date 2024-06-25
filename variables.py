@@ -13,7 +13,7 @@ class UniversalVariables():
     screen_y: int = 768
 
     # Mängu heli tugevus
-    sound_volume: int = 0.05
+    sound_volume: int = 0.1
 
     # Mängu max tick rate
 
@@ -29,7 +29,7 @@ class UniversalVariables():
         # Mängu max tick rate
         FPS = 600
 
-        player_range: int = block_size * 15
+        player_range: int = block_size * 2
 
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 

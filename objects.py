@@ -4,6 +4,7 @@ from images import ImageLoader
 from inventory import Inventory
 from variables import UniversalVariables
 from render import RenderPictures  # resize images
+from audio import Player_audio
 
 class ObjectManagement:
 
@@ -44,6 +45,7 @@ class ObjectManagement:
                                         self.terrain_data[grid_row][grid_col] = 1
 
                                     ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+                                    Player_audio.player_item_audio(self)
 
                                 else:
                                     print("Invalid grid indices:", grid_row,
@@ -53,6 +55,8 @@ class ObjectManagement:
                                 print("IndexError: objects.py, remove_object_at_position", e)
 
                         else:
+                            Player_audio.error_audio(self)
+
                             text = "Not enough space in Inventory."
                             UniversalVariables.ui_elements.append(text)
 
@@ -117,7 +121,10 @@ class ObjectManagement:
             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: amount
             Inventory.inventory[item] = amount
 
-        else: return
+        else:
+            Player_audio.error_audio(self)
+
+            return
 
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :
