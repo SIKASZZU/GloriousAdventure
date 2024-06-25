@@ -162,22 +162,28 @@ class ObjectManagement:
                             UniversalVariables.screen.blit(scaled_object_image, position)
             
             object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-            
-            if (UniversalVariables.hitbox_count % 2) != 0:
-                ObjectManagement.render_collision_box(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-                if object_breakable:  pygame.draw.rect(UniversalVariables.screen, 'pink', object_rect, 1)  # Teeb roosa outline objecti ümber
+
+    def render_boxes():
+        if (UniversalVariables.render_boxes_counter % 2) != 0:
+            ObjectManagement.render_collision_box()
+            ObjectManagement.render_interaction_box()
+
+    def render_collision_box() -> None:
+        for box_item in UniversalVariables.collision_boxes:
+            item_start_x, item_start_y  = box_item[0], box_item[1]
+            item_width, item_height = box_item[2], box_item[3]
+            obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
+            collision_box_color = 'green'
+            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)
 
 
-    def render_collision_box(self, collision_box_x, collision_box_y, collision_box_width, collision_box_height) -> None:
-        """ Renderib hitboxi objektitele. Green colored square. """
+    def render_interaction_box() -> None:
+        ### TODO: hetkel renderib isegi non-breakalbe objekt itemitle selle rooosa ruudu ymber
+        # terrain_x, terrain_y, object_width, object_height, object_image, object_id
 
-        collision_box_color: str = 'green'
-        collision_box_x += UniversalVariables.offset_x
-        collision_box_y += UniversalVariables.offset_y
-
-        # Teeb antud asjadest hitboxi ja visualiseerib seda
-        obj_collision_box = pygame.Rect(collision_box_x, collision_box_y, collision_box_width, collision_box_height)
-        pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)
-
-
-
+        for box_item in UniversalVariables.object_list:
+            item_start_x, item_start_y  = box_item[0], box_item[1]
+            item_width, item_height = box_item[2], box_item[3]
+            obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
+            collision_box_color = 'pink'
+            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)

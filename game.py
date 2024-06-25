@@ -236,6 +236,7 @@ class Game:
         #     #ObjectManagement.place_and_render_object(self)  # Render objects
         #     PlayerUpdate.render_player(self)  # Render player
 #        else:
+        ObjectManagement.render_boxes()
         PlayerUpdate.render_player(self)
 
         Enemy.spawn(self)

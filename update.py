@@ -192,7 +192,7 @@ class PlayerUpdate:
                                                            UniversalVariables.block_size, UniversalVariables.block_size)
 
         # renderib playeri hitboxi
-        if (UniversalVariables.hitbox_count % 2) != 0 and UniversalVariables.debug_mode:
+        if (UniversalVariables.render_boxes_counter % 2) != 0 and UniversalVariables.debug_mode:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
@@ -308,7 +308,7 @@ class EssentialsUpdate:
             # H key, HITBOX KEY
             if keys[pygame.K_h] and not self.h_pressed:
                 self.h_pressed = True
-                UniversalVariables.hitbox_count += 1
+                UniversalVariables.render_boxes_counter += 1
             elif not keys[pygame.K_h]: self.h_pressed = False
 
             # J KEY, LIGHT ON/OFF KEY

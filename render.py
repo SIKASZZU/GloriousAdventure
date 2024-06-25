@@ -165,8 +165,8 @@ class RenderPictures:
     def object_render(self):
         # render the bitch
         for item in UniversalVariables.object_list:
-            position: tuple = (item[1], item[2])
-            scaled_object_image = pygame.transform.scale(item[5], (item[3], item[4]))
+            position: tuple = (item[0], item[1])  # x, y
+            scaled_object_image = pygame.transform.scale(item[4], (item[2], item[3]))  # image, sizes
             UniversalVariables.screen.blit(scaled_object_image, position)
 
 
@@ -266,11 +266,11 @@ class ObjectCreation:
                             terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                             terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                            new_object = (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
+                            new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
 
                             if new_object not in UniversalVariables.object_list:
                                 UniversalVariables.object_list.append(
-                                    (object_id, terrain_x, terrain_y, object_width, object_height, object_image)
+                                    (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
                                     )                              
                 # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
                 # 
