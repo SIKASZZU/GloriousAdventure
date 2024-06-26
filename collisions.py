@@ -86,7 +86,6 @@ class Collisions:
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             if self.player_rect.colliderect(collision_object_rect):
-                print('collision', collision_object_rect)
                 pick_up_items = {item[5] for item in UniversalVariables.object_list}
 
                 if Collisions.first_time_collision == False and object_id in pick_up_items:

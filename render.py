@@ -155,6 +155,7 @@ class RenderPictures:
         except IndexError:
             return
 
+
     def object_render():
         for item in UniversalVariables.object_list:
             if item[4] is None:
@@ -274,11 +275,6 @@ class ObjectCreation:
                         if new_object not in UniversalVariables.object_list:
                             UniversalVariables.object_list.append(
                                 (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
-                                )                              
-                # id_sort_order = {6:1, 5:2, 2:3, 4:4, 7:5, 988:6, 9882:7, 1000:8}   # 6 = First to be rendered, 1000 = Last to be rendered
-                # 
-                # # Sort the collision_boxes list based on the custom sort order
-                # UniversalVariables.collision_boxes = sorted(UniversalVariables.collision_boxes, key=lambda box: (id_sort_order.get(box[4], float('inf')), box[1]))
-
+                                )
 
 if __name__ == '__main__':  ...

@@ -231,17 +231,6 @@ class Game:
 
 
     def call_visuals(self):
-        # RenderPictures.render(self)  # Render terrain
-        # ObjectManagement.render_boxes()
-        
-        # if Collisions.render_after:
-        #     RenderPictures.object_render
-        #     PlayerUpdate.render_player(self)
-        # else:
-        #     PlayerUpdate.render_player(self)
-        #     RenderPictures.object_render
-
-
         RenderPictures.map_render(self)
 
         if Collisions.render_after:

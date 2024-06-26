@@ -39,72 +39,28 @@ class ObjectManagement:
                                         self.terrain_data[grid_row][grid_col] = 107
 
                                     else:
-                                        position: tuple = (terrain_x, terrain_y)
                                         self.terrain_data[grid_row][grid_col] = 1
 
-                                    ObjectManagement.add_object_to_inv(self, object_id)
+                                    ObjectManagement.add_object_from_inv(item_name) 
+                                    return
 
                                 else:
-                                    print("Invalid grid indices:", grid_row,
-                                          grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                    print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                    return
 
                             except Exception as e:
                                 print("IndexError: objects.py, remove_object_at_position", e)
-
+                                return
                         else:
                             text = "Not enough space in Inventory."
                             UniversalVariables.ui_elements.append(text)
 
                             if text in self.shown_texts:
                                 self.shown_texts.remove(text)
+                            return
 
-    # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
-    # 160 - X
-    # 240 - Y
-    # 50  - hitboxi laius
-    # 130 - hitboxi pikkus
-    # 4   - objecti ID
-    # 80  - hitboxi offset x
-    # 40  - hitboxi offset y
-                            
-    def add_object_to_inv(self, object_id: int) -> None:
-        # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
-        items_found: set[str] = set()
-        # Hoiab leitud esemeid koos kogusega: test_count = {"Test0": 2, "Test1": 4, "Test2": 6}
-        item_count: dict[str, int] = {}
 
-        # itemi lisamine playeri inventorisse
-        for item_data in items_list:
-            if object_id == item_data["ID"]:
-                items_found.add(item_data["Name"])
-
-        # Copy, et vältida erroreid, mis tulenevad suuruse muutumisega
-        # Hoiab leitud esemeid: test_found_copy = ["test0", "test1", "test2"]
-        items_found_copy: set[str] = items_found.copy()
-
-        try:
-            for item_name in items_found_copy:
-                item_count[item_name] = 0
-
-                for item_data in items_list:
-                    if object_id == item_data["ID"] and item_data["Name"] in items_found:
-                        item_count[item_data["Name"]] += 1
-                        items_found.remove(item_data["Name"])
-
-                        # Uuenda mängija inventori
-                        if item_data["Name"] in Inventory.inventory:
-                            # Kui ese on juba inventoris, suurendab eseme kogust
-                            Inventory.inventory[item_data["Name"]] += 1
-                        else:
-                            # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
-                            Inventory.inventory[item_data["Name"]] = 1
-
-        except RuntimeError as e:
-            print("\nError in file: objects.py, add_object_to_inv", e)
-
-    # temporary add func?
     def add_object_from_inv(item, amount=1):
-
         if item in Inventory.inventory:
             # Kui ese on juba inventoris, suurendab eseme kogust
             Inventory.inventory[item] += amount
@@ -114,6 +70,7 @@ class ObjectManagement:
             Inventory.inventory[item] = amount
 
         else: return
+
 
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :
