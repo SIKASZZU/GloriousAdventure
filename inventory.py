@@ -199,7 +199,8 @@ class Inventory:
         # Tekitab semi-transparent recti
         overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
                                  pygame.SRCALPHA)
-        overlay.set_alpha(180)  # See muudab kui hästi on seda näha /// 0 - 255
+        overlay.set_alpha(180)
+        # See muudab kui hästi on seda näha /// 0 - 255
 
         # Mustad boxid itemite ümber
         for rect in Inventory.inventory_display_rects:
@@ -211,13 +212,13 @@ class Inventory:
         UniversalVariables.screen.blit(overlay, (0, 0))
 
         for rect, (item_name, count) in zip(Inventory.inventory_display_rects, Inventory.inventory.items()):
+            # Muudab itemite kohta inventory slotis
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-            pygame.draw.rect(overlay, (105, 105, 105, 128), item_rect)
 
             if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
                 item_image = ImageLoader.load_image(item_name)
 
-                if item_image is not None:
+                if item_image:
                     # Resize itemi inventory
                     item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
 
@@ -226,20 +227,11 @@ class Inventory:
 
                     # font, numbrid itemite loetlemiseks
                     font = pygame.font.Font(None, 20)
-                    text = font.render(str(count), True, 'Black')
+                    text = font.render(str(count), True, 'black')
                     text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
 
-                    # Displayb resized itemit
-                    blit_operations = []
-                    if item_image:
-                        blit_operations.append((item_image, item_image_rect.topleft))
-                    if text:
-                        blit_operations.append((text, text_rect.topleft))
-
-                    try:
-                        UniversalVariables.screen.blits(blit_operations, doreturn=False)
-                    except Exception as e:
-                        print(f"Error blitting: {e}")
+                    blit_operations = [(item_image, item_image_rect.topleft), (text, text_rect.topleft)]
+                    UniversalVariables.screen.blits(blit_operations, False)
 
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida
