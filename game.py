@@ -219,7 +219,7 @@ class Game:
 
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
         
-        Collisions.collison_terrain(self)  # CHECK TERRAIN AND WATER COLLISION FOR MOVEMENT SPEED CALCULATIONS
+        Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER COLLISION FOR MOVEMENT SPEED CALCULATIONS
         Collisions.change_map_data(self)  # MUUDAB MINGI RANDOM STUFFI JA VAATAB KA KOLLISIONI PLAYERI JA OBJEKTIGA
 
         vision.find_boxes_in_window()
