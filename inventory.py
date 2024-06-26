@@ -205,8 +205,8 @@ class Inventory:
         # Mustad boxid itemite ümber
         for rect in Inventory.inventory_display_rects:
             # Invi hall taust
-            pygame.draw.rect(overlay, (177, 177, 177), rect)  # Teeb inventory läbipaistvaks
-            pygame.draw.rect(overlay, 'black', rect, 2)
+            pygame.draw.rect(overlay, (177, 177, 177), rect, border_radius=5)  # Teeb inventory läbipaistvaks
+            pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)
 
         # Visualiseerib invi
         UniversalVariables.screen.blit(overlay, (0, 0))
