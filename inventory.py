@@ -141,7 +141,7 @@ class Inventory:
 
 
     # TODO : invi on vaja optimatiseerida
-    def calculate_inventory(self) -> None:
+    def calculate_inventory(self, calc_slots_only=False) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
 
@@ -157,15 +157,14 @@ class Inventory:
             total_rows = 4
             total_cols = 2
 
-        if UniversalVariables.maze_counter == 4:
+        if UniversalVariables.maze_counter >= 4:
             total_rows = 5
             total_cols = 2
 
-        if UniversalVariables.maze_counter >= 5:
-            total_rows = 6
-            total_cols = 3
-
         Inventory.total_slots = total_rows * total_cols
+
+        if calc_slots_only:
+            return
 
         Inventory.inventory_display_rects = []
         rect_width: int = UniversalVariables.block_size / 2

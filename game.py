@@ -214,6 +214,8 @@ class Game:
         self.text_elements = new_text_elements
 
     def call_technical(self):
+        Inventory.calculate_inventory(self, True)  # Et invi slottide kogus oleks õige
+
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
 
@@ -302,7 +304,6 @@ class Game:
             self.call_visuals()
 
             HungerComponent.eat(self)
-
             Inventory.call_inventory(self)
             if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
@@ -321,7 +322,7 @@ class Game:
                 # neil functionitel on juba sees, et kontrolliks debug modei
                 self.check_keys()
                 self.custom_addition()
-            # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
+                # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
                 # print(self.player)
 
             Final_Maze.delay += 1
