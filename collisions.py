@@ -165,7 +165,7 @@ class Collisions:
                                 Tile_Sounds.pop_key_audio(self)
                                 yellow_green(self, 'yellow')
                                 x, y = find_number_in_list_of_lists(self.terrain_data, 1000)
-                                self.terrain_data[x][y] = 988
+                                self.terrain_data[x][y] = 9882
 
                                 UniversalVariables.portal_list = []
                                 UniversalVariables.portal_frame_rect = None
