@@ -36,6 +36,7 @@ class Player_audio:
     item_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Item_Sound.mp3'))
     error_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Error_Sound.mp3'))
     cant_open_a_barrel_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Cant_Open_A_Barrel.mp3'))
+    eating_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Eating_Sound.mp3'))
 
     opening_a_barrel_sounds = [
         pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_0.mp3')),
@@ -65,10 +66,17 @@ class Player_audio:
     water_sound_list: list[int, ...] = [0]
     ground_sound_list: list[int, ...] = [1, 2, 4, 7, 107]
     maze_ground_list: list[int, ...] = [11, 89, 90, 91, 92, 93, 933, 94, 95, 96, 97, 977, 98, 988, 99]
-    audio_list: list[str, ...] = [player_death_sound, player_hit_sound,
-                                  in_range_click_sound, out_of_range_click_sound, item_sound, error_sound, opening_a_barrel_sounds, cant_open_a_barrel_sound,
-                                  water_sound, maze_ground_sound,
-                                  grass_sounds]
+    audio_list: list[str, ...] = [
+        # Player
+        player_death_sound, player_hit_sound,
+
+        # Events
+        in_range_click_sound, out_of_range_click_sound, item_sound, error_sound,
+        opening_a_barrel_sounds, cant_open_a_barrel_sound, eating_sound,
+
+        # Tiles
+        water_sound, maze_ground_sound,
+        grass_sounds]
 
     for audio_name in audio_list:
         if type(audio_name) == list:
@@ -213,6 +221,12 @@ class Player_audio:
             Player_audio.event_channel.play(random.choice(Player_audio.opening_a_barrel_sounds))
         else:
             Player_audio.event_channel.play(Player_audio.cant_open_a_barrel_sound)
+
+    def eating_audio(self) -> None:
+        if Player_audio.event_channel.get_busy():
+            Player_audio.event_channel.stop()
+        Player_audio.event_channel.play(Player_audio.eating_sound)
+
 
     def player_audio_update(self) -> None:
         Player_audio.player_movement_audio(self)

@@ -314,7 +314,6 @@ class Game:
                 self.check_keys()
                 self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 2500, 6000   # FPS'side testimiseks
-                print(self.player)
 
             Final_Maze.delay += 1
 

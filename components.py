@@ -4,7 +4,7 @@ import time
 import items
 from variables import UniversalVariables
 from inventory import Inventory
-
+from audio import Player_audio
 
 class HealthComponent:
     death_exit_timer = 0
@@ -230,6 +230,8 @@ class HungerComponent:
                                 UniversalVariables.current_equipped_item = None
 
                         UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
+
+                        Player_audio.eating_audio(self)
 
                         # Clear click pos
                         self.click_position = ()
