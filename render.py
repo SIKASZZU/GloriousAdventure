@@ -68,15 +68,6 @@ class RenderPictures:
                         position = (col, row)
 
                         if terrain_value is not None:
-
-                            if terrain_value == 11:
-                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            if terrain_value == 107:
-                                image = ImageLoader.load_image('Farmland')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
                             if 0 <= terrain_value <= 10:
                                 image = None
                                 if terrain_value == 7:
@@ -101,6 +92,15 @@ class RenderPictures:
                                     if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                         UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
 
+                            if terrain_value == 11:
+                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                            if terrain_value == 107:
+                                image = ImageLoader.load_image('Farmland')
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+
                             elif terrain_value == 1000:
                                 image = ImageLoader.load_image('Final_Maze_Ground_2')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
@@ -111,7 +111,9 @@ class RenderPictures:
                                     image = ImageLoader.load_image('Maze_End_Bottom')
                                 else:
                                     self.terrain_data[row][col] = 933
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                                if image:
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             elif terrain_value == 98:
                                 image = ImageLoader.load_image('Maze_Ground')
