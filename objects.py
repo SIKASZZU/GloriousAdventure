@@ -45,6 +45,7 @@ class ObjectManagement:
                                         self.terrain_data[grid_row][grid_col] = 1
 
                                     ObjectManagement.add_object_from_inv(item_name) 
+                                    Player_audio.player_item_audio(self)
                                     return
 
                                 else:
@@ -55,7 +56,6 @@ class ObjectManagement:
                                 print("IndexError: objects.py, remove_object_at_position", e)
                                 return
 
-                                return
                         else:
                             Player_audio.error_audio(self)
 
