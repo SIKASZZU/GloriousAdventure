@@ -333,8 +333,6 @@ class Collisions:
                                         self.player.speed.current_speed = self.player.speed.base_speed
                                         self.player.stamina.stamina_regenerate(0.05)
 
-                                ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
-
                                 else:  # Player asub vees
                                     if sprinting:
                                         # stamina = 0 - playeri speed = base speed
@@ -348,19 +346,5 @@ class Collisions:
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed / 2
                                         self.player.stamina.stamina_regenerate(0.05)
-
-                            else:  # self.Player asub mapist v2ljas
-                                if sprinting:
-                                    # stamina = 0 - self.playeri speed = base speed
-                                    if self.player.stamina.current_stamina == 0:
-                                        self.player.stamina.stamina_regenerate(0.05)
-                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                    else:
-                                        self.player.speed.current_speed = self.player.speed.base_speed
-                                        HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                        self.player.stamina.use_stamina(0.05)
-                                else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                    self.player.stamina.stamina_regenerate(0.05)
-                    
+                                        
                     except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)
