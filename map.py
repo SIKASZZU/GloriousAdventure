@@ -243,31 +243,23 @@ class MapData:
             return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
 
         # Maze's puzzle pieces
-        MapData.puzzle_pieces = []
         for i in range(_puzzle_pieces):
             while True:
                 puzzle_x = random.randint(3, (size - 3))
                 puzzle_y = random.randint(3, (size - 3))
                 if not is_dead_end(MapData.converted_maze, puzzle_x, puzzle_y):
                     MapData.converted_maze[puzzle_x][puzzle_y] = 10
-                    if (puzzle_x, puzzle_y) not in MapData.puzzle_pieces:
-                        MapData.puzzle_pieces.append((puzzle_x, puzzle_y))
                     break
                 
         # Maze keyholders
-        MapData.keyholders = []
         for i in range(_keyholders):
             while True:
                 keyholder_x = random.randint(3, (size - 3))
                 keyholder_y = random.randint(3, (size - 3))
                 if not is_dead_end(MapData.converted_maze, keyholder_x, keyholder_y):
                     MapData.converted_maze[keyholder_x][keyholder_y] = 981
-                    if (keyholder_x, keyholder_y) not in MapData.keyholders:
-                        MapData.keyholders.append((keyholder_x, keyholder_y))
                     break
                 
-        # Maze loot
-        MapData.loot = []
         if random.choice([True]):
             for i in range(_loot):
                 while True:
@@ -275,8 +267,6 @@ class MapData:
                     loot_y = random.randint(3, (size - 3))
                     if not is_dead_end(MapData.converted_maze, loot_x, loot_y):
                         MapData.converted_maze[loot_x][loot_y] = 1001
-                        if (loot_x, loot_y) not in MapData.loot:
-                            MapData.loot.append((loot_x, loot_y))
                         break
 
         MapData.search_paths(MapData.converted_maze)

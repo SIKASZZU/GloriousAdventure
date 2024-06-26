@@ -31,7 +31,7 @@ def count_occurrences_in_list_of_lists(list_of_lists, number):
 
 def reset_clicks(self):
     if self.click_window_x and self.click_window_y:
-        # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni
+       # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni, vist ikka peab
         self.click_window_x = None
         self.click_window_y = None
 
@@ -72,41 +72,41 @@ class Collisions:
     object_dict = {}
     first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
 
-    def check_collisions(self) -> None:
-        keys = pygame.key.get_pressed()
+    def change_map_data(self) -> None:
+        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
+        collision_object_rect = pygame.Rect(0,0,0,0)
 
-        for collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id, collision_box_offset_x, collision_box_offset_y in UniversalVariables.collision_boxes:
-
-            # See mis listis on, seda on vaja, et see listist ära võtta, ära võttes kaob see mapi pealt ära
-            obj_collision_box = (
-                collision_box_x, collision_box_y, collision_box_width, collision_box_height, object_id,
-                collision_box_offset_x, collision_box_offset_y)
-
-            terrain_x: int = collision_box_x - collision_box_offset_x
-            terrain_y: int = collision_box_y - collision_box_offset_y
+        for terrain_x, terrain_y, object_width, object_height, _, object_id in UniversalVariables.object_list:
+            terrain_x: int = terrain_x - UniversalVariables.offset_x
+            terrain_y: int = terrain_y - UniversalVariables.offset_y
 
             for item in items_list:
-                if item.get("Type") == "Object":
-                    Collisions.object_dict[item.get("ID")] = item
+               if item.get("ID") == object_id:
+                    render_when = item.get("Render_when")
 
-            # Check if the object ID exists in the dictionary
-            if object_id in Collisions.object_dict:
-                # Retrieve properties for the object ID
-                object_properties = Collisions.object_dict[object_id]
-                width = object_properties.get("Object_width")
-                height = object_properties.get("Object_height")
-                render_when = object_properties.get("Render_when")
+            collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
+            if self.player_rect.colliderect(collision_object_rect):
+                pick_up_items = {item[5] for item in UniversalVariables.object_list}
 
-            collision_object_rect = pygame.Rect(terrain_x, terrain_y, width,
-                                                height)  # See on täpsemate arvudega, kui self.collision_box
+                if Collisions.first_time_collision == False and object_id in pick_up_items:
+                    Collisions.first_time_collision = True
+                    UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
+
+                if keys[pygame.K_SPACE]:  ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
+
+                if object_id == 99 or object_id == 98:  Collisions.render_after = True
+
+                else:
+                    point_of_render_after = collision_object_rect[1] + render_when
+                    if point_of_render_after <= self.player_rect[1]:  Collisions.render_after = True
+                    else:  Collisions.render_after = False
 
             if self.click_window_x and self.click_window_y:
                 try:
-                    if terrain_x < Camera.click_x < terrain_x + width and terrain_y < Camera.click_y < terrain_y + height:  # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
-
+                    if terrain_x < Camera.click_x < terrain_x + object_width and terrain_y < Camera.click_y < terrain_y + object_height:  # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
+                        
                         terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
-
 
                         if object_id == 981:  # Paneb key
                             if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
@@ -139,7 +139,7 @@ class Collisions:
 
                                     Tile_Sounds.insert_key_audio(self)
                                     gray_yellow(self, 'yellow')
-
+                            reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
                         if object_id == 982:
                             if UniversalVariables.final_maze != True:
@@ -177,9 +177,7 @@ class Collisions:
                                 Tile_Sounds.pop_key_audio(self)
                                 gray_yellow(self, 'gray')
 
-
-                        # Clickides saab avada ukse - uue maze
-                        if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd
+                        if object_id in [94, 95, 96, 97]:  # Kinniste uste ID'd. Clickides saab avada ukse - uue maze
                             if EssentialsUpdate.day_night_text != 'Day':
                                 Player_audio.error_audio(self)
 
@@ -213,7 +211,7 @@ class Collisions:
 
                                         # Sellega saab suuna kätte, '94: 3' - vasakule
                                         locations = {95: 1, 97: 2, 94: 3,
-                                                     96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                                        96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                                         location = locations[object_id]
 
                                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
@@ -228,7 +226,6 @@ class Collisions:
                                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
                                                                                 grid_y)  # Vaatab y coordinaati
                                         reset_clicks(self)
-
 
                         if UniversalVariables.final_maze == True:
                             if UniversalVariables.portal_frames > 0:
@@ -266,143 +263,93 @@ class Collisions:
                                         (y * UniversalVariables.block_size) + UniversalVariables.block_size / 2
 
                                     UniversalVariables.portal_list.append((portal_x, portal_y))
-
+                        
+                        reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
                 except TypeError:
                     pass
 
-            if self.player_rect.colliderect(collision_object_rect):
-                x = [98, 99, 981, 982, 933, 977, 1001, 94, 95, 96, 97, 98]  # see lahendus on loll ma tean aga pole aega
-                if Collisions.first_time_collision == False and object_id not in x:
-                    Collisions.first_time_collision = True
-                    UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
-                
-                if keys[pygame.K_SPACE]:
-                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, obj_collision_box, object_id)
-
-                if object_id == 99 or object_id == 98:
-                    Collisions.render_after = True
-
-                else:
-                    if (collision_object_rect[1] + render_when) <= self.player_rect[1]:
-                        Collisions.render_after = True
-                    else:
-                        Collisions.render_after = False
-
         reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
-        Collisions.collision_hitbox(self)
 
-    def collision_hitbox(self) -> None:
+    def player_hit_collision(self, collision_box) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
-        for \
-                collision_box_x, collision_box_y, \
-                        collision_box_width, collision_box_height, \
-                        object_id, collision_box_offset_x, \
-                        collision_box_offset_y in UniversalVariables.collision_boxes:
 
-            collision_object_hitbox = pygame.Rect(collision_box_x, collision_box_y, collision_box_width,
-                                                  collision_box_height)
+        # Kui player jookseb siis ta ei lähe läbi objektide
+        if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:  collision_move = 10
+        else:  collision_move = 4
 
-            # Kui player jookseb siis ta ei lähe läbi objektide
-            if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
-                collision_move = 10
+        # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
+        dx = (self.player_rect.centerx - collision_box.centerx) / (UniversalVariables.player_width / 2 + collision_box[2] / 2)
+        dy = (self.player_rect.centery - collision_box.centery) / (UniversalVariables.player_height / 2 + collision_box[3] / 2)
+        
+        if abs(dx) > abs(dy):
+            if dx > 0:  UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
+            else:  UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
 
-            else:
-                collision_move = 4
+        else:
+            if dy > 0:  UniversalVariables.player_y += collision_move  # Liigutab mängijat alla
+            else:  UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
 
-            # Kui läheb vastu hitboxi siis ei lase sellest läbi minna
-            if self.player_rect.colliderect(collision_object_hitbox):
 
-                # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
-                dx = (self.player_rect.centerx - collision_object_hitbox.centerx) / (
-                        UniversalVariables.player_width / 2 + collision_box_width / 2)
-                dy = (self.player_rect.centery - collision_object_hitbox.centery) / (
-                        UniversalVariables.player_height / 2 + collision_box_height / 2)
-
-                # Horisontaalne kokkupuude
-                if abs(dx) > abs(dy):
-                    # Paremalt poolt
-                    if dx > 0:
-                        UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
-                    # Vasakultpoolt
-                    else:
-                        UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
-
-                # Vertikaalne kokkupuude
-                else:
-                    # Alt
-                    if dy > 0:
-                        UniversalVariables.player_y += collision_move  # Liigutab mängijat alla
-                    # Ülevalt
-                    else:
-                        UniversalVariables.player_y -= collision_move  # Liigutab mängijat ülesse
-
-    def collison_terrain(self) -> None:
+    def collison_terrain_types(self) -> None:
         keys = pygame.key.get_pressed()
 
         player_grid_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
-        for i in range(player_grid_col - RenderPictures.render_range,
-                       player_grid_col + RenderPictures.render_range + 1):
-            for j in range(player_grid_row - RenderPictures.render_range,
-                           player_grid_row + RenderPictures.render_range + 1):
+        for row in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
+            for col in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
 
-                # Vaatab terrain recti ja playeri collisoneid
-                terrain_rect = pygame.Rect(j * UniversalVariables.block_size, i * UniversalVariables.block_size,
+                terrain_rect = pygame.Rect(col * UniversalVariables.block_size, row * UniversalVariables.block_size,
                                            UniversalVariables.block_size, UniversalVariables.block_size)
+                
+                # Vaatab terrain recti ja playeri collisoneid
                 if self.player_rect.colliderect(terrain_rect):
-                    sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
-                                keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
-                                keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
-                                keys[pygame.K_LSHIFT] and keys[pygame.K_s]
-                    # Kontrollib kas terrain block jääb faili terrain_data piiridesse
-                    if 0 <= i < len(self.terrain_data) and 0 <= j < len(self.terrain_data[i]):
-
-                        in_water = self.terrain_data[i][j] == 0
-
-                        if in_water != True:
-                            # Player asub maal
-                            if sprinting:
-                                # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed.current_speed = self.player.speed.base_speed
-                                else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed * 1.5
-                                    HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
-                            else:
-                                self.player.speed.current_speed = self.player.speed.base_speed
-                                self.player.stamina.stamina_regenerate(0.05)
-
-                        ### Siin on koodikordus sellest, et kas on vees v6i mapist v2ljas.
-
-                        else:  # Player asub vees
-                            if sprinting:
-                                # stamina = 0 - playeri speed = base speed
-                                if self.player.stamina.current_stamina == 0:
-                                    self.player.stamina.stamina_regenerate(0.05)
-                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                else:
-                                    self.player.speed.current_speed = self.player.speed.base_speed
-                                    HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                    self.player.stamina.use_stamina(0.05)
-                            else:
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                self.player.stamina.stamina_regenerate(0.05)
-
-                    else:  # self.Player asub mapist v2ljas
-                        if sprinting:
-                            # stamina = 0 - self.playeri speed = base speed
-                            if self.player.stamina.current_stamina == 0:
-                                self.player.stamina.stamina_regenerate(0.05)
-                                self.player.speed.current_speed = self.player.speed.base_speed / 2
-                            else:
-                                self.player.speed.current_speed = self.player.speed.base_speed
-                                HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                self.player.stamina.use_stamina(0.05)
+                    ### FIXME: Sul on vaja terrain rect v22rtuse asemel collison boxi v22rtusi just row,col koordinaatidel.
+                    try:
+                        collision_items = {item[4] for item in UniversalVariables.collision_boxes}  # teeb id seti. 
+                        
+                        if self.terrain_data[row][col] in collision_items:
+                            Collisions.player_hit_collision(self, terrain_rect)
+                        
                         else:
-                            self.player.speed.current_speed = self.player.speed.base_speed / 2
-                            self.player.stamina.stamina_regenerate(0.05)
+                            sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
+                                        keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
+                                        keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
+                                        keys[pygame.K_LSHIFT] and keys[pygame.K_s]
+                            # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                            if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
+
+                                in_water = self.terrain_data[row][col] == 0
+
+                                if in_water != True:
+                                    # Player asub maal
+                                    if sprinting:
+                                        # stamina = 0 - playeri speed = base speed
+                                        if self.player.stamina.current_stamina == 0:
+                                            self.player.stamina.stamina_regenerate(0.05)
+                                            self.player.speed.current_speed = self.player.speed.base_speed
+                                        else:
+                                            self.player.speed.current_speed = self.player.speed.base_speed * 1.5
+                                            HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                            self.player.stamina.use_stamina(0.05)
+                                    else:
+                                        self.player.speed.current_speed = self.player.speed.base_speed
+                                        self.player.stamina.stamina_regenerate(0.05)
+
+                                else:  # Player asub vees
+                                    if sprinting:
+                                        # stamina = 0 - playeri speed = base speed
+                                        if self.player.stamina.current_stamina == 0:
+                                            self.player.stamina.stamina_regenerate(0.05)
+                                            self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                        else:
+                                            self.player.speed.current_speed = self.player.speed.base_speed
+                                            HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                            self.player.stamina.use_stamina(0.05)
+                                    else:
+                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                        self.player.stamina.stamina_regenerate(0.05)
+                                        
+                    except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)

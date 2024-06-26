@@ -76,7 +76,9 @@ class UniversalVariables():
     ]
 
     # ******************** COLLISION ******************** #
-    collision_boxes: list = []  # collision
+    collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
+    object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+    interactable_items: list = [94, 95, 96, 97, 981, 982]
 
     # ******************** VISION ******************** #
     light_range: int = 420
@@ -140,7 +142,7 @@ class UniversalVariables():
     enemy_path_update_tick = 5 + random.randint(-5, 5)
 
     # ******************** Counters ******************** #
-    hitbox_count: int = 0
+    render_boxes_counter: int = 0
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
