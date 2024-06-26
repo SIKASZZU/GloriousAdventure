@@ -47,6 +47,7 @@ class RenderPictures:
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         try:
+            # Render range'i arvutamine terrain blocki järgi, maze'is on väiksem kui glade'is
             if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
                 RenderPictures.render_range = 2
                 row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
@@ -68,41 +69,34 @@ class RenderPictures:
                         position = (col, row)
 
                         if terrain_value is not None:
+                            image = None
+
+                            # Kui terrain data on 0 - 10
+                            # Teeb Water/Ground imaged v background imaged
                             if 0 <= terrain_value <= 10:
-                                image = None
-                                if terrain_value == 7:
-                                    image = ImageLoader.load_image('Farmland')
 
-                                elif terrain_value == 10:
-                                    image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                image_name = 'Ground_' + str(
+                                    random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
+                                image = ImageLoader.load_image(image_name)
+                                if image:
+                                    if position not in RenderPictures.occupied_positions:
+                                        scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
 
-                                else:
-                                    image_name = 'Ground_' + str(
-                                        random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
-                                    image = ImageLoader.load_image(image_name)
+                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                            UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
+                                        RenderPictures.occupied_positions[position] = scaled_image
+                                    else:
+                                        scaled_image = RenderPictures.occupied_positions[position]
+                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                                            UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
 
-                                if position not in RenderPictures.occupied_positions:
-                                    scaled_image = pygame.transform.scale(image, (
-                                    UniversalVariables.block_size, UniversalVariables.block_size))
-                                    if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
-                                    RenderPictures.occupied_positions[position] = scaled_image
-                                else:
-                                    scaled_image = RenderPictures.occupied_positions[position]
-                                    if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                        UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
-
-                            if terrain_value == 11:
-                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                            elif terrain_value == 98:
+                                image = ImageLoader.load_image('Maze_Ground')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                            if terrain_value == 107:
-                                image = ImageLoader.load_image('Farmland')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-
-                            elif terrain_value == 1000:
-                                image = ImageLoader.load_image('Final_Maze_Ground_2')
+                            elif terrain_value == 99:
+                                image_name = 'Maze_Wall_' + str(random.randint(0, 9))
+                                image = ImageLoader.load_image(image_name)
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             elif terrain_value in {933, 977}:
@@ -111,30 +105,31 @@ class RenderPictures:
                                     image = ImageLoader.load_image('Maze_End_Bottom')
                                 else:
                                     self.terrain_data[row][col] = 933
+                                    continue
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                                if image:
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value == 98:
-                                image = ImageLoader.load_image('Maze_Ground')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                 terrain_value)
-
-                            elif terrain_value == 99:
-                                image_name = 'Maze_Wall_' + str(random.randint(0, 9))
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image,
-                                                                 terrain_value)
-
+                            elif terrain_value == 1000:
+                                image = ImageLoader.load_image('Final_Maze_Ground_2')
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             else:
-                                image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),
-                                                  None)
+                                image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
                                 if image_name:
-                                    if image_name.startswith('Maze_Wall'):
-                                        image_name = 'Maze_Wall_' + str(random.randint(0, 9))
                                     image = ImageLoader.load_image(image_name)
                                     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                            # See on peale else: sest kui see oleks enne siis
+                            # hakkavad flickerima ja tekivad topelt pildid teistele
+                            if terrain_value in {10, 11, 7, 107}:
+                                if terrain_value in {7, 107}:
+                                    image = ImageLoader.load_image('Farmland')
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                    continue
+
+                                else:
+                                    image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                    continue
 
                 RenderPictures.terrain_in_view.append(current_row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -160,7 +155,7 @@ class ObjectCreation:
 
         UniversalVariables.collision_boxes = []
         UniversalVariables.object_list = []
-        
+
         collision_items = []
         non_collision_items = []
         items_not_designed_for_list = [98, 989_98, 988]  # maze groundid vmdgi taolist
@@ -179,10 +174,10 @@ class ObjectCreation:
                     collision_box     = item.get("Collision_box")
 
                 if breakability == None:  breakability = False
-                
+
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
 
-                if collision_box != None:  
+                if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
 
@@ -193,9 +188,9 @@ class ObjectCreation:
                 else:
                     if a_item[2] is None:  # if collision box is none or collision box item is clickable etc door, keyholder
                         non_collision_items.append(a_item)
-                    else:                  
+                    else:
                         collision_items.append(a_item)
-        
+
                         # lisa see pede box topelt, et oleks click v6imalus ja rohelist boxi ka
                         if a_item[0] in UniversalVariables.interactable_items:
                             non_collision_items.append(a_item)
@@ -206,8 +201,8 @@ class ObjectCreation:
 
 
     def collision_box_list_creation(self, collision_items) -> None:
-        """ 
-            Teeb collision boxid objektidele, millel on vaja collisionit. Roheline ruut. 
+        """
+            Teeb collision boxid objektidele, millel on vaja collisionit. Roheline ruut.
             See list on vajalik visioni tegemisel.
         """
         start_corner_x = 0
@@ -217,11 +212,11 @@ class ObjectCreation:
         object_id      = 0
 
         object_collision_boxes: dict = {}
-        
+
         for item in collision_items:
-            object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item 
+            object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item
             object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
-        
+
         for row in RenderPictures.terrain_in_view:
             for x, y in row:
                 if self.terrain_data[y][x] in object_collision_boxes:
@@ -241,15 +236,15 @@ class ObjectCreation:
 
     def object_list_creation(self, non_collision_items) -> None:
         for item in non_collision_items:
-            
+
             # see vajalik, sest hetkel on selline UniversalVariables.interactable_items abomination
             if len(item) == 6:
                 object_id, _, _, object_width, object_height, object_image = item
             elif len(item) == 9:
                 object_id, _, _, _, _, _, object_width, object_height, object_image = item
-            
+
             #if object_id not in UniversalVariables.no_terrain_background_items:
-                
+
             for row in RenderPictures.terrain_in_view:
                 for x, y in row:
                     if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
