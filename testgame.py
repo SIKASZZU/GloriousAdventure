@@ -191,3 +191,89 @@ while running:
 
 pygame.quit()
 sys.exit()
+
+
+
+import pygame
+import random
+import math
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Rain Effect")
+
+# Colors
+blue = (140, 180, 255)
+
+# Wind speed (adjust as needed)
+WIND_SPEED = -1  # Horizontal wind speed (leftward)
+
+# Angle of rain tilt (in degrees)
+RAIN_ANGLE = 95  # Adjust this angle to change the tilt of raindrops
+
+# Convert angle to radians
+ANGLE_RAD = math.radians(RAIN_ANGLE)
+
+# Number of raindrops to appear per frame
+RAIN_PER_FRAME = 3
+
+# Raindrop class
+class Raindrop:
+    def __init__(self):
+        self.x = random.randint(0, 1000)    # Random x position
+        self.y = random.randint(-HEIGHT, 0)  # Random y position above the screen
+        self.length = random.randint(5, 15)  # Length of the raindrop
+        self.speed = random.randint(5, 15)   # Speed of the raindrop
+        self.wind = WIND_SPEED               # Horizontal wind effect
+
+    def fall(self):
+        # Calculate new positions with tilt
+        self.y += self.speed
+        self.x += self.wind
+
+        # Reset raindrop if it goes below the screen
+        if self.y > HEIGHT:
+            self.y = random.randint(-HEIGHT, 0)
+            self.x = random.randint(0, 1000)
+
+    def draw(self):
+        # Calculate end position for tilted raindrop
+        end_x = self.x + self.length * math.cos(ANGLE_RAD)
+        end_y = self.y + self.length * math.sin(ANGLE_RAD)
+
+        pygame.draw.line(screen, blue, (self.x, self.y), (end_x, end_y), 2)
+
+# List to hold raindrops
+raindrops = []
+num_drops = 12
+# Main loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Add new raindrops evenly over time
+    if len(raindrops) < num_drops:
+        for _ in range(RAIN_PER_FRAME):
+            raindrops.append(Raindrop())
+
+    # Clear screen
+    screen.fill((0, 0, 0))
+
+    # Update and draw raindrops
+    for drop in raindrops:
+        drop.fall()
+        drop.draw()
+
+    # Update the display
+    pygame.display.flip()
+
+    # Cap the frame rate
+    pygame.time.Clock().tick(60)
+
+pygame.quit()

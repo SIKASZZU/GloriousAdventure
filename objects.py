@@ -14,7 +14,10 @@ class ObjectManagement:
         kui need on lisatud mineralide listi """
 
         # Kui object ID ei ole siis jätab vahele, errorite vältimiseks
-        if object_id is not None:
+        if object_id is None:
+            return
+
+        else:
             for item in items_list:
                 item_name = item.get("Name")
 
@@ -46,13 +49,15 @@ class ObjectManagement:
 
                                     ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
                                     Player_audio.player_item_audio(self)
+                                    return
 
                                 else:
-                                    print("Invalid grid indices:", grid_row,
-                                          grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                    print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
+                                    return
 
                             except Exception as e:
                                 print("IndexError: objects.py, remove_object_at_position", e)
+                                return
 
                         else:
                             Player_audio.error_audio(self)
@@ -62,6 +67,7 @@ class ObjectManagement:
 
                             if text in self.shown_texts:
                                 self.shown_texts.remove(text)
+                            return
 
     # ID, hitboxi list, näiteks (160, 240, 50, 130, 4, 80, 40)
     # 160 - X
