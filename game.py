@@ -242,8 +242,7 @@ class Game:
         #     RenderPictures.object_render
 
 
-        RenderPictures.map_render(self)  # Render terrain
-        ObjectManagement.render_boxes()
+        RenderPictures.map_render(self)
 
         if Collisions.render_after:
             RenderPictures.object_render()
@@ -252,6 +251,7 @@ class Game:
             PlayerUpdate.render_player(self)
             RenderPictures.object_render()
 
+        ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
         EssentialsUpdate.calculate_daylight_strength(self)
@@ -275,7 +275,7 @@ class Game:
             item = UniversalVariables.current_equipped_item
             Inventory.render_inventory_slot(self, item)
         else:
-            item = None
+            item = None  # TODO: kas argumendis ei saaks olla item juba None?, et siis seda ekstra line'i ei peaks siin olema
             Inventory.render_inventory_slot(self, item)
 
     def check_keys(self):
@@ -299,8 +299,8 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                ObjectManagement.add_object_from_inv("Bread", 100)
-                ObjectManagement.add_object_from_inv("Bad_Bread", 100)
+                # ObjectManagement.add_object_from_inv("Bread", 100)
+                # ObjectManagement.add_object_from_inv("Bad_Bread", 100)
                 self.restrict_looping = True
 
     def run(self):

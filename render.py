@@ -176,24 +176,25 @@ class ObjectCreation:
         
         collision_items = []
         non_collision_items = []
+        items_not_designed_for_list = [98, 989_98, 988]  # maze groundid vmdgi taolist
 
         for item in items_list:
             if item.get("Type") == "Object":
                 object_id = item.get("ID")
-
-                object_image_name = item.get("Name")
-                object_image      = ImageLoader.load_image(object_image_name)
-                breakability      = item.get('Breakable')
-                object_width      = item.get("Object_width")
-                object_height     = item.get("Object_height")
-                collision_box     = item.get("Collision_box")
-
+                if object_id in items_not_designed_for_list:
+                    continue
+                else:
+                    object_image_name = item.get("Name")
+                    object_image      = ImageLoader.load_image(object_image_name)
+                    breakability      = item.get('Breakable')
+                    object_width      = item.get("Object_width")
+                    object_height     = item.get("Object_height")
+                    collision_box     = item.get("Collision_box")
 
                 if breakability == None:  breakability = False
                 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                #if object_image:
-                        
+
                 if collision_box != None:  
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)

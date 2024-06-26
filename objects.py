@@ -6,7 +6,7 @@ from variables import UniversalVariables
 
 class ObjectManagement:
 
-    def remove_object_at_position(self, terrain_x: int, terrain_y: int, obj_collision_box: tuple[int, ...],
+    def remove_object_at_position(self, terrain_x: int, terrain_y: int,
                                   object_id: int = None) -> None:
         """ Itemeid ei saa ülesse võtta enne
         kui need on lisatud mineralide listi """
@@ -42,7 +42,7 @@ class ObjectManagement:
                                         position: tuple = (terrain_x, terrain_y)
                                         self.terrain_data[grid_row][grid_col] = 1
 
-                                    ObjectManagement.add_object_to_inv(self, object_id, obj_collision_box)
+                                    ObjectManagement.add_object_to_inv(self, object_id)
 
                                 else:
                                     print("Invalid grid indices:", grid_row,
@@ -67,7 +67,7 @@ class ObjectManagement:
     # 80  - hitboxi offset x
     # 40  - hitboxi offset y
                             
-    def add_object_to_inv(self, object_id: int, obj_collision_box: tuple[int, ...]) -> None:
+    def add_object_to_inv(self, object_id: int) -> None:
         # Hoiab leitud esemeid: test_found = ["test0", "test1", "test2"]
         items_found: set[str] = set()
         # Hoiab leitud esemeid koos kogusega: test_count = {"Test0": 2, "Test1": 4, "Test2": 6}
@@ -98,8 +98,7 @@ class ObjectManagement:
                         else:
                             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: 1
                             Inventory.inventory[item_data["Name"]] = 1
-                        index = UniversalVariables.collision_boxes.index(obj_collision_box)
-                        UniversalVariables.collision_boxes.pop(index)
+
         except RuntimeError as e:
             print("\nError in file: objects.py, add_object_to_inv", e)
 
@@ -126,8 +125,8 @@ class ObjectManagement:
             
     def render_boxes():
         if (UniversalVariables.render_boxes_counter % 2) != 0:
-            ObjectManagement.render_collision_box()
             ObjectManagement.render_interaction_box()
+            ObjectManagement.render_collision_box()
 
 
     def render_collision_box() -> None:
@@ -136,7 +135,7 @@ class ObjectManagement:
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'green'
-            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)
+            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 3)
 
 
     def render_interaction_box() -> None:
@@ -144,8 +143,12 @@ class ObjectManagement:
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
 
         for box_item in UniversalVariables.object_list:
+            outline_thickness = 3
+            if box_item[5] in [981, 982]:
+                outline_thickness = 8
+            
             item_start_x, item_start_y  = box_item[0], box_item[1]
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'pink'
-            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 2)
+            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, outline_thickness, 5)
