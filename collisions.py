@@ -97,9 +97,10 @@ class Collisions:
                 if object_id == 99 or object_id == 98:  Collisions.render_after = True
 
                 else:
-                    point_of_render_after = collision_object_rect[1] + render_when
-                    if point_of_render_after <= self.player_rect[1]:  Collisions.render_after = True
-                    else:  Collisions.render_after = False
+                    if render_when != None:
+                        point_of_render_after = collision_object_rect[1] + render_when
+                        if point_of_render_after <= self.player_rect[1]:  Collisions.render_after = True
+                        else:  Collisions.render_after = False
 
             if self.click_window_x and self.click_window_y:
                 try:
