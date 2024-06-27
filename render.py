@@ -71,6 +71,8 @@ class RenderPictures:
                         if terrain_value is not None:
                             image = None
 
+                            ### FIXME: maze uksed ja blade maze flickerib
+
                             # Kui terrain data on 0 - 10
                             # Teeb Water/Ground imaged v background imaged
                             if 0 <= terrain_value <= 10:
@@ -78,6 +80,11 @@ class RenderPictures:
                                 image_name = 'Ground_' + str(
                                     random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
                                 image = ImageLoader.load_image(image_name)
+
+                                # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
+                                if terrain_value in {7, 10}:
+                                    image = None
+
                                 if image:
                                     if position not in RenderPictures.occupied_positions:
                                         scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
