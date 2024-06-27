@@ -7,6 +7,7 @@ import random
 import copy
 from variables import UniversalVariables
 
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -16,10 +17,14 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+
 class MapData:
 
     maze_size = 40
     maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+    start_side = 'bottom'  # default
+
+    placeholder = [[None] * 40 for _ in range(40)]
     start_side = 'bottom'  # default
 
     placeholder = [[None] * 40 for _ in range(40)]
@@ -77,8 +82,8 @@ class MapData:
             start_0 = (size - 1, size // 2)
             start_1 = (size - 1, size // 2 - 1)
             maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
-        
-        # compiler 
+
+        # compiler
         if side == None:
             pass
         else:
@@ -97,14 +102,14 @@ class MapData:
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
 
                 elif side == 'right':
-                    end_0 = ((size // 2), size-1)
-                    end_1 = ((size // 2) - 1, size-1)
+                    end_0 = ((size // 2), size - 1)
+                    end_1 = ((size // 2) - 1, size - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
 
                 elif side == 'bottom':
-                    end_0 = (size-1, (size // 2))
-                    end_1 = (size-1, (size // 2) - 1)
-                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97            
+                    end_0 = (size - 1, (size // 2))
+                    end_1 = (size - 1, (size // 2) - 1)
+                    maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97
 
             return maze
 
@@ -216,8 +221,10 @@ class MapData:
         size = MapData.maze_size
         resolution = MapData.resolution
         noise = MapData.block_maze_noise((size, size), resolution)
+        noise = MapData.block_maze_noise((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
-        maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
+        maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99',
+                        '98')  # threshold adjusted to create more walls
 
         # outer walls one block in must be pathway, value 98.
         for row in range(size):
@@ -240,16 +247,16 @@ class MapData:
         elif start_side == 'top':
             start_0 = (0, (size // 2))
             start_1 = (0, (size // 2) - 1)
-            maze[start_0], maze[start_1]= "91", "91"
+            maze[start_0], maze[start_1] = "91", "91"
 
         elif start_side == 'right':
-            start_0 = ((size // 2), size-1)
-            start_1 = ((size // 2) - 1, size-1)
-            maze[start_0], maze[start_1]= "92", "92"
+            start_0 = ((size // 2), size - 1)
+            start_1 = ((size // 2) - 1, size - 1)
+            maze[start_0], maze[start_1] = "92", "92"
 
         elif start_side == 'bottom':
-            start_0 = (size-1, (size // 2))
-            start_1 = (size-1, (size // 2) - 1)
+            start_0 = (size - 1, (size // 2))
+            start_1 = (size - 1, (size // 2) - 1)
             maze[start_0], maze[start_1] = "93", "93"
 
         # Set the end points on the remaining three sides
@@ -268,13 +275,13 @@ class MapData:
                 maze[end_0], maze[end_1] = "95", "95"
 
             elif side == 'right':
-                end_0 = ((size // 2), size-1)
-                end_1 = ((size // 2) - 1, size-1)
+                end_0 = ((size // 2), size - 1)
+                end_1 = ((size // 2) - 1, size - 1)
                 maze[end_0], maze[end_1] = "96", "96"
 
             elif side == 'bottom':
-                end_0 = (size-1, (size // 2))
-                end_1 = (size-1, (size // 2) - 1)
+                end_0 = (size - 1, (size // 2))
+                end_1 = (size - 1, (size // 2) - 1)
                 maze[end_0], maze[end_1] = "97", "97"
 
         # muudab maze datat, et string -> int -> list
@@ -364,10 +371,38 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
+    def block_maze_noise(shape, res):
+        def f(t):
+            # return 1*t**7 - 5*t**0 + 1*t**1
+            return 1 * t ** 7 - 5 * t ** 0 + 1 * t ** 1
+
+        grid = np.mgrid[0:res[0], 0:res[1]].transpose(1, 2, 0)
+        grid = grid / res
+
+        gradients = np.random.rand(res[0] + 1, res[1] + 1, 2)
+        gradients /= np.linalg.norm(gradients, axis=2, keepdims=True)
+
+        g00 = gradients[:-1, :-1]
+        g10 = gradients[1:, :-1]
+        g01 = gradients[:-1, 1:]
+        g11 = gradients[1:, 1:]
+
+        t = grid - grid.astype(int)
+        fade_t = f(t)
+
+        n00 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1])) * g00, axis=2)
+        n10 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1])) * g10, axis=2)
+        n01 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1] - 1)) * g01, axis=2)
+        n11 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1] - 1)) * g11, axis=2)
+
+        n0 = n00 * (1 - fade_t[:, :, 0]) + n10 * fade_t[:, :, 0]
+        n1 = n01 * (1 - fade_t[:, :, 0]) + n11 * fade_t[:, :, 0]
+
+        noise = np.sqrt(2) * (n0 * (1 - fade_t[:, :, 1]) + n1 * fade_t[:, :, 1])
+        return noise
 
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
-
 
     def find_path_bfs(maze, start, end):
         queue = deque([(start, [])])
@@ -396,9 +431,9 @@ class MapData:
         special_positions = []
         start_positions = [(38, 19), (38, 20)]  # y, x
         end_positions = [(19, 38), (20, 38),
-                        (1, 19), (1, 20),
-                        (19, 1), (20, 1),
-                        (38, 19), (38, 20)]
+                         (1, 19), (1, 20),
+                         (19, 1), (20, 1),
+                         (38, 19), (38, 20)]
 
         for i in range(len(maze)):
             for j in range(len(maze[i])):
@@ -431,21 +466,27 @@ class MapData:
             # maze counter on fucking autistics, see liiga hilja lisab +1 oma counterile
 
         if item.endswith('maze'):
+            if item == 'maze':
+                #
+                return MapData.block_maze_generation(start_side)
 
-            if item == 'final_maze':
-                for row in UniversalVariables.map_list:
-                    if 'final_maze' in row:
-                        return MapData.final_maze_generation(start_side)
-
-            if item == 'blade_maze':
-                return MapData.blade_maze_generation(start_side)
-                
-            else:
-                #return MapData.block_maze_generation(start_side)
+            elif item == 'labyrinth_maze':
+                #
                 return MapData.labyrinth_maze_generation(start_side)
 
+            elif item == 'blade_maze':
+                UniversalVariables.blades_spawned = True
+                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+
+            elif item == 'final_maze':
+                for row in UniversalVariables.map_list:
+                    if 'final_maze' in row:
+                        UniversalVariables.final_maze_spawned = True
+                        return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+
         elif item == 'glade':
-            return MapData.file_to_maze(file_name=f'{item}.txt')  # Glade'il pole start side
+            # Glade'il pole start side
+            return MapData.file_to_maze(file_name=f'{item}.txt')
 
         elif item == 'place':
             return MapData.placeholder
@@ -474,26 +515,27 @@ class MapData:
                         if col_index >= len(old_row) or item not in old_row:
                             difference.append(item)
 
-
         if self.terrain_data is None:
             # If there's no existing terrain_data, generate new map data from scratch
             new_map_data = []
             for sublist in UniversalVariables.map_list:
                 combined_rows = None
                 for item in sublist:
-                    if item == 'glade':  current_data = MapData.glade_creation()
-                    else:  current_data = MapData.get_data(item, start_side)
-                    
+                    if item == 'glade':
+                        current_data = MapData.glade_creation()
+                    else:
+                        current_data = MapData.get_data(item, start_side)
+
                     if combined_rows is None:
                         combined_rows = current_data
                     else:
                         combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
-                    #print(combined_rows)
+                    # print(combined_rows)
                 new_map_data.extend(combined_rows)
             self.terrain_data = new_map_data
             MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed
 
         return self.terrain_data
 
+
 if __name__ == "__main__": ...
-    

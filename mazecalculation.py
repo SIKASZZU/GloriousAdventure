@@ -2,6 +2,7 @@ from map import MapData
 from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
+import numpy as np
 
 
 def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=5):
@@ -38,7 +39,7 @@ class AddingMazeAtPosition:
             Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze']:
+        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -74,10 +75,10 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
-            print(f'Something fishy: add_maze_to_specific_position_top:{[row_index], [col_index]}')
+            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
 
@@ -93,7 +94,7 @@ class AddingMazeAtPosition:
                 self.terrain_data.append(row)
 
         # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze']:
+        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -128,10 +129,10 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
-            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
+            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
@@ -149,7 +150,7 @@ class AddingMazeAtPosition:
             Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze']:
+        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
 
             text = "This place looks familiar."
 
@@ -186,8 +187,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index], [row_index]}')
@@ -203,7 +203,7 @@ class AddingMazeAtPosition:
                 row.extend([None] * 39)
 
         # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze']:
+        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -239,20 +239,32 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if UniversalVariables.final_maze == True and UniversalVariables.final_maze_spawned == False:
-            maze_type = 'final_maze'
+        if AddingMazeAtPosition.maze_type == 'blade_maze':
+            choices = ['labyrinth_maze', 'maze']
+            probabilities = [0.40, 0.60]  # 100 % alati olema
 
-        elif UniversalVariables.maze_counter == 2:
-            maze_type = 'blade_maze'
+            # 40 % 'labyrinth_maze' ja 60 % 'maze'
+            maze_type = np.random.choice(choices, p=probabilities)
+
+        elif UniversalVariables.final_maze_spawned:
+            choices = ['labyrinth_maze', 'maze', 'blade_maze']
+            probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema
+
+            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze'
+            maze_type = np.random.choice(choices, p=probabilities)
 
         else:
-            maze_type = AddingMazeAtPosition.maze_type
+            choices = ['labyrinth_maze', 'maze', 'blade_maze', 'final_maze']
+            probabilities = [0.25, 0.45, 0.20, 0.10]  # 100 % alati olema
+
+            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze' ja 5 % 'final_maze'
+            maze_type = np.random.choice(choices, p=probabilities)
 
         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:
@@ -309,10 +321,11 @@ class AddingMazeAtPosition:
                                                                       col_index, maze_type)
 
         # Do stuff here after adding maze
-        # print()
-        # for row in UniversalVariables.map_list: print(row)  # print maze list
-        # print(UniversalVariables.maze_counter)
+        print()
+        for row in UniversalVariables.map_list: print(row)  # print maze list
+        print(UniversalVariables.maze_counter)
 
 
 if __name__ == '__main__':
     ...
+
