@@ -24,7 +24,7 @@ class UniversalVariables():
     prev_block_size: int = 0
 
     if debug_mode:
-        jagatis: float = 50
+        jagatis: float = 15
         
         # Mängu max tick rate
         FPS = 600
@@ -93,8 +93,7 @@ class UniversalVariables():
     # ******************** MAZE ******************** #
     maze_counter: int = 1
     enemy_counter: int = 0
-    final_maze = bool
-    final_maze_spawned = False  # safety measure, et rohkem kui yhte final mazei ei tekiks.
+    final_maze = False
     final_maze_key_slots: set = set()
     portal_frames: int = 0
 

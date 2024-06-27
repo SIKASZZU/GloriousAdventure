@@ -251,7 +251,7 @@ class AddingMazeAtPosition:
             choices = ['labyrinth_maze', 'block_maze']
             probabilities = [0.40, 0.60]  # 100 % alati olema
 
-        elif UniversalVariables.final_maze_spawned:
+        elif UniversalVariables.final_maze:
             # 30 % 'labyrinth_maze' ja 60 % 'block_maze' ja 10 % 'blade_maze'
             choices = ['labyrinth_maze', 'block_maze', 'blade_maze']
             probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema

@@ -115,7 +115,7 @@ class MapData:
 
 
     def final_maze_generation(start_side):
-        UniversalVariables.final_maze_spawned = True
+        UniversalVariables.final_maze = True
         return MapData.file_to_maze(file_name='final_maze.txt', side=start_side)
 
 
@@ -481,7 +481,7 @@ class MapData:
             elif item == 'final_maze':
                 for row in UniversalVariables.map_list:
                     if 'final_maze' in row:
-                        UniversalVariables.final_maze_spawned = True
+                        UniversalVariables.final_maze = True
                         return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
         elif item == 'glade':
