@@ -29,7 +29,7 @@ class UniversalVariables():
         # Mängu max tick rate
         FPS = 600
 
-        player_range: int = block_size * 2
+        player_range: int = block_size * 25
 
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
