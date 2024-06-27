@@ -2,7 +2,7 @@ from map import MapData
 from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
-from text import Fading_Text
+from text import Fading_text
 
 import numpy as np
 
@@ -23,7 +23,7 @@ def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=
 class AddingMazeAtPosition:
     row = []
     col = []
-    maze_type = 'maze'  # regular maze is 'maze', final maze is 'final_maze'
+    maze_type = 'block_maze'  # regular maze is 'block_maze', final maze is 'final_maze'
 
     def add_maze_to_specific_position_top(self, map_list, row_index, col_index, maze_type):
 
@@ -40,11 +40,11 @@ class AddingMazeAtPosition:
             Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in Fading_Text.shown_texts:
-                Fading_Text.shown_texts.remove(text)
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -95,11 +95,11 @@ class AddingMazeAtPosition:
                 self.terrain_data.append(row)
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in Fading_Text.shown_texts:
-                Fading_Text.shown_texts.remove(text)
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -151,12 +151,12 @@ class AddingMazeAtPosition:
             Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
 
             text = "This place looks familiar."
 
-            if text in Fading_Text.shown_texts:
-                Fading_Text.shown_texts.remove(text)
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -204,11 +204,11 @@ class AddingMazeAtPosition:
                 row.extend([None] * 39)
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in Fading_Text.shown_texts:
-                Fading_Text.shown_texts.remove(text)
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -246,19 +246,19 @@ class AddingMazeAtPosition:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if AddingMazeAtPosition.maze_type == 'blade_maze':
-            # 40 % 'labyrinth_maze' ja 60 % 'maze'
-            choices = ['labyrinth_maze', 'maze']
+        if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
+            # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
+            choices = ['labyrinth_maze', 'block_maze']
             probabilities = [0.40, 0.60]  # 100 % alati olema
 
         elif UniversalVariables.final_maze_spawned:
-            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze'
-            choices = ['labyrinth_maze', 'maze', 'blade_maze']
+            # 30 % 'labyrinth_maze' ja 60 % 'block_maze' ja 10 % 'blade_maze'
+            choices = ['labyrinth_maze', 'block_maze', 'blade_maze']
             probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema
 
         else:
-            # 25 % 'labyrinth_maze' ja 45 % 'maze' ja 20 % 'blade_maze' ja 10 % 'final_maze'
-            choices = ['labyrinth_maze', 'maze', 'blade_maze', 'final_maze']
+            # 25 % 'labyrinth_maze' ja 45 % 'block_maze' ja 20 % 'blade_maze' ja 10 % 'final_maze'
+            choices = ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze']
             probabilities = [0.25, 0.45, 0.20, 0.10]  # 100 % alati olema
 
         maze_type = np.random.choice(choices, p=probabilities)

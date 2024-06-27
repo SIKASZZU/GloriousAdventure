@@ -21,7 +21,7 @@ class UniversalVariables():
     screen = pygame.display.set_mode((screen_x, screen_y))
 
     # Block size muutmiseks kui zoomitakse sisse või välja
-    jagatis: float = 15
+    jagatis: float = 50
     block_size: int = screen_x // jagatis
     prev_block_size: int = 0
 
@@ -102,7 +102,7 @@ class UniversalVariables():
     portal_list: list = []
 
     # ******************** Render ******************** #
-    map_list: list = [['maze'], ['glade']]
+    map_list: list = [['block_maze'], ['glade']]
     blits_sequence: list = []
     text_sequence: list = []
 

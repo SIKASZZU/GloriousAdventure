@@ -466,7 +466,7 @@ class MapData:
             # maze counter on fucking autistics, see liiga hilja lisab +1 oma counterile
 
         if item.endswith('maze'):
-            if item == 'maze':
+            if item == 'block_maze':
                 #
                 return MapData.block_maze_generation(start_side)
 
@@ -530,7 +530,6 @@ class MapData:
                         combined_rows = current_data
                     else:
                         combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
-                    # print(combined_rows)
                 new_map_data.extend(combined_rows)
             self.terrain_data = new_map_data
             MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed
