@@ -42,23 +42,26 @@ class Camera:
 
 
     def click_on_screen(self):
-        if self.click_position:
-            self.click_window_x = self.click_position[0] - Camera.player_window_x
-            self.click_window_y = self.click_position[1] - Camera.player_window_y
+        try:
+            if self.click_position:
+                self.click_window_x = self.click_position[0] - Camera.player_window_x
+                self.click_window_y = self.click_position[1] - Camera.player_window_y
 
-            if not UniversalVariables.player_range:
-                player_range = 0
-            else:
-                player_range = UniversalVariables.player_range
+                if not UniversalVariables.player_range:
+                    player_range = 0
+                else:
+                    player_range = UniversalVariables.player_range
 
-            if abs(self.click_window_x) < player_range and abs(self.click_window_y) < player_range:
-                Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
-                Camera.click_info_available = True 
-            else:
-                Camera.click_x, Camera.click_y = None, None
+                if abs(self.click_window_x) < player_range and abs(self.click_window_y) < player_range:
+                    Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
+                    Camera.click_info_available = True
+                else:
 
-            return Camera.click_x, Camera.click_y
-        return
+                    Camera.click_x, Camera.click_y = None, None
+                return Camera.click_x, Camera.click_y
+            return
+        except TypeError:
+            return
 
     def print_clicks(self):
         """ Prints out the user's click information relative to terrain coordinates and screen."""
