@@ -1,5 +1,6 @@
 import pygame
 
+from text import Fading_text
 from items import items_list
 from inventory import Inventory
 from render import RenderPictures
@@ -114,8 +115,8 @@ class Collisions:
                                 Player_audio.error_audio(self)
 
                                 text = "Shouldn't we put something here?"
-                                if text in self.shown_texts:
-                                    self.shown_texts.remove(text)
+                                if text in Fading_text.shown_texts:
+                                    Fading_text.shown_texts.remove(text)
                                 UniversalVariables.ui_elements.append(text)
 
                                 reset_clicks(self)
@@ -183,8 +184,8 @@ class Collisions:
                                 Player_audio.error_audio(self)
 
                                 text = ("Can't open new maze during night.")
-                                if text in self.shown_texts:
-                                    self.shown_texts.remove(text)
+                                if text in Fading_text.shown_texts:
+                                    Fading_text.shown_texts.remove(text)
                                 UniversalVariables.ui_elements.append(text)
 
                                 reset_clicks(self)
@@ -196,8 +197,8 @@ class Collisions:
                                     Player_audio.error_audio(self)
 
                                     text =  ("No available Maze key in inventory.")
-                                    if text in self.shown_texts:
-                                        self.shown_texts.remove(text)
+                                    if text in Fading_text.shown_texts:
+                                        Fading_text.shown_texts.remove(text)
                                     UniversalVariables.ui_elements.append(text)
 
                                     reset_clicks(self)
@@ -248,7 +249,7 @@ class Collisions:
                                             "revealing its arcane depths. A resounding hum fills the air, "
                                             "echoing through the labyrinth as the portal's magic pulses with newfound life."
                                         )
-                                    if text not in self.shown_texts:
+                                    if text not in Fading_text.shown_texts:
                                         UniversalVariables.ui_elements.append(text)
 
                                     UniversalVariables.portal_list = []

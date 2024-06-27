@@ -6,6 +6,8 @@ from objects import ObjectManagement  # add_object_from_inv
 from collisions import reset_clicks
 from inventory import Inventory
 from audio import Player_audio
+from text import Fading_text
+
 class Loot:
     obtained_loot_list = []
 
@@ -36,8 +38,8 @@ class Loot:
                         text = "Not enough space in Inventory."
                         UniversalVariables.ui_elements.append(text)
 
-                        if text in self.shown_texts:  # Check if the text is in the set before removing
-                            self.shown_texts.remove(text)
+                        if text in Fading_text.shown_texts:  # Check if the text is in the set before removing
+                            Fading_text.shown_texts.remove(text)
 
                     else:
                         return

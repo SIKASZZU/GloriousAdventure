@@ -5,6 +5,7 @@ import items
 from variables import UniversalVariables
 from inventory import Inventory
 from audio import Player_audio
+from text import Fading_text
 
 class HealthComponent:
     death_exit_timer = 0
@@ -172,8 +173,8 @@ class HungerComponent:
                 if self.player.health.current_health > 0:
                     text = "Starving."
 
-                    if text in self.shown_texts:
-                        self.shown_texts.remove(text)
+                    if text in Fading_text.shown_texts:
+                        Fading_text.shown_texts.remove(text)
 
                     UniversalVariables.ui_elements.append(text)
 

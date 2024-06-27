@@ -5,6 +5,7 @@ from camera import Camera
 from variables import UniversalVariables
 from items import items_list
 from audio import Player_audio
+from text import Fading_text
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
         Inventory.calculate_craftable_items(self)
@@ -86,8 +87,8 @@ class Inventory:
                         text = "Not enough space in Inventory."
                         UniversalVariables.ui_elements.append(text)
 
-                        if text in self.shown_texts:
-                            self.shown_texts.remove(text)
+                        if text in Fading_text.shown_texts:
+                            Fading_text.shown_texts.remove(text)
 
         except AttributeError: return
 

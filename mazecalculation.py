@@ -2,6 +2,8 @@ from map import MapData
 from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
+from text import Fading_Text
+
 import numpy as np
 
 
@@ -41,8 +43,8 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in self.shown_texts:
-                self.shown_texts.remove(text)
+            if text in Fading_Text.shown_texts:
+                Fading_Text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -96,8 +98,8 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in self.shown_texts:
-                self.shown_texts.remove(text)
+            if text in Fading_Text.shown_texts:
+                Fading_Text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -153,8 +155,8 @@ class AddingMazeAtPosition:
 
             text = "This place looks familiar."
 
-            if text in self.shown_texts:
-                self.shown_texts.remove(text)
+            if text in Fading_Text.shown_texts:
+                Fading_Text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -205,8 +207,8 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
-            if text in self.shown_texts:
-                self.shown_texts.remove(text)
+            if text in Fading_Text.shown_texts:
+                Fading_Text.shown_texts.remove(text)
 
             UniversalVariables.ui_elements.append(text)
 
@@ -323,4 +325,3 @@ class AddingMazeAtPosition:
 
 if __name__ == '__main__':
     ...
-

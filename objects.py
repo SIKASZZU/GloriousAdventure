@@ -3,6 +3,7 @@ from items import items_list
 from inventory import Inventory
 from variables import UniversalVariables
 from audio import Player_audio
+from text import Fading_text
 
 class ObjectManagement:
 
@@ -62,8 +63,8 @@ class ObjectManagement:
                             text = "Not enough space in Inventory."
                             UniversalVariables.ui_elements.append(text)
 
-                            if text in self.shown_texts:
-                                self.shown_texts.remove(text)
+                            if text in Fading_text.shown_texts:
+                                Fading_text.shown_texts.remove(text)
                             return
 
 
