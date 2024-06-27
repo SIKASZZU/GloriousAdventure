@@ -56,8 +56,8 @@ class AddingMazeAtPosition:
 
             for tuple in coordinates:
                 start_row, start_col = tuple
-
                 self.terrain_data[start_row][start_col] = 933
+
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -111,8 +111,8 @@ class AddingMazeAtPosition:
 
             for tuple in coordinates:
                 start_row, start_col = tuple
-
                 self.terrain_data[start_row][start_col] = 933
+
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -139,8 +139,6 @@ class AddingMazeAtPosition:
 
         # Kui col_index == 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-
-        ### FIXME: kui col on 0 ja maze vasakul siis teeb uue maze lampi
         if col_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
             for row in map_list:
                 row.insert(0, 'place')
@@ -170,8 +168,8 @@ class AddingMazeAtPosition:
 
             for tuple in coordinates:
                 start_row, start_col = tuple
-
                 self.terrain_data[start_row][start_col] = 933
+
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -222,8 +220,8 @@ class AddingMazeAtPosition:
 
             for tuple in coordinates:
                 start_row, start_col = tuple
-
                 self.terrain_data[start_row][start_col] = 933
+
             return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
@@ -278,6 +276,21 @@ class AddingMazeAtPosition:
                 coordinate += 20
                 col_index = ((gridy - 20) // 40)
             if col_index < 0: col_index = 0
+
+            # Kui siia ei pane seda siis läheb hiljem perse
+            # Tekib vasakule uus maze kuigi peaks ainult uksed avama
+            if col_index == 0:
+                for row in UniversalVariables.map_list:
+                    row.insert(0, 'place')
+
+                for row in self.terrain_data:
+                    for row_len in range(39):
+                        row.insert(0, None)
+
+                col_index += 1
+                UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
+
             AddingMazeAtPosition.add_maze_to_specific_position_left(self, UniversalVariables.map_list, row_index,
                                                                     col_index, maze_type)
 
@@ -304,6 +317,20 @@ class AddingMazeAtPosition:
             else:
                 row_index = ((gridy - 20) // 40)
             if row_index < 0: row_index = 0
+
+            # Kui siia ei pane seda siis läheb hiljem perse
+            # Tekib vasakule uus maze kuigi peaks ainult uksed avama
+            if row_index == 0:
+                new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
+                UniversalVariables.map_list.insert(0, new_row)
+
+                for row in range(39):
+                    self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
+
+                row_index += 1
+                UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
+
             AddingMazeAtPosition.add_maze_to_specific_position_top(self, UniversalVariables.map_list, row_index,
                                                                    col_index, maze_type)
 
@@ -319,10 +346,10 @@ class AddingMazeAtPosition:
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index,
                                                                       col_index, maze_type)
 
-        # Do stuff here after adding maze
-        print()
-        for row in UniversalVariables.map_list: print(row)  # print maze list
-        print(UniversalVariables.maze_counter)
+        # # Do stuff here after adding maze
+        # print()
+        # for row in UniversalVariables.map_list: print(row)  # print maze list
+        # print(UniversalVariables.maze_counter)
 
 
 if __name__ == '__main__':
