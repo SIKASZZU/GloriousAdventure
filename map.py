@@ -17,37 +17,25 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class MapData:
-    width = 40
-    height = 40
+
+    maze_size = 40
     maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-    start_side = 'bottom'
-    map_list = []  # Kogu mapi listina >>> values: place, glade, maze
-    map_list_data = []
-    placeholder = []
+    start_side = 'bottom'  # default
+
+    placeholder = [[None] * 40 for _ in range(40)]
     old = copy.deepcopy(UniversalVariables.map_list)  # Use deepcopy to avoid reference issues
 
-    map_data = []
-    maze_data = []
-    glade_data = []  # map creationi juures vaja
-    new_map_data = []  # map creationi juures vaja
-    new_row = []
-
-    maze_fill = np.full((width, height), None)  # filler maze, et zipping ilusti tootaks.
-    new_maze_data = []  # Loob uue mazei selle lisamiseks
-    maze_size = 40
     resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
-    puzzle_pieces: list[tuple, tuple, tuple] = []
     create_save_puzzle = None
     converted_maze = []
-    loot = []
-    repetition_lock = 0
 
     def glade_creation():
         glade_file_path = resource_path('glade.txt')
         with open(glade_file_path, 'r') as file:
             return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
+
 
     @staticmethod
     def file_to_maze(file_name: str, side: str = None):
@@ -112,47 +100,65 @@ class MapData:
             return maze
 
 
-    def block_maze_generation(shape, res):
-        def f(t):
-            # return 1*t**7 - 5*t**0 + 1*t**1
-            return 1*t**7 - 5*t**0 + 1*t**1
+    def final_maze_generation(start_side):
+        UniversalVariables.final_maze_spawned = True
+        return MapData.file_to_maze(file_name=f'final_maze.txt', side=start_side)
 
-        grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
-        grid = grid / res
 
-        gradients = np.random.rand(res[0] + 1, res[1] + 1, 2)
-        gradients /= np.linalg.norm(gradients, axis=2, keepdims=True)
+    def blade_maze_generation(start_side):
+        UniversalVariables.blades_spawned = True
+        return MapData.file_to_maze(file_name=f'blade_maze.txt', side=start_side)
 
-        g00 = gradients[:-1,:-1]
-        g10 = gradients[1:,:-1]
-        g01 = gradients[:-1,1:]
-        g11 = gradients[1:,1:]
 
-        t = grid - grid.astype(int)
-        fade_t = f(t)
+    def labyrinth_maze_generation(start_side):
+        size = MapData.maze_size
+        maze = [[99] * size for _ in range(size)]
 
-        n00 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1])) * g00, axis=2)
-        n10 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1])) * g10, axis=2)
-        n01 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1] - 1)) * g01, axis=2)
-        n11 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1] - 1)) * g11, axis=2)
+        def dfs(row, col):
+            maze[row][col] = 98  # Mark the current cell as a pathway
 
-        n0 = n00 * (1 - fade_t[:,:,0]) + n10 * fade_t[:,:,0]
-        n1 = n01 * (1 - fade_t[:,:,0]) + n11 * fade_t[:,:,0]
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+            random.shuffle(directions)
 
-        noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
-        return noise
+            for dr, dc in directions:
+                new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
+                if 0 <= new_row < size and 0 <= new_col < size and maze[new_row][new_col] == 99:
+                    maze[row + dr][col + dc] = 98  # Mark the cell between current and next cell as a pathway
+                    dfs(new_row, new_col)
+
+        # Set player starting position at the bottom middle
+        player_position = (size - 1, size // 2)
+
+        # Generate pathways from player position
+        dfs(player_position[0], player_position[1])
+
+        # Create openings in the outer walls at exit positions
+        exits = [
+            (0, size // 2),          # Top side, middle of the wall
+            (size // 2, 0),          # Left side, middle of the wall
+            (size // 2, size - 1),   # Right side, middle of the wall
+            (size - 1, size // 2)    # Bottom side, middle of the wall (entrance)
+        ]
+        for row, col in exits:
+            maze[row][col] = 0
+
+        # Create fewer walls within the maze to make it more navigable
+        for _ in range(size * size // 100):  # Adjust the density of walls based on preference
+            row, col = random.randint(1, size - 2), random.randint(1, size - 2)
+            maze[row][col] = 99
+
+        return maze
 
 
     @staticmethod
-    def create_maze_with_perlin_noise(start_side):
+    def block_maze_generation(start_side):
         size = MapData.maze_size
         resolution = MapData.resolution
-        noise = MapData.block_maze_generation((size, size), resolution)
+        noise = MapData.block_maze_noise((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), '99', '98')  # threshold adjusted to create more walls
 
         # outer walls one block in must be pathway, value 98.
-        # BEFORE ensuring outer walls
         for row in range(size):
             maze[row][1] = 98
             maze[row][size - 2] = 98
@@ -160,9 +166,6 @@ class MapData:
         for col in range(size):
             maze[1][col] = 98
             maze[size - 2][col] = 98
-
-        # Ensure outer walls
-        # AFTER outer wall one block must be pathway
 
         ### TODO: siin on mingi string numbrid, neid pole vaja ning siis pole vaja ka "row_integers = row.astype(int)"
         maze[0, :] = maze[-1, :] = '99'
@@ -275,6 +278,37 @@ class MapData:
             return MapData.converted_maze
 
 
+    def block_maze_noise(shape, res):
+        def f(t):
+            # return 1*t**7 - 5*t**0 + 1*t**1
+            return 1*t**7 - 5*t**0 + 1*t**1
+
+        grid = np.mgrid[0:res[0],0:res[1]].transpose(1, 2, 0)
+        grid = grid / res
+
+        gradients = np.random.rand(res[0] + 1, res[1] + 1, 2)
+        gradients /= np.linalg.norm(gradients, axis=2, keepdims=True)
+
+        g00 = gradients[:-1,:-1]
+        g10 = gradients[1:,:-1]
+        g01 = gradients[:-1,1:]
+        g11 = gradients[1:,1:]
+
+        t = grid - grid.astype(int)
+        fade_t = f(t)
+
+        n00 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1])) * g00, axis=2)
+        n10 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1])) * g10, axis=2)
+        n01 = np.sum(np.dstack((grid[:,:,0], grid[:,:,1] - 1)) * g01, axis=2)
+        n11 = np.sum(np.dstack((grid[:,:,0] - 1, grid[:,:,1] - 1)) * g11, axis=2)
+
+        n0 = n00 * (1 - fade_t[:,:,0]) + n10 * fade_t[:,:,0]
+        n1 = n01 * (1 - fade_t[:,:,0]) + n11 * fade_t[:,:,0]
+
+        noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
+        return noise
+
+
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
 
@@ -328,40 +362,39 @@ class MapData:
                     MapData.create_save_puzzle = True
 
         if MapData.create_save_puzzle == False:
-            maze = MapData.create_maze_with_perlin_noise(MapData.start_side)
+            maze = MapData.block_maze_generation(MapData.start_side)
             MapData.search_paths(maze)
+
 
     @staticmethod
     def get_data(item, start_side):
-        # Your existing method to generate data based on the item type
+        ### FIXME: autsitic loogika kogu maze addition. Enne seda faili peaks teada olema mis maze tekib. Also, wtf final maze lookimine toimub. 
+            # maze counter on fucking autistics, see liiga hilja lisab +1 oma counterile
 
         if item.endswith('maze'):
+
             if item == 'final_maze':
                 for row in UniversalVariables.map_list:
                     if 'final_maze' in row:
-                        UniversalVariables.final_maze_spawned = True
-                        return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
-
+                        MapData.final_maze_generation(start_side)
 
             if item == 'blade_maze':
-                UniversalVariables.blades_spawned = True
-                return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
-
+                MapData.blade_maze_generation(start_side)
+                
             else:
-                return MapData.create_maze_with_perlin_noise(start_side)
+                # return MapData.block_maze_generation(start_side)
+                return MapData.labyrinth_maze_generation(start_side)
 
         elif item == 'glade':
             return MapData.file_to_maze(file_name=f'{item}.txt')  # Glade'il pole start side
 
         elif item == 'place':
-            # Assuming 'place' is a grid of None values
-            if MapData.placeholder != [[None] * 40 for _ in range(40)]:
-                MapData.placeholder = [[None] * 40 for _ in range(40)]  # Fixed assignment here
             return MapData.placeholder
 
         else:
             # Handle other cases or raise an error
             raise ValueError(f"Unknown item type: {item}")
+
 
     def map_list_to_map(self, start_side='bottom'):
         difference = []
