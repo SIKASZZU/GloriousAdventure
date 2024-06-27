@@ -75,10 +75,10 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
-            print(f'Something fishy: add_maze_to_specific_position_top:{[row_index], [col_index]}')
+            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
 
@@ -129,10 +129,10 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
-            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
+            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
@@ -187,8 +187,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index], [row_index]}')
@@ -240,29 +239,29 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
-
+            AddingMazeAtPosition.maze_type = maze_type
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if MapData.last_maze_type == 'blade_maze' or MapData.last_maze_type == 'final_maze':
+        if AddingMazeAtPosition.maze_type == 'blade_maze':
             choices = ['labyrinth_maze', 'maze']
-            probabilities = [0.40, 0.60]
+            probabilities = [0.40, 0.60]  # 100 % alati olema
 
             # 40 % 'labyrinth_maze' ja 60 % 'maze'
             maze_type = np.random.choice(choices, p=probabilities)
 
-        if UniversalVariables.final_maze_spawned:
+        elif UniversalVariables.final_maze_spawned:
             choices = ['labyrinth_maze', 'maze', 'blade_maze']
-            probabilities = [0.30, 0.55, 0.10]
+            probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema
 
             # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze'
             maze_type = np.random.choice(choices, p=probabilities)
 
         else:
             choices = ['labyrinth_maze', 'maze', 'blade_maze', 'final_maze']
-            probabilities = [0.25, 0.45, 0.20, 0.10]
+            probabilities = [0.25, 0.45, 0.20, 0.10]  # 100 % alati olema
 
             # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze' ja 5 % 'final_maze'
             maze_type = np.random.choice(choices, p=probabilities)
