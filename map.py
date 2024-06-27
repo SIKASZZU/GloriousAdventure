@@ -126,7 +126,7 @@ class MapData:
 
     ### FIXME: labyrinth on vahel mingi topelt seinaga kui allapoole see avada
     def labyrinth_maze_generation(start_side):  # start_side - BOTTOM RIGHT LEFT TOP
-        type_of_maze = 'labyrinth_maze'
+        type_maze = 'labyrinth_maze'
         size = MapData.maze_size
         maze = [[99] * size for _ in range(size)]
 
@@ -208,7 +208,7 @@ class MapData:
                 maze[size - 1][size // 2 - 1] = 97
 
         MapData.create_maze_items(maze, size)
-        MapData.search_paths(maze, type_of_maze, start_side)
+        MapData.search_paths(maze, type_maze, start_side)
 
         if MapData.create_save_puzzle:
             MapData.create_save_puzzle = False
@@ -369,36 +369,6 @@ class MapData:
         n1 = n01 * (1 - fade_t[:,:,0]) + n11 * fade_t[:,:,0]
 
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
-        return noise
-
-    def block_maze_noise(shape, res):
-        def f(t):
-            # return 1*t**7 - 5*t**0 + 1*t**1
-            return 1 * t ** 7 - 5 * t ** 0 + 1 * t ** 1
-
-        grid = np.mgrid[0:res[0], 0:res[1]].transpose(1, 2, 0)
-        grid = grid / res
-
-        gradients = np.random.rand(res[0] + 1, res[1] + 1, 2)
-        gradients /= np.linalg.norm(gradients, axis=2, keepdims=True)
-
-        g00 = gradients[:-1, :-1]
-        g10 = gradients[1:, :-1]
-        g01 = gradients[:-1, 1:]
-        g11 = gradients[1:, 1:]
-
-        t = grid - grid.astype(int)
-        fade_t = f(t)
-
-        n00 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1])) * g00, axis=2)
-        n10 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1])) * g10, axis=2)
-        n01 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1] - 1)) * g01, axis=2)
-        n11 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1] - 1)) * g11, axis=2)
-
-        n0 = n00 * (1 - fade_t[:, :, 0]) + n10 * fade_t[:, :, 0]
-        n1 = n01 * (1 - fade_t[:, :, 0]) + n11 * fade_t[:, :, 0]
-
-        noise = np.sqrt(2) * (n0 * (1 - fade_t[:, :, 1]) + n1 * fade_t[:, :, 1])
         return noise
 
     def is_valid(x, y, maze):

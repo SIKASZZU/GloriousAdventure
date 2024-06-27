@@ -139,6 +139,8 @@ class AddingMazeAtPosition:
 
         # Kui col_index == 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
+
+        ### FIXME: kui col on 0 ja maze vasakul siis teeb uue maze lampi
         if col_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
             for row in map_list:
                 row.insert(0, 'place')
