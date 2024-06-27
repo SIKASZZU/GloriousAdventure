@@ -99,7 +99,7 @@ class Game:
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER COLLISION FOR MOVEMENT SPEED CALCULATIONS
         Collisions.change_map_data(self)  # MUUDAB MINGI RANDOM STUFFI JA VAATAB KA KOLLISIONI PLAYERI JA OBJEKTIGA
 
-        vision.find_boxes_in_window()
+        # vision.find_boxes_in_window()
 
         self.player.health.check_health(self.player.hunger.current_hunger)
         Enemy.update(self)
@@ -131,8 +131,8 @@ class Game:
                 UniversalVariables.ui_elements.append(text)
                 Inventory.crafting_menu_open = False
 
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center,
-                                          UniversalVariables.light_range)
+        # vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center,
+                                        #   UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
 
