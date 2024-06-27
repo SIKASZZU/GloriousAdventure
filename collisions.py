@@ -203,9 +203,6 @@ class Collisions:
                                     return
 
                                 else:
-                                    if UniversalVariables.maze_counter >= 3:
-                                        UniversalVariables.final_maze = True
-
                                     if Collisions.keylock == 0:
                                         Collisions.keylock += 1
 
