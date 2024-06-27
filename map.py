@@ -30,6 +30,15 @@ class MapData:
     create_save_puzzle = None
     converted_maze = []
 
+    if UniversalVariables.debug_mode:
+        _puzzle_pieces = 20
+        _keyholders = 20
+        _loot = 20
+    else:
+        _puzzle_pieces = 6  # on vaja kindlasti rohkem, kui kaheksa
+        _keyholders = 4     # on vaja kaheksa
+        _loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
+
     def glade_creation():
         glade_file_path = resource_path('glade.txt')
         with open(glade_file_path, 'r') as file:
@@ -102,56 +111,108 @@ class MapData:
 
     def final_maze_generation(start_side):
         UniversalVariables.final_maze_spawned = True
-        return MapData.file_to_maze(file_name=f'final_maze.txt', side=start_side)
+        return MapData.file_to_maze(file_name='final_maze.txt', side=start_side)
 
 
     def blade_maze_generation(start_side):
         UniversalVariables.blades_spawned = True
-        return MapData.file_to_maze(file_name=f'blade_maze.txt', side=start_side)
+        return MapData.file_to_maze(file_name='blade_maze.txt', side=start_side)
 
 
-    def labyrinth_maze_generation(start_side):
+    ### FIXME: labyrinth on vahel mingi topelt seinaga kui allapoole see avada
+    def labyrinth_maze_generation(start_side):  # start_side - BOTTOM RIGHT LEFT TOP
+        type_of_maze = 'labyrinth_maze'
         size = MapData.maze_size
         maze = [[99] * size for _ in range(size)]
 
         def dfs(row, col):
-            maze[row][col] = 98  # Mark the current cell as a pathway
+            maze[row][col] = 98
 
             directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
             random.shuffle(directions)
 
             for dr, dc in directions:
                 new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
-                if 0 <= new_row < size and 0 <= new_col < size and maze[new_row][new_col] == 99:
+                if 1 <= new_row < size - 1 and 1 <= new_col < size - 1 and maze[new_row][new_col] == 99:
                     maze[row + dr][col + dc] = 98  # Mark the cell between current and next cell as a pathway
                     dfs(new_row, new_col)
 
-        # Set player starting position at the bottom middle
-        player_position = (size - 1, size // 2)
+        # Muudab vasakpoolse ja alumise eelviimase seina random 98/99'ks
+        for i in range(1, size - 1):
+            choice = random.choices([98, 99])[0]
+            maze[i][1] = choice
 
-        # Generate pathways from player position
-        dfs(player_position[0], player_position[1])
+        for i in range(1, size - 1):
+            choice = random.choices([98, 99])[0]
+            maze[size - 2][i] = choice
 
-        # Create openings in the outer walls at exit positions
-        exits = [
-            (0, size // 2),          # Top side, middle of the wall
-            (size // 2, 0),          # Left side, middle of the wall
-            (size // 2, size - 1),   # Right side, middle of the wall
-            (size - 1, size // 2)    # Bottom side, middle of the wall (entrance)
-        ]
-        for row, col in exits:
-            maze[row][col] = 0
+        # Set the start point
+        if start_side == 'left':
+            start_0 = (size // 2, 0)
+            start_1 = (size // 2 - 1, 0)
+            dfs(start_0[0], start_0[1])
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 90, 90
+        
+        elif start_side == 'top':
+            start_0 = (0, size // 2)
+            start_1 = (0, size // 2 - 1)
+            dfs(start_0[0], start_0[1])
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 91, 91
+        
+        elif start_side == 'right':
+            start_0 = (size // 2, size - 1)
+            start_1 = (size // 2 - 1, size - 1)
+            dfs(start_0[0], start_0[1])
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 92, 92
+        
+        elif start_side == 'bottom':
+            start_0 = (size - 1, size // 2)
+            start_1 = (size - 1, size // 2 - 1)
+            dfs(start_0[0], start_0[1])
+            maze[start_0[0]][start_0[1]], maze[start_1[0]][start_1[1]] = 93, 93
 
-        # Create fewer walls within the maze to make it more navigable
-        for _ in range(size * size // 100):  # Adjust the density of walls based on preference
-            row, col = random.randint(1, size - 2), random.randint(1, size - 2)
-            maze[row][col] = 99
+        # Enne ust teeb pathway et see blocked ei oleks. FIXME: see ei ole reliable solution
+        maze[size // 2][1]            = 98
+        maze[size // 2 - 1][1]        = 98
+        maze[1][size // 2]            = 98
+        maze[1][size // 2 - 1]        = 98
+        maze[size // 2][size - 2]     = 98
+        maze[size // 2 - 1][size - 2] = 98
+        maze[size - 2][size // 2]     = 98
+        maze[size - 2][size // 2 - 1] = 98
 
-        return maze
+        exit_set = {'bottom', 'right', 'left', 'top'}
+        exit_set.remove(start_side)
+
+        for exit_side in exit_set:
+
+            if exit_side == 'left':
+                maze[size // 2][0] = 94
+                maze[size // 2 - 1][0] = 94
+
+            if exit_side == 'top':
+                maze[0][size // 2] = 95
+                maze[0][size // 2 - 1] = 95
+
+            if exit_side == 'right':
+                maze[size // 2][size - 1] = 96
+                maze[size // 2 - 1][size - 1] = 96
+
+            if exit_side == 'bottom':
+                maze[size - 1][size // 2] = 97
+                maze[size - 1][size // 2 - 1] = 97
+
+        MapData.create_maze_items(maze, size)
+        MapData.search_paths(maze, type_of_maze, start_side)
+
+        if MapData.create_save_puzzle:
+            MapData.create_save_puzzle = False
+            return maze
 
 
     @staticmethod
     def block_maze_generation(start_side):
+        type_of_maze = 'block_maze'
         size = MapData.maze_size
         resolution = MapData.resolution
         noise = MapData.block_maze_noise((size, size), resolution)
@@ -223,59 +284,54 @@ class MapData:
             row_list = row_integers.tolist()
             MapData.converted_maze.append(row_list)
 
+        MapData.create_maze_items(MapData.converted_maze, size)
+        MapData.search_paths(MapData.converted_maze, type_of_maze, start_side)
 
-        if UniversalVariables.debug_mode:
-            _puzzle_pieces = 20
-            _keyholders = 20
-            _loot = 20
-        else:
-            _puzzle_pieces = 6  # on vaja kindlasti rohkem, kui kaheksa
-            _keyholders = 4     # on vaja kaheksa
-            _loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
+        if MapData.create_save_puzzle:
+            MapData.create_save_puzzle = False
+            return MapData.converted_maze
 
-        def is_dead_end(maze, x, y):
-            walls = 0
-            if maze[x-1][y] == 99:
-                walls += 1
-            if maze[x+1][y] == 99:
-                walls += 1
-            if maze[x][y-1] == 99:
-                walls += 1
-            if maze[x][y+1] == 99:
-                walls += 1
-            return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
 
-        # Maze's puzzle pieces
-        for i in range(_puzzle_pieces):
+    def create_maze_items(maze, size):
+        # Maze puzzle pieces
+        for i in range(MapData._puzzle_pieces):
             while True:
                 puzzle_x = random.randint(3, (size - 3))
                 puzzle_y = random.randint(3, (size - 3))
-                if not is_dead_end(MapData.converted_maze, puzzle_x, puzzle_y):
-                    MapData.converted_maze[puzzle_x][puzzle_y] = 10
+                if not MapData.is_dead_end(maze, puzzle_x, puzzle_y):
+                    maze[puzzle_x][puzzle_y] = 10
                     break
-                
         # Maze keyholders
-        for i in range(_keyholders):
+        for i in range(MapData._keyholders):
             while True:
                 keyholder_x = random.randint(3, (size - 3))
                 keyholder_y = random.randint(3, (size - 3))
-                if not is_dead_end(MapData.converted_maze, keyholder_x, keyholder_y):
-                    MapData.converted_maze[keyholder_x][keyholder_y] = 981
+                if not MapData.is_dead_end(maze, keyholder_x, keyholder_y):
+                    maze[keyholder_x][keyholder_y] = 981
                     break
-                
+        # Maze loot barrels
         if random.choice([True]):
-            for i in range(_loot):
+            for i in range(MapData._loot):
                 while True:
                     loot_x = random.randint(3, (size - 3))
                     loot_y = random.randint(3, (size - 3))
-                    if not is_dead_end(MapData.converted_maze, loot_x, loot_y):
-                        MapData.converted_maze[loot_x][loot_y] = 1001
+                    if not MapData.is_dead_end(maze, loot_x, loot_y):
+                        maze[loot_x][loot_y] = 1001
                         break
+        return maze      
 
-        MapData.search_paths(MapData.converted_maze)
-        
-        if MapData.create_save_puzzle:
-            return MapData.converted_maze
+
+    def is_dead_end(maze, x, y):
+        walls = 0
+        if maze[x-1][y] == 99:
+            walls += 1
+        if maze[x+1][y] == 99:
+            walls += 1
+        if maze[x][y-1] == 99:
+            walls += 1
+        if maze[x][y+1] == 99:
+            walls += 1
+        return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
 
 
     def block_maze_noise(shape, res):
@@ -334,12 +390,11 @@ class MapData:
         return None
 
 
-    def search_paths(maze):
+    def search_paths(maze, type_of_maze, start_side):
+        """ maze is list. type_of_maze is block_maze, labyrinth_maze, final_maze, blade_maze etc. """
+
         special_positions = []
-
-        # y, x
-        start_positions = [(38, 19), (38, 20)]
-
+        start_positions = [(38, 19), (38, 20)]  # y, x
         end_positions = [(19, 38), (20, 38),
                         (1, 19), (1, 20),
                         (19, 1), (20, 1),
@@ -362,7 +417,11 @@ class MapData:
                     MapData.create_save_puzzle = True
 
         if MapData.create_save_puzzle == False:
-            maze = MapData.block_maze_generation(MapData.start_side)
+            if type_of_maze == 'block_maze':
+                maze = MapData.block_maze_generation(start_side)
+                
+            elif type_of_maze == 'labyrinth_maze':
+                maze = MapData.labyrinth_maze_generation(start_side)
             MapData.search_paths(maze)
 
 
@@ -376,13 +435,13 @@ class MapData:
             if item == 'final_maze':
                 for row in UniversalVariables.map_list:
                     if 'final_maze' in row:
-                        MapData.final_maze_generation(start_side)
+                        return MapData.final_maze_generation(start_side)
 
             if item == 'blade_maze':
-                MapData.blade_maze_generation(start_side)
+                return MapData.blade_maze_generation(start_side)
                 
             else:
-                # return MapData.block_maze_generation(start_side)
+                #return MapData.block_maze_generation(start_side)
                 return MapData.labyrinth_maze_generation(start_side)
 
         elif item == 'glade':
