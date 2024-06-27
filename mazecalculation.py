@@ -23,7 +23,6 @@ class AddingMazeAtPosition:
     col = []
     maze_type = 'maze'  # regular maze is 'maze', final maze is 'final_maze'
 
-    ### TODO: Kui soovid ust avada kus on juba mingi maze või glade siis teeb uksed lahti aga puzzle pice ära ei võta
     def add_maze_to_specific_position_top(self, map_list, row_index, col_index, maze_type):
 
         # Kui row_index on 0 ja seal ei ole place siis
@@ -38,8 +37,8 @@ class AddingMazeAtPosition:
             UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
             Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
-        # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -93,8 +92,8 @@ class AddingMazeAtPosition:
                 row = [None] * len(self.terrain_data[0])
                 self.terrain_data.append(row)
 
-        # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -132,7 +131,7 @@ class AddingMazeAtPosition:
             AddingMazeAtPosition.maze_type = maze_type
 
         else:
-            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
+            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
@@ -149,8 +148,8 @@ class AddingMazeAtPosition:
             UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
             Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
 
-        # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
 
             text = "This place looks familiar."
 
@@ -202,8 +201,8 @@ class AddingMazeAtPosition:
             for row in self.terrain_data:
                 row.extend([None] * 39)
 
-        # Kui valitud asukohal on glade siis annab errori
-        if map_list[row_index][col_index] in ['glade', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        if map_list[row_index][col_index] in ['glade', 'maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in self.shown_texts:
@@ -246,25 +245,21 @@ class AddingMazeAtPosition:
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
         if AddingMazeAtPosition.maze_type == 'blade_maze':
+            # 40 % 'labyrinth_maze' ja 60 % 'maze'
             choices = ['labyrinth_maze', 'maze']
             probabilities = [0.40, 0.60]  # 100 % alati olema
 
-            # 40 % 'labyrinth_maze' ja 60 % 'maze'
-            maze_type = np.random.choice(choices, p=probabilities)
-
         elif UniversalVariables.final_maze_spawned:
+            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze'
             choices = ['labyrinth_maze', 'maze', 'blade_maze']
             probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema
 
-            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze'
-            maze_type = np.random.choice(choices, p=probabilities)
-
         else:
+            # 25 % 'labyrinth_maze' ja 45 % 'maze' ja 20 % 'blade_maze' ja 10 % 'final_maze'
             choices = ['labyrinth_maze', 'maze', 'blade_maze', 'final_maze']
             probabilities = [0.25, 0.45, 0.20, 0.10]  # 100 % alati olema
 
-            # 30 % 'labyrinth_maze' ja 60 % 'maze' ja 10 % 'blade_maze' ja 5 % 'final_maze'
-            maze_type = np.random.choice(choices, p=probabilities)
+        maze_type = np.random.choice(choices, p=probabilities)
 
         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:
