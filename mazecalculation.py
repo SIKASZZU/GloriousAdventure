@@ -13,11 +13,16 @@ def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=
 
     for row_index in range(player_row - radius, player_row + radius):
         for col_index in range(player_col - radius, player_col + radius):
-
             if list_of_lists[row_index][col_index] == number:
                 coordinates.add((row_index, col_index))
-
     return coordinates
+
+def change_door_ids(self, coordinates):
+    """ It's a feature -> vana mazeiga yhenduse loomisel, yhenduse uks sulgub!! bug > feature"""
+
+    for tuple in coordinates:
+        start_row, start_col = tuple
+        self.terrain_data[start_row][start_col] = 933
 
 
 class AddingMazeAtPosition:
@@ -29,36 +34,17 @@ class AddingMazeAtPosition:
 
         # Kui row_index on 0 ja seal ei ole place siis
         # lisab igale list'is olevale row'ile place'i.
-        if row_index == 0 and map_list[row_index][col_index] != 'place':
-            new_row = ['place' for _ in range(len(map_list[0]))]
-            map_list.insert(0, new_row)
-
-            for row in range(39):
-                self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
-
-            UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
-            Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
-
-        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
-
-            # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
-
-            coordinates = find_number_in_radius(self.terrain_data, 95, player_row, player_col)
-
-            for tuple in coordinates:
-                start_row, start_col = tuple
-
-                self.terrain_data[start_row][start_col] = 933
-            return
+        if row_index == 0:      
+            # nothin at top, create stuff to top then
+            if map_list[row_index][col_index] != 'place':
+                new_row = ['place' for _ in range(len(map_list[0]))]
+                map_list.insert(0, new_row)
+    
+                for row in range(39):
+                    self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
+    
+                UniversalVariables.player_y += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -77,9 +63,25 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+        
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        elif map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+            text = "This place looks familiar."
+
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
+            UniversalVariables.ui_elements.append(text)
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
+        
+        player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+        coordinates = find_number_in_radius(self.terrain_data, 95, player_row, player_col)
+        change_door_ids(self, coordinates)
+        return
+
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
 
@@ -93,27 +95,6 @@ class AddingMazeAtPosition:
             for i in range(40):
                 row = [None] * len(self.terrain_data[0])
                 self.terrain_data.append(row)
-
-        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
-
-            # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
-
-            coordinates = find_number_in_radius(self.terrain_data, 97, player_row, player_col)
-
-            for tuple in coordinates:
-                start_row, start_col = tuple
-
-                self.terrain_data[start_row][start_col] = 933
-            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -132,47 +113,39 @@ class AddingMazeAtPosition:
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
 
-        else:
-            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
-
-    def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
-
-        # Kui col_index == 0 ja seal ei ole place siis
-        # lisab igale list'is olevale row'ile place'i.
-
-        ### FIXME: kui col on 0 ja maze vasakul siis teeb uue maze lampi
-        if col_index == 0 and map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
-            for row in map_list:
-                row.insert(0, 'place')
-
-            for row in self.terrain_data:
-                for row_len in range(39):
-                    row.insert(0, None)
-
-            UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
-            Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
-
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-
+        elif map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
             text = "This place looks familiar."
 
             if text in Fading_text.shown_texts:
                 Fading_text.shown_texts.remove(text)
-
             UniversalVariables.ui_elements.append(text)
 
-            # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+        else:
+            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
 
-            coordinates = find_number_in_radius(self.terrain_data, 94, player_row, player_col)
+        player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
 
-            for tuple in coordinates:
-                start_row, start_col = tuple
+        coordinates = find_number_in_radius(self.terrain_data, 97, player_row, player_col)
+        change_door_ids(self, coordinates)
+        return
 
-                self.terrain_data[start_row][start_col] = 933
-            return
+    def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
+        print(map_list[row_index][col_index] )
+        # Kui col_index == 0 ja seal ei ole place siis
+        # lisab igale list'is olevale row'ile place'i.
+        if col_index == 0:
+            if map_list[row_index][col_index] != 'place' and map_list[row_index][col_index] != 'glade':
+                for row in map_list:
+                    row.insert(0, 'place')
+    
+                for row in self.terrain_data:
+                    for row_len in range(39):
+                        row.insert(0, None)
+    
+                UniversalVariables.player_x += 39 * UniversalVariables.block_size  # teleb playeri 6igesse kohta
+                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -192,8 +165,24 @@ class AddingMazeAtPosition:
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
 
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        elif map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+
+            text = "This place looks familiar."
+
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
+            UniversalVariables.ui_elements.append(text)
+
         else:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index], [row_index]}')
+
+        player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+
+        coordinates = find_number_in_radius(self.terrain_data, 94, player_row, player_col)
+        change_door_ids(self, coordinates)
+        return
 
     def add_maze_to_specific_position_right(self, map_list, row_index, col_index, maze_type):
 
@@ -204,27 +193,6 @@ class AddingMazeAtPosition:
 
             for row in self.terrain_data:
                 row.extend([None] * 39)
-
-        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
-
-            # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
-
-            coordinates = find_number_in_radius(self.terrain_data, 96, player_row, player_col)
-
-            for tuple in coordinates:
-                start_row, start_col = tuple
-
-                self.terrain_data[start_row][start_col] = 933
-            return
 
         # Kui valitud asukohal on juba place siis ta muudab selle maze'iks
         if map_list[row_index][col_index] == 'place':
@@ -244,8 +212,22 @@ class AddingMazeAtPosition:
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
 
+        # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
+        elif map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+            text = "This place looks familiar."
+
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
+            UniversalVariables.ui_elements.append(text)
+
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
+
+        player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+        coordinates = find_number_in_radius(self.terrain_data, 96, player_row, player_col)
+        change_door_ids(self, coordinates)
+        return
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
         if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
