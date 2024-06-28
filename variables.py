@@ -27,7 +27,7 @@ class UniversalVariables():
         jagatis: float = 15
         
         # Mängu max tick rate
-        FPS = 600
+        FPS = 200
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 25
@@ -91,21 +91,32 @@ class UniversalVariables():
     last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
     # ******************** MAZE ******************** #
+
+    # General
     maze_counter: int = 1
     enemy_counter: int = 0
+
+    # 0 col / row maze fix
+    first_time_left = True
+    first_time_up = True
+
+    # Final maze
+    portal_frame_rect = None
+
     final_maze = False
+    cutscene = False
+
     final_maze_key_slots: set = set()
+    portal_list: list = []
     portal_frames: int = 0
 
+    # Blade maze
     blades_spawned = False
     already_looped_blades = None
-    
-    cutscene = False
-    portal_frame_rect = None
-    portal_list: list = []
 
     # ******************** Render ******************** #
-    map_list: list = [['block_maze'], ['glade']]
+    map_list: list = [['block_maze'],['glade']]
+
     blits_sequence: list = []
     text_sequence: list = []
 
