@@ -29,8 +29,7 @@ class Enemy:
     enemy_restricted_areas = [99, 981, 982,  # maze wall stuff
                             9099, 989, 900]  # blade wall stuff
     combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.closed_door_ids))
-    
-    print(combined_restricted_areas)
+
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
@@ -87,6 +86,7 @@ class Enemy:
                     enemies_to_remove.add(enemy_name)  # ei saa koheselt removeida, peab tegema uue listi
 
             for enemy_name in enemies_to_remove:
+                del Enemy.path[enemy_name]
                 del Enemy.spawned_enemy_dict[enemy_name]
             
 
@@ -150,7 +150,6 @@ class Enemy:
                     break
 
             if direction:
-                
                 enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
                 if enemy_name not in Enemy.path_ticks or Enemy.path[enemy_name] is None or \
                     Enemy.path_ticks[enemy_name] >= UniversalVariables.enemy_path_update_tick:
@@ -158,10 +157,12 @@ class Enemy:
                         player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
                                     Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
                         
-                        Enemy.path[enemy_name] = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+                        path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
+
+                        Enemy.path[enemy_name] = path
                         Enemy.path_ticks[enemy_name] = 0
                 
-                if Enemy.path[enemy_name] == None:
+                if Enemy.path[enemy_name] is None:
                     pass
 
                 elif len(Enemy.path[enemy_name]) <= 1:
@@ -211,34 +212,39 @@ class Enemy:
         Enemy.enemy_in_range = set()
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
-            enemy_x_grid, enemy_y_grid = enemy_info[1], enemy_info[2]
-
-            enemy_x = enemy_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
-            enemy_y = enemy_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
-
-            distance_to_player_x_grid = player_window_x - enemy_x
-            distance_to_player_y_grid = player_window_y - enemy_y
-
-            if abs(distance_to_player_x_grid) <= 1000 and abs(distance_to_player_y_grid) <= 1000:
+            if Enemy.path == {} or Enemy.path == None:
                 direction: str = 'none'
-
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
-                    and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
-                    if self.player.health.get_health() > 0:
-                        Enemy.attack(self, 3, enemy_x, enemy_y)
-
-                if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
-                    if distance_to_player_x_grid > 0:
-                        direction = 'right'
-                    else:
-                        direction = 'left'
-
-                else:
-                    if distance_to_player_y_grid > 0:
-                        direction = 'down'
-                    else:
-                        direction = 'up'
                 Enemy.enemy_in_range.add((enemy_name, direction))
+            
+            else:
+                enemy_x_grid, enemy_y_grid = enemy_info[1], enemy_info[2]
+
+                enemy_x = enemy_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
+                enemy_y = enemy_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
+
+                distance_to_player_x_grid = player_window_x - enemy_x
+                distance_to_player_y_grid = player_window_y - enemy_y
+
+                if abs(distance_to_player_x_grid) <= 500 and abs(distance_to_player_y_grid) <= 500:
+                    direction: str = 'none'
+
+                    if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
+                        and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                        if self.player.health.get_health() > 0:
+                            Enemy.attack(self, 3, enemy_x, enemy_y)
+
+                    if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
+                        if distance_to_player_x_grid > 0:
+                            direction = 'right'
+                        else:
+                            direction = 'left'
+
+                    else:
+                        if distance_to_player_y_grid > 0:
+                            direction = 'down'
+                        else:
+                            direction = 'up'
+                    Enemy.enemy_in_range.add((enemy_name, direction))
 
     def attack(self, damage, enemy_direct_x, enemy_direct_y):
         """ Kui Ghost on playeri peal siis saab damage'i. """
