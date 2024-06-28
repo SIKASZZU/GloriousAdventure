@@ -215,6 +215,32 @@ class Collisions:
 
                                         grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
+                                        if UniversalVariables.first_time:
+                                            for _ in range(2):
+
+                                                new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
+                                                UniversalVariables.map_list.insert(0, new_row)
+
+                                                for row in range(39):
+                                                    self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
+
+                                                for row in UniversalVariables.map_list:
+                                                    row.insert(0, 'place')
+
+                                                for row in self.terrain_data:
+                                                    for row_len in range(39):
+                                                        row.insert(0, None)
+
+                                                # teleb playeri ja camera 6igesse kohta
+                                                UniversalVariables.player_x += 39 * UniversalVariables.block_size
+                                                UniversalVariables.player_y += 39 * UniversalVariables.block_size
+                                                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
+                                                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
+
+                                            UniversalVariables.first_time = False
+                                            grid_x, grid_y = grid_x + 80, grid_y + 80
+
+
                                         j = (grid_y // 39) * 39  # Y koordinaat
                                         i = (grid_x // 39) * 39  # X kooridnaat
 
