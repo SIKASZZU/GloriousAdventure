@@ -97,8 +97,7 @@ class UniversalVariables():
     enemy_counter: int = 0
 
     # 0 col / row maze fix
-    first_time_left = True
-    first_time_up = True
+    first_time = True
 
     # Final maze
     portal_frame_rect = None
