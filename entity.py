@@ -26,6 +26,11 @@ class Enemy:
     save_enemy_direction_x = int
     save_enemy_direction_y = int
 
+    enemy_restricted_areas = [99, 981, 982,  # maze wall stuff
+                            9099, 989, 900]  # blade wall stuff
+    combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.closed_door_ids))
+    
+    print(combined_restricted_areas)
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
@@ -98,20 +103,17 @@ class Enemy:
     def is_valid(self, x, y):
         """ Check if coordinates (x, y) are valid in the maze. """
         x, y = int(x), int(y)
-        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze wall stuff
-                                  9099, 989, 900]         # blade wall stuff
+        
         in_terrain_bounds = 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x])
         
-        if in_terrain_bounds and self.terrain_data[x][y] not in enemy_restricted_areas:
+        if in_terrain_bounds and self.terrain_data[x][y] not in Enemy.combined_restricted_areas:
             return True
             
     def find_path_bfs(self, start, end):
         """ Breadth-First Search algorithm to find a path from start to end in the maze. """
 
-        enemy_restricted_areas = [99, 933, 977, 981, 982, # maze wall stuff
-                                  9099, 989, 900]         # blade wall stuff
         try:
-            if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in enemy_restricted_areas:
+            if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in Enemy.combined_restricted_areas:
                 return None
             else:
                 queue = deque([(start, [])])
