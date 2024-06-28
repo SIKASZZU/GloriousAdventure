@@ -152,6 +152,7 @@ class UniversalVariables():
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
+    enemy_detection_range = block_size * 5
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 5 + random.randint(-5, 5)
