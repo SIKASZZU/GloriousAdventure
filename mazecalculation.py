@@ -66,6 +66,16 @@ class AddingMazeAtPosition:
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
 
+            # # Muudab uue maze uksed 933.
+            # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
+            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            #
+            # coordinates = find_number_in_radius(self.terrain_data, 93, player_row, player_col)
+            # for tuple in coordinates:
+            #     start_row, start_col = tuple
+            #     self.terrain_data[start_row][start_col] = 933
+
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
@@ -120,6 +130,17 @@ class AddingMazeAtPosition:
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
 
+            # # Muudab uue maze uksed 933.
+            # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
+            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            #
+            # coordinates = find_number_in_radius(self.terrain_data, 91, player_row, player_col)
+            # for tuple in coordinates:
+            #     start_row, start_col = tuple
+            #     self.terrain_data[start_row][start_col] = 933
+
+
         else:
             print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
 
@@ -164,6 +185,18 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+
+            # # Muudab uue maze uksed 933.
+            # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
+            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            #
+            # coordinates = find_number_in_radius(self.terrain_data, 92, player_row, player_col)
+            # for tuple in coordinates:
+            #     start_row, start_col = tuple
+            #     self.terrain_data[start_row][start_col] = 933
+
+            return
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_left:{[col_index], [row_index]}')
@@ -216,6 +249,16 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+
+            # # Muudab uue maze uksed 933.
+            # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
+            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            #
+            # coordinates = find_number_in_radius(self.terrain_data, 90, player_row, player_col)
+            # for tuple in coordinates:
+            #     start_row, start_col = tuple
+            #     self.terrain_data[start_row][start_col] = 933
 
         else:
             print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
