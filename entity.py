@@ -82,10 +82,13 @@ class Enemy:
             enemies_to_remove = set()
 
             for enemy_name, _ in Enemy.spawned_enemy_dict.items():
-                if enemy_name not in detected_enemies or Enemy.path[enemy_name] == None:
-                    enemies_to_remove.add(enemy_name)  # ei saa koheselt removeida, peab tegema uue listi
+                if enemy_name not in detected_enemies or Enemy.path[enemy_name] is None:
+                    enemies_to_remove.add(enemy_name)  # Add to the list of enemies to remove
 
-            for enemy_name in enemies_to_remove:
+            for enemy_name in list(enemies_to_remove):
+                if enemy_name not in Enemy.path:
+                    continue
+
                 del Enemy.path[enemy_name]
                 del Enemy.spawned_enemy_dict[enemy_name]
             
@@ -151,59 +154,51 @@ class Enemy:
 
             if direction:
                 enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
-                if enemy_name not in Enemy.path_ticks or Enemy.path[enemy_name] is None or \
-                    Enemy.path_ticks[enemy_name] >= UniversalVariables.enemy_path_update_tick:
-                    
-                        player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
-                                    Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
-                        
-                        path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
 
-                        Enemy.path[enemy_name] = path
-                        Enemy.path_ticks[enemy_name] = 0
-                
-                if Enemy.path[enemy_name] is None:
-                    pass
+                if enemy_name not in Enemy.path or Enemy.path_ticks[
+                    enemy_name] >= UniversalVariables.enemy_path_update_tick:
+                    player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
+                                   Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
 
-                elif len(Enemy.path[enemy_name]) <= 1:
-                    # Otsib playerit koordinaatidega
-                    next_x, next_y = x, y
-                    if direction == 'right':
-                        next_x += UniversalVariables.enemy_speed
-                    elif direction == 'left':
-                        next_x -= UniversalVariables.enemy_speed
-                    elif direction == 'down':
-                        next_y += UniversalVariables.enemy_speed
-                    elif direction == 'up':
-                        next_y -= UniversalVariables.enemy_speed
+                    path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
 
-                    next_x, next_y = round(next_x, 3), round(next_y, 3)
-                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
-                
-                else:
-                    # Otsib playerit grididega
-                    next_grid = ((Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
-                    next_x, next_y = x, y
+                    Enemy.path[enemy_name] = path
+                    Enemy.path_ticks[enemy_name] = 0
 
-                    # Move enemy based on the next grid
-                    next_x += (next_grid[0] * UniversalVariables.enemy_speed)
-                    next_y += (next_grid[1] * UniversalVariables.enemy_speed)
+                if Enemy.path[enemy_name] is not None and len(Enemy.path[enemy_name]) > 0:
+                    next_grid = Enemy.path[enemy_name][0]
 
-                    next_x, next_y = round(next_x, 3), round(next_y, 3)
+                    if (enemy_grid[0], enemy_grid[1]) == (next_grid[0], next_grid[1]):
+                        Enemy.path[enemy_name].pop(0)  # Remove the first element if the enemy has reached it
 
-                    # IMPROVE THIS>>> Entity positsiooni muutmine gridi keskele, sest muidu jookseb seinte sees.
-                    if next_x == x and next_y != y:
-                        if str(next_x).endswith('.5'):
+                    if len(Enemy.path[enemy_name]) > 0:
+                        next_grid = Enemy.path[enemy_name][0]
+                        next_x, next_y = x, y
+
+                        # Move enemy based on the next grid
+                        if next_grid[1] > enemy_grid[1]:
+                            next_x += UniversalVariables.enemy_speed
+                        elif next_grid[1] < enemy_grid[1]:
+                            next_x -= UniversalVariables.enemy_speed
+
+                        if next_grid[0] > enemy_grid[0]:
+                            next_y += UniversalVariables.enemy_speed
+                        elif next_grid[0] < enemy_grid[0]:
+                            next_y -= UniversalVariables.enemy_speed
+
+                        next_x, next_y = round(next_x, 3), round(next_y, 3)
+
+                        # Adjust entity position to avoid moving through walls
+                        if next_x == x and next_y != y and str(next_x).endswith('.5'):
                             next_x = math.ceil(next_x)
-                    if next_y == y and next_x != x:
-                        if str(next_y).endswith('.5'):
+                        if next_y == y and next_x != x and str(next_y).endswith('.5'):
                             next_y = math.ceil(next_y)
-                
-                    Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
 
-            # Increment path ticks
-            if enemy_name in Enemy.path_ticks:
-                Enemy.path_ticks[enemy_name] += 1
+                        Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+
+                # Increment path ticks
+                if enemy_name in Enemy.path_ticks:
+                    Enemy.path_ticks[enemy_name] += 1
 
     def detection(self):
         player_window_x = Camera.player_window_x
@@ -212,39 +207,34 @@ class Enemy:
         Enemy.enemy_in_range = set()
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
-            if Enemy.path == {} or Enemy.path == None:
+            enemy_x_grid, enemy_y_grid = enemy_info[1], enemy_info[2]
+
+            enemy_x = enemy_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
+            enemy_y = enemy_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
+
+            distance_to_player_x_grid = player_window_x - enemy_x
+            distance_to_player_y_grid = player_window_y - enemy_y
+
+            if abs(distance_to_player_x_grid) <= UniversalVariables.enemy_detection_range and abs(distance_to_player_y_grid) <= UniversalVariables.enemy_detection_range:
                 direction: str = 'none'
-                Enemy.enemy_in_range.add((enemy_name, direction))
-            
-            else:
-                enemy_x_grid, enemy_y_grid = enemy_info[1], enemy_info[2]
 
-                enemy_x = enemy_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
-                enemy_y = enemy_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
+                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
+                    and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                    if self.player.health.get_health() > 0:
+                        Enemy.attack(self, 3, enemy_x, enemy_y)
 
-                distance_to_player_x_grid = player_window_x - enemy_x
-                distance_to_player_y_grid = player_window_y - enemy_y
-
-                if abs(distance_to_player_x_grid) <= UniversalVariables.enemy_detection_range and abs(distance_to_player_y_grid) <= UniversalVariables.enemy_detection_range:
-                    direction: str = 'none'
-
-                    if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
-                        and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
-                        if self.player.health.get_health() > 0:
-                            Enemy.attack(self, 3, enemy_x, enemy_y)
-
-                    if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
-                        if distance_to_player_x_grid > 0:
-                            direction = 'right'
-                        else:
-                            direction = 'left'
-
+                if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
+                    if distance_to_player_x_grid > 0:
+                        direction = 'right'
                     else:
-                        if distance_to_player_y_grid > 0:
-                            direction = 'down'
-                        else:
-                            direction = 'up'
-                    Enemy.enemy_in_range.add((enemy_name, direction))
+                        direction = 'left'
+
+                else:
+                    if distance_to_player_y_grid > 0:
+                        direction = 'down'
+                    else:
+                        direction = 'up'
+                Enemy.enemy_in_range.add((enemy_name, direction))
 
     def attack(self, damage, enemy_direct_x, enemy_direct_y):
         """ Kui Ghost on playeri peal siis saab damage'i. """
