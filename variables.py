@@ -111,7 +111,7 @@ class UniversalVariables():
 
     render_range_small: list = [
         10, 11,  # Key
-        90, 91, 92, 93, 93, 94, 95, 96, 97, 977,  # Uksed
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
         1001, 1002,  # Barrel
