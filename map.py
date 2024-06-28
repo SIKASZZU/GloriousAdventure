@@ -19,18 +19,13 @@ def resource_path(relative_path):
 
 
 class MapData:
+    ### FIXME: See peab olema [[None] * 39 for _ in range(40)]
+    placeholder = [[None] * 39 for _ in range(40)]
 
     maze_size = 40
-    maze_location = 0  # 0 default map, 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-    start_side = 'bottom'  # default
+    resolution = (maze_size, maze_size)  # Adjusted resolution of Perlin noise for more distributed walls
 
-    placeholder = [[None] * 40 for _ in range(40)]
-    start_side = 'bottom'  # default
-
-    placeholder = [[None] * 40 for _ in range(40)]
     old = copy.deepcopy(UniversalVariables.map_list)  # Use deepcopy to avoid reference issues
-
-    resolution = (40, 40)  # Adjusted resolution of Perlin noise for more distributed walls
 
     create_save_puzzle = None
     converted_maze = []
