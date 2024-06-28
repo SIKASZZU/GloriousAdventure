@@ -4,7 +4,7 @@ import time
 
 class UniversalVariables():
 
-    debug_mode = True
+    debug_mode = False
 
     # ******************** Settings ******************** #
 
@@ -24,7 +24,7 @@ class UniversalVariables():
     prev_block_size: int = 0
 
     if debug_mode:
-        jagatis: float = 15
+        jagatis: float = 35
         
         # Mängu max tick rate
         FPS = 200
@@ -152,10 +152,10 @@ class UniversalVariables():
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
-    enemy_detection_range = block_size * 5
+    enemy_detection_range = block_size * 20
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-    enemy_path_update_tick = 5 + random.randint(-5, 5)
+    enemy_path_update_tick = 5 + random.randint(15, 20)
 
     # ******************** Counters ******************** #
     render_boxes_counter: int = 0
