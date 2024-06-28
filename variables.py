@@ -144,7 +144,9 @@ class UniversalVariables():
         #
     ]
 
-    door_ids: list = [90, 91, 92, 93, 94, 95, 96, 97]
+    open_door_ids   = [90, 91, 92, 93, 933]
+    closed_door_ids = [94, 95, 96, 97, 977]
+    door_ids: list  = set(open_door_ids + closed_door_ids)
 
     offset_x: int = 0
     offset_y: int = 0
