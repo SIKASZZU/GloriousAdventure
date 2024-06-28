@@ -1,6 +1,6 @@
 import pygame
 from variables import UniversalVariables
-
+from text import Fading_text
 class Camera:
 
     screen = UniversalVariables.screen
@@ -58,6 +58,13 @@ class Camera:
                 else:
 
                     Camera.click_x, Camera.click_y = None, None
+
+                if UniversalVariables.debug_mode:
+                    text = f"Clicked item : {self.terrain_data[int(Camera.click_y // UniversalVariables.block_size)][int(Camera.click_x // UniversalVariables.block_size)]}"
+                    if text in Fading_text.shown_texts:
+                        Fading_text.shown_texts.remove(text)
+                    UniversalVariables.ui_elements.append(text)
+
                 return Camera.click_x, Camera.click_y
             return
         except TypeError:
