@@ -42,6 +42,9 @@ class HealthComponent:
                 HungerComponent.hunger_timer += 100
                 UniversalVariables.health_status = True
 
+        elif self.current_health > self.max_health:
+            self.current_health = self.max_health
+
     def check_health(self, hunger=None):
         self.hunger = hunger
         self.health_cooldown_timer += 1
