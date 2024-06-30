@@ -98,14 +98,13 @@ class HealthComponent:
 class StaminaComponent:
     stamina_bar_decay: int = 0
 
-    def __init__(self, max_stamina, min_stamina, player):
+    def __init__(self, max_stamina, min_stamina):
         self.max_stamina = max_stamina
         self.min_stamina = min_stamina
         self.current_stamina = max(min_stamina, min(max_stamina, max_stamina))
         self.stamina_last_update_time = time.time()
         self.timer = 0
         self.timer_regen = 0
-        self.player = player  # Store the Player instance as an attribute
 
     def use_stamina(self, amount):
         self.current_stamina = round(max(self.current_stamina - amount, self.min_stamina), 3)
@@ -261,8 +260,7 @@ class Player:
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
         self.stamina = StaminaComponent(max_stamina=max_stamina,
-                                        min_stamina=min_stamina,
-                                        player=self)
+                                        min_stamina=min_stamina)
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
