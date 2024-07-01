@@ -2,6 +2,8 @@ import random
 
 from variables import UniversalVariables
 from objects import ObjectManagement
+from audio import Player_audio
+import items
 
 
 def is_click_inside_player_rect(self):
@@ -47,17 +49,36 @@ class ItemFunctionality:
                 UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
                 ObjectManagement.remove_object_from_inv(item_at_hand)
 
-            if UniversalVariables.current_equipped_item == 'Сanteen':
-                ...
+            if item_at_hand == 'Сanteen':
+                print('Canteen = no functionality yet')
+
+            if item_at_hand in ['Bread', 'Meat', 'Water_Bottle']:
+                for item in items.items_list:
+                    if item["Name"] == item_at_hand and item["Type"] == "Food":
+                        satisfaction_gain = item.get("Satisfaction_Gain", 0)
+
+                        # Arvutab uue hungeri 'current + söödud itemi Gain'
+                        new_hunger = self.player.hunger.current_hunger + satisfaction_gain
+
+                        # Et playeri hunger ei läheks üle maxi ega alla min
+                        if new_hunger >= self.player.hunger.max_hunger:
+                            self.player.hunger.current_hunger = self.player.hunger.max_hunger
+
+                        elif new_hunger <= self.player.hunger.min_hunger:
+                            self.player.hunger.current_hunger = self.player.hunger.min_hunger
+
+                        else:
+                            self.player.hunger.current_hunger = new_hunger
+
+                        UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
+                        ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
+                        Player_audio.eating_audio(self)
+                        self.click_position = ()
 
 
     #if item == 'Flashlight':
     #    new_player_cone_light_strenght = -70
     #    return new_player_cone_light_strenght
-
-    #if item == 'Bread': ...
-    #print('calling func')
-
 
     #grid_y, grid_x = int(UniversalVariables.player_y // UniversalVariables.block_size), int(UniversalVariables.player_x // UniversalVariables.block_size)
 

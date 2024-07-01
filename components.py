@@ -215,32 +215,6 @@ class HungerComponent:
         else:
             return False
 
-    def eat(self):
-        if UniversalVariables.current_equipped_item is not None:
-            if HungerComponent.is_click_inside_player_rect(self):
-
-                for item in items.items_list:
-                    if item["Name"] == UniversalVariables.current_equipped_item and item["Type"] == "Food":
-                        satisfaction_gain = item.get("Satisfaction_Gain", 0)
-
-                        # Arvutab uue hungeri 'current + söödud itemi Gain'
-                        new_hunger = self.player.hunger.current_hunger + satisfaction_gain
-
-
-                        # Et playeri hunger ei läheks üle maxi ega alla min
-                        if new_hunger >= self.player.hunger.max_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.max_hunger
-
-                        elif new_hunger <= self.player.hunger.min_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.min_hunger
-
-                        else:
-                            self.player.hunger.current_hunger = new_hunger
-
-                        ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
-                        UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
-                        Player_audio.eating_audio(self)
-
     def __str__(self):
         rounded_hunger = round(self.current_hunger, 3)
         if rounded_hunger == self.min_hunger:
@@ -252,12 +226,21 @@ class HungerComponent:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {HungerComponent.hunger_timer} ticks"
 
 
+class ThirstComponent:
+    def __init__(self, base_thirst, max_thirst, min_thirst):
+        self.base_thirst = base_thirst
+        self.max_thirst = max_thirst
+        self.min_thirst = min_thirst
+        self.current_hunger = max(min_thirst, min(max_thirst, base_thirst))
+
+
+
 class Player:
     def __init__(self, max_health, min_health,
                  max_stamina, min_stamina,
                  base_speed, max_speed, min_speed,
-                 base_hunger, max_hunger, min_hunger
-
+                 base_hunger, max_hunger, min_hunger,
+                 base_thirst, max_thirst, min_thirst
                  ):
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
@@ -269,6 +252,9 @@ class Player:
         self.hunger = HungerComponent(base_hunger=base_hunger,
                                       max_hunger=max_hunger,
                                       min_hunger=min_hunger)
+        self.thirst = ThirstComponent(base_thirst=base_thirst, 
+                                      max_thirst=max_thirst,
+                                      min_thirst=min_thirst)
 
     def apply_knockback(self, dx, dy):
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...
@@ -276,4 +262,4 @@ class Player:
         UniversalVariables.player_y += dy * knockback_force
 
     def __str__(self):
-        return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   Inventory: {Inventory.inventory}\n"
+        return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"
