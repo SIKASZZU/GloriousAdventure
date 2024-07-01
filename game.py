@@ -48,7 +48,7 @@ class Game:
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
         self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
-                             min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0)
+                             min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0, base_thirst=20, max_thirst=20, min_thirst=0)
         self.player_rect = None  # Player rect to be set in the game
 
         self.screen = UniversalVariables.screen
