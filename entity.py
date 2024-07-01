@@ -6,6 +6,7 @@ from camera import Camera
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables
+from status import PlayerStatus
 import random
 
 
@@ -245,6 +246,8 @@ class Enemy:
 
         if Enemy.damage_delay >= 60:
             self.player.health.damage(damage)
+            PlayerStatus.infection(self)
+            PlayerStatus.bleed(self)
             
             # Calculate knockback direction
             dx = Camera.player_window_x - Enemy.save_enemy_direction_x

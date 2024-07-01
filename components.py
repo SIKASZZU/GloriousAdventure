@@ -6,6 +6,7 @@ from variables import UniversalVariables
 from inventory import Inventory
 from audio import Player_audio
 from text import Fading_text
+from objects import ObjectManagement
 
 class HealthComponent:
     death_exit_timer = 0
@@ -41,8 +42,16 @@ class HealthComponent:
                 self.current_health += 1
                 HungerComponent.hunger_timer += 100
                 UniversalVariables.health_status = True
+        
+        if self.current_health > self.max_health:
+            self.current_health = self.max_health
+        
+    def heal(self, item):
+        if item == 'Bandage':
+            self.current_health += 5
+            UniversalVariables.health_status = True
 
-        elif self.current_health > self.max_health:
+        if self.current_health > self.max_health:
             self.current_health = self.max_health
 
     def check_health(self, hunger=None):
@@ -54,6 +63,9 @@ class HealthComponent:
         if self.health_cooldown_timer >= 220:
             HealthComponent.regenerate_health(self, hunger)
             self.health_cooldown_timer = 100
+        
+        if self.current_health > self.max_health:
+            self.current_health = self.max_health
 
     def death(self):
         ### TODO: player moement disable.
@@ -61,9 +73,9 @@ class HealthComponent:
             UniversalVariables.ui_elements.append("""Debug mode, not closing the game.""")
         else:
             if HealthComponent.death_start_time is None:
-                HealthComponent.death_start_time = time.time()
+                HealthComponent.death_start_time = time.perf_counter()
 
-            elapsed_time = time.time() - HealthComponent.death_start_time
+            elapsed_time = time.perf_counter() - HealthComponent.death_start_time
             remaining_time = 5 - int(elapsed_time)
 
             if remaining_time >= 0:
@@ -158,8 +170,14 @@ class HungerComponent:
         return (self.current_hunger)
 
     def decrease_hunger(self):
+        hunger_resist   = 1
+        hunger_decrease = 0.1
+        if UniversalVariables.player_infected == True:
+            hunger_resist   = 2
+            hunger_decrease = 0.4
+
         if UniversalVariables.hunger_resistance:
-            UniversalVariables.hunger_resistance -= 1
+            UniversalVariables.hunger_resistance -= hunger_resist
             if UniversalVariables.hunger_resistance <= 0:
                 UniversalVariables.hunger_resistance = None
                 HungerComponent.hunger_timer = 100
@@ -181,59 +199,21 @@ class HungerComponent:
             HungerComponent.health_timer -= 1
         else:
             if HungerComponent.hunger_timer <= 0:
-                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - 0.1)
+                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - hunger_decrease)
                 HungerComponent.hunger_timer = 100
 
             HungerComponent.hunger_timer -= 1
             if HungerComponent.health_timer < 300:
                 HungerComponent.health_timer = 300
+
     def is_click_inside_player_rect(self):
         if self.click_position != ():
             click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
             click_within_y = self.player_rect[1] < self.click_position[1] and self.click_position[1] < self.player_rect[1] + self.player_rect[3]
-
             if click_within_x and click_within_y:
                 return True
         else:
             return False
-
-    def eat(self):
-        if UniversalVariables.current_equipped_item is not None:
-            if HungerComponent.is_click_inside_player_rect(self):
-
-                for item in items.items_list:
-                    if item["Name"] == UniversalVariables.current_equipped_item and item["Type"] == "Food":
-                        satisfaction_gain = item.get("Satisfaction_Gain", 0)
-
-                        # Arvutab uue hungeri 'current + söödud itemi Gain'
-                        new_hunger = self.player.hunger.current_hunger + satisfaction_gain
-
-
-                        # Et playeri hunger ei läheks üle maxi ega alla min
-                        if new_hunger >= self.player.hunger.max_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.max_hunger
-
-                        elif new_hunger <= self.player.hunger.min_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.min_hunger
-
-                        else:
-                            self.player.hunger.current_hunger = new_hunger
-
-                        # Võtab söödud itemini invist ära
-                        if Inventory.inventory.get(UniversalVariables.current_equipped_item, 0) > 0:
-                            Inventory.inventory[UniversalVariables.current_equipped_item] -= 1
-
-                            # Kustutab söödud itemi ära kui see on < 0
-                            if Inventory.inventory[UniversalVariables.current_equipped_item] <= 0:
-                                del Inventory.inventory[UniversalVariables.current_equipped_item]
-                                UniversalVariables.current_equipped_item = None
-
-                        UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
-
-                        Player_audio.eating_audio(self)
-
-                        # Clear click pos
-                        self.click_position = ()
 
     def __str__(self):
         rounded_hunger = round(self.current_hunger, 3)
@@ -246,12 +226,21 @@ class HungerComponent:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {HungerComponent.hunger_timer} ticks"
 
 
+class ThirstComponent:
+    def __init__(self, base_thirst, max_thirst, min_thirst):
+        self.base_thirst = base_thirst
+        self.max_thirst = max_thirst
+        self.min_thirst = min_thirst
+        self.current_hunger = max(min_thirst, min(max_thirst, base_thirst))
+
+
+
 class Player:
     def __init__(self, max_health, min_health,
                  max_stamina, min_stamina,
                  base_speed, max_speed, min_speed,
-                 base_hunger, max_hunger, min_hunger
-
+                 base_hunger, max_hunger, min_hunger,
+                 base_thirst, max_thirst, min_thirst
                  ):
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
@@ -263,6 +252,9 @@ class Player:
         self.hunger = HungerComponent(base_hunger=base_hunger,
                                       max_hunger=max_hunger,
                                       min_hunger=min_hunger)
+        self.thirst = ThirstComponent(base_thirst=base_thirst, 
+                                      max_thirst=max_thirst,
+                                      min_thirst=min_thirst)
 
     def apply_knockback(self, dx, dy):
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...
@@ -270,4 +262,4 @@ class Player:
         UniversalVariables.player_y += dy * knockback_force
 
     def __str__(self):
-        return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   Inventory: {Inventory.inventory}\n"
+        return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"

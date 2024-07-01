@@ -345,36 +345,44 @@ class Collisions:
                                         keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                             # Kontrollib kas terrain block jääb faili terrain_data piiridesse
                             if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
-
                                 in_water = self.terrain_data[row][col] == 0
+                                
+                                stamina_cost = 0.05
+                                stamina_regen = 0.05
+                                if UniversalVariables.player_infected == True:
+                                    stamina_cost = 0.15
+                                    stamina_regen = 0.025
+
+                                run_speed_multiplier = 1.5
+                                if UniversalVariables.player_bleeding == True:
+                                    run_speed_multiplier = 1.2
 
                                 if in_water != True:
-                                    # Player asub maal
-                                    if sprinting:
+                                    if sprinting:  # Player asub maal
                                         # stamina = 0 - playeri speed = base speed
                                         if self.player.stamina.current_stamina == 0:
-                                            self.player.stamina.stamina_regenerate(0.05)
+                                            self.player.stamina.stamina_regenerate(stamina_regen)
                                             self.player.speed.current_speed = self.player.speed.base_speed
                                         else:
-                                            self.player.speed.current_speed = self.player.speed.base_speed * 1.5
+                                            self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
                                             HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                            self.player.stamina.use_stamina(0.05)
+                                            self.player.stamina.use_stamina(stamina_cost)
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed
-                                        self.player.stamina.stamina_regenerate(0.05)
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
 
                                 else:  # Player asub vees
                                     if sprinting:
                                         # stamina = 0 - playeri speed = base speed
                                         if self.player.stamina.current_stamina == 0:
-                                            self.player.stamina.stamina_regenerate(0.05)
+                                            self.player.stamina.stamina_regenerate(stamina_regen)
                                             self.player.speed.current_speed = self.player.speed.base_speed / 2
                                         else:
                                             self.player.speed.current_speed = self.player.speed.base_speed
                                             HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                            self.player.stamina.use_stamina(0.05)
+                                            self.player.stamina.use_stamina(stamina_cost)
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                        self.player.stamina.stamina_regenerate(0.05)
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
                                         
                     except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)

@@ -1,5 +1,6 @@
 import pygame
 from variables import UniversalVariables
+from images import ImageLoader
 
 class HUD_class:
     
@@ -10,6 +11,10 @@ class HUD_class:
 
     stamina_bar_decay = 0
     half_w = screen.get_size()[0] // 2  # pool screeni widthi
+
+    def update():
+        HUD_class.bleed_symbol()
+        HUD_class.infection_symbol()
 
     def bar_visualization(self):
         half_w = HUD_class.half_w
@@ -99,3 +104,18 @@ class HUD_class:
         food_h_midpoint = food_rect_border[1] + (food_rect_border[3] // 2) - 20
 
         return food_rect, food_rect_border, food_rect_bg, food_w_midpoint, food_h_midpoint
+    
+
+    def bleed_symbol():
+        if UniversalVariables.player_bleeding:
+            bleed_icon = ImageLoader.load_gui_image('Bleed')
+            scaled_bleed_icon = pygame.transform.scale(bleed_icon, (50, 50))
+            UniversalVariables.screen.blit(scaled_bleed_icon, (HUD_class.half_w + 136, HUD_class.screen_y - 52))
+
+
+    def infection_symbol():
+        if UniversalVariables.player_infected:
+            infection_icon = ImageLoader.load_gui_image('Infection')
+            scaled_infection_icon = pygame.transform.scale(infection_icon, (50, 50))
+            UniversalVariables.screen.blit(scaled_infection_icon, (HUD_class.half_w + 236, HUD_class.screen_y - 52))
+

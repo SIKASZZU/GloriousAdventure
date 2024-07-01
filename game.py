@@ -25,6 +25,10 @@ from blade import change_blades
 from final_maze import Final_Maze
 from text import Fading_text
 from menu import Menu, PauseMenu
+from status import PlayerStatus
+from HUD import HUD_class
+from equipped_items import ItemFunctionality
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -43,7 +47,7 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=1, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
+        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
                              min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0)
         self.player_rect = None  # Player rect to be set in the game
 
@@ -96,15 +100,17 @@ class Game:
 
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
-        Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER COLLISION FOR MOVEMENT SPEED CALCULATIONS
-        Collisions.change_map_data(self)  # MUUDAB MINGI RANDOM STUFFI JA VAATAB KA KOLLISIONI PLAYERI JA OBJEKTIGA
-
+        Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        
         vision.find_boxes_in_window()
 
         self.player.health.check_health(self.player.hunger.current_hunger)
         Enemy.update(self)
         Player_audio.player_audio_update(self)
         change_blades(self)
+        PlayerStatus.update(self)
+        ItemFunctionality.update(self)
 
     def call_visuals(self):
         RenderPictures.map_render(self)
@@ -134,6 +140,7 @@ class Game:
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
+        HUD_class.update()
 
         # Equipped item slot
         if UniversalVariables.current_equipped_item:
@@ -173,7 +180,6 @@ class Game:
         self.call_technical()
         self.call_visuals()
 
-        HungerComponent.eat(self)
         Inventory.call_inventory(self)
         if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
 
@@ -195,6 +201,8 @@ class Game:
             # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
             # print(self.player)
 
+        self.click_position = ()
+
     def run(self):
         self.load_variables()
         while True:
@@ -213,7 +221,6 @@ class Game:
                     PauseMenu.settings_menu(self)
 
                 pygame.display.update()
-                self.clock.tick(600)
 
 if __name__ == "__main__":
     game = Game()
