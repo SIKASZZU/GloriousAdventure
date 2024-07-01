@@ -24,7 +24,7 @@ from audio import Player_audio  # player_audio_update
 from blade import change_blades
 from final_maze import Final_Maze
 from text import Fading_text
-
+from menu import Menu, PauseMenu
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -43,7 +43,7 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
+        self.player = Player(max_health=1, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
                              min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0)
         self.player_rect = None  # Player rect to be set in the game
 
@@ -168,39 +168,52 @@ class Game:
                 # ObjectManagement.add_object_from_inv("Bad_Bread", 100)
                 self.restrict_looping = True
 
+    def game_logic(self):
+        self.reset_lists()
+        self.call_technical()
+        self.call_visuals()
+
+        HungerComponent.eat(self)
+        Inventory.call_inventory(self)
+        if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
+
+        Final_Maze.final_maze_update(self)
+        Fading_text.render_general(self)
+        Fading_text.handle_fading_texts(self)  # Render fading text after everything else
+
+        self.refresh_loop()
+        HungerComponent.decrease_hunger(self)
+
+        # ******************** DEBUG MODE ******************** #
+        if UniversalVariables.debug_mode:
+            UniversalVariables.ui_elements.append("!        Debug mode - True        !")
+            self.player.speed.base_speed = 20
+
+            # neil functionitel on juba sees, et kontrolliks debug modei
+            self.check_keys()  # Toggle hitbox / vision
+            self.custom_addition()
+            # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
+            # print(self.player)
+
     def run(self):
         self.load_variables()
         while True:
             self.events()
+            # Vaatab kas mäng on tööle pandud või mitte
+            if Menu.game_state:
+                Menu.main_menu(self)
 
-            self.reset_lists()
-            self.call_technical()
-            self.call_visuals()
+            # Kui mäng pandakse tööle
+            if not Menu.game_state:
 
-            HungerComponent.eat(self)
-            Inventory.call_inventory(self)
-            if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
+                # Vaatab kas mäng on pausi peale pandud või mitte
+                if not PauseMenu.game_paused:
+                    self.game_logic()
+                else:
+                    PauseMenu.settings_menu(self)
 
-            Final_Maze.final_maze_update(self)
-            Fading_text.render_general(self)
-            Fading_text.handle_fading_texts(self)  # Render fading text after everything else
-
-            self.refresh_loop()
-            HungerComponent.decrease_hunger(self)
-
-            # ******************** DEBUG MODE ******************** #
-            if UniversalVariables.debug_mode:
-                UniversalVariables.ui_elements.append("!        Debug mode - True        !")
-                self.player.speed.base_speed = 20
-
-                # neil functionitel on juba sees, et kontrolliks debug modei
-                self.check_keys()
-                self.custom_addition()
-                # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
-                # print(self.player)
-
-            Final_Maze.delay += 1
-
+                pygame.display.update()
+                self.clock.tick(600)
 
 if __name__ == "__main__":
     game = Game()
