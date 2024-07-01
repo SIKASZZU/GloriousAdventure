@@ -9,7 +9,7 @@ from text import Fading_text
 
 class HealthComponent:
     death_exit_timer = 0
-
+    death_start_time = None
     def __init__(self, max_health, min_health):
         self.max_health = max_health
         self.min_health = min_health
@@ -56,24 +56,20 @@ class HealthComponent:
             self.health_cooldown_timer = 100
 
     def death(self):
-        ### TODO: teha, et ei spammiks printi
-
-        print('Player has died')
-        UniversalVariables.ui_elements.append(
-            """     You have died!"""
-            """  Exiting game in 5 sec. """
-        )
         ### TODO: player moement disable.
         if UniversalVariables.debug_mode == True:
-            print('Debug mode, not closing the game. ')
+            UniversalVariables.ui_elements.append("""Debug mode, not closing the game.""")
         else:
-            death_timer_limit = 300
-            print('Player has died')
-            print(f'Closing the game. {HealthComponent.death_exit_timer}/{death_timer_limit}')
-            if HealthComponent.death_exit_timer == death_timer_limit:
-                pygame.quit()
+            if HealthComponent.death_start_time is None:
+                HealthComponent.death_start_time = time.time()
+
+            elapsed_time = time.time() - HealthComponent.death_start_time
+            remaining_time = 5 - int(elapsed_time)
+
+            if remaining_time >= 0:
+                UniversalVariables.ui_elements[-1] = f" You have died! Exiting game in {remaining_time} sec. "
             else:
-                HealthComponent.death_exit_timer += 1
+                pygame.quit()
 
     def get_health(self):
         return self.current_health
