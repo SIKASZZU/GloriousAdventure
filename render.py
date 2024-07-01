@@ -11,8 +11,6 @@ class RenderPictures:
     render_range: int = 0
     terrain_in_view: list = []
     occupied_positions: dict = {}
-    generated_ground_images: dict = {}
-    generated_water_images: dict = {}
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:

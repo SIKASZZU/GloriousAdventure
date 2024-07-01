@@ -75,7 +75,7 @@ class ImageLoader:
                         image_path = resource_path(f"images/Objects/Water/{image_name}.png")
                         name = "Water"
                     elif image_name.startswith("Maze_Wall_"):
-                        image_path = resource_path(f"images/Objects/{image_name}.png")
+                        image_path = resource_path(f"images/Objects/Maze_Wall/{image_name}.png")
                         name = "Maze_Wall"
                     elif image_name.startswith("Maze_Ground_"):
                         image_path = resource_path(f"images/Objects/{image_name}.png")
