@@ -49,17 +49,17 @@ def load_and_resize_image(image_path: str) -> 'pygame.Surface':
 
 
 menu_images = {
-    "Play": load_and_resize_image(resource_path("images/Menu_buttons/Play.png")),
-    "Settings": load_and_resize_image(resource_path("images/Menu_buttons/Settings.png")),
-    "Store": load_and_resize_image(resource_path("images/Menu_buttons/Store.png")),
-    "Quit": load_and_resize_image(resource_path("images/Menu_buttons/Quit.png")),
-    "Graphics": load_and_resize_image(resource_path("images/Menu_buttons/Graphics.png")),
-    "Audio": load_and_resize_image(resource_path("images/Menu_buttons/Audio.png")),
-    "Controls": load_and_resize_image(resource_path("images/Menu_buttons/Controls.png")),
-    "Back": load_and_resize_image(resource_path("images/Menu_buttons/Back.png")),
-    "Resume": load_and_resize_image(resource_path("images/Menu_buttons/Resume.png")),
-    "Save_&_Menu": load_and_resize_image(resource_path("images/Menu_buttons/Save_&_Menu.png")),
-    "Save_&_Quit": load_and_resize_image(resource_path("images/Menu_buttons/Save_&_Quit.png")),
+    "Play": load_and_resize_image(resource_path("images/Menu/Play.png")),
+    "Settings": load_and_resize_image(resource_path("images/Menu/Settings.png")),
+    "Store": load_and_resize_image(resource_path("images/Menu/Store.png")),
+    "Quit": load_and_resize_image(resource_path("images/Menu/Quit.png")),
+    "Graphics": load_and_resize_image(resource_path("images/Menu/Graphics.png")),
+    "Audio": load_and_resize_image(resource_path("images/Menu/Audio.png")),
+    "Controls": load_and_resize_image(resource_path("images/Menu/Controls.png")),
+    "Back": load_and_resize_image(resource_path("images/Menu/Back.png")),
+    "Resume": load_and_resize_image(resource_path("images/Menu/Resume.png")),
+    "Save_&_Menu": load_and_resize_image(resource_path("images/Menu/Save_&_Menu.png")),
+    "Save_&_Quit": load_and_resize_image(resource_path("images/Menu/Save_&_Quit.png")),
 }
 
 
@@ -71,14 +71,19 @@ def create_button(x: float, y: float, image: 'pygame.Surface', multiplier: float
 
 
 class Menu:
-    game_state: bool = True
-    game_menu_state: str
+    if UniversalVariables.debug_mode:
+        game_state: bool = False
+        game_menu_state: str
+
+    else:
+        game_state: bool = True
+        game_menu_state: str
 
     screen = UniversalVariables.screen
     screen_x: int = UniversalVariables.screen_x
     screen_y: int = UniversalVariables.screen_y
 
-    image = resource_path("images/Main_Menu.jpg")
+    image = resource_path("images/Menu/Main_Menu.png")
     original_image = pygame.image.load(image).convert()
     main_menu_image = pygame.transform.scale(original_image, (UniversalVariables.screen_x, UniversalVariables.screen_y))
 
@@ -166,6 +171,8 @@ class Menu:
         elif self.game_menu_state == "controls":
             if Menu.main_controls[0].draw(self.screen):  # Settings
                 self.game_menu_state = "settings"
+
+        pygame.display.update()
 
 
 class PauseMenu:
