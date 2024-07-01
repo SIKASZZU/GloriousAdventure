@@ -69,6 +69,17 @@ items_list = [
         "Object_height": int(block_size * 2),
         "Render_when": block_size * 0.8
         },
+
+    {
+        "Type": "Object",
+        "Name": "Oak_Tree_Stump",
+        "ID": 5,
+        "Breakable": False,
+        "Object_width": int(block_size * 2),
+        "Object_height": int(block_size * 2),
+        "Render_when": -(block_size * 0.8)
+    },
+
     {
         "Type": "Object",
         "Name": "Flower",
@@ -122,15 +133,22 @@ items_list = [
 
     {
         "Type": "Mineral",
+        "Name": "Oak_Log",
+        "ID": 19,
+    },
+
+    {
+        "Type": "Mineral",
         "Name": "Oak_Wood",
         "Recipes": [
-            {"Recipe": {"Oak_Tree": 1}, "Amount": 2},
+            {"Recipe": {"Oak_log": 1}, "Amount": 2},
         ],
         "Amount": 4,
         "ID": 20,
         # "Placeable": True,
         # "Breakable": True,
     },
+
     {
         "Type": "Mineral",
         "Name": "Oak_Planks",
