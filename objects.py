@@ -4,6 +4,8 @@ from inventory import Inventory
 from variables import UniversalVariables
 from audio import Player_audio
 from text import Fading_text
+import numpy as np
+import random
 
 class ObjectManagement:
 
@@ -23,49 +25,57 @@ class ObjectManagement:
                 if object_id == item["ID"]:
                     if item["Breakable"] != True:
                         return
-                    else:
-                        if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
 
-                            grid_col: int = int(terrain_x // UniversalVariables.block_size)
-                            grid_row: int = int(terrain_y // UniversalVariables.block_size)
+                    ### FIXME: Choises asi on perses. Invis on Stone ja muu pask (inv on täis). Siis saad ainult Stone sealt ja kui chance tleb et saada Coali siis ütleb inv on täis
 
-                            try:
-                                # Kontrollib kas jääb mapi sissse
-                                if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                    # Kui seda ei pane siia ja kui inv on täis, vahet pole
+                    # kas invis on oak log v ei. Puud ei saa ikka maha võtta.
+                    if object_id == 2:
+                        item_name = np.random.choice(['Stone', 'Coal'], p=[0.85, 0.15])
 
+                    if object_id == 4:
+                        item_name = "Oak_Log"
 
-                                    # Muudab objecti väärtuse 1 - tuleb ümber muuta kui hakkame biomeid tegema vms
-                                    # näiteks liiva peal kaktus, tuleks muuta liivaks mitte muruks
-                                    if object_id == 10:
-                                        self.terrain_data[grid_row][grid_col] = 11
+                    if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
 
-                                    elif object_id == 7:
-                                        self.terrain_data[grid_row][grid_col] = 107
+                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
+                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
-                                    else:
-                                        self.terrain_data[grid_row][grid_col] = 1
+                        try:
+                            # Kontrollib kas jääb mapi sissse
+                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
 
-                                    ObjectManagement.add_object_from_inv(item_name) 
-                                    Player_audio.player_item_audio(self)
-                                    return
+                                if object_id == 4:
+                                    self.terrain_data[grid_row][grid_col] = 5  # Oak tree stemp
+
+                                elif object_id == 10:
+                                    self.terrain_data[grid_row][grid_col] = 11  # Empty key slot
+
+                                elif object_id == 7:
+                                    self.terrain_data[grid_row][grid_col] = 107  # Farmland
 
                                 else:
-                                    print("Invalid grid indices:", grid_row, grid_col)  # Kui ei jää mapi sisse siis prindib errori
-                                    return
+                                    self.terrain_data[grid_row][grid_col] = 1  # Ground
 
-                            except Exception as e:
-                                print("IndexError: objects.py, remove_object_at_position", e)
+                                ObjectManagement.add_object_from_inv(item_name)
+                                Player_audio.player_item_audio(self)
                                 return
 
-                        else:
-                            Player_audio.error_audio(self)
+                            else:
+                                return
 
-                            text = "Not enough space in Inventory."
-                            UniversalVariables.ui_elements.append(text)
-
-                            if text in Fading_text.shown_texts:
-                                Fading_text.shown_texts.remove(text)
+                        except Exception:
                             return
+
+                    else:
+                        Player_audio.error_audio(self)
+
+                        text = "Not enough space in Inventory."
+                        UniversalVariables.ui_elements.append(text)
+
+                        if text in Fading_text.shown_texts:
+                            Fading_text.shown_texts.remove(text)
+                        return
 
 
     def add_object_from_inv(item, amount=1):
