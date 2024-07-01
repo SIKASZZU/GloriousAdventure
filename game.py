@@ -4,7 +4,6 @@ import sys
 import os
 import sys
 
-from components import Player, HungerComponent
 
 # Oma enda failid
 import vision  # find_boxes_in_window, draw_light_source_and_rays
@@ -15,12 +14,12 @@ from render import RenderPictures, ObjectCreation  # map_render, creating_lists
 from event_handler import Event_handler
 from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
-import vision  # find_boxes_in_window, draw_light_source_and_rays
 from update import EssentialsUpdate  # check_pressed_keys, render_general, calculate_daylight_strength
 from update import PlayerUpdate  # update_player, render_player, render_HUD
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collision_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
+from components import Player, HungerComponent, ThirstComponent
 from blade import change_blades
 from final_maze import Final_Maze
 from text import Fading_text
@@ -47,8 +46,12 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=20, min_health=0, max_stamina=20, min_stamina=0, base_speed=4, max_speed=8,
-                             min_speed=1, base_hunger=20, max_hunger=20, min_hunger=0)
+        self.player = Player(max_health=20, min_health=0, 
+                             max_stamina=20, min_stamina=0, 
+                             base_speed=4, max_speed=8, min_speed=1, 
+                             base_hunger=20, max_hunger=20, min_hunger=0,
+                             base_thirst=20, max_thirst=20, min_thirst=0)
+        
         self.player_rect = None  # Player rect to be set in the game
 
         self.screen = UniversalVariables.screen
@@ -188,7 +191,8 @@ class Game:
         Fading_text.handle_fading_texts(self)  # Render fading text after everything else
 
         self.refresh_loop()
-        HungerComponent.decrease_hunger(self)
+        HungerComponent.update(self)
+        ThirstComponent.update(self)
 
         # ******************** DEBUG MODE ******************** #
         if UniversalVariables.debug_mode:
@@ -199,7 +203,7 @@ class Game:
             self.check_keys()  # Toggle hitbox / vision
             self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
-            # print(self.player)
+            print(self.player)
 
         self.click_position = ()
 

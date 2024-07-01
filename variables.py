@@ -24,7 +24,7 @@ class UniversalVariables():
     prev_block_size: int = 0
 
     if debug_mode:
-        jagatis: float = 35
+        jagatis: float = 15
         
         # Mängu max tick rate
         FPS = 200
@@ -61,6 +61,7 @@ class UniversalVariables():
 
     health_status     = None
     hunger_resistance = None
+    thirst_resistance = None
     player_infected   = False
     player_bleeding   = False
     serum_active      = False
@@ -82,6 +83,7 @@ class UniversalVariables():
         ("Bread", (2, 3)),
         ("Meat", (2, 3)),
         ("Bandage", (4, 5)),
+        ("Bottle_Water", (4, 5)),
                 
     ]
 
