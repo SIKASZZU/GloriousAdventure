@@ -34,7 +34,6 @@ class UniversalVariables():
 
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
-
     else:
         jagatis: float = 15
 
@@ -45,7 +44,6 @@ class UniversalVariables():
         player_range: int = block_size * 1.5
 
         enemy_speed = 0.03  # Enemy kiirus grid size'ina
-
 
     # ******************** PLAYER ******************** #
     current_equipped_item = None
@@ -61,8 +59,12 @@ class UniversalVariables():
     player_x: int = random.randint(1 * block_size, 38 * block_size)
     player_y: int = random.randint(40 * block_size, 77 * block_size)
 
-    health_status = None
+    health_status     = None
     hunger_resistance = None
+    player_infected   = False
+    player_bleeding   = False
+    serum_active      = False
+
     # ******************** Screen ******************** #
     ui_elements: list = []
 
@@ -75,8 +77,12 @@ class UniversalVariables():
         #("Oak_Planks", (2, 3)),
         #("Oak_Wood", (1, 2)),
         ("Flashlight", 1),
+        ("Canteen", 1),
+        ("Serum", 1),
         ("Bread", (2, 3)),
         ("Meat", (2, 3)),
+        ("Bandage", (4, 5)),
+                
     ]
 
     # ******************** COLLISION ******************** #

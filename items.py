@@ -226,6 +226,24 @@ items_list = [
         "ID": 31,
     },
     {
+        "Type": "Tool",
+        "Name": "Bandage",
+        "ID": 32,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Canteen",
+        "ID": 33,
+    },
+    {
+        "Type": "Tool",
+        "Name": "Serum",
+        "ID": 34,
+    },
+
+# food
+
+    {
         "Type": "Food",
         "Name": "Bread",
         "ID": 32,
