@@ -26,46 +26,40 @@ class ObjectManagement:
                     if item["Breakable"] != True:
                         return
 
-                    ### FIXME: Choises asi on perses. Invis on Stone ja muu pask (inv on täis). Siis saad ainult Stone sealt ja kui chance tleb et saada Coali siis ütleb inv on täis
-
                     # Kui seda ei pane siia ja kui inv on täis, vahet pole
                     # kas invis on oak log v ei. Puud ei saa ikka maha võtta.
+                    choice = None
+                    choice_len = 0
+
                     if object_id == 2:
-                        item_name = np.random.choice(['Stone', 'Coal'], p=[0.85, 0.15])
+                        choice = ['Stone', 'Coal']
+                        item_name = np.random.choice(choice, p=[0.85, 0.15])
 
                     if object_id == 4:
                         item_name = "Oak_Log"
 
-                    if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
+                    if choice:
+                        choice_len = len(choice)
+                        for item in choice:
+                            if item in Inventory.inventory:
+                                choice_len -= 1
 
-                        grid_col: int = int(terrain_x // UniversalVariables.block_size)
-                        grid_row: int = int(terrain_y // UniversalVariables.block_size)
+                        if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
+                            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name)
 
-                        try:
-                            # Kontrollib kas jääb mapi sissse
-                            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+                        else:
+                            Player_audio.error_audio(self)
 
-                                if object_id == 4:
-                                    self.terrain_data[grid_row][grid_col] = 5  # Oak tree stemp
+                            text = "Not enough space in Inventory."
+                            UniversalVariables.ui_elements.append(text)
 
-                                elif object_id == 10:
-                                    self.terrain_data[grid_row][grid_col] = 11  # Empty key slot
+                            if text in Fading_text.shown_texts:
+                                Fading_text.shown_texts.remove(text)
 
-                                elif object_id == 7:
-                                    self.terrain_data[grid_row][grid_col] = 107  # Farmland
-
-                                else:
-                                    self.terrain_data[grid_row][grid_col] = 1  # Ground
-
-                                ObjectManagement.add_object_from_inv(item_name)
-                                Player_audio.player_item_audio(self)
-                                return
-
-                            else:
-                                return
-
-                        except Exception:
                             return
+
+                    if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
+                        ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name)
 
                     else:
                         Player_audio.error_audio(self)
@@ -77,6 +71,30 @@ class ObjectManagement:
                             Fading_text.shown_texts.remove(text)
                         return
 
+    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str) -> bool:
+        grid_col: int = int(terrain_x // UniversalVariables.block_size)
+        grid_row: int = int(terrain_y // UniversalVariables.block_size)
+
+        try:
+            # Kontrollib kas jääb mapi sissse
+            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+
+                terrain_update = {
+                    4: 5,  # Oak tree stump
+                    10: 11,  # Empty key slot
+                    7: 107,  # Farmland
+                }
+                self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
+
+                ObjectManagement.add_object_from_inv(item_name)
+                Player_audio.player_item_audio(self)
+                return
+
+            else:
+                return
+
+        except Exception:
+            return
 
     def add_object_from_inv(item, amount=1):
         if item in Inventory.inventory:

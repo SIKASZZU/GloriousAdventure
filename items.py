@@ -141,7 +141,7 @@ items_list = [
         "Type": "Mineral",
         "Name": "Oak_Wood",
         "Recipes": [
-            {"Recipe": {"Oak_log": 1}, "Amount": 2},
+            {"Recipe": {"Oak_Log": 1}, "Amount": 2},
         ],
         "Amount": 4,
         "ID": 20,
@@ -209,7 +209,7 @@ items_list = [
         "Name": "Stone_Shard",
         "ID": 27,
         "Recipes": [
-            {"Recipe": {"Rock": 2}, "Amount": 1,},  # Tuleb Stone'iks ära muuta
+            {"Recipe": {"Stone": 2}, "Amount": 1,},  # Tuleb Stone'iks ära muuta
         ],
         "Durability": 128,
         },
