@@ -47,14 +47,16 @@ items_list = [
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 0.8),
         "Render_when": -(block_size * 0.1)
-        },
+    },
+
     {
         "Type": "Object",
         "Name": "Farmland",
         "ID": 3,
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
-        },
+    },
+
     {
         "Type": "Object",
         "Name": "Oak_Tree",
@@ -68,7 +70,7 @@ items_list = [
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
         "Render_when": block_size * 0.8
-        },
+    },
 
     {
         "Type": "Object",
@@ -89,17 +91,8 @@ items_list = [
         "Object_width": int(block_size * 0.5),
         "Object_height": int(block_size * 0.5),
         "Render_when": -(block_size * 0.23)
-        },
-    {
-        "Type": "Object",
-        "Name": "Mushroom",
-        "ID": 8,
-        "Breakable": True,
-        "Placeable": True,
-        "Object_width": int(block_size * 0.3),
-        "Object_height": int(block_size * 0.3),
-        "Render_when": -(block_size * 0.45)
-        },
+    },
+
     {
         "Type": "Object",
         "Name": "Wheat",
@@ -108,7 +101,22 @@ items_list = [
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * .2)
-        },
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Campfire",
+        "ID": 8,
+        "Placeable": True,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": (block_size * -1),
+
+        "Recipes": [
+            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
+        ],
+
+    },
 
     {
         "Type": "Object",
@@ -118,7 +126,8 @@ items_list = [
         "Object_width": int(block_size * .7),
         "Object_height": int(block_size * .7),
         "Render_when": (block_size * .2)
-        },
+    },
+
     {
         "Type": "Object",
         "Name": "Maze_Key",
@@ -127,7 +136,7 @@ items_list = [
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1)
-        },
+    },
 
     # Items
 
@@ -159,7 +168,8 @@ items_list = [
         ],
         # "Placeable": True,
         # "Breakable": True,
-        },
+    },
+
     {
         "Type": "Mineral",
         "Name": "Stick",
@@ -169,7 +179,8 @@ items_list = [
             # {"Recipe": {"Oak_Wood": 1}, "Amount": 4},
             {"Recipe": {"Oak_Planks": 1}, "Amount": 2},
         ],
-        },
+    },
+
     {
         "Type": "Mineral",
         "Name": "Stone",
@@ -177,6 +188,7 @@ items_list = [
         # "Placeable": True,
         # "Breakable": True,
     },
+
     {
         "Type": "Tool",
         "Name": "Wood_Pickaxe",
@@ -185,7 +197,8 @@ items_list = [
             {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
         ],
         "Durability": 128,
-        },
+    },
+
     {
         "Type": "Tool",
         "Name": "Wood_Axe",
@@ -194,7 +207,8 @@ items_list = [
             {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
         ],
         "Durability": 128,
-        },
+    },
+
     {
         "Type": "Tool",
         "Name": "Wood_Shovel",
@@ -203,7 +217,8 @@ items_list = [
             {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1,},
         ],
         "Durability": 128,
-        },
+    },
+
     {
         "Type": "Tool",
         "Name": "Stone_Shard",
@@ -212,7 +227,8 @@ items_list = [
             {"Recipe": {"Stone": 2}, "Amount": 1,},  # Tuleb Stone'iks ära muuta
         ],
         "Durability": 128,
-        },
+    },
+
     {
         "Type": "Tool",
         "Name": "Small_Rock_Sword",
@@ -221,12 +237,14 @@ items_list = [
             {"Recipe": {"Stick": 2, "Stone_Shard": 1}, "Amount": 1},
         ],
         "Durability": 256,
-        },
+    },
+
     {
         "Type": "Mineral",
         "Name": "Coal",
         "ID": 29,
-        },
+    },
+
     {
         "Type": "Tool",
         "Name": "Torch",
@@ -238,21 +256,25 @@ items_list = [
         # "Placeable": True,
         # "Breakable": True,
     },
+
     {
         "Type": "Tool",
         "Name": "Flashlight",
         "ID": 31,
     },
+
     {
         "Type": "Tool",
         "Name": "Bandage",
         "ID": 32,
     },
+
     {
         "Type": "Tool",
         "Name": "Canteen",
         "ID": 33,
     },
+
     {
         "Type": "Tool",
         "Name": "Serum",
@@ -268,6 +290,7 @@ items_list = [
         "Satisfaction_Gain": 1,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": 150,  # Mitu ticki ei lähe hungerit
     },
+
     {
         "Type": "Food",
         "Name": "Bad_Bread",
@@ -275,6 +298,7 @@ items_list = [
         "Satisfaction_Gain": -1.75,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
     },
+
     {
         "Type": "Food",
         "Name": "Meat",
@@ -282,6 +306,7 @@ items_list = [
         "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": 350,  # Mitu ticki ei lähe hungerit
     },
+
     {
         "Type": "Food",
         "Name": "Bottle_Water",
