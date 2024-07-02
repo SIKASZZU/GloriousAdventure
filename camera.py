@@ -67,7 +67,7 @@ class Camera:
                         UniversalVariables.ui_elements.append(text)
                     except IndexError:
                         return
-
+                ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
                 return Camera.click_x, Camera.click_y
             return
         except TypeError:
