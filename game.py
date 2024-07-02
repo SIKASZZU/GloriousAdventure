@@ -27,7 +27,7 @@ from menu import Menu, PauseMenu
 from status import PlayerStatus
 from HUD import HUD_class
 from equipped_items import ItemFunctionality
-
+from building import Building
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -153,6 +153,8 @@ class Game:
             item = None  # TODO: kas argumendis ei saaks olla item juba None?, et siis seda ekstra line'i ei peaks siin olema
             Inventory.render_inventory_slot(self, item)
 
+        Building.update(self)
+
     def check_keys(self):
         EssentialsUpdate.check_pressed_keys(self)  # Check pressed keys
 
@@ -203,8 +205,7 @@ class Game:
             self.check_keys()  # Toggle hitbox / vision
             self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
-            print(self.player)
-
+            # print(self.player)
         self.click_position = ()
 
     def run(self):
