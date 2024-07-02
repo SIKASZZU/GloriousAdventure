@@ -66,11 +66,13 @@ class Enemy:
                     if spawned_enemy_count >= max_enenmy:
                         break
 
+        enemy_blits_list = []
         for enemy in Enemy.spawned_enemy_dict.values():
             enemy_x = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_x
             enemy_y = enemy[2] * UniversalVariables.block_size + UniversalVariables.offset_y
+            enemy_blits_list.append((enemy[0], (enemy_x, enemy_y)))
 
-            UniversalVariables.screen.blit(enemy[0], (enemy_x, enemy_y))
+        UniversalVariables.screen.blits(enemy_blits_list, doreturn=False)
 
     @staticmethod
     def despawn():
