@@ -38,10 +38,9 @@ class ItemFunctionality:
 
             # ITEMS
             if item_at_hand == 'Bandage':
+                self.player.health.heal(item_at_hand)
                 if UniversalVariables.player_bleeding == True:
-                    self.player.health.heal(item_at_hand)
                     ObjectManagement.remove_object_from_inv(item_at_hand)
-                    
                     if probably(35 / 100):
                         UniversalVariables.player_bleeding = False
 
@@ -52,6 +51,7 @@ class ItemFunctionality:
             if item_at_hand in ['Сanteen', 'Bottle_Water']:
                 print('Canteen = no functionality yet')
                 ### TODO: fix code repetition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FUNCTIOOONS FUNCTIOOOOOOOOONS
+                ### TODO: Bottle Wateril võiks olla 3 võimalust kasutada vmdgi
                 for item in items.items_list:
                     if item["Name"] == item_at_hand and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)

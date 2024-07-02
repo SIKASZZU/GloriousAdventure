@@ -205,11 +205,12 @@ class PlayerUpdate:
             health_rect, health_bar_border, health_bar_bg, \
             food_rect, food_bar_border, food_bar_bg, \
             heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint, \
-            hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint, hydration_h_midpoint = HUD_class.bar_visualization(self)
+            hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint,\
+            hydration_h_midpoint, stamina_w_midpoint, stamina_h_midpoint = HUD_class.bar_visualization(self)
         
         # Renderib stamina-bari
-        pygame.draw.rect(UniversalVariables.screen, '#273F87', stamina_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#4169E1', stamina_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#FFBB70', stamina_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#FFEC9E', stamina_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
         # Renderib health-bari
@@ -223,10 +224,15 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
 
         # Renderib hydration-bari
-        pygame.draw.rect(UniversalVariables.screen, '#071952', hydration_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#4a6daf', hydration_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#273F87', hydration_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#4169E1', hydration_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', hydration_bar_border, 3, 7)
 
+        # Stamina bari keskele icon (Stamina.png)
+        stamina_icon = ImageLoader.load_gui_image("Stamina")
+        scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
+        UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
+        
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
@@ -237,7 +243,7 @@ class PlayerUpdate:
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
-        # Food bari keskele icon (Food.png)
+        # Hydration bari keskele icon (Hydration.png)
         hydration_icon = ImageLoader.load_gui_image("Hydration")
         scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
         UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
