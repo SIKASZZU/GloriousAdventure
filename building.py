@@ -44,7 +44,13 @@ class Building:
                 terrain_value = self.terrain_data[grid_y][grid_x]
 
                 if terrain_value == 1:
-                    return grid_x, grid_y
+                    neighbors = [
+                        self.terrain_data[grid_y - 1][grid_x],
+                        self.terrain_data[grid_y - 1][grid_x - 1],
+                        self.terrain_data[grid_y][grid_x - 1],
+                    ]
+                    if all(value not in {4, 5} for value in neighbors):  # Et puude ja tüvede peale ei saaks midagi ehitada
+                        return grid_x, grid_y
 
         return False
 
