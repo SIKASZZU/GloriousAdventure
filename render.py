@@ -89,6 +89,24 @@ class RenderPictures:
                                     bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == 0
                                     bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == 0
 
+                                    # Hashitud on need mis on sellised:
+                                    # 0, 0, 0 - 0, 1, 0 - 0, 0 - 0, 0
+                                    # 0, 1, 0 - 0, 0, 0 - 0, 1 - 1, 0
+                                    #                     0, 0 - 0, 0
+                                    # if right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
+                                    #     image_name = "ground alla"
+                                    #
+                                    # elif right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
+                                    #     image_name = "ground ülesse"
+                                    #
+                                    # elif right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
+                                    #    image_name = "ground paremale"
+                                    #
+                                    # if left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
+                                    #     image_name = "ground vasakule"
+                                    # else:
+                                    #
+
                                     if right_empty and bottom_right_empty and bottom_empty:
                                         image_name = 'Ground_Inside_Top_Left'
 
