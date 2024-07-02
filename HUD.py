@@ -51,7 +51,7 @@ class HUD_class:
             stamina_rect = pygame.Rect(half_w - (stamina_bar_size / 2) - 6, HUD_class.screen_y - 75,
                                             stamina_bar_size + 12, 15)
             
-        stamina_width_midpoint  = stamina_rect_border[0] + (stamina_rect_border[2] // 2) - 20
+        stamina_width_midpoint  = stamina_rect_border[0] + (stamina_rect_border[2] // 2) - 18
         stamina_height_midpoint = stamina_rect_border[1] + (stamina_rect_border[3] // 2) - 15
             
         return stamina_rect, stamina_rect_border, stamina_rect_bg, stamina_width_midpoint, stamina_height_midpoint

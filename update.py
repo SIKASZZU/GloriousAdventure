@@ -210,7 +210,7 @@ class PlayerUpdate:
         
         # Renderib stamina-bari
         pygame.draw.rect(UniversalVariables.screen, '#FFBB70', stamina_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#FCDC94', stamina_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#FFEC9E', stamina_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
         # Renderib health-bari
@@ -229,9 +229,9 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, 'black', hydration_bar_border, 3, 7)
 
         # Stamina bari keskele icon (Stamina.png)
-        heart_icon = ImageLoader.load_gui_image("Stamina")
-        scaled_heart_icon = pygame.transform.scale(heart_icon, (35, 35))
-        UniversalVariables.screen.blit(scaled_heart_icon, (stamina_w_midpoint, stamina_h_midpoint))
+        stamina_icon = ImageLoader.load_gui_image("Stamina")
+        scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
+        UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
         
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
