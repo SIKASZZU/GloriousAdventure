@@ -76,7 +76,13 @@ class RenderPictures:
                             # Kui terrain data on 0 - 10
                             # Teeb Water/Ground imaged v background imaged
                             if 0 <= terrain_value <= 10:
-                                image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
+                                if terrain_value != 0:
+                                    if random.random() < 0.3:
+                                        image_name = 'Ground_19'
+                                    else:
+                                        image_name = 'Ground_' + str(random.randint(0, 18))
+                                else:
+                                    image_name = 'Water_0'
 
                                 if terrain_value != 0:
 
@@ -89,63 +95,45 @@ class RenderPictures:
                                     bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == 0
                                     bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == 0
 
-                                    # Hashitud on need mis on sellised:
-                                    # 0, 0, 0 - 0, 1, 0 - 0, 0 - 0, 0
-                                    # 0, 1, 0 - 0, 0, 0 - 0, 1 - 1, 0
-                                    #                     0, 0 - 0, 0
-                                    # if right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
-                                    #     image_name = "ground alla"
-                                    #
-                                    # elif right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
-                                    #     image_name = "ground ülesse"
-                                    #
-                                    # elif right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
-                                    #    image_name = "ground paremale"
-                                    #
-                                    # if left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
-                                    #     image_name = "ground vasakule"
-                                    # else:
-                                    #
 
-                                    if right_empty and bottom_right_empty and bottom_empty:
-                                        image_name = 'Ground_Inside_Top_Left'
+                                    if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
+                                        image_name = "Ground_Island"
 
-                                    elif left_empty and bottom_left_empty and bottom_empty:
-                                        image_name = 'Ground_Inside_Top_Right'
-
-                                    elif left_empty and top_left_empty and top_empty:
-                                        image_name = 'Ground_Inside_Bottom_Right'
-
-                                    elif right_empty and top_right_empty and top_empty:
-                                        image_name = 'Ground_Inside_Bottom_Left'
-
-                                    # LEFT - RIGHT - TOP - BOTTOM
+                                    elif right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
+                                        image_name = "Ground_Straight_Down"
+                                    elif right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
+                                        image_name = "Ground_Straight_Up"
+                                    elif right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
+                                       image_name = "Ground_Straight_Right"
+                                    elif left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
+                                        image_name = "Ground_Straight_Left"
                                     else:
-                                        if right_empty:
-                                            image_name = 'Ground_Inside_Left'
-
-                                        elif left_empty:
-                                            image_name = 'Ground_Inside_Right'
-
-                                        elif bottom_empty:
-                                            image_name = 'Ground_Inside_Top'
-
-                                        elif top_empty:
-                                            image_name = 'Ground_Inside_Bottom'
-
-                                        # Väiksed nurgakesed
+                                        if right_empty and bottom_right_empty and bottom_empty:
+                                            image_name = 'Ground_Inside_Top_Left'
+                                        elif left_empty and bottom_left_empty and bottom_empty:
+                                            image_name = 'Ground_Inside_Top_Right'
+                                        elif left_empty and top_left_empty and top_empty:
+                                            image_name = 'Ground_Inside_Bottom_Right'
+                                        elif right_empty and top_right_empty and top_empty:
+                                            image_name = 'Ground_Inside_Bottom_Left'
                                         else:
-                                            if bottom_right_empty:
-                                                image_name = 'Ground_Puddle_Bottom_Right'
-
-                                            elif bottom_left_empty:
-                                                image_name = 'Ground_Puddle_Bottom_Left'
-
-                                            elif top_left_empty:
-                                                image_name = 'Ground_Puddle_Top_Left'
-
-                                            elif top_right_empty:
-                                                image_name = 'Ground_Puddle_Top_Right'
+                                            if right_empty:
+                                                image_name = 'Ground_Inside_Left'
+                                            elif left_empty:
+                                                image_name = 'Ground_Inside_Right'
+                                            elif bottom_empty:
+                                                image_name = 'Ground_Inside_Top'
+                                            elif top_empty:
+                                                image_name = 'Ground_Inside_Bottom'
+                                            else:
+                                                if bottom_right_empty:
+                                                    image_name = 'Ground_Puddle_Bottom_Right'
+                                                elif bottom_left_empty:
+                                                    image_name = 'Ground_Puddle_Bottom_Left'
+                                                elif top_left_empty:
+                                                    image_name = 'Ground_Puddle_Top_Left'
+                                                elif top_right_empty:
+                                                    image_name = 'Ground_Puddle_Top_Right'
 
                                 image = ImageLoader.load_image(image_name)
 
