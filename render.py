@@ -95,10 +95,8 @@ class RenderPictures:
                                     bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == 0
                                     bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == 0
 
-
                                     if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
                                         image_name = "Ground_Island"
-
                                     elif right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
                                         image_name = "Ground_Straight_Down"
                                     elif right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
