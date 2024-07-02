@@ -30,7 +30,7 @@ class UniversalVariables():
         FPS = 200
 
         block_size: int = screen_x // jagatis
-        player_range: int = block_size * 25
+        player_range: int = block_size * 15
 
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
@@ -48,6 +48,7 @@ class UniversalVariables():
     # ******************** PLAYER ******************** #
     current_equipped_item = None
     current_equipped_item_item_type = None
+    pick_up_delay = 100
 
     player_height: int = block_size * 0.65
     player_width: int = block_size * 0.65
@@ -126,6 +127,10 @@ class UniversalVariables():
 
     blits_sequence: list = []
     text_sequence: list = []
+
+    object_render_order = [
+        7, 2, 5, 4  # Render: wheat -> rock -> stump -> tree
+    ]
 
     render_range_small: list = [
         10, 11,  # Key
