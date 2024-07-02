@@ -643,6 +643,143 @@ items_list = [
         "Render_when": -block_size
         },
 
+    # Ground -> Water Tiles | 200 -> 207
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Bottom_Right",
+        "ID": 200,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Bottom",
+        "ID": 201,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Bottom_Left",
+        "ID": 202,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Left",
+        "ID": 203,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Top_Left",
+        "ID": 204,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Insides_Top",
+        "ID": 205,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Top_Right",
+        "ID": 206,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Inside_Right",
+        "ID": 207,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Puddle_Bottom_Right",
+        "ID": 208,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Puddle_Bottom_Left",
+        "ID": 209,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Puddle_Top_Left",
+        "ID": 210,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Ground_Puddle_Top_Right",
+        "ID": 211,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
+        "Render_when": -block_size
+    },
+
+
+
 ]
 
 # Testida asju mis on seotud ainult item'ga
