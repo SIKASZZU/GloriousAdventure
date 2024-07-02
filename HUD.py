@@ -18,11 +18,11 @@ class HUD_class:
 
     def bar_visualization(self):
         half_w = HUD_class.half_w
-        sr, sb, sbg = HUD_class.stamina_bar(self, half_w)  # stamina_rect, stamina_bar_size_border, stamina_bar_size_bg
+        sr, sb, sbg, swm, shm = HUD_class.stamina_bar(self, half_w)  # stamina_rect, stamina_bar_size_border, stamina_bar_size_bg
         hr, hb, hbg, hwm, hhm = HUD_class.health_bar(self, half_w)  # health_rect, health_bar_size_border, health_bar_size_bg
         fr, fb, fbg, fwm, fhm = HUD_class.food_bar(self, half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
         hyr, hyb, hybg, hywm, hyhm = HUD_class.hydration_bar(self, half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
-        return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm, hyr, hyb, hybg, hywm, hyhm
+        return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm, hyr, hyb, hybg, hywm, hyhm, swm, shm
     
     
     def stamina_bar(self, half_w):
@@ -51,7 +51,10 @@ class HUD_class:
             stamina_rect = pygame.Rect(half_w - (stamina_bar_size / 2) - 6, HUD_class.screen_y - 75,
                                             stamina_bar_size + 12, 15)
             
-        return stamina_rect, stamina_rect_border, stamina_rect_bg
+        stamina_width_midpoint  = stamina_rect_border[0] + (stamina_rect_border[2] // 2) - 20
+        stamina_height_midpoint = stamina_rect_border[1] + (stamina_rect_border[3] // 2) - 15
+            
+        return stamina_rect, stamina_rect_border, stamina_rect_bg, stamina_width_midpoint, stamina_height_midpoint
 
 
     def health_bar(self, half_w):    
