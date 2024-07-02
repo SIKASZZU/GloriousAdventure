@@ -369,12 +369,13 @@ class Inventory:
 
         if item_name is None:
             UniversalVariables.screen.blits(blit_operations)
-            return  # Don't render anything if item is None or count is 0
+            UniversalVariables.current_equipped_item = None
+            return
 
         if item_name not in Inventory.inventory:
             UniversalVariables.screen.blits(blit_operations)
             UniversalVariables.current_equipped_item = None
-            return  # Don't render anything if item is None or count is 0
+            return
 
         # Update equipped item type if the item has changed
         if UniversalVariables.current_equipped_item != item_name:
