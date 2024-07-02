@@ -147,11 +147,9 @@ class Game:
 
         # Equipped item slot
         if UniversalVariables.current_equipped_item:
-            item = UniversalVariables.current_equipped_item
-            Inventory.render_inventory_slot(self, item)
+            Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)
         else:
-            item = None  # TODO: kas argumendis ei saaks olla item juba None?, et siis seda ekstra line'i ei peaks siin olema
-            Inventory.render_inventory_slot(self, item)
+            Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)
 
         Building.update(self)
 
@@ -168,6 +166,7 @@ class Game:
         pygame.display.update()
         self.clock.tick(UniversalVariables.FPS)
 
+
     def printing(self):
         Camera.print_clicks(self)
         print(self.player)
@@ -176,6 +175,7 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
+                ObjectManagement.add_object_from_inv("Campfire", 100)
                 # ObjectManagement.add_object_from_inv("Bread", 100)
                 # ObjectManagement.add_object_from_inv("Bad_Bread", 100)
                 self.restrict_looping = True
@@ -206,7 +206,9 @@ class Game:
             self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
             # print(self.player)
+
         self.click_position = ()
+        UniversalVariables.pick_up_delay += 1
 
     def run(self):
         self.load_variables()
