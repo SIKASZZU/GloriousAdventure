@@ -71,12 +71,64 @@ class RenderPictures:
 
                             ### FIXME: maze uksed ja blade maze flickerib
 
+                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+
                             # Kui terrain data on 0 - 10
                             # Teeb Water/Ground imaged v background imaged
                             if 0 <= terrain_value <= 10:
+                                image_name = 'Ground_' + str(random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
 
-                                image_name = 'Ground_' + str(
-                                    random.randint(0, 19)) if terrain_value != 0 else 'Water_0'
+                                if terrain_value != 0:
+
+                                    top_empty = row > 0 and self.terrain_data[row - 1][col] == 0
+                                    bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] == 0
+                                    left_empty = col > 0 and self.terrain_data[row][col - 1] == 0
+                                    right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] == 0
+                                    top_left_empty = row > 0 and col > 0 and self.terrain_data[row - 1][col - 1] == 0
+                                    top_right_empty = row > 0 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row - 1][col + 1] == 0
+                                    bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == 0
+                                    bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == 0
+
+                                    if right_empty and bottom_right_empty and bottom_empty:
+                                        image_name = 'Ground_Inside_Top_Left'
+
+                                    elif left_empty and bottom_left_empty and bottom_empty:
+                                        image_name = 'Ground_Inside_Top_Right'
+
+                                    elif left_empty and top_left_empty and top_empty:
+                                        image_name = 'Ground_Inside_Bottom_Right'
+
+                                    elif right_empty and top_right_empty and top_empty:
+                                        image_name = 'Ground_Inside_Bottom_Left'
+
+                                    # LEFT - RIGHT - TOP - BOTTOM
+                                    else:
+                                        if right_empty:
+                                            image_name = 'Ground_Inside_Left'
+
+                                        elif left_empty:
+                                            image_name = 'Ground_Inside_Right'
+
+                                        elif bottom_empty:
+                                            image_name = 'Ground_Inside_Top'
+
+                                        elif top_empty:
+                                            image_name = 'Ground_Inside_Bottom'
+
+                                        # Väiksed nurgakesed
+                                        else:
+                                            if bottom_right_empty:
+                                                image_name = 'Ground_Puddle_Bottom_Right'
+
+                                            elif bottom_left_empty:
+                                                image_name = 'Ground_Puddle_Bottom_Left'
+
+                                            elif top_left_empty:
+                                                image_name = 'Ground_Puddle_Top_Left'
+
+                                            elif top_right_empty:
+                                                image_name = 'Ground_Puddle_Top_Right'
+
                                 image = ImageLoader.load_image(image_name)
 
                                 # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
@@ -95,6 +147,7 @@ class RenderPictures:
                                         if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                                             UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
 
+                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
                             elif terrain_value == 98:
                                 image = ImageLoader.load_image('Maze_Ground')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
@@ -123,6 +176,8 @@ class RenderPictures:
                                     image = ImageLoader.load_image(image_name)
                                     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
+                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+
                             # See on peale else: sest kui see oleks enne siis
                             # hakkavad flickerima ja tekivad topelt pildid teistele
                             if terrain_value in {10, 11, 7, 107}:
@@ -142,11 +197,22 @@ class RenderPictures:
         except IndexError:
             return
 
+    # See func renderib objecteid
     def object_render():
-        for item in UniversalVariables.object_list:
-            if item[4] is None:
-                continue
+        desired_order = UniversalVariables.object_render_order
 
+        def sort_key(item):
+            item_id = item[5]
+            return desired_order.index(item_id) if item_id in desired_order else float('inf')
+
+        # Filter and sort the objects
+        sorted_objects = sorted(
+            (item for item in UniversalVariables.object_list if item[4] is not None),
+            key=sort_key
+        )
+
+        # Render the objects
+        for item in sorted_objects:
             position = item[:2]  # x, y
             scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
             UniversalVariables.screen.blit(scaled_object_image, position)
@@ -172,11 +238,12 @@ class ObjectCreation:
                     continue
                 else:
                     object_image_name = item.get("Name")
-                    object_image      = ImageLoader.load_image(object_image_name)
                     breakability      = item.get('Breakable')
                     object_width      = item.get("Object_width")
                     object_height     = item.get("Object_height")
                     collision_box     = item.get("Collision_box")
+                    object_image      = ImageLoader.load_image(object_image_name)
+
 
                 if breakability == None:  breakability = False
 
