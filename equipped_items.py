@@ -49,29 +49,29 @@ class ItemFunctionality:
                 UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
                 ObjectManagement.remove_object_from_inv(item_at_hand)
 
-            if item_at_hand == ['Сanteen', 'Bottle_Water']:
+            if item_at_hand in ['Сanteen', 'Bottle_Water']:
                 print('Canteen = no functionality yet')
                 ### TODO: fix code repetition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FUNCTIOOONS FUNCTIOOOOOOOOONS
                 for item in items.items_list:
                     if item["Name"] == item_at_hand and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)
 
-                        # Arvutab uue hungeri 'current + söödud itemi Gain'
-                        new_hunger = self.player.hunger.current_hunger + satisfaction_gain
+                        # Arvutab uue thirsti 'current + söödud itemi Gain'
+                        new_thirst = self.player.thirst.current_thirst + satisfaction_gain
 
-                        # Et playeri hunger ei läheks üle maxi ega alla min
-                        if new_hunger >= self.player.hunger.max_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.max_hunger
+                        # Et playeri thirst ei läheks üle maxi ega alla min
+                        if new_thirst >= self.player.thirst.max_thirst:
+                            self.player.thirst.current_thirst = self.player.thirst.max_thirst
 
-                        elif new_hunger <= self.player.hunger.min_hunger:
-                            self.player.hunger.current_hunger = self.player.hunger.min_hunger
+                        elif new_thirst <= self.player.thirst.min_thirst:
+                            self.player.thirst.current_thirst = self.player.thirst.min_thirst
 
                         else:
-                            self.player.hunger.current_hunger = new_hunger
+                            self.player.thirst.current_thirst = new_thirst
 
                         UniversalVariables.hunger_resistance = item.get("Thirst_Resistance")
                         ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
-                        Player_audio.eating_audio(self)  # eating sound yummi # FIXME: FIXXXXX EATING -> DRINKINGGGGG
+                        Player_audio.drinking_audio(self)
                         self.click_position = ()
 
             if item_at_hand in ['Bread', 'Meat']:

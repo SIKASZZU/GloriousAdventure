@@ -37,6 +37,7 @@ class Player_audio:
     error_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Error_Sound.mp3'))
     cant_open_a_barrel_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Cant_Open_A_Barrel.mp3'))
     eating_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Eating_Sound.mp3'))
+    drinking_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Drinking_Sound.mp3'))
 
     opening_a_barrel_sounds = [
         pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_0.mp3')),
@@ -226,6 +227,11 @@ class Player_audio:
         if Player_audio.event_channel.get_busy():
             Player_audio.event_channel.stop()
         Player_audio.event_channel.play(Player_audio.eating_sound)
+
+    def drinking_audio(self) -> None:
+        if Player_audio.event_channel.get_busy():
+            Player_audio.event_channel.stop()
+        Player_audio.event_channel.play(Player_audio.drinking_sound)
 
 
     def player_audio_update(self) -> None:

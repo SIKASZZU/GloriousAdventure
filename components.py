@@ -222,7 +222,7 @@ class HungerComponent:
 
 class ThirstComponent:
     thirst_timer = 100
-    health_timer = 300
+    health_timer = 150
     def __init__(self, base_thirst, max_thirst, min_thirst):
         self.base_thirst = base_thirst
         self.max_thirst = max_thirst
@@ -261,7 +261,7 @@ class ThirstComponent:
                     UniversalVariables.ui_elements.append(text)
 
                 self.player.health.damage(0.5)
-                ThirstComponent.health_timer = 300
+                ThirstComponent.health_timer = 150
             ThirstComponent.health_timer -= 1
         else:
             if ThirstComponent.thirst_timer <= 0:
@@ -269,8 +269,8 @@ class ThirstComponent:
                 ThirstComponent.thirst_timer = 100
 
             ThirstComponent.thirst_timer -= 1
-            if ThirstComponent.health_timer < 300:
-                ThirstComponent.health_timer = 300        
+            if ThirstComponent.health_timer < 150:
+                ThirstComponent.health_timer = 150        
     
     def __str__(self):
         rounded_hunger = round(self.current_thirst, 3)
