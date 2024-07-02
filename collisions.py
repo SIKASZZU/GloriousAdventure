@@ -111,7 +111,7 @@ class Collisions:
                         terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
                         if object_id == 981:  # Paneb key
-                            if not 'Maze_Key' in Inventory.inventory:  # and UniversalVariables.final_maze == True:
+                            if not 'Maze_Key' in Inventory.inventory or UniversalVariables.current_equipped_item != 'Maze_Key':  # and UniversalVariables.final_maze == True:
                                 Player_audio.error_audio(self)
 
                                 text = "Shouldn't we put something here?"
@@ -122,10 +122,6 @@ class Collisions:
                                 reset_clicks(self)
                                 return
                             else:
-                                UniversalVariables.ui_elements.append(
-                                    "In the labyrinth's depths, scattered keyholders await, "
-                                    "each craving its matching key."
-                                )
                                 if UniversalVariables.final_maze != True:
                                     self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
                                     ObjectManagement.remove_object_from_inv('Maze_Key')
