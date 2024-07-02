@@ -108,7 +108,7 @@ items_list = [
         "Name": "Campfire",
         "ID": 8,
         "Placeable": True,
-        "Placeable": True,
+        "Breakable": True,
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
         "Render_when": (block_size * -1),
