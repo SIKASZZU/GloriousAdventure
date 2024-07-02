@@ -26,6 +26,10 @@ class ObjectManagement:
                     if item["Breakable"] != True:
                         return
 
+                    if UniversalVariables.pick_up_delay < 45:
+                        print("Don't pick up so fast:", UniversalVariables.pick_up_delay, "<", 45)
+                        return
+
                     # Kui seda ei pane siia ja kui inv on täis, vahet pole
                     # kas invis on oak log v ei. Puud ei saa ikka maha võtta.
                     choice = None
@@ -88,6 +92,7 @@ class ObjectManagement:
 
                 ObjectManagement.add_object_from_inv(item_name)
                 Player_audio.player_item_audio(self)
+                UniversalVariables.pick_up_delay = 0
                 return
 
             else:
