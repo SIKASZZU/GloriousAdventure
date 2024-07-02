@@ -284,9 +284,9 @@ items_list = [
     },
     {
         "Type": "Food",
-        "Name": "Water_Bottle",
+        "Name": "Bottle_Water",
         "ID": 38,
-        "Satisfaction_Gain": 2,
+        "Satisfaction_Gain": 3,
         "Thirst_Resistance": 350,
     },
 

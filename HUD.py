@@ -21,8 +21,8 @@ class HUD_class:
         sr, sb, sbg = HUD_class.stamina_bar(self, half_w)  # stamina_rect, stamina_bar_size_border, stamina_bar_size_bg
         hr, hb, hbg, hwm, hhm = HUD_class.health_bar(self, half_w)  # health_rect, health_bar_size_border, health_bar_size_bg
         fr, fb, fbg, fwm, fhm = HUD_class.food_bar(self, half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
-        
-        return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm,
+        hyr, hyb, hybg, hywm, hyhm = HUD_class.hydration_bar(self, half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
+        return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm, hyr, hyb, hybg, hywm, hyhm
     
     
     def stamina_bar(self, half_w):
@@ -76,14 +76,13 @@ class HUD_class:
         # Iconi paigutamiseks bari keskkoha leidmine
         heart_w_midpoint = health_rect_border[0] + (health_rect_border[2] // 2) - 25  # -25 sest, me suurendame pilti 50px võrra ning muidu ei jää pilt keskele.
         heart_h_midpoint = health_rect_border[1] + (health_rect_border[3] // 2) - 25
-        
         return health_rect, health_rect_border, health_rect_bg, heart_w_midpoint, heart_h_midpoint
     
 
     def food_bar(self, half_w):
-        food_bar_size_bg: int = 100
-        food_bar_size_border: int = 100
-        food_bar_size: int = 100
+        food_bar_size_bg: int = 50
+        food_bar_size_border: int = 50
+        food_bar_size: int = 50
 
         food_rect_bg = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
                                             food_bar_size_bg, 45)
@@ -104,6 +103,32 @@ class HUD_class:
         food_h_midpoint = food_rect_border[1] + (food_rect_border[3] // 2) - 20
 
         return food_rect, food_rect_border, food_rect_bg, food_w_midpoint, food_h_midpoint
+    
+
+    def hydration_bar(self, half_w):
+        hydration_bar_size_bg: int = 50
+        hydration_bar_size_border: int = 50
+        hydration_bar_size: int = 50
+
+        hydration_rect_bg = pygame.Rect(half_w + 52, HUD_class.screen_y - 50,
+                                            hydration_bar_size_bg, 45)
+        
+        hydration_rect_border = pygame.Rect(half_w + 52, HUD_class.screen_y - 50,
+                                                hydration_bar_size_border, 45)
+
+        player_current_thirst = self.player.thirst.get_thirst()
+        player_max_thirst = self.player.thirst.max_thirst
+
+        val = player_current_thirst / player_max_thirst
+
+        hydration_rect = pygame.Rect(half_w + 54, (HUD_class.screen_y - 5) - (45 * val),
+                                        hydration_bar_size - 4, 45 * val)
+        
+        # Iconi paigutamiseks bari keskkoha leidmine
+        hydration_w_midpoint = hydration_rect_border[0] + (hydration_rect_border[2] // 2) - 25
+        hydration_h_midpoint = hydration_rect_border[1] + (hydration_rect_border[3] // 2) - 20
+
+        return hydration_rect, hydration_rect_border, hydration_rect_bg, hydration_w_midpoint, hydration_h_midpoint
     
 
     def bleed_symbol():

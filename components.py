@@ -166,6 +166,9 @@ class HungerComponent:
         self.min_hunger = min_hunger
         self.current_hunger = max(min_hunger, min(max_hunger, base_hunger))
 
+    def update(self):
+        HungerComponent.decrease_hunger(self)
+
     def get_hunger(self):
         return (self.current_hunger)
 
@@ -175,7 +178,6 @@ class HungerComponent:
         if UniversalVariables.player_infected == True:
             hunger_resist   = 2
             hunger_decrease = 0.4
-
         if UniversalVariables.hunger_resistance:
             UniversalVariables.hunger_resistance -= hunger_resist
             if UniversalVariables.hunger_resistance <= 0:
@@ -206,14 +208,6 @@ class HungerComponent:
             if HungerComponent.health_timer < 300:
                 HungerComponent.health_timer = 300
 
-    def is_click_inside_player_rect(self):
-        if self.click_position != ():
-            click_within_x = self.player_rect[0] < self.click_position[0] and self.click_position[0] < self.player_rect[0] + self.player_rect[2]
-            click_within_y = self.player_rect[1] < self.click_position[1] and self.click_position[1] < self.player_rect[1] + self.player_rect[3]
-            if click_within_x and click_within_y:
-                return True
-        else:
-            return False
 
     def __str__(self):
         rounded_hunger = round(self.current_hunger, 3)
@@ -227,12 +221,60 @@ class HungerComponent:
 
 
 class ThirstComponent:
+    thirst_timer = 100
+    health_timer = 300
     def __init__(self, base_thirst, max_thirst, min_thirst):
         self.base_thirst = base_thirst
         self.max_thirst = max_thirst
         self.min_thirst = min_thirst
-        self.current_hunger = max(min_thirst, min(max_thirst, base_thirst))
+        self.current_thirst = max(min_thirst, min(max_thirst, base_thirst))
 
+    def update(self):
+        ThirstComponent.decrease_thirst(self)
+
+    def get_thirst(self):
+        return self.current_thirst
+
+    def decrease_thirst(self):
+        thirst_resist   = 3#1
+        thirst_decrease = 3#0.01
+        #if UniversalVariables.player_infected == True:
+        #    thirst_resist   = 2
+        #    thirst_decrease = 0.4
+
+        if UniversalVariables.thirst_resistance:
+            UniversalVariables.thirst_resistance -= thirst_resist
+            if UniversalVariables.thirst_resistance <= 0:
+                UniversalVariables.thirst_resistance = None
+                ThirstComponent.thirst_timer = 100
+            return
+
+        elif self.player.thirst.current_thirst <= 0:
+
+            if ThirstComponent.health_timer <= 0:
+                if self.player.health.current_health > 0:
+                    text = "Dying from hydration."
+
+                    if text in Fading_text.shown_texts:
+                        Fading_text.shown_texts.remove(text)
+
+                    UniversalVariables.ui_elements.append(text)
+
+                self.player.health.damage(0.5)
+                ThirstComponent.health_timer = 300
+            ThirstComponent.health_timer -= 1
+        else:
+            if ThirstComponent.thirst_timer <= 0:
+                self.player.thirst.current_thirst = max(self.player.thirst.min_thirst, self.player.thirst.current_thirst - thirst_decrease)
+                ThirstComponent.thirst_timer = 100
+
+            ThirstComponent.thirst_timer -= 1
+            if ThirstComponent.health_timer < 300:
+                ThirstComponent.health_timer = 300        
+    
+    def __str__(self):
+        rounded_hunger = round(self.current_thirst, 3)
+        return f'Thirst: {rounded_hunger}/{self.max_thirst}'
 
 
 class Player:

@@ -204,7 +204,8 @@ class PlayerUpdate:
         stamina_rect, stamina_bar_border, stamina_bar_bg, \
             health_rect, health_bar_border, health_bar_bg, \
             food_rect, food_bar_border, food_bar_bg, \
-            heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint = HUD_class.bar_visualization(self)
+            heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint, \
+            hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint, hydration_h_midpoint = HUD_class.bar_visualization(self)
         
         # Renderib stamina-bari
         pygame.draw.rect(UniversalVariables.screen, '#273F87', stamina_bar_bg, 0, 7)
@@ -221,6 +222,11 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
 
+        # Renderib hydration-bari
+        pygame.draw.rect(UniversalVariables.screen, '#071952', hydration_bar_bg, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, '#4a6daf', hydration_rect, 0, 7)
+        pygame.draw.rect(UniversalVariables.screen, 'black', hydration_bar_border, 3, 7)
+
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
@@ -228,9 +234,13 @@ class PlayerUpdate:
         
         # Food bari keskele icon (Food.png)
         food_icon = ImageLoader.load_gui_image("Food")
-        scaled_food_icon = pygame.transform.scale(food_icon, (50, 50))
+        scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
+        # Food bari keskele icon (Food.png)
+        hydration_icon = ImageLoader.load_gui_image("Hydration")
+        scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
+        UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
 
 class EssentialsUpdate:
         
