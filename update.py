@@ -228,10 +228,12 @@ class PlayerUpdate:
         pygame.draw.rect(UniversalVariables.screen, '#4169E1', hydration_rect, 0, 7)
         pygame.draw.rect(UniversalVariables.screen, 'black', hydration_bar_border, 3, 7)
 
-        # Stamina bari keskele icon (Stamina.png)
-        stamina_icon = ImageLoader.load_gui_image("Stamina")
-        scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
-        UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
+        if HUD_class.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
+                
+            # Stamina bari keskele icon (Stamina.png)
+            stamina_icon = ImageLoader.load_gui_image("Stamina")
+            scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
+            UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
         
         # Health bari keskele icon (Heart.png)
         heart_icon = ImageLoader.load_gui_image("Health")
