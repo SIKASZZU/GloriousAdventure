@@ -42,7 +42,7 @@ class Fading_text:
                 lines = textwrap.wrap(text, width=max_width // font_size)
 
         # Position the text so that its bottom aligns with UniversalVariables.screen_y * 0.9
-        start_y = UniversalVariables.screen_y * 0.9 - total_height
+        start_y = UniversalVariables.screen_y * 0.88 - total_height
 
         # Calculate the total width and height for the background surface
         max_text_width = max(text_rect.width for text_rect in text_rects)
