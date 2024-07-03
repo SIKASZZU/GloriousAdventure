@@ -35,7 +35,7 @@ class RenderPictures:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def map_render(self) -> None:
-        UniversalVariables.screen.fill('white')
+        UniversalVariables.screen.fill('black')
         RenderPictures.terrain_in_view.clear()
 
         camera_grid_row = int(
