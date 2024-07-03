@@ -6,7 +6,7 @@ from items import items_list
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables
-
+from tile_set import TileSet
 class RenderPictures:
     render_range: int = 0
     terrain_in_view: list = []
@@ -28,8 +28,10 @@ class RenderPictures:
                 scaled_saved_image = pygame.transform.scale(occupied_positions[position],
                                                             (UniversalVariables.block_size,
                                                              UniversalVariables.block_size))
+                if terrain_value in [7, 107]:
+                    UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
-                if [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
+                elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def map_render(self) -> None:
@@ -81,57 +83,12 @@ class RenderPictures:
                                         image_name = 'Ground_19'
                                     else:
                                         image_name = 'Ground_' + str(random.randint(0, 18))
+
+                                    surroundings = TileSet.check_surroundings(self, row, col, 0)
+                                    image_name = TileSet.determine_ground_image_name(self, surroundings) or image_name
+
                                 else:
                                     image_name = 'Water_0'
-
-                                if terrain_value != 0:
-
-                                    top_empty = row > 0 and self.terrain_data[row - 1][col] == 0
-                                    bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] == 0
-                                    left_empty = col > 0 and self.terrain_data[row][col - 1] == 0
-                                    right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] == 0
-                                    top_left_empty = row > 0 and col > 0 and self.terrain_data[row - 1][col - 1] == 0
-                                    top_right_empty = row > 0 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row - 1][col + 1] == 0
-                                    bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == 0
-                                    bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == 0
-
-                                    if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
-                                        image_name = "Ground_Island"
-                                    elif right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
-                                        image_name = "Ground_Straight_Down"
-                                    elif right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
-                                        image_name = "Ground_Straight_Up"
-                                    elif right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
-                                       image_name = "Ground_Straight_Right"
-                                    elif left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
-                                        image_name = "Ground_Straight_Left"
-                                    else:
-                                        if right_empty and bottom_right_empty and bottom_empty:
-                                            image_name = 'Ground_Inside_Top_Left'
-                                        elif left_empty and bottom_left_empty and bottom_empty:
-                                            image_name = 'Ground_Inside_Top_Right'
-                                        elif left_empty and top_left_empty and top_empty:
-                                            image_name = 'Ground_Inside_Bottom_Right'
-                                        elif right_empty and top_right_empty and top_empty:
-                                            image_name = 'Ground_Inside_Bottom_Left'
-                                        else:
-                                            if right_empty:
-                                                image_name = 'Ground_Inside_Left'
-                                            elif left_empty:
-                                                image_name = 'Ground_Inside_Right'
-                                            elif bottom_empty:
-                                                image_name = 'Ground_Inside_Top'
-                                            elif top_empty:
-                                                image_name = 'Ground_Inside_Bottom'
-                                            else:
-                                                if bottom_right_empty:
-                                                    image_name = 'Ground_Puddle_Bottom_Right'
-                                                elif bottom_left_empty:
-                                                    image_name = 'Ground_Puddle_Bottom_Left'
-                                                elif top_left_empty:
-                                                    image_name = 'Ground_Puddle_Top_Left'
-                                                elif top_right_empty:
-                                                    image_name = 'Ground_Puddle_Top_Right'
 
                                 image = ImageLoader.load_image(image_name)
 
@@ -161,6 +118,11 @@ class RenderPictures:
                                 image = ImageLoader.load_image(image_name)
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
+                            elif terrain_value == 107:
+                                image_name = TileSet.determine_farmland_image_name(self, row, col)
+                                image = ImageLoader.load_image(image_name)
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
                             elif terrain_value in {933, 977}:
                                 if EssentialsUpdate.day_night_text == 'Night':
                                     self.terrain_data[row][col] = 977
@@ -184,16 +146,15 @@ class RenderPictures:
 
                             # See on peale else: sest kui see oleks enne siis
                             # hakkavad flickerima ja tekivad topelt pildid teistele
-                            if terrain_value in {10, 11, 7, 107}:
-                                if terrain_value in {7, 107}:
-                                    image = ImageLoader.load_image('Farmland')
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-                                    continue
+                            if terrain_value in {7, 107}:
+                                image_name = TileSet.determine_farmland_image_name(self, row, col)
+                                image = ImageLoader.load_image(image_name)
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                                else:
-                                    image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-                                    continue
+                            elif terrain_value in {10, 11}:
+                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
 
                 RenderPictures.terrain_in_view.append(current_row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
