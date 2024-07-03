@@ -83,6 +83,9 @@ class ImageLoader:
                     elif image_name.startswith("Endgate"):
                         image_path = resource_path(f"images/Objects/{image_name}.png")
                         name = "Endgate"
+                    elif image_name.startswith("Farmland_"):
+                        image_path = resource_path(f"images/Objects/Farmland/{image_name}.png")
+                        name = "Farmland"
 
                     if image_path is None:
                         # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
@@ -103,6 +106,8 @@ class ImageLoader:
                             resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
                             converted_image = resized_image.convert_alpha()
                             ImageLoader.loaded_item_images[image_name] = converted_image
+
+                            print(image_path, loaded_image, resized_image, converted_image)
 
                             # print(f"{image_path} resized and pre-loaded successfully.")
                             return converted_image
