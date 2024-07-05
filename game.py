@@ -140,7 +140,7 @@ class Game:
                 UniversalVariables.ui_elements.append(text)
                 Inventory.crafting_menu_open = False
 
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center, UniversalVariables.light_range)
+        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
         HUD_class.update()
@@ -204,7 +204,7 @@ class Game:
             # neil functionitel on juba sees, et kontrolliks debug modei
             self.check_keys()  # Toggle hitbox / vision
             self.custom_addition()
-            # UniversalVariables.player_x, UniversalVariables.player_y = 300, 3800   # FPS'side testimiseks
+            # UniversalVariables.player_x, UniversalVariables.wplayer_y = 1500, 1500   # FPS'side testimiseks
             # print(self.player)
 
         self.click_position = ()
