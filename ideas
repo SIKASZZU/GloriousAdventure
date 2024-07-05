@@ -1,11 +1,6 @@
 ideas:
 	water canteen - refill in glade water
 	old glade (abandoned) - greenish water, terrrain fucked, creepy, broken trees, rocks, oil lakes or sm shit
-	tree trunks
-	objects come back (grow back)
-	vaccine item - serium - infected symbol, less stamina, more hungry
-	bleed effects
-	bandage items
 	reset labyrinth mazes, dont reset loot tho
 	dead people
 	gas zones (fucked system zones, mazes)- gas mask item - filters (barrel loot) / gas causes bleeding
@@ -24,3 +19,21 @@ ideas:
 	PASSAGE # TUNNEL SYSTEM # LENGTH MANY FUCKING MAZES, something different then mazes. Game part 2
 
 	///
+
+
+	ghostid on ikka pekkis, peale seda olari refactori vmdgi. Direction peab olema ikkagi isegi kui path puudub, 
+		sest siis ta arvutab koordianatide j2rgi playerini liikumist
+	stump -- vision ranges
+	mingi asi lisada, mis loeb, kui mitu rida koodi juba on :D ?Read all .py ending file lenghts?
+	delay eat drink nagu pick uppimisel
+	itemite saamine -- vandil on mingi 10 taskulampi :D miks? >:D
+	
+	key pieces mida barrelitest v6ib leida 
+		m2ngija otsib k6ik pieceid yles, craftib key
+		key-ga saab avada final mazei n2iteks
+
+	geiger?
+
+
+
+	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
