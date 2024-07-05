@@ -1,5 +1,20 @@
+import random
+import pygame
+
+from images import ImageLoader
 
 class TileSet:
+
+    @staticmethod
+    def get_tileset_image(image_path):
+        return ImageLoader.load_image(None, image_path=image_path)
+
+    @staticmethod
+    def get_tile(tileset, tile_size, col, row):
+        rect = pygame.Rect(col * tile_size, row * tile_size, tile_size, tile_size)
+        tile = tileset.subsurface(rect)
+        return tile
+
     def check_surroundings(self, row, col, terrain_value):
         top_empty = row > 0 and self.terrain_data[row - 1][col] == terrain_value
         bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] == terrain_value
@@ -14,52 +29,56 @@ class TileSet:
 
     def determine_ground_image_name(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty, top_left_empty, top_right_empty, bottom_left_empty, bottom_right_empty = surroundings
-
+        tileset_image = TileSet.get_tileset_image('images\Tile_Sets\Water_Ground_Tileset.png')
 
         if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
-            return "Ground_Island"
+            return TileSet.get_tile(tileset_image, 32, 6, 1)
         if right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
-            return "Ground_Straight_Down"
+            return TileSet.get_tile(tileset_image, 32, 3, 2)
         if right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
-            return "Ground_Straight_Up"
+            return TileSet.get_tile(tileset_image, 32, 3, 0)
         if right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
-            return "Ground_Straight_Right"
+            return TileSet.get_tile(tileset_image, 32, 6, 0)
         if left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
-            return "Ground_Straight_Left"
+            return TileSet.get_tile(tileset_image, 32, 4, 0)
+
+        if right_empty and bottom_empty:
+            return TileSet.get_tile(tileset_image, 32, 2, 2)
+        if left_empty and bottom_empty:
+            return TileSet.get_tile(tileset_image, 32, 0, 2)
+        if left_empty and top_empty:
+            return TileSet.get_tile(tileset_image, 32, 0, 0)
+        if right_empty and top_empty:
+            return TileSet.get_tile(tileset_image, 32, 2, 0)
 
         if right_empty and left_empty:
-            return "Ground_Top_To_Bottom"
+            return TileSet.get_tile(tileset_image, 32, 3, 1)
         if top_empty and bottom_empty:
-            return "Ground_Left_To_Right"
-
-        if right_empty and bottom_right_empty and bottom_empty:
-            return 'Ground_Inside_Top_Left'
-        if left_empty and bottom_left_empty and bottom_empty:
-            return 'Ground_Inside_Top_Right'
-        if left_empty and top_left_empty and top_empty:
-            return 'Ground_Inside_Bottom_Right'
-        if right_empty and top_right_empty and top_empty:
-            return 'Ground_Inside_Bottom_Left'
+            return TileSet.get_tile(tileset_image, 32, 5, 0)
 
         if right_empty:
-            return 'Ground_Inside_Left'
+            return TileSet.get_tile(tileset_image, 32, 2, 1)
         if left_empty:
-            return 'Ground_Inside_Right'
+            return TileSet.get_tile(tileset_image, 32, 0, 1)
         if bottom_empty:
-            return 'Ground_Inside_Top'
+            return TileSet.get_tile(tileset_image, 32, 1, 2)
         if top_empty:
-            return 'Ground_Inside_Bottom'
+            return TileSet.get_tile(tileset_image, 32, 1, 0)
 
         if bottom_right_empty:
-            return 'Ground_Puddle_Bottom_Right'
+            return TileSet.get_tile(tileset_image, 32, 4, 1)
         if bottom_left_empty:
-            return 'Ground_Puddle_Bottom_Left'
+            return TileSet.get_tile(tileset_image, 32, 5, 1)
         if top_left_empty:
-            return 'Ground_Puddle_Top_Left'
+            return TileSet.get_tile(tileset_image, 32, 5, 2)
         if top_right_empty:
-            return 'Ground_Puddle_Top_Right'
+            return TileSet.get_tile(tileset_image, 32, 4, 2)
 
-        return None
+        else:
+            if random.random() < 0.3:
+                return 'Ground_19'
+            else:
+                return 'Ground_' + str(random.randint(0, 18))
 
 
     def determine_farmland_image_name(self, row, col):
