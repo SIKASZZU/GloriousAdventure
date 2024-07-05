@@ -34,6 +34,41 @@ class RenderPictures:
                 elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
                     UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
 
+    def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
+        #TODO: fix this
+        
+        # Determine the render range based on terrain type
+        if terrain_type in UniversalVariables.render_range_small:
+            
+            RenderPictures.render_range = 2
+            base_row_range_0, base_row_range_1 = player_grid_y - RenderPictures.render_range - 1, player_grid_y + RenderPictures.render_range + 3
+            base_col_range_0, base_col_range_1 = player_grid_x - RenderPictures.render_range - 2, player_grid_x + RenderPictures.render_range + 3
+            
+            if UniversalVariables.last_input in ['w', 'wa', 'wd']:
+                row_range_0, row_range_1 = base_row_range_0, player_grid_y + 2
+                col_range_0, col_range_1 = base_col_range_0, base_col_range_1
+            elif UniversalVariables.last_input in ['s', 'sa', 'sd']:
+                row_range_0, row_range_1 = player_grid_y, base_row_range_1
+                col_range_0, col_range_1 = base_col_range_0, base_col_range_1
+            elif UniversalVariables.last_input in ['a', 'wa', 'sa']:
+                row_range_0, row_range_1 = base_row_range_0, base_row_range_1
+                col_range_0, col_range_1 = base_col_range_0, player_grid_x + 2
+            elif UniversalVariables.last_input in ['d', 'wd', 'sd']:
+                row_range_0, row_range_1 = base_row_range_0, base_row_range_1
+                col_range_0, col_range_1 = player_grid_x, base_col_range_1 + 1
+            else:
+                # Default to full range if no valid input
+                row_range_0, row_range_1 = base_row_range_0, base_row_range_1
+                col_range_0, col_range_1 = base_col_range_0, base_col_range_1
+        
+        else:
+                            
+            RenderPictures.render_range = (UniversalVariables.screen_x + UniversalVariables.screen_y) // UniversalVariables.block_size // 5
+            row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
+            col_range_0, col_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
+
+        return row_range_0, row_range_1, col_range_0, col_range_1
+
     def map_render(self) -> None:
         UniversalVariables.screen.fill('black')
         RenderPictures.terrain_in_view.clear()
@@ -47,15 +82,9 @@ class RenderPictures:
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         try:
-            # Render range'i arvutamine terrain blocki järgi, maze'is on väiksem kui glade'is
-            if self.terrain_data[player_grid_y][player_grid_x] in UniversalVariables.render_range_small:
-                RenderPictures.render_range = 2
-                row_range_0, row_range_1 = player_grid_y - RenderPictures.render_range - 2, player_grid_y + RenderPictures.render_range + 4
-                col_range_0, col_range_1 = player_grid_x - RenderPictures.render_range - 3, player_grid_x + RenderPictures.render_range + 4
-            else:
-                RenderPictures.render_range = (UniversalVariables.screen_x + UniversalVariables.screen_y) // UniversalVariables.block_size // 5
-                row_range_0, row_range_1 = camera_grid_col - RenderPictures.render_range, camera_grid_col + RenderPictures.render_range + 3
-                col_range_0, col_range_1 = camera_grid_row - RenderPictures.render_range - 3, camera_grid_row + RenderPictures.render_range + 6
+            # Determine the render range based on the player's position and terrain type
+            terrain_type = self.terrain_data[player_grid_y][player_grid_x]
+            row_range_0, row_range_1, col_range_0, col_range_1 = RenderPictures.get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type)
 
             for row in range(row_range_0, row_range_1):
                 current_row = []
