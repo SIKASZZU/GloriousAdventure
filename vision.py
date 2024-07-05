@@ -2,38 +2,25 @@ from variables import UniversalVariables
 import pygame
 import math
 
-# Define walls as rectangles
-drawing_wall = False
-start_wall_pos = None
-light_range = UniversalVariables.light_range  # Range of the light source
-vision_count: int = 0
+vision_count = 0
 
 def find_boxes_in_window():
     UniversalVariables.walls = []
 
-    # Need boxid on render rangei sees
     for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id
-        #print(vision_blocking_box)
-
-        x = vision_blocking_box[0]# + UniversalVariables.offset_x
-        y = vision_blocking_box[1]# + UniversalVariables.offset_y
+        x = vision_blocking_box[0]
+        y = vision_blocking_box[1]
         top_left = (x, y)
 
-        x = vision_blocking_box[0] + vision_blocking_box[2]# + UniversalVariables.offset_x
-        y = vision_blocking_box[1] + vision_blocking_box[3]# + UniversalVariables.offset_y
+        x = vision_blocking_box[0] + vision_blocking_box[2]
+        y = vision_blocking_box[1] + vision_blocking_box[3]
         bottom_right = (x, y)
-
 
         wall = (top_left, bottom_right)
         if wall not in UniversalVariables.walls:
             UniversalVariables.walls.append(wall)
 
-                
 def get_line_segment_intersection(p0, p1, p2, p3):
-    """
-    Returns the point of intersection between two line segments if it exists.
-    p0, p1 are the endpoints of the first segment, p2, p3 are the endpoints of the second.
-    """
     s1_x = p1[0] - p0[0]
     s1_y = p1[1] - p0[1]
     s2_x = p3[0] - p2[0]
@@ -47,72 +34,83 @@ def get_line_segment_intersection(p0, p1, p2, p3):
     t = (s2_x * (p0[1] - p2[1]) - s2_y * (p0[0] - p2[0])) / denom
 
     if 0 <= s <= 1 and 0 <= t <= 1:  # Intersection detected
-        # Collision detected
         return (p0[0] + (t * s1_x), p0[1] + (t * s1_y))
 
     return None  # No collision
 
-
 def draw_shadows(self, screen, visible_points):
-    
-    if UniversalVariables.debug_mode == True:
-        shadow_color = 0
+    shadow_color = 0 if UniversalVariables.debug_mode and (vision_count % 2) == 0 else 255
 
-        # kas J - Light ON/OFF key on pressed
-        if (vision_count % 2) != 0:
-            shadow_color = 255
-
-    else:
-        shadow_color = 255
-
-    BLOCK_SIZE = UniversalVariables.block_size
-    no_shadow_needed = UniversalVariables.no_shadow_needed
-
-    # Create a shadow mask covering the entire screen
-    self.shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)  # Use SRCALPHA for per-pixel alpha
+    self.shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     self.shadow_mask.fill((0, 0, 0, shadow_color))
 
-    # Playeri gridi arvutamine
-    player_x_row = int(UniversalVariables.player_x // BLOCK_SIZE)
-    player_y_col = int(UniversalVariables.player_y // BLOCK_SIZE)
+    player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
+    player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
     UniversalVariables.light_range = 420
     UniversalVariables.opposite_light_range = 75
     player_cone_light_strenght = self.daylight_strength
     
     try:
-        if self.terrain_data[player_y_col][player_x_row] in no_shadow_needed:
+        if self.terrain_data[player_y_col][player_x_row] in UniversalVariables.no_shadow_needed:
             UniversalVariables.light_range *= 6
             UniversalVariables.opposite_light_range *= 34
-            player_cone_light_strenght -= 100  # -100, sest et gladeis 66sel ega p2eval kottpime ei oleks
-
+            player_cone_light_strenght -= 100
     except IndexError as e: 
         print('Error @ vision.py, draw_shadows:', e)
         
-    if UniversalVariables.current_equipped_item == 'Flashlight':  player_cone_light_strenght -= 70
-    if player_cone_light_strenght < 0:  player_cone_light_strenght = 0
+    if UniversalVariables.current_equipped_item == 'Flashlight':  
+        player_cone_light_strenght -= 70
+    if player_cone_light_strenght < 0:  
+        player_cone_light_strenght = 0
     
     vertices = [(int(x), int(y)) for x, y in visible_points]
-    pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)  # visioni joonestamine
+    pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)
 
-    # Get the squares hit by light rays
     squares_hit = set()
     for wall in UniversalVariables.walls:
         for point in visible_points:
             if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
                 squares_hit.add(wall)
 
-    # Highlight wallid, mis saavad rayga pihta
     for square in squares_hit:
         walls_hit_by_ray_color = player_cone_light_strenght
-        pygame.draw.rect(self.shadow_mask, (0, 0, 0, walls_hit_by_ray_color), \
+        pygame.draw.rect(self.shadow_mask, (0, 0, 0, walls_hit_by_ray_color), 
                          pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
 
-    # Blit the shadow mask onto the screen
     screen.blit(self.shadow_mask, (0, 0))
 
+def get_relevant_segments(wall, player_pos):
+    # Determine which two segments are relevant based on the player's position
+    corners = [
+        (wall[0][0], wall[0][1]),
+        (wall[1][0], wall[0][1]),
+        (wall[1][0], wall[1][1]),
+        (wall[0][0], wall[1][1])
+    ]
+    
+    mid_x = (wall[0][0] + wall[1][0]) / 2
+    mid_y = (wall[0][1] + wall[1][1]) / 2
+    
+    if player_pos[0] < mid_x:  # Player is to the left of the wall
+        if player_pos[1] < mid_y:  # Player is above the wall
+            relevant_segments = [(corners[0], corners[1]), (corners[0], corners[3])]
+        else:  # Player is below the wall
+            relevant_segments = [(corners[0], corners[3]), (corners[2], corners[3])]
+    else:  # Player is to the right of the wall
+        if player_pos[1] < mid_y:  # Player is above the wall
+            relevant_segments = [(corners[0], corners[1]), (corners[1], corners[2])]
+        else:  # Player is below the wall
+            relevant_segments = [(corners[1], corners[2]), (corners[2], corners[3])]
+    
+    return relevant_segments
 
-def draw_light_source_and_rays(self, screen, position, light_range):
+
+def draw_ray(screen, ray, color, width):
+    pygame.draw.line(screen, color, ray[0], ray[1], width)
+
+
+def draw_light_source_and_rays(self, screen, position):
     light_source = position
     visible_points = []
     vision_step = 5
@@ -123,67 +121,69 @@ def draw_light_source_and_rays(self, screen, position, light_range):
     
     elif UniversalVariables.last_input == 'wa':
         main_angles = range(135, 315)
-        opposite_angles = range(-50, 140)
+        opposite_angles = range(310, 500)
     elif UniversalVariables.last_input == 'wd':
         main_angles = range(-135, 45)
         opposite_angles = range(40, 230)
     elif UniversalVariables.last_input == 'sa':
         main_angles = range(45, 225)
-        opposite_angles = range(-140, 50)
+        opposite_angles = range(220, 410)
     elif UniversalVariables.last_input == 'sd':
         main_angles = range(-45, 135)
         opposite_angles = range(130, 320)
     
     elif UniversalVariables.last_input == 'w':
-        main_angles = range(-155, -25)
-        opposite_angles = range(-30, 210)
+        main_angles = range(205, 335)
+        opposite_angles = range(335, 566)
     elif UniversalVariables.last_input == 's':
         main_angles = range(25, 155)
-        opposite_angles = range(-210, 30)
+        opposite_angles = range(155, 386)
     elif UniversalVariables.last_input == 'a':
         main_angles = range(125, 245)
-        opposite_angles = range(240, 490)
+        opposite_angles = range(245, 486)
     elif UniversalVariables.last_input == 'd':
-        main_angles = range(-65, 65)
-        opposite_angles = range(60, 300)
+        main_angles = range(295, 415)
+        opposite_angles = range(415, 656)
     else:
         main_angles = range(0, 360 + vision_step)
         opposite_angles = range(0, 0)
 
-    def calculate_angle(requested_angle, light_range):
-    
-        for angle in range(requested_angle.start, requested_angle.stop, vision_step):
+    def calculate_angle(main_angles, opposite_angles):
+        #TODO: fix this lag please lord help 
+        light_range = UniversalVariables.light_range
+        lowest_angle  = min(main_angles.start, opposite_angles.start)
+        biggest_angle = max(main_angles.stop, opposite_angles.stop)
+        
+        for angle in range(lowest_angle, biggest_angle, vision_step):
+            if angle in opposite_angles: 
+                light_range = UniversalVariables.opposite_light_range
+                
             rad_angle = math.radians(angle)
             ray_end = (light_source[0] + math.cos(rad_angle) * light_range,
-                        light_source[1] + math.sin(rad_angle) * light_range)
+                       light_source[1] + math.sin(rad_angle) * light_range)
 
             closest_intersection = None
+                        
             for wall in UniversalVariables.walls:
-                corners = [(wall[0][0], wall[0][1]), (wall[1][0], wall[0][1]), (wall[1][0], wall[1][1]), (wall[0][0], wall[1][1])]
-
-                segments = [(corners[i], corners[(i + 1) % 4]) for i in range(4)]
-                for seg_start, seg_end in segments:
+                relevant_segments = get_relevant_segments(wall, light_source)
+                for seg_start, seg_end in relevant_segments:
                     intersection = get_line_segment_intersection(light_source, ray_end, seg_start, seg_end)
                     if intersection:
-                        if closest_intersection is None or \
-                                math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < \
-                                math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
-                            closest_intersection = intersection
+                        if closest_intersection is None or math.hypot(intersection[0] - light_source[0], intersection[1] - light_source[1]) < math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1]):
+                                closest_intersection = intersection
 
-            # Ensure that the intersection point is within the light range
             if closest_intersection:
                 distance_to_intersection = math.hypot(closest_intersection[0] - light_source[0], closest_intersection[1] - light_source[1])
                 if distance_to_intersection <= light_range:
-                    visible_points.append(closest_intersection)
+                    if closest_intersection not in visible_points:
+                        visible_points.append(closest_intersection)
+                    #if UniversalVariables.debug_mode == True:  draw_ray(screen, (light_source, closest_intersection), (255, 255, 255), 1)  # Draw the ray
             else:
-                visible_points.append(ray_end)
+                if closest_intersection not in visible_points:
+                    visible_points.append(ray_end)
+                #if UniversalVariables.debug_mode == True:  draw_ray(screen, (light_source, ray_end), (255, 0, 255), 1)
 
-        visible_points.insert(0, light_source)
-        visible_points.append(light_source)
-
-    calculate_angle(main_angles, light_range)
-    calculate_angle(opposite_angles, (UniversalVariables.opposite_light_range))
+        return visible_points
     
-    
-    # Step 4: Draw shadows and walls as per the existing code
-    draw_shadows(self, screen, visible_points)
+    visible_points = calculate_angle(main_angles, opposite_angles)
+    if len(visible_points) > 2:  draw_shadows(self, screen, visible_points)
