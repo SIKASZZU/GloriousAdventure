@@ -54,12 +54,33 @@ class ImageLoader:
             # print(f"Error: '{image_path}' image not found.")
             return None
 
+
     @staticmethod
-    def load_image(image_name: str) -> Optional[pygame.Surface]:
+    def load_image(image_name: str, image_path: str = None) -> Optional[pygame.Surface]:
         """load_image meetod laeb pildid nende "Item" - "Name" ja "Type" järgi ning salvestab need vahemällu edaspidiseks kasutamiseks. SEE FUNC EI VISUALISEERI PILTE!!!!"""
         try:
             if image_name in ImageLoader.loaded_item_images:
                 return ImageLoader.loaded_item_images[image_name]
+
+            elif image_path:
+                if image_path.startswith(resource_path("images/Objects")):
+                    loaded_image = pygame.image.load(image_path)
+                    resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
+                    converted_image = resized_image.convert_alpha()
+                    ImageLoader.loaded_item_images[image_name] = converted_image
+
+                    print(image_path, loaded_image, resized_image, converted_image)
+
+                    # print(f"{image_path} resized and pre-loaded successfully.")
+                    return converted_image
+                else:
+                    loaded_image = pygame.image.load(image_path)
+                    converted_image = loaded_image.convert_alpha()
+                    ImageLoader.loaded_item_images[image_name] = converted_image
+
+                    # print(f"{image_path} resized and pre-loaded successfully.")
+                    return converted_image
+
             else:
                 image_path = None
 

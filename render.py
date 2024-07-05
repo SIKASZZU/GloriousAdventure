@@ -108,18 +108,21 @@ class RenderPictures:
                             # Teeb Water/Ground imaged v background imaged
                             if 0 <= terrain_value <= 10:
                                 if terrain_value != 0:
-                                    if random.random() < 0.3:
-                                        image_name = 'Ground_19'
-                                    else:
-                                        image_name = 'Ground_' + str(random.randint(0, 18))
 
                                     surroundings = TileSet.check_surroundings(self, row, col, 0)
-                                    image_name = TileSet.determine_ground_image_name(self, surroundings) or image_name
+                                    image_name = TileSet.determine_ground_image_name(self, surroundings)
 
                                 else:
-                                    image_name = 'Water_0'
+                                    if random.random() < 0.6:
+                                        image_name = 'Water_0'
+                                    else:
+                                        image_name = 'Water_' + str(random.randint(1, 3))
 
-                                image = ImageLoader.load_image(image_name)
+                                if type(image_name) != str:
+                                    image = image_name
+
+                                if image == None:
+                                    image = ImageLoader.load_image(image_name)
 
                                 # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
                                 if terrain_value in {7, 10}:
