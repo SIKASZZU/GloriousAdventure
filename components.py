@@ -173,7 +173,7 @@ class HungerComponent:
         return (self.current_hunger)
 
     def decrease_hunger(self):
-        hunger_resist   = 1
+        hunger_resist   = 2
         hunger_decrease = 0.1
         if UniversalVariables.player_infected == True:
             hunger_resist   = 2
@@ -236,8 +236,8 @@ class ThirstComponent:
         return self.current_thirst
 
     def decrease_thirst(self):
-        thirst_resist   = 3#1
-        thirst_decrease = 3#0.01
+        thirst_resist   = 1
+        thirst_decrease = 0.07
         #if UniversalVariables.player_infected == True:
         #    thirst_resist   = 2
         #    thirst_decrease = 0.4
