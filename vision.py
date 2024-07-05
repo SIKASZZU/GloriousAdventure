@@ -52,7 +52,7 @@ def draw_shadows(self, screen, visible_points):
     player_cone_light_strenght = self.daylight_strength
     
     try:
-        if self.terrain_data[player_y_col][player_x_row] in UniversalVariables.no_shadow_needed:
+        if self.terrain_data[player_y_col][player_x_row] not in UniversalVariables.render_range_small:
             UniversalVariables.light_range *= 6
             UniversalVariables.opposite_light_range *= 34
             player_cone_light_strenght -= 100

@@ -149,13 +149,6 @@ class UniversalVariables():
         #
     ]
 
-    no_shadow_needed: list = [
-        None,
-        0, 1, 2, 4, 7, 107, 9,  # Mineralid
-        500, 550, 555, 988, 9882, 999, 1000,  # Portal, ground, wall
-        #
-    ]
-
     open_door_ids   = [90, 91, 92, 93, 933]
     closed_door_ids = [94, 95, 96, 97, 977]
     door_ids: list  = set(open_door_ids + closed_door_ids)
