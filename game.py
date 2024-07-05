@@ -166,6 +166,9 @@ class Game:
         pygame.display.update()
         self.clock.tick(UniversalVariables.FPS)
 
+    def add_counts():
+        ItemFunctionality.item_delay += 1
+        UniversalVariables.pick_up_delay += 1
 
     def printing(self):
         Camera.print_clicks(self)
@@ -175,9 +178,9 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                ObjectManagement.add_object_from_inv("Campfire", 100)
-                # ObjectManagement.add_object_from_inv("Bread", 100)
-                # ObjectManagement.add_object_from_inv("Bad_Bread", 100)
+                ObjectManagement.add_object_from_inv("Bottle_Water", 100)
+                ObjectManagement.add_object_from_inv("Bread", 100)
+                ObjectManagement.add_object_from_inv("Meat", 100)
                 self.restrict_looping = True
 
     def game_logic(self):
@@ -195,20 +198,20 @@ class Game:
         self.refresh_loop()
         HungerComponent.update(self)
         ThirstComponent.update(self)
+        Game.add_counts()
+
+        self.check_keys()  # Toggle hitbox / vision
+        self.custom_addition()
 
         # ******************** DEBUG MODE ******************** #
         if UniversalVariables.debug_mode:
             UniversalVariables.ui_elements.append("!        Debug mode - True        !")
             self.player.speed.base_speed = 20
 
-            # neil functionitel on juba sees, et kontrolliks debug modei
-            self.check_keys()  # Toggle hitbox / vision
-            self.custom_addition()
             # UniversalVariables.player_x, UniversalVariables.wplayer_y = 1500, 1500   # FPS'side testimiseks
             # print(self.player)
 
         self.click_position = ()
-        UniversalVariables.pick_up_delay += 1
 
     def run(self):
         self.load_variables()
