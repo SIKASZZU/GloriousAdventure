@@ -180,7 +180,7 @@ class Game:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
                 ObjectManagement.add_object_from_inv("Bottle_Water", 100)
                 ObjectManagement.add_object_from_inv("Bread", 100)
-                ObjectManagement.add_object_from_inv("Meat", 100)
+                ObjectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
 
     def game_logic(self):

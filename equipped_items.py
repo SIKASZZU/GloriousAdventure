@@ -36,19 +36,19 @@ class ItemFunctionality:
 
         if is_click_inside_player_rect(self):
 
-            item_at_hand = UniversalVariables.current_equipped_item
-
             if ItemFunctionality.item_delay < 70:
-                return print(f'Item delay: {ItemFunctionality.item_delay} < 45 ')
+                return print(f'Item delay: {ItemFunctionality.item_delay} < 70 ')
+
+            item_at_hand = UniversalVariables.current_equipped_item
 
             # ITEMS
             if item_at_hand == 'Bandage':
-                self.player.health.heal(item_at_hand)
+                player_healed = self.player.health.heal(item_at_hand)
+                if player_healed:  ObjectManagement.remove_object_from_inv(item_at_hand)
                 if UniversalVariables.player_bleeding == True:
-                    ObjectManagement.remove_object_from_inv(item_at_hand)
                     if probably(35 / 100):
                         UniversalVariables.player_bleeding = False
-
+                
             if item_at_hand == 'Serum':
                 UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
                 ObjectManagement.remove_object_from_inv(item_at_hand)

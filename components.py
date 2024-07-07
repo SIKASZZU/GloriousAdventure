@@ -47,12 +47,23 @@ class HealthComponent:
             self.current_health = self.max_health
         
     def heal(self, item):
-        if item == 'Bandage':
-            self.current_health += 5
-            UniversalVariables.health_status = True
+        # et player ei overhealiks ennast. Health cap on ikkagi olemas.
+        if self.current_health == self.max_health:
+            text = f'Max health reached! {self.max_health} HP'
+            
+            if text in Fading_text.shown_texts:
+                Fading_text.shown_texts.remove(text)
+            UniversalVariables.ui_elements.append(text)
+            return False  # no healing
+            
+        else:
+            if item == 'Bandage':
+                self.current_health += 5
+                UniversalVariables.health_status = True
 
-        if self.current_health > self.max_health:
-            self.current_health = self.max_health
+            if self.current_health > self.max_health:
+                self.current_health = self.max_health
+            return True  # healing == True
 
     def check_health(self, hunger=None):
         self.hunger = hunger
