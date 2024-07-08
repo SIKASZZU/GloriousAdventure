@@ -295,34 +295,38 @@ class MapData:
 
 
     def create_maze_items(maze, size):
+
         # Maze puzzle pieces
         for i in range(MapData._puzzle_pieces):
             while True:
                 puzzle_x = random.randint(3, (size - 3))
                 puzzle_y = random.randint(3, (size - 3))
-                if maze[puzzle_y][puzzle_x] == 99:
+                if maze[puzzle_x][puzzle_y] == 99:
                     if not MapData.is_dead_end(maze, puzzle_x, puzzle_y):
                         maze[puzzle_x][puzzle_y] = 10
                         break
+
         # Maze keyholders
         for i in range(MapData._keyholders):
             while True:
                 keyholder_x = random.randint(3, (size - 3))
                 keyholder_y = random.randint(3, (size - 3))
-                if maze[puzzle_y][puzzle_x] == 99:
+                if maze[keyholder_x][keyholder_y] == 99:
                     if not MapData.is_dead_end(maze, keyholder_x, keyholder_y):
                         maze[keyholder_x][keyholder_y] = 981
                         break
+
         # Maze loot barrels
         if random.choice([True]):
             for i in range(MapData._loot):
                 while True:
                     loot_x = random.randint(3, (size - 3))
                     loot_y = random.randint(3, (size - 3))
-                    if maze[puzzle_y][puzzle_x] == 99:
+                    if maze[loot_x][loot_y] == 99:
                         if not MapData.is_dead_end(maze, loot_x, loot_y):
                             maze[loot_x][loot_y] = 1001
-                        break
+                            break
+
         return maze      
 
 
