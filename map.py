@@ -403,11 +403,6 @@ class MapData:
                          (19, 1), (20, 1),
                          (38, 19), (38, 20)]
 
-        for i in range(len(maze)):
-            for j in range(len(maze[i])):
-                if maze[i][j] == 9:
-                    special_positions.append((i, j))
-
         # Check paths from each start to each end and special positions
         for start in start_positions:
             for end in end_positions + special_positions:
@@ -417,7 +412,12 @@ class MapData:
                     MapData.create_save_puzzle = False
 
                 else:
+                    print(f"Path found from {start} to {end}")
                     MapData.create_save_puzzle = True
+                    
+                    # check visually, kas path on valid v6i mitte.
+                    #  for tuple in path:
+                    #      maze[tuple[0]][tuple[1]] = 2
 
         if MapData.create_save_puzzle == False:
             if type_of_maze == 'block_maze':
@@ -430,8 +430,6 @@ class MapData:
 
     @staticmethod
     def get_data(item, start_side):
-        ### FIXME: autsitic loogika kogu maze addition. Enne seda faili peaks teada olema mis maze tekib. Also, wtf final maze lookimine toimub. 
-            # maze counter on fucking autistics, see liiga hilja lisab +1 oma counterile
 
         if item.endswith('maze'):
             if item == 'block_maze':
