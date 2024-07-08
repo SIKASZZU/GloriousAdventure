@@ -1,7 +1,9 @@
 ideas:
 	water canteen - refill in glade water
 	old glade (abandoned) - greenish water, terrrain fucked, creepy, broken trees, rocks, oil lakes or sm shit
-	reset labyrinth mazes, dont reset loot tho
+
+	RESET MAZE LAYOUT kui ta lahkub mazeist. Nagu jah, hmm. Kui ta on 2 indexi eemal (map list) ss resetib selle.
+
 	dead people
 	gas zones (fucked system zones, mazes)- gas mask item - filters (barrel loot) / gas causes bleeding
 	fucked glitchy screen when infected, sick
@@ -16,15 +18,17 @@ ideas:
 
 	///
 		
-	PASSAGE # TUNNEL SYSTEM # LENGTH MANY FUCKING MAZES, something different then mazes. Game part 2
+	PASSAGE # TUNNEL SYSTEM # sitaks pikad, something different then mazes. Game part 2
+	DARK af TUNNELS
+		# access, open door to passage, with key from maze loot
+		# gas zones -- mask, filters
 
+		# otsib v2ljp22su, vaja uut keyd mida leiab v6i ehitab tunneli lootist
 	///
-
 
 	ghostid on ikka pekkis, peale seda olari refactori vmdgi. Direction peab olema ikkagi isegi kui path puudub, 
 		sest siis ta arvutab koordianatide j2rgi playerini liikumist
 	mingi asi lisada, mis loeb, kui mitu rida koodi juba on :D ?Read all .py ending file lenghts?
-	delay eat drink nagu pick uppimisel
 	itemite saamine -- vandil on mingi 10 taskulampi :D miks? >:D
 	
 	key pieces mida barrelitest v6ib leida 
@@ -33,6 +37,19 @@ ideas:
 
 	geiger?
 
-
-
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
+
+	bow - arrows -- string + wood,
+	final maze ground to darker 
+	+ items to inv
+	+ loading bar - for eating, items. 
+	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas
+	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
+	kui player on hungry v6i thirsty, ss jookseb aeglasemini, stamina kulub kiiremini ja taastub aeglasemini
+
+	visionit saab glitchida, hoides k6ike all v6i lihtsalt A ja D´d spammides, n2eb yle seinte. Lahendus: render shit in view. amigo
+	setting menu -- vision change. High vision = vision step 1. Low vision mingi 5 step. 2 settingu valikut sobib?? imo
+
+	print mode == if print_mode == True: print some stuff.. debug mode
+
+	tra, pathid on hard coded start positionid ju. K6ik mazeid, mis pole 0,0, on fucked selleshutes, et need pole solvable.
