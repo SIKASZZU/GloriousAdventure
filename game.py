@@ -133,7 +133,7 @@ class Game:
             Inventory.render_craftable_items(self)
             if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
                 text = "Nothing to craft."
-
+    
                 if text in Fading_text.shown_texts:
                     Fading_text.shown_texts.remove(text)
 
@@ -145,11 +145,7 @@ class Game:
         EssentialsUpdate.render_general(self)  # Render other elements
         HUD_class.update()
 
-        # Equipped item slot
-        if UniversalVariables.current_equipped_item:
-            Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)
-        else:
-            Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)
+        Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
 
         Building.update(self)
 
@@ -167,7 +163,7 @@ class Game:
         self.clock.tick(UniversalVariables.FPS)
 
     def add_counts():
-        ItemFunctionality.item_delay += 1
+        if UniversalVariables.item_delay < UniversalVariables.item_delay_max:  UniversalVariables.item_delay += 1
         UniversalVariables.pick_up_delay += 1
 
     def printing(self):

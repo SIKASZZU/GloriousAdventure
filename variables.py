@@ -67,6 +67,9 @@ class UniversalVariables():
     player_bleeding   = False
     serum_active      = False
 
+    item_delay = 70  # includes drinking & eating
+    item_delay_max = item_delay
+
     # ******************** Screen ******************** #
     ui_elements: list = []
 

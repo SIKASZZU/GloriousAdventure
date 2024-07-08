@@ -26,8 +26,6 @@ def probably(chance):
 
 class ItemFunctionality:
 
-    item_delay = 100  # includes drinking & eating
-
     def update(self):
         ItemFunctionality.current_equipped(self)
 
@@ -36,8 +34,8 @@ class ItemFunctionality:
 
         if is_click_inside_player_rect(self):
 
-            if ItemFunctionality.item_delay < 70:
-                return print(f'Item delay: {ItemFunctionality.item_delay} < 70 ')
+            if UniversalVariables.item_delay < UniversalVariables.item_delay_max:
+                return print(f'Item delay: {UniversalVariables.item_delay} < 70 ')
 
             item_at_hand = UniversalVariables.current_equipped_item
 
@@ -101,7 +99,7 @@ class ItemFunctionality:
                         ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
                         Player_audio.eating_audio(self)
                         self.click_position = ()
-            ItemFunctionality.item_delay = 0
+            UniversalVariables.item_delay = 0
 
     #if item == 'Flashlight':
     #    new_player_cone_light_strenght = -70

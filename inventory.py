@@ -6,6 +6,7 @@ from variables import UniversalVariables
 from items import items_list
 from audio import Player_audio
 from text import Fading_text
+
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
         Inventory.calculate_craftable_items(self)
@@ -410,3 +411,23 @@ class Inventory:
 
         # Perform all blit operations
         UniversalVariables.screen.blits(blit_operations)
+        Inventory.loading_bar(self, resized_slot_image, position)
+
+    def loading_bar(self, slot_image, position):
+        width  = slot_image.get_width()
+        height = slot_image.get_height()
+
+        # Tekitab semi-transparent recti
+        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+                                 pygame.SRCALPHA)
+        overlay.set_alpha(100)
+
+        if UniversalVariables.item_delay < UniversalVariables.item_delay_max:
+            tl_point = position[0]
+            tr_point = position[1]
+            
+            progress = int((UniversalVariables.item_delay / UniversalVariables.item_delay_max) * height)
+
+            loading_bar_border_rect = pygame.Rect(tl_point, tr_point + progress, width, height - progress,)
+            pygame.draw.rect(overlay, 'black', loading_bar_border_rect)
+            UniversalVariables.screen.blit(overlay, (0,0))
