@@ -42,7 +42,6 @@ ideas:
 	bow - arrows -- string + wood,
 	final maze ground to darker 
 	+ items to inv
-	+ loading bar - for eating, items. 
 	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas
 	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
 	kui player on hungry v6i thirsty, ss jookseb aeglasemini, stamina kulub kiiremini ja taastub aeglasemini
@@ -51,5 +50,3 @@ ideas:
 	setting menu -- vision change. High vision = vision step 1. Low vision mingi 5 step. 2 settingu valikut sobib?? imo
 
 	print mode == if print_mode == True: print some stuff.. debug mode
-
-	tra, pathid on hard coded start positionid ju. K6ik mazeid, mis pole 0,0, on fucked selleshutes, et need pole solvable.
