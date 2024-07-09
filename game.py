@@ -96,8 +96,6 @@ class Game:
         UniversalVariables()
 
     def call_technical(self):
-        # Inventory.calculate_inventory(self, True)  # Et invi slottide kogus oleks õige
-
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
 

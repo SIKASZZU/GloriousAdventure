@@ -19,7 +19,7 @@ class Inventory:
     craftable_items_display_rects = []
 
     inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
-    old_inventory = {}  # track varasemat inv
+    old_inventory = {}  # track varasemat inv white texti jaoks
     inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
     white_text = False
     white_colored_items = set()
@@ -31,7 +31,7 @@ class Inventory:
     check_slot_delay: int = 0
     craftable_items = {}
 
-    previous_inv = None
+    previous_inv = None  # printimise jaoks
     text_cache = {}  # Cache rendered text surfaces
     message_to_user = False
     first_time_click = False
@@ -144,9 +144,11 @@ class Inventory:
                 Inventory.render_inv = True
 
         elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
-
-        if Inventory.render_inv:  Inventory.render(self)  # Render inventory
-
+        
+        if Inventory.render_inv:
+            Inventory.render(self)  # Render inventory
+        else:
+            Inventory.render(self, update_white_text=True)  # Kui sulgeb invi white text itemitega, ss j2rgmine kord ei ole neid itemid enam valged
 
     # TODO : invi on vaja optimatiseerida
     def calculate(self, calc_slots_only=False) -> None:
@@ -197,8 +199,15 @@ class Inventory:
                 rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
                 Inventory.inventory_display_rects.append(rect)
 
-    def render(self) -> None:
+    def render(self, update_white_text=None) -> None:
         """ Callib calculate_inventory, renderib invi, invis olevad itemid ja nende kogused """
+
+        # Clear the white text items and counters if rendering inventory is false
+        if update_white_text == True:
+            Inventory.white_colored_items.clear()
+            Inventory.white_text_counters.clear()
+            return
+
         Inventory.calculate(self)
     
         # Create a semi-transparent overlay
