@@ -10,7 +10,6 @@ ideas:
 	fishing
 	cooking // stove/ uncooked meat in barrel?
 	more foods / chocolate bars, drinks
-	water / hydratioin bar?	
 	epinephrine --- run fast, no stamina cost
 
     Barrelist leiab flint & steal'i v tikke vms et tuld teha
@@ -35,6 +34,9 @@ ideas:
 		m2ngija otsib k6ik pieceid yles, craftib key
 		key-ga saab avada final mazei n2iteks
 
+	See key piece idee -- ta leiab barrrelist piece, mingi 2kki 3 4 tykki, craftib final key.
+		# ja siis kui maze ocunter on mingi 3 vmdgi, ss lambised end side uksed on teissugused, ehk sinna saab panna final key ja final maze tuleks sinna. 
+
 	geiger?
 
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
@@ -49,3 +51,7 @@ ideas:
 	setting menu -- vision change. High vision = vision step 1. Low vision mingi 5 step. 2 settingu valikut sobib?? imo
 
 	print mode == if print_mode == True: print some stuff.. debug mode
+
+	# pildi suurused, objekti suurused, k6ik teha nagu rohkem reaalsusele sobilikud
+		# sellele aitab kaasa, kui block sizei muuta.
+		# et seinad ei oleks sama suured kui barrelid v6i player :D
