@@ -55,6 +55,7 @@ def draw_shadows(self, screen, visible_points):
         if self.terrain_data[player_y_col][player_x_row] not in UniversalVariables.render_range_small:
             UniversalVariables.light_range *= 6
             UniversalVariables.opposite_light_range *= 34
+        elif self.terrain_data[player_y_col][player_x_row] != 988:  # final mze ground
             player_cone_light_strenght -= 100
     except IndexError as e: 
         print('Error @ vision.py, draw_shadows:', e)
