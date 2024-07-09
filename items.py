@@ -44,8 +44,8 @@ items_list = [
         #     {"hardness": "Wood"},
         #     {"amount": ("Stone", random.randint(1, 5))},
         # ],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 0.8),
+        "Object_width": int(block_size * 0.69),  # suhe 5:4
+        "Object_height": int(block_size * 0.55),
         "Render_when": -(block_size * 0.1)
     },
 
@@ -134,8 +134,8 @@ items_list = [
         "Name": "Maze_Key",
         "ID": 10,
         "Breakable": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
+        "Object_width": int(block_size * 0.45),
+        "Object_height": int(block_size * 0.45),
         "Render_when": (block_size * -1)
     },
 
@@ -360,8 +360,8 @@ items_list = [
         "Breakable": False,
         "Block_vision": True,
         "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 0.25),
-        "Object_height": int(block_size * 0.25),
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
     {
@@ -392,8 +392,8 @@ items_list = [
         "ID": 9099_98,
         "Breakable": False,
         "Block_vision": True,
-        "Object_width": int(block_size * 0.25),
-        "Object_height": int(block_size * 0.25),
+        "Object_width": int(block_size * 1),
+        "Object_height": int(block_size * 1),
         "Render_when": -block_size
         },
     {
@@ -628,8 +628,8 @@ items_list = [
         "ID": 1001,
         "Breakable": False,
         "Block_vision": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
+        "Object_width": int(block_size * 0.45),
+        "Object_height": int(block_size * 0.45),
         "Render_when": -block_size
         },
     {
@@ -638,8 +638,8 @@ items_list = [
         "ID": 1002,
         "Breakable": False,
         "Block_vision": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
+        "Object_width": int(block_size * 0.45),
+        "Object_height": int(block_size * 0.45),
         "Render_when": -block_size
         },
 

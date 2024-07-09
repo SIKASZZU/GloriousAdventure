@@ -11,6 +11,8 @@ class RenderPictures:
     render_range: int = 0
     terrain_in_view: list = []
     occupied_positions: dict = {}
+    randomizer_x = round(random.uniform(0.1, 0.6) , 1)
+    randomizer_y = round(random.uniform(0.1, 0.6) , 1)
 
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
@@ -92,10 +94,12 @@ class RenderPictures:
                 for col in range(col_range_0, col_range_1):
                     if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
                         current_row.append((col, row))
-                        terrain_value = self.terrain_data[row][col]
+                        terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
                         terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
                         terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
                         position = (col, row)
+                        if terrain_value in UniversalVariables.interactable_items:
+                            continue
 
                         if terrain_value is not None:
                             image = None
@@ -161,7 +165,7 @@ class RenderPictures:
                                     image = ImageLoader.load_image('Maze_End_Bottom')
                                 else:
                                     self.terrain_data[row][col] = 933
-                                    continue
+
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             elif terrain_value == 1000:
@@ -169,10 +173,15 @@ class RenderPictures:
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             else:
-                                image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
-                                if image_name:
-                                    image = ImageLoader.load_image(image_name)
+                                if terrain_value in [1001,1002]:
+                                    image = ImageLoader.load_image('Maze_Ground')
                                     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                                else:
+                                    image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
+                                    if image_name:
+                                        image = ImageLoader.load_image(image_name)
+                                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             # SEE FUNCTION BLITIB AINULT BACKGROUNDI
 
@@ -186,7 +195,6 @@ class RenderPictures:
                             elif terrain_value in {10, 11}:
                                 image = ImageLoader.load_image('Maze_Ground_Keyhole')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
 
                 RenderPictures.terrain_in_view.append(current_row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
@@ -226,7 +234,7 @@ class ObjectCreation:
 
         collision_items = []
         non_collision_items = []
-        items_not_designed_for_list = [98, 989_98, 988]  # maze groundid vmdgi taolist
+        items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
 
         for item in items_list:
             if item.get("Type") == "Object":
@@ -255,7 +263,7 @@ class ObjectCreation:
                 if a_item in non_collision_items or a_item in collision_items:
                     pass
                 else:
-                    if a_item[2] is None:  # if collision box is none or collision box item is clickable etc door, keyholder
+                    if a_item[2] is None:  # if collision box is none, ehk tegu on interactable objektiga
                         non_collision_items.append(a_item)
                     else:
                         collision_items.append(a_item)
@@ -312,8 +320,6 @@ class ObjectCreation:
             elif len(item) == 9:
                 object_id, _, _, _, _, _, object_width, object_height, object_image = item
 
-            #if object_id not in UniversalVariables.no_terrain_background_items:
-
             for row in RenderPictures.terrain_in_view:
                 for x, y in row:
                     if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
@@ -321,10 +327,17 @@ class ObjectCreation:
                         terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
                         new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                        random_placement = [10, 1001, 1002]
+                        
+                        if new_object[5] in random_placement:
+                            position = (terrain_x + UniversalVariables.block_size * RenderPictures.randomizer_x, terrain_y + UniversalVariables.block_size * RenderPictures.randomizer_y)
+                            new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
 
                         if new_object not in UniversalVariables.object_list:
+                            # terrain_x, terrain_y, object_width, object_height, object_image, object_id
                             UniversalVariables.object_list.append(
-                                (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                                (new_object[0], new_object[1], new_object[2], new_object[3], new_object[4], new_object[5])
                                 )
+
 
 if __name__ == '__main__':  ...

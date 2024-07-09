@@ -139,10 +139,7 @@ class ObjectManagement:
     def render_interaction_box() -> None:
         ### TODO: hetkel renderib isegi non-breakalbe objekt itemitle selle rooosa ruudu ymber
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-        no_interaction_box_needed = {11}
         for box_item in UniversalVariables.object_list:
-            if box_item[5] in no_interaction_box_needed: 
-                continue
             outline_thickness = 3
             if box_item[5] in [981, 982]:
                 outline_thickness = 8
