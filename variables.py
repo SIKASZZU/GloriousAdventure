@@ -24,7 +24,7 @@ class UniversalVariables():
     prev_block_size: int = 0
 
     if debug_mode:
-        jagatis: float = 15
+        jagatis: float = 10
         
         # Mängu max tick rate
         FPS = 200
@@ -35,7 +35,7 @@ class UniversalVariables():
         enemy_speed = 0.05  # Enemy kiirus grid size'ina
 
     else:
-        jagatis: float = 15
+        jagatis: float = 10
 
         # Mängu max tick rate
         FPS = 60
@@ -50,8 +50,8 @@ class UniversalVariables():
     current_equipped_item_item_type = None
     pick_up_delay = 100
 
-    player_height: int = block_size * 0.65
-    player_width: int = block_size * 0.65
+    player_height: int = block_size * 0.45
+    player_width: int = block_size * 0.45
 
     player_hitbox_offset_x: float = 0.29 * player_width
     player_hitbox_offset_y: float = 0.22 * player_height
@@ -98,7 +98,7 @@ class UniversalVariables():
 
     # ******************** VISION ******************** #
     light_range: int = 420
-    opposite_light_range: int = 75
+    opposite_light_range: int = player_width // 1.5  # vision.py overwritib selle. Line 51 vmdgi
     walls: list = []  # Collision boxide seinad
     last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
