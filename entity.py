@@ -29,7 +29,7 @@ class Enemy:
 
     enemy_restricted_areas = [99, 981, 982,  # maze wall stuff
                             9099, 989, 900]  # blade wall stuff
-    combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.closed_door_ids))
+    combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.door_ids))
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
