@@ -7,7 +7,7 @@ from variables import UniversalVariables
 class PlayerStatus:
     bleed_damage_timer = 0
     times_of_bleed     = 0
-    bleed_damage       = 0.25
+    bleed_damage       = 0.15
     cure_timer         = 0
     cure_start_time    = None
 
@@ -25,12 +25,12 @@ class PlayerStatus:
         if UniversalVariables.player_bleeding == True:
             PlayerStatus.bleed_damage_timer += 1
 
-            if PlayerStatus.bleed_damage_timer >= 100:
+            if PlayerStatus.bleed_damage_timer >= 200:
                 self.player.health.damage(PlayerStatus.bleed_damage)
                 PlayerStatus.bleed_damage_timer = 0
                 PlayerStatus.times_of_bleed += 1
 
-                if PlayerStatus.times_of_bleed == 15:
+                if PlayerStatus.times_of_bleed == 1500:  # ok, aga see on loogiline. L6puks j22b veri lihtsalt kinni ¯\(°_o)/¯
                     PlayerStatus.times_of_bleed = 0
                     UniversalVariables.player_bleeding = False
 
