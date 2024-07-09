@@ -96,7 +96,7 @@ class Game:
         UniversalVariables()
 
     def call_technical(self):
-        Inventory.calculate_inventory(self, True)  # Et invi slottide kogus oleks õige
+        # Inventory.calculate_inventory(self, True)  # Et invi slottide kogus oleks õige
 
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
@@ -145,7 +145,7 @@ class Game:
         EssentialsUpdate.render_general(self)  # Render other elements
         HUD_class.update()
 
-        Inventory.render_inventory_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
+        Inventory.render_equipped_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
 
         Building.update(self)
 
@@ -184,8 +184,7 @@ class Game:
         self.call_technical()
         self.call_visuals()
 
-        Inventory.call_inventory(self)
-        if Inventory.render_inv: Inventory.render_inventory(self)  # Render inventory
+        Inventory.call(self)
 
         Final_Maze.final_maze_update(self)
         Fading_text.render_general(self)

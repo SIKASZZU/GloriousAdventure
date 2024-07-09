@@ -19,7 +19,11 @@ class Inventory:
     craftable_items_display_rects = []
 
     inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
+    old_inventory = {}  # track varasemat inv
     inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
+    white_text = False
+    white_colored_items = set()
+    white_text_counters = {}
 
     render_inv: bool = False  # Inventory renderminmine
     tab_pressed: bool = False  # Keep track of whether Tab was pressed
@@ -116,9 +120,8 @@ class Inventory:
             print(IE)
             UniversalVariables.current_equipped_item = None
 
-    def call_inventory(self) -> None:
-        """ Vajutades tabi ei hakka inventory
-        visuaalselt glitchima on/off. """
+    def call(self) -> None:
+        """ Inventory kutsumiseks on see func. """
 
         if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False and Inventory.first_time_click != True:
             UniversalVariables.ui_elements.append(
@@ -126,6 +129,7 @@ class Inventory:
             Inventory.message_to_user = True
 
         Inventory.handle_mouse_click(self)
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
             if Inventory.first_time_click == False:
@@ -141,9 +145,11 @@ class Inventory:
 
         elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
 
+        if Inventory.render_inv:  Inventory.render(self)  # Render inventory
+
 
     # TODO : invi on vaja optimatiseerida
-    def calculate_inventory(self, calc_slots_only=False) -> None:
+    def calculate(self, calc_slots_only=False) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
 
@@ -191,48 +197,59 @@ class Inventory:
                 rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
                 Inventory.inventory_display_rects.append(rect)
 
-    def render_inventory(self) -> None:
-        """ Callib calculate_inventory,
-        renderib invi, invis olevad
-        itemid ja nende kogused """
-        Inventory.calculate_inventory(self)
-
-        # Tekitab semi-transparent recti
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
-                                 pygame.SRCALPHA)
+    def render(self) -> None:
+        """ Callib calculate_inventory, renderib invi, invis olevad itemid ja nende kogused """
+        Inventory.calculate(self)
+    
+        # Create a semi-transparent overlay
+        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)
         overlay.set_alpha(180)
-        # See muudab kui hästi on seda näha /// 0 - 255
-
-        # Mustad boxid itemite ümber
+    
+        # Draw item slots with borders
         for rect in Inventory.inventory_display_rects:
-            # Invi hall taust
-            pygame.draw.rect(overlay, (177, 177, 177), rect, border_radius=5)  # Teeb inventory läbipaistvaks
-            pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)
-
-        # Visualiseerib invi
+            pygame.draw.rect(overlay, (177, 177, 177), rect, border_radius=5)  # Gray background
+            pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)  # Black border
+    
+        # Blit the overlay onto the screen
         UniversalVariables.screen.blit(overlay, (0, 0))
-
+    
+        new_white_items = set()
         for rect, (item_name, count) in zip(Inventory.inventory_display_rects, Inventory.inventory.items()):
-            # Muudab itemite kohta inventory slotis
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-
-            if count > 0:  # Renderib pilti ainult siis kui item on invis olemas
+    
+            if count > 0:
                 item_image = ImageLoader.load_image(item_name)
-
                 if item_image:
-                    # Resize itemi inventory
                     item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
-
-                    # Paneb itembi invi boxi keskele
                     item_image_rect = item_image.get_rect(center=item_rect.center)
-
-                    # font, numbrid itemite loetlemiseks
+    
                     font = pygame.font.Font(None, 20)
-                    text = font.render(str(count), True, 'black')
+                    
+                    # Check if the item is new or its count has changed
+                    if (item_name not in Inventory.old_inventory or 
+                        (item_name in Inventory.old_inventory and Inventory.inventory[item_name] != Inventory.old_inventory[item_name])):
+                        Inventory.white_text = True
+                        new_white_items.add(item_name)
+                        Inventory.white_text_counters[item_name] = 0  # Initialize the counter for the new item
+    
+                    text_color = 'black'
+                    if item_name in Inventory.white_colored_items:
+                        text_color = 'white'  # color for item change 
+                        Inventory.white_text_counters[item_name] += 1  # Increment the counter for the item
+    
+                    text = font.render(str(count), True, text_color)
                     text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
-
+    
                     blit_operations = [(item_image, item_image_rect.topleft), (text, text_rect.topleft)]
                     UniversalVariables.screen.blits(blit_operations, False)
+    
+        items_to_remove = [item for item, counter in Inventory.white_text_counters.items() if counter >= 120]
+        for item in items_to_remove:
+            Inventory.white_colored_items.remove(item)
+            del Inventory.white_text_counters[item]
+    
+        Inventory.white_colored_items.update(new_white_items)
+        Inventory.old_inventory = Inventory.inventory.copy()
 
     def calculate_craftable_items(self):
         """ Otsib kõik itemid ülesse mida
@@ -360,7 +377,7 @@ class Inventory:
             # Remove items with a count of zero from the inventory
             Inventory.inventory = {k: v for k, v in Inventory.inventory.items() if v > 0}
 
-    def render_inventory_slot(self, item_name):
+    def render_equipped_slot(self, item_name):
         slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
         position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
         resized_slot_image = pygame.transform.scale(slot_image, (slot_image.get_width() * 0.9 , slot_image.get_height() * 0.9))
@@ -398,7 +415,6 @@ class Inventory:
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count at top left corner of slot if count is greater than 1 and item is not a tool
-
         if UniversalVariables.current_equipped_item_item_type != "Tool":
             text = str(Inventory.inventory[item_name])
             if text not in Inventory.text_cache:
@@ -411,9 +427,11 @@ class Inventory:
 
         # Perform all blit operations
         UniversalVariables.screen.blits(blit_operations)
-        Inventory.loading_bar(self, resized_slot_image, position)
+        Inventory.item_delay_bar(self, resized_slot_image, position)
 
-    def loading_bar(self, slot_image, position):
+    def item_delay_bar(self, slot_image, position):
+        """ See func on inventory all, sest slot_image andmed asuvad siin ja eksportimine on keerukas. """
+
         width  = slot_image.get_width()
         height = slot_image.get_height()
 
