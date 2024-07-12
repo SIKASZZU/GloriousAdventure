@@ -31,10 +31,10 @@ class RenderPictures:
                                                             (UniversalVariables.block_size,
                                                              UniversalVariables.block_size))
                 if terrain_value in [7, 107]:
-                    UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
+                    UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
-                elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                    UniversalVariables.blits_sequence.append([scaled_saved_image, (terrain_x, terrain_y)])
+                elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
+                    UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         #TODO: fix this
@@ -98,7 +98,7 @@ class RenderPictures:
                         terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
                         terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
                         position = (col, row)
-                        if terrain_value in UniversalVariables.interactable_items:
+                        if terrain_value in UniversalVariables.interactable_items:  # see peks olema mingi no background needed list .. et ei renderiks topelt object ja map renderis
                             continue
 
                         if terrain_value is not None:
@@ -136,14 +136,14 @@ class RenderPictures:
                                     if position not in RenderPictures.occupied_positions:
                                         scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
 
-                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                            UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
+                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
+                                            UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
                                         RenderPictures.occupied_positions[position] = scaled_image
                                     else:
                                         scaled_image = RenderPictures.occupied_positions[position]
-                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence:
-                                            UniversalVariables.blits_sequence.append([scaled_image, (terrain_x, terrain_y)])
-
+                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
+                                            UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
+                            
                             # SEE FUNCTION BLITIB AINULT BACKGROUNDI
                             elif terrain_value == 98:
                                 image = ImageLoader.load_image('Maze_Ground')
@@ -172,16 +172,15 @@ class RenderPictures:
                                 image = ImageLoader.load_image('Final_Maze_Ground_2')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                            else:
-                                if terrain_value in [1001,1002]:
-                                    image = ImageLoader.load_image('Maze_Ground')
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                            elif terrain_value in {1001, 1002}:
+                                image = ImageLoader.load_image('Maze_Ground')
+                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                                else:
-                                    image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
-                                    if image_name:
-                                        image = ImageLoader.load_image(image_name)
-                                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                            else:
+                                image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
+                                if image_name:
+                                    image = ImageLoader.load_image(image_name)
+                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             # SEE FUNCTION BLITIB AINULT BACKGROUNDI
 
@@ -197,12 +196,13 @@ class RenderPictures:
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.terrain_in_view.append(current_row)
-            UniversalVariables.screen.blits(UniversalVariables.blits_sequence, doreturn=False)
+            UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
         except IndexError:
             return
 
     # See func renderib objecteid
+    #TODO: objeckte me hetkel blitimie, mitte blitsime, 
     def object_render():
         desired_order = UniversalVariables.object_render_order
 
@@ -220,8 +220,10 @@ class RenderPictures:
         for item in sorted_objects:
             position = item[:2]  # x, y
             scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
-            UniversalVariables.screen.blit(scaled_object_image, position)
-
+            if [scaled_object_image, position] not in UniversalVariables.blits_sequence_objects:
+                UniversalVariables.blits_sequence_objects.append([scaled_object_image, position])
+            
+        UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
 
 class ObjectCreation:
 

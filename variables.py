@@ -128,7 +128,8 @@ class UniversalVariables():
     # ******************** Render ******************** #
     map_list: list = [['block_maze'],['glade']]
 
-    blits_sequence: list = []
+    blits_sequence_collision: list = []
+    blits_sequence_objects: list = []
     text_sequence: list = []
 
     object_render_order = [
