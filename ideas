@@ -27,7 +27,6 @@ ideas:
 
 	ghostid on ikka pekkis, peale seda olari refactori vmdgi. Direction peab olema ikkagi isegi kui path puudub, 
 		sest siis ta arvutab koordianatide j2rgi playerini liikumist
-	ghostid saavad gladei tulla idk miks, kas see mida ytlesid, et l2bi seinte liiguvad, kui renderit ei ole?? how
 	
 	mingi asi lisada, mis loeb, kui mitu rida koodi juba on :D ?Read all .py ending file lenghts?
 	itemite saamine -- vandil on mingi 10 taskulampi :D miks? >:D
