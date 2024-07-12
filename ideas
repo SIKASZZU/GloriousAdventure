@@ -53,6 +53,10 @@ ideas:
 	setting menu -- vision change. High vision = vision step 1. Low vision mingi 5 step. 2 settingu valikut sobib?? imo
 
 	print mode == if print_mode == True: print some stuff.. debug mode
+		Kui m2ng k2ib, ss saab kirjutada terminali (user input) et print errors vmdgi, ja ss prindib need.
+			debug m6ttega noh.
+			Teine v6imalus on lihtsalt print mode
+
 
 	# pildi suurused, objekti suurused, k6ik teha nagu rohkem reaalsusele sobilikud
 		# sellele aitab kaasa, kui block sizei jagatis muuta 15->10.
