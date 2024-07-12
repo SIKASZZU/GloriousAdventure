@@ -29,7 +29,7 @@ class TileSet:
 
     def determine_ground_image_name(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty, top_left_empty, top_right_empty, bottom_left_empty, bottom_right_empty = surroundings
-        tileset_image = TileSet.get_tileset_image('images\Tile_Sets\Water_Ground_Tileset.png')
+        tileset_image = TileSet.get_tileset_image('images/Tile_Sets/Water_Ground_Tileset.png')
 
         if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
             return TileSet.get_tile(tileset_image, 32, 6, 1)
