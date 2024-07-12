@@ -48,7 +48,7 @@ class Game:
 
         self.player = Player(max_health=20, min_health=0, 
                              max_stamina=20, min_stamina=0, 
-                             base_speed=4, max_speed=8, min_speed=1, 
+                             base_speed=6, max_speed=15, min_speed=1, 
                              base_hunger=20, max_hunger=20, min_hunger=0,
                              base_thirst=20, max_thirst=20, min_thirst=0)
         
@@ -152,7 +152,8 @@ class Game:
 
     def reset_lists(self):
         UniversalVariables.text_sequence = []
-        UniversalVariables.blits_sequence = []
+        UniversalVariables.blits_sequence_collision = []
+        UniversalVariables.blits_sequence_objects = []
 
     def refresh_loop(self):
         Collisions.keylock = 0
@@ -172,9 +173,9 @@ class Game:
         if UniversalVariables.debug_mode == True:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                ObjectManagement.add_object_from_inv("Bottle_Water", 100)
-                ObjectManagement.add_object_from_inv("Bread", 100)
-                ObjectManagement.add_object_from_inv("Bandage", 100)
+                # ObjectManagement.add_object_from_inv("Bottle_Water", 100)
+                # ObjectManagement.add_object_from_inv("Bread", 100)
+                # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
 
     def game_logic(self):
