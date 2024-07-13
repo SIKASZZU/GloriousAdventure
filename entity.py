@@ -30,7 +30,8 @@ class Enemy:
     enemy_restricted_areas = [99, 981, 982,  # maze wall stuff
                             9099, 989, 900]  # blade wall stuff
     combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.door_ids))
-
+    combined_restricted_areas = set(combined_restricted_areas).union(set(UniversalVariables.glade_items))
+    print(combined_restricted_areas)        
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
@@ -182,7 +183,7 @@ class Enemy:
                         # Move enemy based on the next grid
                         next_x += (next_grid[0] * UniversalVariables.enemy_speed)
                         next_y += (next_grid[1] * UniversalVariables.enemy_speed)
-
+                #FIXME: kui see on siin, ss enemy saab glaedi tulla.
                 else:
                     # Otsib playerit koordinaatidega
                     if direction == 'right':
