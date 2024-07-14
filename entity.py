@@ -30,7 +30,8 @@ class Enemy:
     enemy_restricted_areas = [99, 981, 982,  # maze wall stuff
                             9099, 989, 900]  # blade wall stuff
     combined_restricted_areas = set(enemy_restricted_areas).union(set(UniversalVariables.door_ids))
-
+    combined_restricted_areas = set(combined_restricted_areas).union(set(UniversalVariables.glade_items))
+    print(combined_restricted_areas)        
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
@@ -168,36 +169,41 @@ class Enemy:
                     Enemy.path[enemy_name] = path
                     Enemy.path_ticks[enemy_name] = 0
 
-                if Enemy.path[enemy_name] is not None and len(Enemy.path[enemy_name]) > 0:
+                next_x, next_y = x, y
+                if Enemy.path[enemy_name] is not None and len(Enemy.path[enemy_name]) > 0:  # enemil on path playerini olemas
                     next_grid = Enemy.path[enemy_name][0]
 
                     if (enemy_grid[0], enemy_grid[1]) == (next_grid[0], next_grid[1]):
                         Enemy.path[enemy_name].pop(0)  # Remove the first element if the enemy has reached it
 
                     if len(Enemy.path[enemy_name]) > 0:
-                        next_grid = Enemy.path[enemy_name][0]
-                        next_x, next_y = x, y
+                        # Otsib playerit grididega
+                        next_grid = ((Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
 
                         # Move enemy based on the next grid
-                        if next_grid[1] > enemy_grid[1]:
-                            next_x += UniversalVariables.enemy_speed
-                        elif next_grid[1] < enemy_grid[1]:
-                            next_x -= UniversalVariables.enemy_speed
+                        next_x += (next_grid[0] * UniversalVariables.enemy_speed)
+                        next_y += (next_grid[1] * UniversalVariables.enemy_speed)
+                #FIXME: kui see on siin, ss enemy saab glaedi tulla.
+                else:
+                    # Otsib playerit koordinaatidega
+                    if direction == 'right':
+                        next_x += UniversalVariables.enemy_speed
+                    elif direction == 'left':
+                        next_x -= UniversalVariables.enemy_speed
+                    elif direction == 'down':
+                        next_y += UniversalVariables.enemy_speed
+                    elif direction == 'up':
+                        next_y -= UniversalVariables.enemy_speed
 
-                        if next_grid[0] > enemy_grid[0]:
-                            next_y += UniversalVariables.enemy_speed
-                        elif next_grid[0] < enemy_grid[0]:
-                            next_y -= UniversalVariables.enemy_speed
+                next_x, next_y = round(next_x, 3), round(next_y, 3)  # performance gain
+            
+                # Adjust entity position to avoid moving through walls
+                if next_x == x and next_y != y and str(next_x).endswith('.5'):
+                    next_x = math.ceil(next_x)
+                if next_y == y and next_x != x and str(next_y).endswith('.5'):
+                    next_y = math.ceil(next_y)                        
 
-                        next_x, next_y = round(next_x, 3), round(next_y, 3)
-
-                        # Adjust entity position to avoid moving through walls
-                        if next_x == x and next_y != y and str(next_x).endswith('.5'):
-                            next_x = math.ceil(next_x)
-                        if next_y == y and next_x != x and str(next_y).endswith('.5'):
-                            next_y = math.ceil(next_y)
-
-                        Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+                Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
 
                 # Increment path ticks
                 if enemy_name in Enemy.path_ticks:

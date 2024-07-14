@@ -69,7 +69,7 @@ items_list = [
         # ],
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
-        "Render_when": block_size * 0.8
+        "Render_when": block_size * 1.5
     },
 
     {
@@ -79,7 +79,7 @@ items_list = [
         "Breakable": False,
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
-        "Render_when": -(block_size * 0.8)
+        "Render_when": block_size * 0.6
     },
 
     {
