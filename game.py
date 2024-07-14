@@ -82,6 +82,7 @@ class Game:
 
         # FPS tracking
         self.fps_list = []
+        self.fps_list_max_size = 1000  # Limit the size of fps_list
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
@@ -164,6 +165,8 @@ class Game:
         current_fps = self.clock.get_fps()
         if current_fps > 0:  # To avoid adding 0 FPS values
             self.fps_list.append(current_fps)
+            if len(self.fps_list) > self.fps_list_max_size:
+                self.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
         self.clock.tick(UniversalVariables.FPS)
 
     @staticmethod
