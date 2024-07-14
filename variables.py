@@ -153,6 +153,8 @@ class UniversalVariables():
         #
     ]
 
+    glade_items = [1,2,3,4,5,6,7,8,9,107]
+
     open_door_ids   = [90, 91, 92, 93, 933]
     closed_door_ids = [94, 95, 96, 97, 977]
     door_ids: list  = set(open_door_ids + closed_door_ids)
