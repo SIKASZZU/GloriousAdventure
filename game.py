@@ -1,11 +1,8 @@
-# Pythoni inbuilt/downloaded files
 import pygame
 import sys
 import os
-import sys
 
-
-# Oma enda failid
+# Import other modules
 import vision  # find_boxes_in_window, draw_light_source_and_rays
 from entity import Enemy
 from variables import UniversalVariables
@@ -28,6 +25,8 @@ from status import PlayerStatus
 from HUD import HUD_class
 from equipped_items import ItemFunctionality
 from building import Building
+
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -46,12 +45,12 @@ class Game:
         self.clock = pygame.time.Clock()  # FPS
         self.font = pygame.font.SysFont("Verdana", 20)  # Font
 
-        self.player = Player(max_health=20, min_health=0, 
-                             max_stamina=20, min_stamina=0, 
-                             base_speed=6, max_speed=15, min_speed=1, 
+        self.player = Player(max_health=20, min_health=0,
+                             max_stamina=20, min_stamina=0,
+                             base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=20, max_hunger=20, min_hunger=0,
                              base_thirst=20, max_thirst=20, min_thirst=0)
-        
+
         self.player_rect = None  # Player rect to be set in the game
 
         self.screen = UniversalVariables.screen
@@ -81,6 +80,9 @@ class Game:
 
         self.fading_text = Fading_text()
 
+        # FPS tracking
+        self.fps_list = []
+
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -103,7 +105,7 @@ class Game:
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
-        
+
         vision.find_boxes_in_window()
 
         self.player.health.check_health(self.player.hunger.current_hunger)
@@ -131,7 +133,7 @@ class Game:
             Inventory.render_craftable_items(self)
             if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
                 text = "Nothing to craft."
-    
+
                 if text in Fading_text.shown_texts:
                     Fading_text.shown_texts.remove(text)
 
@@ -159,8 +161,12 @@ class Game:
         Collisions.keylock = 0
         self.screen.blits(UniversalVariables.text_sequence)
         pygame.display.update()
+        current_fps = self.clock.get_fps()
+        if current_fps > 0:  # To avoid adding 0 FPS values
+            self.fps_list.append(current_fps)
         self.clock.tick(UniversalVariables.FPS)
 
+    @staticmethod
     def add_counts():
         if UniversalVariables.item_delay < UniversalVariables.item_delay_max:  UniversalVariables.item_delay += 1
         UniversalVariables.pick_up_delay += 1
@@ -170,7 +176,7 @@ class Game:
         print(self.player)
 
     def custom_addition(self):
-        if UniversalVariables.debug_mode == True:
+        if UniversalVariables.debug_mode:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
                 # ObjectManagement.add_object_from_inv("Bottle_Water", 100)
@@ -202,7 +208,7 @@ class Game:
             UniversalVariables.ui_elements.append("!        Debug mode - True        !")
             self.player.speed.base_speed = 20
 
-            # UniversalVariables.player_x, UniversalVariables.wplayer_y = 1500, 1500   # FPS'side testimiseks
+            # UniversalVariables.player_x, UniversalVariables.player_y = 2800, 8600  # FPS'side testimiseks
             # print(self.player)
 
         self.click_position = ()
