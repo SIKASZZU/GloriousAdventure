@@ -43,7 +43,7 @@ ideas:
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
 
 	bow - arrows -- string + wood,
-	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas
+	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas, yle seinte saab naha
 	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
 	kui player on hungry v6i thirsty, ss jookseb aeglasemini, stamina kulub kiiremini ja taastub aeglasemini
 
@@ -67,3 +67,5 @@ ideas:
 	limit fps key
 
 	erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
+
+	klikkides ja vajutades spacei saab v6tta v6tmeid yles v6i collectida barreleid.
