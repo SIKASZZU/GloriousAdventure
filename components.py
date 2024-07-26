@@ -1,12 +1,9 @@
 import pygame
 import time
 
-import items
 from variables import UniversalVariables
 from inventory import Inventory
-from audio import Player_audio
 from text import Fading_text
-from objects import ObjectManagement
 
 class HealthComponent:
     death_exit_timer = 0

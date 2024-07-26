@@ -1,6 +1,6 @@
 import pygame
 
-from images import ImageLoader, ImageCache
+from images import ImageLoader
 from camera import Camera
 from variables import UniversalVariables
 from items import items_list

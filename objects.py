@@ -5,7 +5,6 @@ from variables import UniversalVariables
 from audio import Player_audio
 from text import Fading_text
 import numpy as np
-import random
 
 class ObjectManagement:
 

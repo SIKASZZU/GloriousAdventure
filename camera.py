@@ -1,6 +1,7 @@
 import pygame
 from variables import UniversalVariables
 from text import Fading_text
+
 class Camera:
 
     screen = UniversalVariables.screen

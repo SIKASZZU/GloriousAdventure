@@ -6,12 +6,10 @@ import sys
 import vision
 from images import ImageLoader
 from HUD import HUD_class
-from inventory import Inventory
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
-from components import StaminaComponent, HungerComponent
+from components import HungerComponent
 from variables import UniversalVariables
-
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """

@@ -7,6 +7,7 @@ from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables
 from tile_set import TileSet
+
 class RenderPictures:
     render_range: int = 0
     terrain_in_view: list = []

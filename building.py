@@ -1,5 +1,3 @@
-import pygame
-
 from variables import UniversalVariables
 from objects import ObjectManagement
 from audio import Player_audio

@@ -3,16 +3,15 @@ import sys
 import os
 
 # Import other modules
-import vision  # find_boxes_in_window, draw_light_source_and_rays
+import vision
 from entity import Enemy
 from variables import UniversalVariables
 from camera import Camera  # box_target_camera
-from render import RenderPictures, ObjectCreation  # map_render, creating_lists
+from render import RenderPictures, ObjectCreation  # render, creating_lists
 from event_handler import Event_handler
 from map import MapData  # glade_creation, map_list_to_map
 from objects import ObjectManagement  # place_and_render_object
-from update import EssentialsUpdate  # check_pressed_keys, render_general, calculate_daylight_strength
-from update import PlayerUpdate  # update_player, render_player, render_HUD
+from update import EssentialsUpdate, PlayerUpdate
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collision_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
@@ -69,7 +68,6 @@ class Game:
         self.click_window_x = None
         self.click_window_y = None
 
-        glade_data = MapData.glade_creation()
         if not self.terrain_data:
             self.terrain_data = MapData.map_list_to_map(self)
 
@@ -82,7 +80,7 @@ class Game:
 
         # FPS tracking
         self.fps_list = []
-        self.fps_list_max_size = 1000  # Limit the size of fps_list
+        self.fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:

@@ -4,7 +4,7 @@ from camera import Camera
 import items
 from loot import Loot
 from inventory import Inventory
-from menu import Menu, PauseMenu
+from menu import PauseMenu
 
 def update_object_dimensions():
     for item in items.items_list:

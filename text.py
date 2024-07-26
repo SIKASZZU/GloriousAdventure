@@ -2,6 +2,7 @@ import pygame
 import textwrap
 
 from variables import UniversalVariables
+
 class Fading_text:
     shown_texts = set()
     text_fade_duration = 700  # Duration of each fade in milliseconds
