@@ -155,14 +155,13 @@ class Enemy:
                 if enemy_name == enemy_name_:
                     direction = dir_
                     break
-
             if direction:
                 enemy_grid = (Enemy.custom_round(enemy_info[2]), Enemy.custom_round(enemy_info[1]))
+                player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
+                                Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
 
                 if enemy_name not in Enemy.path or Enemy.path_ticks[
                     enemy_name] >= UniversalVariables.enemy_path_update_tick:
-                    player_grid = (Enemy.custom_round(self.player_rect.centery // UniversalVariables.block_size),
-                                   Enemy.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
 
                     path = Enemy.find_path_bfs(self, enemy_grid, player_grid)
 
@@ -183,8 +182,8 @@ class Enemy:
                         # Move enemy based on the next grid
                         next_x += (next_grid[0] * UniversalVariables.enemy_speed)
                         next_y += (next_grid[1] * UniversalVariables.enemy_speed)
-                #FIXME: kui see on siin, ss enemy saab glaedi tulla.
-                else:
+                
+                elif enemy_grid == player_grid:  # playeri ja mangija grid on smad
                     # Otsib playerit koordinaatidega
                     if direction == 'right':
                         next_x += UniversalVariables.enemy_speed
