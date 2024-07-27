@@ -60,7 +60,6 @@ ideas:
 	praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
 		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
 	
-	min max fps
 	limit fps key
 
 	erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
