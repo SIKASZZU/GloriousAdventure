@@ -25,9 +25,6 @@ ideas:
 		# otsib v2ljp22su, vaja uut keyd mida leiab v6i ehitab tunneli lootist
 	///
 
-	ghostid on ikka pekkis, peale seda olari refactori vmdgi. Direction peab olema ikkagi isegi kui path puudub, 
-		sest siis ta arvutab koordianatide j2rgi playerini liikumist
-	
 	mingi asi lisada, mis loeb, kui mitu rida koodi juba on :D ?Read all .py ending file lenghts?
 	itemite saamine -- vandil on mingi 10 taskulampi :D miks? >:D
 	
