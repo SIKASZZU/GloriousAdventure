@@ -223,7 +223,11 @@ class Enemy:
             distance_to_player_x_grid = player_window_x - enemy_x
             distance_to_player_y_grid = player_window_y - enemy_y
 
-            if abs(distance_to_player_x_grid) <= UniversalVariables.enemy_detection_range and abs(distance_to_player_y_grid) <= UniversalVariables.enemy_detection_range:
+            detect_range = UniversalVariables.enemy_detection_range
+            if UniversalVariables.player_sprinting == False:
+                detect_range = UniversalVariables.enemy_detection_range // 2
+                
+            if abs(distance_to_player_x_grid) <= detect_range and abs(distance_to_player_y_grid) <= detect_range:
                 direction: str = 'none'
 
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \

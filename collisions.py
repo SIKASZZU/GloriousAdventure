@@ -337,6 +337,10 @@ class Collisions:
                                         keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
                                         keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                             # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                            
+                            if sprinting: UniversalVariables.player_sprinting = True
+                            else: UniversalVariables.player_sprinting = False
+                            
                             if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
                                 in_water = self.terrain_data[row][col] == 0
                                 
