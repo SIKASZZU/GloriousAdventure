@@ -3,7 +3,6 @@ from random import shuffle, choice, randint  # Randomized loot barrelitest
 from camera import Camera
 from variables import UniversalVariables
 from objects import ObjectManagement  # add_object_from_inv
-from collisions import reset_clicks
 from inventory import Inventory
 from audio import Player_audio
 from text import Fading_text
@@ -11,7 +10,7 @@ from text import Fading_text
 class Loot:
     obtained_loot_list = []
 
-    def toggle_loot_barrel(self):
+    def toggle_loot_barrel(self, player_pressed_pick_up=False):
         count = randint(1, 3)
         inv_count = len(UniversalVariables.loot)
 
@@ -20,8 +19,13 @@ class Loot:
                 inv_count -= 1
 
         click_position = Camera.click_on_screen(self)
-        if click_position and click_position != (None, None):
-            barrel_x, barrel_y = click_position
+        if click_position and click_position != (None, None) or player_pressed_pick_up == True:  # or player collision
+            
+            if player_pressed_pick_up == True: 
+                barrel_x, barrel_y = UniversalVariables.player_x, UniversalVariables.player_y
+            else:  
+                barrel_x, barrel_y = click_position
+            
             barrel_x = int(barrel_x // UniversalVariables.block_size)
             barrel_y = int(barrel_y // UniversalVariables.block_size)
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
@@ -64,6 +68,6 @@ class Loot:
             count -= 1
             ObjectManagement.add_object_from_inv(obtained_loot, obtained_count)
 
-    def loot_update(self):
-        Loot.toggle_loot_barrel(self)
-        reset_clicks(self)
+    def loot_update(self, player_pressed_pick_up):
+        Loot.toggle_loot_barrel(self, player_pressed_pick_up)
+        Camera.reset_clicks(self)

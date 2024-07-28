@@ -11,6 +11,7 @@ from HUD import HUD_class
 from mazecalculation import AddingMazeAtPosition
 from camera import Camera
 from audio import Tile_Sounds, Player_audio  # insert_key_audio, pop_key_audio, portal_open_audio
+from loot import Loot
 
 
 def find_number_in_list_of_lists(list_of_lists, number):
@@ -30,23 +31,16 @@ def count_occurrences_in_list_of_lists(list_of_lists, number):
     return count
 
 
-def reset_clicks(self):
-    if self.click_window_x and self.click_window_y:
-       # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni, vist ikka peab
-        self.click_window_x = None
-        self.click_window_y = None
-
-
 def gray_yellow(self, color):
     if color == 'gray':
         x, y = find_number_in_list_of_lists(self.terrain_data, 550)
         self.terrain_data[x][y] = 500
-        reset_clicks(self)
+        Camera.reset_clicks(self)
 
     if color == 'yellow':
         x, y = find_number_in_list_of_lists(self.terrain_data, 500)
         self.terrain_data[x][y] = 550
-        reset_clicks(self)
+        Camera.reset_clicks(self)
 
 
 def yellow_green(self, color):
@@ -54,7 +48,7 @@ def yellow_green(self, color):
         for i in range(8):
             x, y = find_number_in_list_of_lists(self.terrain_data, 555)
             self.terrain_data[x][y] = 550
-            reset_clicks(self)
+            Camera.reset_clicks(self)
 
         gray_yellow(self, 'gray')
 
@@ -64,7 +58,7 @@ def yellow_green(self, color):
             x, y = find_number_in_list_of_lists(self.terrain_data, 550)
 
             self.terrain_data[x][y] = 555
-            reset_clicks(self)
+            Camera.reset_clicks(self)
 
 
 class Collisions:
@@ -84,7 +78,6 @@ class Collisions:
             for item in items_list:
                if item.get("ID") == object_id:
                     render_when = item.get("Render_when")
-
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             if self.player_rect.colliderect(collision_object_rect):
                 pick_up_items = {item[5] for item in UniversalVariables.object_list}
@@ -93,7 +86,11 @@ class Collisions:
                     Collisions.first_time_collision = True
                     UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
 
-                if keys[pygame.K_SPACE]:  ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
+                if keys[pygame.K_SPACE]:
+                    if object_id == 1001:  # panin selle if statementi, kuigi see ei muuda mdiagi. id 1001 ei ole m6jutatud removeobjectatposition functioonist.
+                        Loot.loot_update(self, True)
+                    else:
+                        ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
 
                 if object_id == 99 or object_id == 98:  Collisions.render_after = True
 
@@ -119,7 +116,7 @@ class Collisions:
                                     Fading_text.shown_texts.remove(text)
                                 UniversalVariables.ui_elements.append(text)
 
-                                reset_clicks(self)
+                                Camera.reset_clicks(self)
                                 return
                             else:
                                 if UniversalVariables.final_maze != True:
@@ -128,7 +125,7 @@ class Collisions:
                                     UniversalVariables.portal_frames += 1
 
                                     Tile_Sounds.insert_key_audio(self)
-                                    reset_clicks(self)
+                                    Camera.reset_clicks(self)
 
                                 # Kui clickid tühja keysloti peale ja key on invis
                                 else:
@@ -137,7 +134,7 @@ class Collisions:
 
                                     Tile_Sounds.insert_key_audio(self)
                                     gray_yellow(self, 'yellow')
-                            reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
+                            Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
                         if object_id == 982:
                             if UniversalVariables.final_maze != True:
@@ -145,7 +142,7 @@ class Collisions:
                                 UniversalVariables.portal_frames -= 1
 
                                 Tile_Sounds.insert_key_audio(self)
-                                reset_clicks(self)
+                                Camera.reset_clicks(self)
 
                             # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
                             if count_occurrences_in_list_of_lists(self.terrain_data, 555) and count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
@@ -184,7 +181,7 @@ class Collisions:
                                     Fading_text.shown_texts.remove(text)
                                 UniversalVariables.ui_elements.append(text)
 
-                                reset_clicks(self)
+                                Camera.reset_clicks(self)
                                 return
 
                             # For opening the door remove one key from inventory
@@ -197,7 +194,7 @@ class Collisions:
                                         Fading_text.shown_texts.remove(text)
                                     UniversalVariables.ui_elements.append(text)
 
-                                    reset_clicks(self)
+                                    Camera.reset_clicks(self)
                                     return
 
                                 else:
@@ -246,7 +243,7 @@ class Collisions:
                                         else:  # 3, 4
                                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
                                                                                 grid_y)  # Vaatab y coordinaati
-                                        reset_clicks(self)
+                                        Camera.reset_clicks(self)
 
                         if UniversalVariables.final_maze == True:
                             if UniversalVariables.portal_frames > 0:
@@ -285,11 +282,11 @@ class Collisions:
 
                                     UniversalVariables.portal_list.append((portal_x, portal_y))
                         
-                        reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
+                        Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
                 except TypeError:
                     pass
 
-        reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
+        Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
 
     def player_hit_collision(self, collision_box) -> None:

@@ -74,6 +74,14 @@ class Camera:
         except TypeError:
             return
 
+
+    def reset_clicks(self):
+        if self.click_window_x and self.click_window_y:
+        # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni, vist ikka peab
+            self.click_window_x = None
+            self.click_window_y = None
+
+
     def print_clicks(self):
         """ Prints out the user's click information relative to terrain coordinates and screen."""
 
