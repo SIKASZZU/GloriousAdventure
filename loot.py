@@ -68,6 +68,6 @@ class Loot:
             count -= 1
             ObjectManagement.add_object_from_inv(obtained_loot, obtained_count)
 
-    def loot_update(self, player_pressed_pick_up):
+    def loot_update(self, player_pressed_pick_up=False):
         Loot.toggle_loot_barrel(self, player_pressed_pick_up)
         Camera.reset_clicks(self)
