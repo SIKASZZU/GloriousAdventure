@@ -69,16 +69,18 @@ def draw_shadows(self, screen, visible_points):
     vertices = [(int(x), int(y)) for x, y in visible_points]
     pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)
 
-    squares_hit = set()
-    for wall in UniversalVariables.walls:
-        for point in visible_points:
-            if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
-                squares_hit.add(wall)
+    # player infected ss ei renderi valgeks neid seinu
+    if UniversalVariables.player_infected == False:
+        squares_hit = set()
+        for wall in UniversalVariables.walls:
+            for point in visible_points:
+                if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
+                    squares_hit.add(wall)
 
-    for square in squares_hit:
-        walls_hit_by_ray_color = player_cone_light_strenght
-        pygame.draw.rect(self.shadow_mask, (0, 0, 0, walls_hit_by_ray_color), 
-                         pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
+        for square in squares_hit:
+            walls_hit_by_ray_color = player_cone_light_strenght
+            pygame.draw.rect(self.shadow_mask, (0, 0, 0, walls_hit_by_ray_color), 
+                            pygame.Rect(square[0], (square[1][0] - square[0][0], square[1][1] - square[0][1])))
 
     screen.blit(self.shadow_mask, (0, 0))
 
@@ -188,4 +190,22 @@ def draw_light_source_and_rays(self, screen, position):
         return visible_points
     
     visible_points = calculate_angle(main_angles, opposite_angles)
+    
+    if UniversalVariables.player_infected == True:  visible_points = infected_vision(visible_points)
+    
     if len(visible_points) > 2:  draw_shadows(self, screen, visible_points)
+
+
+def infected_vision(vision_points: list):
+    import random
+    
+    list_length = len(vision_points)
+    
+    for item in range(0, list_length - 1):
+        index_to_pop = random.randint(0, list_length - 1)  # index on 0 kuni list_length
+        try:
+            vision_points.pop(index_to_pop)
+        except IndexError:
+            pass
+        
+    return vision_points
