@@ -9,6 +9,7 @@ ideas:
 	teha random movement enemyle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
 
 	m2ngija teeb h22lt ning enemyl on selle j2rgi detection range.
+		n2iteks k6ndimine pole nii vali kui jooksmine. Sneakimine?? Ss peaksid olema soundid ka enemy poolt kogu aeg..et mangija kuuleks sneakida.
 
 	dead people
 	gas zones (fucked system zones, mazes)- gas mask item - filters (barrel loot) / gas causes bleeding
@@ -68,3 +69,23 @@ ideas:
 	erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
 
 	klikkides ja vajutades spacei saab v6tta v6tmeid yles v6i collectida barreleid.
+
+	Prygi mazei
+		Oksad
+		Kivid (väikses)
+		Praod
+
+		Tripwires
+	Jalaluumurd
+
+	Augud, kust peab yle hyppama
+		Kui kukub sisse ss peab yles ronima
+
+	Vihm (erinevad tasemed, n6rk, tugev, vmdgi)
+		Lombid
+
+	Player eisaa mitte surma, vaid laheb unconni, aeg laheb mooda, arkab yles ning infected ja food health koik pekkis
+
+	Visual vision glitch
+		Random vision points delete
+
