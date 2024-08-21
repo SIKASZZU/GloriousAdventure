@@ -89,3 +89,12 @@ ideas:
 	Visual vision glitch
 		Random vision points delete
 
+
+render::::
+
+    list = [
+    (ground pilt, (x, y)),
+    (puu pilt, (x, y)), (ground pilt, (x, y)),
+    (ground pilt, (x, y)),
+    ]
+
