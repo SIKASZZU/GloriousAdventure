@@ -37,6 +37,7 @@ class RenderPictures:
                 elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
                     UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
+    @staticmethod
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         #TODO: fix this
         
@@ -147,7 +148,13 @@ class RenderPictures:
                             
                             # SEE FUNCTION BLITIB AINULT BACKGROUNDI
                             elif terrain_value == 98:
-                                image = ImageLoader.load_image('Maze_Ground')
+                                if random.random() < 0.95:
+                                    image_name = 'Maze_Ground'
+                                else:
+                                    image_name = 'Maze_Ground_' + str(random.randint(1, 3))
+
+
+                                image = ImageLoader.load_image(image_name)
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                             elif terrain_value == 99:
@@ -197,6 +204,7 @@ class RenderPictures:
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.terrain_in_view.append(current_row)
+
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
         except IndexError:
