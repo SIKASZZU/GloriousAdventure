@@ -16,8 +16,13 @@ class Camera:
     player_window_y: int = None
     click_x: int = None
     click_y: int = None
-
     click_info_available = False  # for printing func
+
+    right_player_window_x: int = None
+    right_player_window_y: int = None
+    right_click_x: int = None
+    right_click_y: int = None
+    right_click_info_available = False  # for printing func
 
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
@@ -70,6 +75,38 @@ class Camera:
                         return
                 ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
                 return Camera.click_x, Camera.click_y
+            return
+        except TypeError:
+            return
+    def right_click_on_screen(self):
+        try:
+            if self.right_click_position:
+                self.right_click_window_x = self.right_click_position[0] - Camera.player_window_x
+                self.right_click_window_y = self.right_click_position[1] - Camera.player_window_y
+
+                if not UniversalVariables.player_range:
+                    player_range = 0
+                else:
+                    player_range = UniversalVariables.player_range
+
+
+                if abs(self.right_click_window_x) < player_range and abs(self.right_click_window_y) < player_range:
+                    Camera.right_click_x, Camera.right_click_y = round(UniversalVariables.player_x + self.right_click_window_x), round(UniversalVariables.player_y + self.right_click_window_y)
+                    Camera.right_click_info_available = True
+                else:
+
+                    Camera.right_click_x, Camera.right_click_y = None, None
+
+                if UniversalVariables.debug_mode:
+                    try:
+                        text = f"Clicked item : {self.terrain_data[int(Camera.right_click_y // UniversalVariables.block_size)][int(Camera.right_click_x // UniversalVariables.block_size)]}"
+                        if text in Fading_text.shown_texts:
+                            Fading_text.shown_texts.remove(text)
+                        UniversalVariables.ui_elements.append(text)
+                    except IndexError:
+                        return
+                ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
+                return Camera.right_click_x, Camera.right_click_y
             return
         except TypeError:
             return
