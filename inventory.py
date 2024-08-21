@@ -131,20 +131,22 @@ class Inventory:
         Inventory.handle_mouse_click(self)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
-            if Inventory.first_time_click == False:
-                Inventory.first_time_click = True
-                UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
-            
-            Inventory.tab_pressed = True
-            Inventory.inv_count += 1
+        if not UniversalVariables.is_cooking:
 
-            if (Inventory.inv_count % 2) == 0: Inventory.render_inv = False
-            else:
-                Inventory.render_inv = True
+            if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
+                if Inventory.first_time_click == False:
+                    Inventory.first_time_click = True
+                    UniversalVariables.ui_elements.append(' Select items with left click. Remove items with right click. ')
 
-        elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
-        
+                Inventory.tab_pressed = True
+                Inventory.inv_count += 1
+
+                if (Inventory.inv_count % 2) == 0: Inventory.render_inv = False
+                else:
+                    Inventory.render_inv = True
+
+            elif not keys[pygame.K_TAB]: Inventory.tab_pressed = False
+
         if Inventory.render_inv:
             Inventory.render(self)  # Render inventory
         else:
