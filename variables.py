@@ -31,7 +31,10 @@ class UniversalVariables():
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 15
 
-        enemy_speed = 0.05  # Enemy kiirus grid size'ina
+        enemy_speed: float = 0.05  # Enemy kiirus grid size'ina
+
+        cooking_range:int = 5  # Grid
+
 
     else:
         jagatis: float = 10
@@ -42,7 +45,9 @@ class UniversalVariables():
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
 
-        enemy_speed = 0.03  # Enemy kiirus grid size'ina
+        enemy_speed: float = 0.03  # Enemy kiirus grid size'ina
+
+        cooking_range:int = 2  # Grid
 
     # ******************** PLAYER ******************** #
     current_equipped_item = None
@@ -153,7 +158,7 @@ class UniversalVariables():
         #
     ]
 
-    glade_items = [1,2,3,4,5,6,7,8,9,107]
+    glade_items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 107]
 
     open_door_ids   = [90, 91, 92, 93, 933]
     closed_door_ids = [94, 95, 96, 97, 977]
@@ -171,6 +176,13 @@ class UniversalVariables():
 
     # ******************** Counters ******************** #
     render_boxes_counter: int = 0
+
+    # ******************** Cooking ******************** #
+    cooking_stations = [8]  # Campfire
+    station_capacity = 16  # Max raw ja cooked item'ite kogus cooking station'is
+
+    is_cooking: bool = False
+    cooking_range: int
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
