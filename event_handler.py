@@ -24,6 +24,9 @@ class Event_handler:
                 Camera.click_on_screen(self)
                 Loot.loot_update(self)
                 Camera.click_on_screen(self)
+            if event.button == 3:
+                self.right_click_position = event.pos
+                Camera.right_click_on_screen(self)
 
             if UniversalVariables.debug_mode == True:
                 if event.button == 4:  # Scroll +
