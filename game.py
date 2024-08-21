@@ -25,6 +25,7 @@ from HUD import HUD_class
 from equipped_items import ItemFunctionality
 from building import Building
 
+from cooking import Cooking
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -67,6 +68,10 @@ class Game:
         self.click_position = ()
         self.click_window_x = None
         self.click_window_y = None
+
+        self.right_click_position = ()
+        self.right_click_window_x = None
+        self.right_click_window_y = None
 
         if not self.terrain_data:
             self.terrain_data = MapData.map_list_to_map(self)
@@ -180,7 +185,7 @@ class Game:
         if UniversalVariables.debug_mode:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 100)
-                # ObjectManagement.add_object_from_inv("Bottle_Water", 100)
+                ObjectManagement.add_object_from_inv("Campfire", 100)
                 # ObjectManagement.add_object_from_inv("Bread", 100)
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
@@ -195,6 +200,8 @@ class Game:
         Final_Maze.final_maze_update(self)
         Fading_text.render_general(self)
         Fading_text.handle_fading_texts(self)  # Render fading text after everything else
+
+        Cooking.update(self)
 
         self.refresh_loop()
         HungerComponent.update(self)
