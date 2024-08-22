@@ -90,7 +90,7 @@ class UniversalVariables():
         ("Canteen", 1),
         ("Serum", 1),
         ("Bread", (2, 3)),
-        ("Meat", (2, 3)),
+        ("Raw_Meat", (2, 3)),
         ("Bandage", (4, 5)),
         ("Bottle_Water", (4, 5)),
                 
@@ -179,11 +179,11 @@ class UniversalVariables():
 
     # ******************** Cooking ******************** #
     cooking_stations = [8]  # Campfire
-    station_capacity = 16  # Max raw ja cooked item'ite kogus cooking station'is
+    station_capacity = 24  # Max raw ja cooked item'ite kogus cooking station'is
 
     is_cooking: bool = False  # Invi lockimiseks
     cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
-    cooking_delay = 300  # Default 300
+    cooking_delay = 150  # Kaua läheb itemi cookimisega -> Default 300
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):

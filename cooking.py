@@ -3,7 +3,7 @@ import time  # Import time module for cooldown functionality
 from images import ImageLoader
 from variables import UniversalVariables
 from camera import Camera
-
+from items import items_list
 from inventory import Inventory
 
 
@@ -15,13 +15,14 @@ class Cooking:
     cooked_item_slot_pos = (menu_position[0] + 257, menu_position[1] + 67)
     station_coordinates = None  # Hoiustab station'i kordinaadid, et jälgida kaugel player on station'ist
 
-    stations = {}
+    cooking_menu_ratio = 5
 
-    cooking_delay = 0
+    stations = {}
     station_key: str
+    cooking_delay = 0
 
     last_click_time = 0
-    click_delay = 0.2
+    click_delay = 0.1
     mouse_button_down = False
 
     @staticmethod
@@ -44,34 +45,47 @@ class Cooking:
                 abs(station_y - player_y) <= UniversalVariables.cooking_range
         )
 
-    def cooking_in_progress(self) -> None:
+    @staticmethod
+    def cooking_in_progress() -> None:
+
+        ### TODO: AINULT MIDA SAAB COOKIDA
+        #    if item in cookable_list:
+        #    ...
+
         for station_key, station_data in Cooking.stations.items():
             raw_item, raw_item_quantity = station_data['station_raw_item']
             cooked_item, cooked_item_quantity = station_data['station_cooked_item']
-            station_cooking_delay = station_data.get("station_cooking_delay", 0)  # Võtab vastavale station'ile vastava delay
+            station_cooking_delay = station_data.get("station_cooking_delay", 0)
 
-            if station_cooking_delay >= UniversalVariables.cooking_delay and cooked_item_quantity < UniversalVariables.station_capacity:
-                if cooked_item:
-                    if cooked_item == raw_item:
-                        raw_item_quantity -= 1
-                        cooked_item_quantity += 1
-                        station_cooking_delay = 0
+            # Skip if no raw item is present or if the station is full
+            if not raw_item or cooked_item_quantity >= UniversalVariables.station_capacity:
+                continue
 
-                elif cooked_item is None:
-                    cooked_item = raw_item
+            # Process cooking if the delay is sufficient
+            if station_cooking_delay >= UniversalVariables.cooking_delay:
+                cooked_item_name = None
+
+                # Find if the raw item is cookable
+                for item in items_list:
+                    if item.get("Name") == raw_item:
+                        cooked_item_name = item.get("Cookable")
+                        break
+
+                if cooked_item_name and cooked_item_name:
+                    # Update quantities and reset delay
                     raw_item_quantity -= 1
                     cooked_item_quantity += 1
                     station_cooking_delay = 0
 
-                # Update the station data back to the dictionary
-                station_data["station_raw_item"] = (raw_item, raw_item_quantity)
-                station_data["station_cooked_item"] = (cooked_item, cooked_item_quantity)
+                    # Update station data with the cooked item
+                    station_data["station_raw_item"] = (raw_item, raw_item_quantity)
+                    station_data["station_cooked_item"] = (cooked_item_name, cooked_item_quantity)
 
-                if raw_item_quantity <= 0:
-                    raw_item = None
-                    station_data["station_raw_item"] = (None, 0)
+                    # Remove raw item if its quantity is zero
+                    if raw_item_quantity <= 0:
+                        station_data["station_raw_item"] = (None, 0)
 
-            # Update the station's cooking delay counter
+            # Increment cooking delay if there's a raw item
             station_data["station_cooking_delay"] = station_cooking_delay + 1 if raw_item_quantity > 0 else 0
 
     def handle_item_interaction(self, mouse_x: int, mouse_y: int, mouse_buttons: tuple[int, int, int]) -> None:
@@ -94,13 +108,14 @@ class Cooking:
             if station_key == Cooking.station_key:
                 raw_item, raw_item_quantity = station_data['station_raw_item']
                 cooked_item, cooked_item_quantity = station_data['station_cooked_item']
+                station_cooking_delay = station_data.get("station_cooking_delay", 0)
                 selected_tation_key = station_key
 
         # Vaatab raw item slot'ti
         if Cooking.raw_item_slot_pos[0] <= mouse_x <= Cooking.raw_item_slot_pos[0] + 41 and Cooking.raw_item_slot_pos[1] <= mouse_y <= Cooking.raw_item_slot_pos[1] + 41:
 
             if mouse_buttons[0] and raw_item_quantity < UniversalVariables.station_capacity:  # Left click
-
+                ### FIXME: Paned ühe itemi stationisse ja ss paned sinna mingit muud itemit ss raw itemi kogus lic suureneb ja jääb vana item
                 Cooking.mouse_button_down = True
                 if current_time - Cooking.last_click_time > Cooking.click_delay:
                     Cooking.last_click_time = current_time
@@ -164,6 +179,9 @@ class Cooking:
                             raw_item_quantity = 0
 
                             Cooking.stations[selected_tation_key]["station_raw_item"] = (None, 0)
+                            station_data["station_cooking_delay"] = 0
+
+
 
         # Vaatab cooked item slot'ti
         elif Cooking.cooked_item_slot_pos[0] <= mouse_x <= Cooking.cooked_item_slot_pos[0] + 41 and \
@@ -270,7 +288,7 @@ class Cooking:
 
                 # Load'ib ja resize'ib pildid
                 cooking_menu = ImageLoader.load_image("Cooking_Menu", image_path='images/Hud/Cooking_Menu.png')
-                width, height = cooking_menu.get_width() * 5, cooking_menu.get_height() * 5
+                width, height = cooking_menu.get_width() * Cooking.cooking_menu_ratio, cooking_menu.get_height() * Cooking.cooking_menu_ratio
                 resized_cooking_menu = pygame.transform.scale(cooking_menu, (width, height))
 
 
@@ -278,6 +296,14 @@ class Cooking:
                     if station_key == Cooking.station_key:
                         raw_item, raw_item_quantity = station_data['station_raw_item']
                         cooked_item, cooked_item_quantity = station_data['station_cooked_item']
+                        station_cooking_delay = station_data.get("station_cooking_delay", 0)
+
+                # Progress bar'i jaoks
+                cookable_item = False
+                for item in items_list:
+                    if item.get("Name") == raw_item and "Cookable" in item:
+                        cookable_item = True
+                        break
 
                 if raw_item:
                     raw_item = ImageLoader.load_image(raw_item)
@@ -326,6 +352,21 @@ class Cooking:
                     quantity_surface = font.render(quantity_text, True, (255, 255, 255))
                     self.screen.blit(quantity_surface, Cooking.cooked_item_slot_pos)
 
+                # Draw the progress bar
+                progress_bar_width = 20 * Cooking.cooking_menu_ratio
+                progress_bar_height = 5 * Cooking.cooking_menu_ratio
+                progress_bar_x = Cooking.menu_position[0] + 25 * Cooking.cooking_menu_ratio
+                progress_bar_y = Cooking.menu_position[1] + 15 * Cooking.cooking_menu_ratio
+                progress = min(station_cooking_delay / UniversalVariables.cooking_delay, 1.0)
+
+
+                if raw_item and cookable_item:
+                    progress_surface = pygame.Surface((progress_bar_width, progress_bar_height), pygame.SRCALPHA)
+
+                    pygame.draw.rect(progress_surface, (60, 250, 72, 125),
+                                     (0, 0, progress * progress_bar_width, progress_bar_height))
+                    self.screen.blit(progress_surface, (progress_bar_x, progress_bar_y))
+
                 # Käsitleb item'ite panemist ja võtmist cooking station'ist
                 Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
 
@@ -338,7 +379,7 @@ class Cooking:
     def update(self):
         Cooking.display_menu(self)
 
-        Cooking.cooking_in_progress(self)
+        Cooking.cooking_in_progress()
 
         try:
             if Cooking.stations.get(Cooking.station_key, {}).get('station_raw_item', (None, 0))[1] > 0:

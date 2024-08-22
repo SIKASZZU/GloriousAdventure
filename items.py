@@ -302,10 +302,19 @@ items_list = [
 
     {
         "Type": "Food",
-        "Name": "Meat",
+        "Name": "Raw_Meat",
+        "ID": 37,
+        "Satisfaction_Gain": -1,  # Kui palju hunger bar juurde saab
+        "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
+        "Cookable": "Cooked_Meat"
+    },
+
+    {
+        "Type": "Food",
+        "Name": "Cooked_Meat",
         "ID": 37,
         "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": 350,  # Mitu ticki ei lähe hungerit
+        "Hunger_Resistance": 500,  # Mitu ticki ei lähe hungerit
     },
 
     {
