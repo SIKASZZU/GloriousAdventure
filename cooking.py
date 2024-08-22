@@ -47,11 +47,6 @@ class Cooking:
 
     @staticmethod
     def cooking_in_progress() -> None:
-
-        ### TODO: AINULT MIDA SAAB COOKIDA
-        #    if item in cookable_list:
-        #    ...
-
         for station_key, station_data in Cooking.stations.items():
             raw_item, raw_item_quantity = station_data['station_raw_item']
             cooked_item, cooked_item_quantity = station_data['station_cooked_item']
@@ -115,7 +110,7 @@ class Cooking:
         if Cooking.raw_item_slot_pos[0] <= mouse_x <= Cooking.raw_item_slot_pos[0] + 41 and Cooking.raw_item_slot_pos[1] <= mouse_y <= Cooking.raw_item_slot_pos[1] + 41:
 
             if mouse_buttons[0] and raw_item_quantity < UniversalVariables.station_capacity:  # Left click
-                ### FIXME: Paned ühe itemi stationisse ja ss paned sinna mingit muud itemit ss raw itemi kogus lic suureneb ja jääb vana item
+                ### FIXME: Paned ühe itemi stationisse ja ss paned sinna mingit muud itemit ss raw itemi kogus lic suureneb ja jääb vana item!
                 Cooking.mouse_button_down = True
                 if current_time - Cooking.last_click_time > Cooking.click_delay:
                     Cooking.last_click_time = current_time
