@@ -15,6 +15,9 @@ class Cooking:
     cooked_item_slot_pos = (menu_position[0] + 257, menu_position[1] + 67)
     station_coordinates = None  # Hoiustab station'i kordinaadid, et jälgida kaugel player on station'ist
 
+    ### TODO: Ratio peaks kõigele mõjuma pildi suurus, itemi asukoht,
+    #    numbri suurus jne... praegu lic ainult cooking menu pilt.
+
     cooking_menu_ratio = 5
 
     stations = {}
@@ -96,7 +99,7 @@ class Cooking:
         current_time = time.time()
 
         inventory = Inventory.inventory
-        selected_tation_key = None
+        selected_station_key = None
 
         # Võtab õige station key, et muudaks ainult ühe stationit
         for station_key, station_data in Cooking.stations.items():
@@ -104,19 +107,25 @@ class Cooking:
                 raw_item, raw_item_quantity = station_data['station_raw_item']
                 cooked_item, cooked_item_quantity = station_data['station_cooked_item']
                 station_cooking_delay = station_data.get("station_cooking_delay", 0)
-                selected_tation_key = station_key
+                selected_station_key = station_key
 
         # Vaatab raw item slot'ti
         if Cooking.raw_item_slot_pos[0] <= mouse_x <= Cooking.raw_item_slot_pos[0] + 41 and Cooking.raw_item_slot_pos[1] <= mouse_y <= Cooking.raw_item_slot_pos[1] + 41:
 
             if mouse_buttons[0] and raw_item_quantity < UniversalVariables.station_capacity:  # Left click
-                ### FIXME: Paned ühe itemi stationisse ja ss paned sinna mingit muud itemit ss raw itemi kogus lic suureneb ja jääb vana item!
                 Cooking.mouse_button_down = True
                 if current_time - Cooking.last_click_time > Cooking.click_delay:
                     Cooking.last_click_time = current_time
 
-                    raw_item = UniversalVariables.current_equipped_item
-                    if UniversalVariables.current_equipped_item is not None:
+                    # Check if there's a current equipped item
+                    current_equipped_item = UniversalVariables.current_equipped_item
+                    if current_equipped_item is not None:
+
+                        # Prevent adding a different item
+                        if raw_item is not None and raw_item != current_equipped_item:
+                            return  # Do nothing if trying to add a different item
+
+                        raw_item = current_equipped_item
 
                         # Jälgib shift'i vajutamist
                         if pygame.key.get_mods() & pygame.KMOD_SHIFT:
@@ -132,11 +141,11 @@ class Cooking:
                                 raw_item_quantity = quantity
 
                                 # Muudab station list'is station'i raw item state'i
-                                Cooking.stations[selected_tation_key]["station_raw_item"] = raw_item, raw_item_quantity
+                                Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
                             else:
                                 raw_item_quantity = min(raw_item_quantity + quantity, UniversalVariables.station_capacity)
-                                Cooking.stations[selected_tation_key]["station_raw_item"] = raw_item, raw_item_quantity
+                                Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
                             inventory[raw_item] -= quantity
                             if inventory[raw_item] <= 0:
@@ -156,13 +165,13 @@ class Cooking:
                             raw_item_quantity = 0
 
                             # Muudab station list'is station'i raw item state'i
-                            Cooking.stations[selected_tation_key]["station_raw_item"] = (None, 0)
+                            Cooking.stations[selected_station_key]["station_raw_item"] = (None, 0)
 
                         else:
                             # Ilma shift'ita ainult 1
                             quantity = 1
                             raw_item_quantity -= 1
-                            Cooking.stations[selected_tation_key]["station_raw_item"] = raw_item, raw_item_quantity
+                            Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
                         if raw_item in inventory:
                             inventory[raw_item] += quantity
@@ -173,7 +182,7 @@ class Cooking:
                             raw_item = None
                             raw_item_quantity = 0
 
-                            Cooking.stations[selected_tation_key]["station_raw_item"] = (None, 0)
+                            Cooking.stations[selected_station_key]["station_raw_item"] = (None, 0)
                             station_data["station_cooking_delay"] = 0
 
 
@@ -205,9 +214,9 @@ class Cooking:
                         else:
                             cooked_item = None
                             cooked_item_quantity = 0
-                            Cooking.stations[selected_tation_key]["station_cooked_item"] = (None, 0)
+                            Cooking.stations[selected_station_key]["station_cooked_item"] = (None, 0)
 
-                        Cooking.stations[selected_tation_key]["station_cooked_item"] = cooked_item, cooked_item_quantity
+                        Cooking.stations[selected_station_key]["station_cooked_item"] = cooked_item, cooked_item_quantity
 
         if not any(mouse_buttons):
             Cooking.mouse_button_down = False
