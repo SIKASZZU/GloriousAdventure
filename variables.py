@@ -181,8 +181,9 @@ class UniversalVariables():
     cooking_stations = [8]  # Campfire
     station_capacity = 16  # Max raw ja cooked item'ite kogus cooking station'is
 
-    is_cooking: bool = False
-    cooking_range: int
+    is_cooking: bool = False  # Invi lockimiseks
+    cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
+    cooking_delay = 300  # Default 300
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
