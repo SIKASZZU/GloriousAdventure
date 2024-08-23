@@ -50,6 +50,7 @@ class ObjectManagement:
                         else:
                             Player_audio.error_audio(self)
                             Fading_text.re_display_fading_text("Not enough space in Inventory.")
+                            UniversalVariables.pick_up_delay = 0
                             return
 
                     if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
@@ -59,6 +60,7 @@ class ObjectManagement:
                     else:
                         Player_audio.error_audio(self)
                         Fading_text.re_display_fading_text("Not enough space in Inventory.")
+                        UniversalVariables.pick_up_delay = 0
                         return
 
     def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str, amount: int) -> bool:
