@@ -124,3 +124,9 @@ class Fading_text:
                     (background_surface, background_rect, text_surfaces, text_rects, start_time, False, duration))
 
         Fading_text.text_elements = new_text_elements
+
+    @staticmethod
+    def re_display_fading_text(text: str) -> None:
+        UniversalVariables.ui_elements.append(text)
+        if text in Fading_text.shown_texts:
+            Fading_text.shown_texts.remove(text)
