@@ -29,17 +29,13 @@ class ObjectManagement:
                         print("Don't pick up so fast:", UniversalVariables.pick_up_delay, "<", 45)
                         return
 
-                    # Kui seda ei pane siia ja kui inv on täis, vahet pole
-                    # kas invis on oak log v ei. Puud ei saa ikka maha võtta.
                     choice = None
                     choice_len = 0
 
-                    if object_id == 2:
-                        choice = ['Stone', 'Coal']
-                        item_name = np.random.choice(choice, p=[0.85, 0.15])
-
-                    if object_id == 4:
-                        item_name = "Oak_Log"
+                    if "Drops" in item:
+                        choice = item["Drops"][0]
+                        item_name = np.random.choice(choice, p=item["Drops"][1])
+                        amount = item["Drops"][2]
 
                     if choice:
                         choice_len = len(choice)
@@ -48,33 +44,24 @@ class ObjectManagement:
                                 choice_len -= 1
 
                         if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
-                            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name)
+                            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
+                            return
 
                         else:
                             Player_audio.error_audio(self)
-
-                            text = "Not enough space in Inventory."
-                            UniversalVariables.ui_elements.append(text)
-
-                            if text in Fading_text.shown_texts:
-                                Fading_text.shown_texts.remove(text)
-
+                            Fading_text.re_display_fading_text("Not enough space in Inventory.")
                             return
 
                     if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
-                        ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name)
+                        ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
+                        return
 
                     else:
                         Player_audio.error_audio(self)
-
-                        text = "Not enough space in Inventory."
-                        UniversalVariables.ui_elements.append(text)
-
-                        if text in Fading_text.shown_texts:
-                            Fading_text.shown_texts.remove(text)
+                        Fading_text.re_display_fading_text("Not enough space in Inventory.")
                         return
 
-    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str) -> bool:
+    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str, amount: int) -> bool:
         grid_col: int = int(terrain_x // UniversalVariables.block_size)
         grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
@@ -89,7 +76,7 @@ class ObjectManagement:
                 }
                 self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
-                ObjectManagement.add_object_from_inv(item_name)
+                ObjectManagement.add_object_from_inv(item_name, amount)
                 Player_audio.player_item_audio(self)
                 UniversalVariables.pick_up_delay = 0
                 return

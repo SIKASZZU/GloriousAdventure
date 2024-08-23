@@ -40,13 +40,11 @@ items_list = [
         "ID": 2,
         "HP": 5,
         "Breakable": True,
-        # "Breakable": [
-        #     {"hardness": "Wood"},
-        #     {"amount": ("Stone", random.randint(1, 5))},
-        # ],
         "Object_width": int(block_size * 0.69),  # suhe 5:4
         "Object_height": int(block_size * 0.55),
-        "Render_when": -(block_size * 0.1)
+        "Render_when": -(block_size * 0.1),
+        "Drops": (['Stone', 'Coal'], [0.85, 0.15], 1)  # Choices, Ratio, Amount
+
     },
 
     {
@@ -63,13 +61,10 @@ items_list = [
         "ID": 4,
         "HP": 5,
         "Breakable": True,
-        # "Breakable": [
-        #     {"hardness": "None"},
-        #     {"amount": ("Oak_Wood", random.randint(1, 3))},
-        # ],
         "Object_width": int(block_size * 2),
         "Object_height": int(block_size * 2),
-        "Render_when": block_size * 1.5
+        "Render_when": block_size * 1.5,
+        "Drops": (['Oak_Log'], [1], 1)  # Choices, Ratio, Amount
     },
 
     {
@@ -95,12 +90,13 @@ items_list = [
 
     {
         "Type": "Object",
-        "Name": "Wheat",
+        "Name": "Wheat_Crop",
         "ID": 7,
         "Breakable": True,
         "Object_width": int(block_size * 1),
         "Object_height": int(block_size * 1),
-        "Render_when": (block_size * .2)
+        "Render_when": (block_size * .2),
+        "Drops": (['Wheat'], [1], 1)  # Choices, Ratio, Amount
     },
 
     {
@@ -292,10 +288,11 @@ items_list = [
         "Hunger_Resistance": 150,  # Mitu ticki ei lähe hungerit
     },
 
+    # DEBUG ITEM
     {
         "Type": "Food",
         "Name": "Bad_Bread",
-        "ID": 36,
+        "ID": 10000,
         "Satisfaction_Gain": -1.75,  # Kui palju hunger bar juurde saab
         "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
     },
@@ -325,6 +322,19 @@ items_list = [
         "Thirst_Resistance": 350,
     },
 
+    {
+        "Type": "Food",
+        "Name": "Wheat",
+        "ID": 39,
+    },
+
+    {
+        "Type": "Food",
+        "Name": "Bread_Dough",
+        "Recipes": [{"Recipe": {"Wheat": 3}, "Amount": 1}],
+        "Cookable": "Bread",
+        "ID": 40,
+    },
     # Unbreakable Blocks - Items
 
 ### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
