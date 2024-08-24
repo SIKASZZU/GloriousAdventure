@@ -31,6 +31,7 @@ class ObjectManagement:
 
                     choice = None
                     choice_len = 0
+                    amount = 1
 
                     if "Drops" in item:
                         choice = item["Drops"][0]
