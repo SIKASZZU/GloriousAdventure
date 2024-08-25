@@ -285,88 +285,100 @@ class Cooking:
 
                 Cooking.menu_visible = False
 
-            elif not Cooking.player_in_range(station_x, station_y):
+            elif Cooking.player_in_range(station_x, station_y):
+                Inventory.inv_count = 1
+                Inventory.render_inv = True
+                UniversalVariables.is_cooking = True
+
+                # Load'ib ja resize'ib pildid
+                cooking_menu = ImageLoader.load_image("Cooking_Menu", image_path='images/Hud/Cooking_Menu.png')
+                width, height = cooking_menu.get_width() * Cooking.cooking_menu_ratio, cooking_menu.get_height() * Cooking.cooking_menu_ratio
+                resized_cooking_menu = pygame.transform.scale(cooking_menu, (width, height))
+
+
+                for station_key, station_data in Cooking.stations.items():
+                    if station_key == Cooking.station_key:
+                        raw_item, raw_item_quantity = station_data['station_raw_item']
+                        cooked_item, cooked_item_quantity = station_data['station_cooked_item']
+                        station_cooking_delay = station_data.get("station_cooking_delay", 0)
+
+                # Progress bar'i jaoks
+                cookable_item = False
+                for item in items_list:
+                    if item.get("Name") == raw_item and "Cookable" in item:
+                        cookable_item = True
+                        break
+
+                if raw_item:
+                    raw_item = ImageLoader.load_image(raw_item)
+                    resized_raw_item = pygame.transform.scale(raw_item, (41, 41))
+
+                if cooked_item:
+                    cooked_item = ImageLoader.load_image(cooked_item)
+                    resized_cooked_item = pygame.transform.scale(cooked_item, (41, 41))
+
+
+                if not raw_item and not cooked_item:
+                    self.screen.blits([
+                        (resized_cooking_menu, Cooking.menu_position)
+                    ])
+
+                if raw_item and not cooked_item:
+                    self.screen.blits([
+                        (resized_cooking_menu, Cooking.menu_position),
+                        (resized_raw_item, Cooking.raw_item_slot_pos)
+
+                    ])
+
+                if not raw_item and cooked_item:
+                    self.screen.blits([
+                        (resized_cooking_menu, Cooking.menu_position),
+                        (resized_cooked_item, Cooking.cooked_item_slot_pos)
+                    ])
+
+                if raw_item and cooked_item:
+                    self.screen.blits([
+                        (resized_cooking_menu, Cooking.menu_position),
+                        (resized_raw_item, Cooking.raw_item_slot_pos),
+                        (resized_cooked_item, Cooking.cooked_item_slot_pos)
+                    ])
+
+                # Render'ib item'i koguse kui seda on rohkem kui 1
+                if raw_item is not None:
+                    font = pygame.font.Font(None, 25)
+                    quantity_text = f"{raw_item_quantity}" if raw_item_quantity > 1 else ""
+                    quantity_surface = font.render(quantity_text, True, (255, 255, 255))
+                    self.screen.blit(quantity_surface, Cooking.raw_item_slot_pos)
+
+                if cooked_item is not None:
+                    font = pygame.font.Font(None, 25)
+                    quantity_text = f"{cooked_item_quantity}" if cooked_item_quantity > 1 else ""
+                    quantity_surface = font.render(quantity_text, True, (255, 255, 255))
+                    self.screen.blit(quantity_surface, Cooking.cooked_item_slot_pos)
+
+                # Draw the progress bar
+                progress_bar_width = 20 * Cooking.cooking_menu_ratio
+                progress_bar_height = 5 * Cooking.cooking_menu_ratio
+                progress_bar_x = Cooking.menu_position[0] + 25 * Cooking.cooking_menu_ratio
+                progress_bar_y = Cooking.menu_position[1] + 15 * Cooking.cooking_menu_ratio
+                progress = min(station_cooking_delay / UniversalVariables.cooking_delay, 1.0)
+
+
+                if raw_item and cookable_item:
+                    progress_surface = pygame.Surface((progress_bar_width, progress_bar_height), pygame.SRCALPHA)
+
+                    pygame.draw.rect(progress_surface, (60, 250, 72, 125),
+                                     (0, 0, progress * progress_bar_width, progress_bar_height))
+                    self.screen.blit(progress_surface, (progress_bar_x, progress_bar_y))
+
+                # Käsitleb item'ite panemist ja võtmist cooking station'ist
+                Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
+
+            else:
                 Cooking.menu_visible = False
                 Inventory.inv_count = 0
                 Inventory.render_inv = False
                 UniversalVariables.is_cooking = False
-                
-            Inventory.inv_count = 1
-            Inventory.render_inv = True
-            UniversalVariables.is_cooking = True
-
-            # Load'ib ja resize'ib pildid
-            cooking_menu = ImageLoader.load_image("Cooking_Menu", image_path='images/Hud/Cooking_Menu.png')
-            width, height = cooking_menu.get_width() * Cooking.cooking_menu_ratio, cooking_menu.get_height() * Cooking.cooking_menu_ratio
-            resized_cooking_menu = pygame.transform.scale(cooking_menu, (width, height))
-
-
-            for station_key, station_data in Cooking.stations.items():
-                if station_key == Cooking.station_key:
-                    raw_item, raw_item_quantity = station_data['station_raw_item']
-                    cooked_item, cooked_item_quantity = station_data['station_cooked_item']
-                    station_cooking_delay = station_data.get("station_cooking_delay", 0)
-
-            # Progress bar'i jaoks
-            cookable_item = False
-            for item in items_list:
-                if item.get("Name") == raw_item and "Cookable" in item:
-                    cookable_item = True
-                    break
-
-            if raw_item:
-                raw_item = ImageLoader.load_image(raw_item)
-                resized_raw_item = pygame.transform.scale(raw_item, (41, 41))
-
-            if cooked_item:
-                cooked_item = ImageLoader.load_image(cooked_item)
-                resized_cooked_item = pygame.transform.scale(cooked_item, (41, 41))
-
-
-            if not raw_item and not cooked_item:
-                self.screen.blits([(resized_cooking_menu, Cooking.menu_position)])
-
-            if raw_item and not cooked_item:
-                self.screen.blits([(resized_cooking_menu, Cooking.menu_position),(resized_raw_item, Cooking.raw_item_slot_pos)])
-
-            if not raw_item and cooked_item:
-                self.screen.blits([(resized_cooking_menu, Cooking.menu_position),(resized_cooked_item, Cooking.cooked_item_slot_pos)])
-
-            if raw_item and cooked_item:
-                self.screen.blits([(resized_cooking_menu, Cooking.menu_position),resized_raw_item, Cooking.raw_item_slot_pos),(resized_cooked_item, Cooking.cooked_item_slot_pos)])
-
-            # Render'ib item'i koguse kui seda on rohkem kui 1
-            if raw_item is not None:
-                font = pygame.font.Font(None, 25)
-                quantity_text = f"{raw_item_quantity}" if raw_item_quantity > 1 else ""
-                quantity_surface = font.render(quantity_text, True, (255, 255, 255))
-                self.screen.blit(quantity_surface, Cooking.raw_item_slot_pos)
-
-            if cooked_item is not None:
-                font = pygame.font.Font(None, 25)
-                quantity_text = f"{cooked_item_quantity}" if cooked_item_quantity > 1 else ""
-                quantity_surface = font.render(quantity_text, True, (255, 255, 255))
-                self.screen.blit(quantity_surface, Cooking.cooked_item_slot_pos)
-
-            # Draw the progress bar
-            progress_bar_width = 20 * Cooking.cooking_menu_ratio
-            progress_bar_height = 5 * Cooking.cooking_menu_ratio
-            progress_bar_x = Cooking.menu_position[0] + 25 * Cooking.cooking_menu_ratio
-            progress_bar_y = Cooking.menu_position[1] + 15 * Cooking.cooking_menu_ratio
-            progress = min(station_cooking_delay / UniversalVariables.cooking_delay, 1.0)
-
-
-            if raw_item and cookable_item:
-                progress_surface = pygame.Surface((progress_bar_width, progress_bar_height), pygame.SRCALPHA)
-
-                pygame.draw.rect(progress_surface, (60, 250, 72, 125), (0, 0, progress * progress_bar_width, progress_bar_height))
-                self.screen.blit(progress_surface, (progress_bar_x, progress_bar_y))
-
-            ### TODO: if mouse_butons:
-            ###          Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
-
-            # Käsitleb item'ite panemist ja võtmist cooking station'ist
-            Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
 
     def update(self):
         Cooking.display_menu(self)
