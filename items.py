@@ -662,6 +662,16 @@ items_list = [
         "Render_when": -block_size
         },
 
+    {
+        "Type": "Object",
+        "Name": "Loot_Chest",
+        "ID": 1003,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * .5),
+        "Object_height": int(block_size * .5),
+        "Render_when": -block_size
+    }
 ]
 
 # Testida asju mis on seotud ainult item'ga
