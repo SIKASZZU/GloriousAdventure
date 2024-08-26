@@ -185,6 +185,9 @@ class UniversalVariables():
     cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
     cooking_delay = 150  # Kaua läheb itemi cookimisega -> Default 300
 
+    # ******************** Building ******************** #
+    allow_building = True
+
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
         if terrain_data is not None:
