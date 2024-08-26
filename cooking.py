@@ -21,7 +21,7 @@ class Cooking:
     cooking_menu_ratio = 5
 
     stations = {}
-    station_key: str
+    station_key: str = None
     cooking_delay = 0
 
     last_click_time = 0
@@ -396,13 +396,11 @@ class Cooking:
 
         Cooking.cooking_in_progress()
 
-        try:
-            if Cooking.stations.get(Cooking.station_key, {}).get('station_raw_item', (None, 0))[1] > 0:
-                Cooking.cooking_delay += 1
-            else:
-                Cooking.cooking_delay = 0
-        except AttributeError as e:
-            print(e)
+        if Cooking.stations.get(Cooking.station_key, {}).get('station_raw_item', (None, 0))[1] > 0:
+            Cooking.cooking_delay += 1
+        else:
+            Cooking.cooking_delay = 0
+
 
         if not UniversalVariables.cooking_menu:
             Cooking.stations = {
