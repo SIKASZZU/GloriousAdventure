@@ -264,23 +264,23 @@ class Cooking:
                     })
 
                     # Kui vajutad uuesti cooking station'i peale kui cooking menu on lahti siis sulgeb cooking menu
-                    if Cooking.menu_visible:
-                        Cooking.menu_visible = False
+                    if UniversalVariables.cooking_menu:
+                        UniversalVariables.cooking_menu = False
                     else:
                         # Kui vajutad cooking station'i peale siis avab cooking menu ja salvestab selle kordinaadid
                         Cooking.station_coordinates = (click_x, click_y)
-                        Cooking.menu_visible = True
+                        UniversalVariables.cooking_menu = True
 
                     # Kui cooking menu ei ole nähtav või player ei ole cooking_range'is siis suletakse inventory
-                    if not Cooking.menu_visible or not Cooking.player_in_range(click_x, click_y):
+                    if not UniversalVariables.cooking_menu or not Cooking.player_in_range(click_x, click_y):
                         Inventory.inv_count = 0
                         Inventory.render_inv = False
                         UniversalVariables.is_cooking = False
 
             Camera.right_click_x, Camera.right_click_y = None, None
 
-        # Renderib'b cooking menu kui Cooking.menu_visible on True ja player on läheduses
-        if Cooking.menu_visible == True and Cooking.station_coordinates:
+        # Renderib'b cooking menu kui UniversalVariables.cooking_menu on True ja player on läheduses
+        if UniversalVariables.cooking_menu == True and Cooking.station_coordinates:
             station_x, station_y = Cooking.station_coordinates
 
             # Kontrollib, et cooking station oleks endiselt olemas, kui ei ole siis ei render'i cooking menu'd
@@ -292,7 +292,7 @@ class Cooking:
                 raw_item, cooked_item = None, None
                 raw_item_quantity, cooked_item_quantity = 0, 0
 
-                Cooking.menu_visible = False
+                UniversalVariables.cooking_menu = False
 
             elif Cooking.player_in_range(station_x, station_y):
                 Inventory.inv_count = 1
@@ -386,7 +386,7 @@ class Cooking:
                     Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
 
             else:
-                Cooking.menu_visible = False
+                UniversalVariables.cooking_menu = False
                 Inventory.inv_count = 0
                 Inventory.render_inv = False
                 UniversalVariables.is_cooking = False
@@ -404,7 +404,7 @@ class Cooking:
         except AttributeError as e:
             print(e)
 
-        if not Cooking.menu_visible:
+        if not UniversalVariables.cooking_menu:
             Cooking.stations = {
                 key: station for key, station in Cooking.stations.items()
                 if station['station_raw_item'][1] > 0 or station['station_cooked_item'][1] > 0
