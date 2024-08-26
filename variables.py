@@ -146,8 +146,8 @@ class UniversalVariables():
         90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
-        1001, 1002,  # Barrel
-        989, 989_98, 9099, 9099_98, 900,  # Blade walls, grounds
+        1001, 1002, 1003,  # Barrel, Chest
+        989, 989_98, 9099, 9099_98, 900,  # Blade walls, Grounds
     ]
     
     no_terrain_background_items: list = [
@@ -184,6 +184,7 @@ class UniversalVariables():
     is_cooking: bool = False  # Invi lockimiseks
     cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
     cooking_delay = 150  # Kaua läheb itemi cookimisega -> Default 300
+    cooking_menu = False
 
     # ******************** Building ******************** #
     allow_building = True
