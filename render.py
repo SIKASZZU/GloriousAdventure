@@ -180,7 +180,7 @@ class RenderPictures:
                                 image = ImageLoader.load_image('Final_Maze_Ground_2')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                            elif terrain_value in {1001, 1002}:
+                            elif terrain_value in {1001, 1002, 1003}:
                                 image = ImageLoader.load_image('Maze_Ground')
                                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
@@ -338,7 +338,7 @@ class ObjectCreation:
                         terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
                         new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
-                        random_placement = [10, 1001, 1002]
+                        random_placement = [10, 1001, 1002, 1003]
                         
                         if new_object[5] in random_placement:
                             position = (terrain_x + UniversalVariables.block_size * RenderPictures.randomizer_x, terrain_y + UniversalVariables.block_size * RenderPictures.randomizer_y)
