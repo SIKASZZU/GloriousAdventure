@@ -3,6 +3,7 @@ from variables import UniversalVariables
 from objects import ObjectManagement
 from camera import Camera
 from text import Fading_text
+from inventory import Inventory
 
 import numpy as np
 
@@ -29,12 +30,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
+            Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -65,6 +61,8 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+            Inventory.calculate(self, calc_slots_only=True)
+            return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
@@ -75,9 +73,6 @@ class AddingMazeAtPosition:
             # for tuple in coordinates:
             #     start_row, start_col = tuple
             #     self.terrain_data[start_row][start_col] = 933
-
-        else:
-            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def add_maze_to_specific_position_bottom(self, map_list, row_index, col_index, maze_type):
 
@@ -94,12 +89,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
+            Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -129,6 +119,8 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+            Inventory.calculate(self, calc_slots_only=True)
+            return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
@@ -141,20 +133,11 @@ class AddingMazeAtPosition:
             #     self.terrain_data[start_row][start_col] = 933
 
 
-        else:
-            print(f'Something fishy: add_maze_to_specific_position_bottom:{[row_index], [col_index]}')
-
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
+            Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -185,6 +168,8 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+            Inventory.calculate(self, calc_slots_only=True)
+            return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
@@ -195,11 +180,6 @@ class AddingMazeAtPosition:
             # for tuple in coordinates:
             #     start_row, start_col = tuple
             #     self.terrain_data[start_row][start_col] = 933
-
-            return
-
-        else:
-            print(f'Something fishy: add_maze_to_specific_position_left:{[col_index], [row_index]}')
 
     def add_maze_to_specific_position_right(self, map_list, row_index, col_index, maze_type):
 
@@ -213,12 +193,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
-            text = "This place looks familiar."
-
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-
-            UniversalVariables.ui_elements.append(text)
+            Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -249,6 +224,8 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
             AddingMazeAtPosition.maze_type = maze_type
+            Inventory.calculate(self, calc_slots_only=True)
+            return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
@@ -259,9 +236,6 @@ class AddingMazeAtPosition:
             # for tuple in coordinates:
             #     start_row, start_col = tuple
             #     self.terrain_data[start_row][start_col] = 933
-
-        else:
-            print(f'Something fishy: add_maze_to_specific_position_right:{[row_index], [col_index]}')
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
         if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
@@ -371,10 +345,10 @@ class AddingMazeAtPosition:
             AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index,
                                                                       col_index, maze_type)
 
-        # # Do stuff here after adding maze
-        print()
-        for row in UniversalVariables.map_list: print(row)  # print maze list
-        print(UniversalVariables.maze_counter)
+        # # # Do stuff here after adding maze
+        # print()
+        # for row in UniversalVariables.map_list: print(row)  # print maze list
+        # print(UniversalVariables.maze_counter)
 
 
 if __name__ == '__main__':
