@@ -10,10 +10,10 @@ class Building:
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.
         Return'ib (item_name, object_id) if valid, else False.
         """
-        if not UniversalVariables.current_equipped_item:
-            return False
-
         item_name = UniversalVariables.current_equipped_item
+
+        if not item_name:
+            return False
 
         for item in items_list:
             if item_name == item.get("Name"):
