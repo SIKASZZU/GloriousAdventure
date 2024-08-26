@@ -28,18 +28,18 @@ class TileSet:
 
 
     def determine_ground_image_name(self, surroundings):
-        top_empty, bottom_empty, left_empty, right_empty, top_left_empty, top_right_empty, bottom_left_empty, bottom_right_empty = surroundings
+        top_empty, bottom_empty, left_empty, right_empty, _, _, _, _ = surroundings
         tileset_image = TileSet.get_tileset_image('images/Tile_Sets/Water_Ground_Tileset.png')
 
-        if right_empty and left_empty and top_empty and bottom_empty and top_right_empty and top_left_empty and bottom_right_empty and bottom_left_empty:
+        if right_empty and left_empty and top_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 6, 1)
-        if right_empty and left_empty and bottom_right_empty and bottom_left_empty and bottom_empty:
+        if right_empty and left_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 3, 2)
-        if right_empty and left_empty and top_right_empty and top_left_empty and top_empty:
+        if right_empty and left_empty and top_empty:
             return TileSet.get_tile(tileset_image, 32, 3, 0)
-        if right_empty and top_empty and top_right_empty and bottom_empty and bottom_right_empty:
+        if right_empty and top_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 6, 0)
-        if left_empty and top_empty and top_left_empty and bottom_empty and bottom_left_empty:
+        if left_empty and top_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 4, 0)
 
         if right_empty and bottom_empty:
@@ -64,15 +64,6 @@ class TileSet:
             return TileSet.get_tile(tileset_image, 32, 1, 2)
         if top_empty:
             return TileSet.get_tile(tileset_image, 32, 1, 0)
-
-        if bottom_right_empty:
-            return TileSet.get_tile(tileset_image, 32, 4, 1)
-        if bottom_left_empty:
-            return TileSet.get_tile(tileset_image, 32, 5, 1)
-        if top_left_empty:
-            return TileSet.get_tile(tileset_image, 32, 5, 2)
-        if top_right_empty:
-            return TileSet.get_tile(tileset_image, 32, 4, 2)
 
         else:
             if random.random() < 0.3:
