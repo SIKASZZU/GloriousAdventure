@@ -671,7 +671,107 @@ items_list = [
         "Object_width": int(block_size * .5),
         "Object_height": int(block_size * .5),
         "Render_when": -block_size
-    }
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Rotten_Log_0",
+        "ID": 1004,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * .5),
+        "Object_height": int(block_size * .5),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Rotten_Log_1",
+        "ID": 1005,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * .5),
+        "Object_height": int(block_size * .5),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Rotten_Log_2",
+        "ID": 1006,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size * .5),
+        "Object_height": int(block_size * .5),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Berry_Bush_0",
+        "ID": 1008,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Bush_0",
+        "ID": 1009,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Berry_Bush_1",
+        "ID": 1010,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Bush_1",
+        "ID": 1011,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Berry_Bush_4",
+        "ID": 1012,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Bush_4",
+        "ID": 1013,
+        "Breakable": False,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+    },
+
 ]
 
 # Testida asju mis on seotud ainult item'ga

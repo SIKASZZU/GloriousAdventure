@@ -118,10 +118,122 @@ class MapData:
         UniversalVariables.blades_spawned = True
         return MapData.file_to_maze(file_name='blade_maze.txt', side=start_side)
 
+    def abandoned_glade_generation(start_side):
+        type_maze = 'abandoned_glade'
+        import noise
+
+        def generate_glade_terrain(width, height, scale=0.1):
+            terrain = []
+            seed = random.randint(0, 1000)  # Random seed for different terrain each time
+
+            for y in range(height):
+                row = []
+                for x in range(width):
+                    value = noise.pnoise2(x * scale + seed * 0.46, y * scale + seed * 0.46, octaves=10)
+                    row.append(value)
+                terrain.append(row)
+            return terrain
+
+        def render(noise):
+            abandoned_glade_maze = []
+
+            for y, row in enumerate(noise):
+                glade_row = []
+                for x, value in enumerate(row):
+                    terrain_value = 0 if value < -0.03 else 1
+                    glade_row.append(terrain_value)
+
+                abandoned_glade_maze.append(glade_row)
+            return abandoned_glade_maze
+
+        size = MapData.maze_size
+        noise = generate_glade_terrain(size, size)
+        maze = render(noise)
+
+        # Setting maze boundaries
+        maze[0] = ['99'] * size
+        maze[-1] = ['99'] * size
+        for row in maze:
+            row[0] = '99'
+            row[-1] = '99'
+
+        # Set the start point
+        if start_side == 'left':
+            maze[size // 2][0] = "90"
+            maze[(size // 2) - 1][0] = "90"
+
+            maze[size // 2][1] = "1"
+            maze[(size // 2) - 1][1] = "1"
+
+        elif start_side == 'top':
+            maze[0][size // 2] = "91"
+            maze[0][(size // 2) - 1] = "91"
+
+            maze[1][size // 2] = "1"
+            maze[1][(size // 2) - 1] = "1"
+
+        elif start_side == 'right':
+            maze[size // 2][size - 1] = "92"
+            maze[(size // 2) - 1][size - 1] = "92"
+
+            maze[size // 2][size - 2] = "1"
+            maze[(size // 2) - 1][size - 2] = "1"
+
+        elif start_side == 'bottom':
+            maze[size - 1][size // 2] = "93"
+            maze[size - 1][(size // 2) - 1] = "93"
+
+            maze[size - 2][size // 2] = "1"
+            maze[size - 2][(size // 2) - 1] = "1"
+
+        # Set the end points on the remaining three sides
+        sides = ['top', 'bottom', 'left', 'right']
+        sides.remove(start_side)
+        for side in sides:
+            if side == 'left':
+                maze[size // 2][0] = "94"
+                maze[(size // 2) - 1][0] = "94"
+
+                maze[size // 2][1] = "1"
+                maze[(size // 2) - 1][1] = "1"
+
+            elif side == 'top':
+                maze[0][size // 2] = "95"
+                maze[0][(size // 2) - 1] = "95"
+
+                maze[1][size // 2] = "1"
+                maze[1][(size // 2) - 1] = "1"
+
+            elif side == 'right':
+                maze[size // 2][size - 1] = "96"
+                maze[(size // 2) - 1][size - 1] = "96"
+
+                maze[size // 2][size - 2] = "1"
+                maze[(size // 2) - 1][size - 2] = "1"
+
+            elif side == 'bottom':
+                maze[size - 1][size // 2] = "97"
+                maze[size - 1][(size // 2) - 1] = "97"
+
+                maze[size - 2][size // 2] = "1"
+                maze[size - 2][(size // 2) - 1] = "1"
+
+        # Convert string to integers and lists
+        MapData.converted_maze = []
+        for row in maze:
+            row_integers = [
+                random.choice([1004, 1005, 1006, 1008, 1010, 1012]) if x == 1 and random.random() < 0.05 else int(x)
+                for x in row
+            ]
+            MapData.converted_maze.append(row_integers)
+
+        return MapData.converted_maze
+
 
     ### FIXME: labyrinth on vahel mingi topelt seinaga kui allapoole see avada
     def labyrinth_maze_generation(start_side):  # start_side - BOTTOM RIGHT LEFT TOP
         type_maze = 'labyrinth_maze'
+
         size = MapData.maze_size
         maze = [[99] * size for _ in range(size)]
 
@@ -435,13 +547,14 @@ class MapData:
     @staticmethod
     def get_data(item, start_side):
 
+        # 'labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade'
+
+
         if item.endswith('maze'):
             if item == 'block_maze':
-                #
                 return MapData.block_maze_generation(start_side)
 
             elif item == 'labyrinth_maze':
-                #
                 return MapData.labyrinth_maze_generation(start_side)
 
             elif item == 'blade_maze':
@@ -453,6 +566,10 @@ class MapData:
                     if 'final_maze' in row:
                         UniversalVariables.final_maze = True
                         return MapData.file_to_maze(file_name=f'{item}.txt', side=start_side)
+
+
+        elif item == 'abandoned_glade':
+            return MapData.abandoned_glade_generation(start_side)
 
         elif item == 'glade':
             # Glade'il pole start side
