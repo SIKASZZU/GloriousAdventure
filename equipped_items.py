@@ -37,29 +37,28 @@ class ItemFunctionality:
             if UniversalVariables.item_delay < UniversalVariables.item_delay_max:
                 return print(f'Item delay: {UniversalVariables.item_delay} < 70 ')
 
-            item_at_hand = UniversalVariables.current_equipped_item
+            equiped_item = UniversalVariables.current_equipped_item
+
 
             # ITEMS
-            if item_at_hand == 'Bandage':
-                player_healed = self.player.health.heal(item_at_hand)
-                if player_healed:  ObjectManagement.remove_object_from_inv(item_at_hand)
+            if equiped_item == 'Bandage':
+                player_healed = self.player.health.heal(equiped_item)
+                if player_healed:  ObjectManagement.remove_object_from_inv(equiped_item)
                 if UniversalVariables.player_bleeding == True:
                     if probably(35 / 100):
                         UniversalVariables.player_bleeding = False
                 
-            if item_at_hand == 'Serum':
+            if equiped_item == 'Serum':
                 UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
-                ObjectManagement.remove_object_from_inv(item_at_hand)
+                ObjectManagement.remove_object_from_inv(equiped_item)
 
-            if item_at_hand in ['Сanteen', 'Bottle_Water']:
+            if equiped_item in ['Сanteen', 'Bottle_Water']:
                 print('Canteen = no functionality yet')
                 ### TODO: fix code repetition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FUNCTIOOONS FUNCTIOOOOOOOOONS
                 ### TODO: Bottle Wateril võiks olla 3 võimalust kasutada vmdgi
 
-                equiped_item = UniversalVariables.current_equipped_item
-
                 for item in items.items_list:
-                    if item["Name"] == item_at_hand and item["Type"] == "Food":
+                    if item["Name"] == equiped_item and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)
 
                         # Arvutab uue thirsti 'current + söödud itemi Gain'
@@ -80,9 +79,9 @@ class ItemFunctionality:
                         Player_audio.drinking_audio(self)
                         self.click_position = ()
 
-            if item_at_hand in ['Bread', 'Meat']:
+            if equiped_item in ['Bread', 'Meat']:
                 for item in items.items_list:
-                    if item["Name"] == item_at_hand and item["Type"] == "Food":
+                    if item["Name"] == equiped_item and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)
 
                         # Arvutab uue hungeri 'current + söödud itemi Gain'
