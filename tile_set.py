@@ -65,11 +65,10 @@ class TileSet:
         if top_empty:
             return TileSet.get_tile(tileset_image, 32, 1, 0)
 
+        if random.random() < 0.5:
+            return 'Ground_19'
         else:
-            if random.random() < 0.3:
-                return 'Ground_19'
-            else:
-                return 'Ground_' + str(random.randint(0, 18))
+            return 'Ground_' + str(random.randint(0, 18))
 
 
     def determine_farmland_image_name(self, row, col):
