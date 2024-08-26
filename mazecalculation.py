@@ -29,7 +29,7 @@ class AddingMazeAtPosition:
     def add_maze_to_specific_position_top(self, map_list, row_index, col_index, maze_type):
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
             Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
@@ -88,7 +88,7 @@ class AddingMazeAtPosition:
                 self.terrain_data.append(row)
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
             Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
@@ -136,7 +136,7 @@ class AddingMazeAtPosition:
     def add_maze_to_specific_position_left(self, map_list, row_index, col_index, maze_type):
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
             Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
@@ -192,7 +192,7 @@ class AddingMazeAtPosition:
                 row.extend([None] * 39)
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
-        if map_list[row_index][col_index] in ['glade', 'block_maze', 'blade_maze', 'final_maze', 'labyrinth_maze']:
+        if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
             Fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
@@ -240,18 +240,18 @@ class AddingMazeAtPosition:
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
         if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
             # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
-            choices = ['labyrinth_maze', 'block_maze']
-            probabilities = [0.40, 0.60]  # 100 % alati olema
+            choices = ['labyrinth_maze', 'block_maze', 'abandoned_glade']
+            probabilities = [0.09, 0.08, 0.83]  # 100 % alati olema
 
         elif UniversalVariables.final_maze:
             # 30 % 'labyrinth_maze' ja 60 % 'block_maze' ja 10 % 'blade_maze'
-            choices = ['labyrinth_maze', 'block_maze', 'blade_maze']
-            probabilities = [0.30, 0.60, 0.10]  # 100 % alati olema
+            choices = ['labyrinth_maze', 'block_maze', 'blade_maze', 'abandoned_glade']
+            probabilities = [0.25, 0.49, 0.19, 0.07, ]  # 100 % alati olema
 
         else:
             # 25 % 'labyrinth_maze' ja 45 % 'block_maze' ja 20 % 'blade_maze' ja 10 % 'final_maze'
-            choices = ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze']
-            probabilities = [0.25, 0.45, 0.20, 0.10]  # 100 % alati olema
+            choices = ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']
+            probabilities = [0.23, 0.43, 0.20, 0.10, 0.04]  # 100 % alati olema
 
         maze_type = np.random.choice(choices, p=probabilities)
 
