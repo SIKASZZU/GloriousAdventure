@@ -11,6 +11,9 @@ class Loot:
     obtained_loot_list = []
 
     def toggle_loot_barrel(self, player_pressed_pick_up=False):
+        click_position = Camera.click_on_screen(self)
+        if click_position and click_position == (None, None) and player_pressed_pick_up == False:  # or player collision
+            return
         count = randint(1, 3)
         inv_count = len(UniversalVariables.loot)
 
@@ -18,9 +21,7 @@ class Loot:
             if item in Inventory.inventory:
                 inv_count -= 1
 
-        click_position = Camera.click_on_screen(self)
-        if click_position and click_position != (None, None) or player_pressed_pick_up == True:  # or player collision
-            
+
             if player_pressed_pick_up == True: 
                 barrel_x, barrel_y = UniversalVariables.player_x, UniversalVariables.player_y
             else:  
@@ -30,23 +31,23 @@ class Loot:
             barrel_y = int(barrel_y // UniversalVariables.block_size)
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
 
-                    if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + count:
-                        self.terrain_data[barrel_y][barrel_x] = 1002
-                        Loot.gather_loot(self, count)
-                        Player_audio.opening_a_barrel_audio(self)
+                if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + count:
+                    self.terrain_data[barrel_y][barrel_x] = 1002
+                    Loot.gather_loot(self, count)
+                    Player_audio.opening_a_barrel_audio(self)
 
 
-                    elif self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots < len(Inventory.inventory) + inv_count:
-                        Player_audio.opening_a_barrel_audio(self, False)
+                elif self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots < len(Inventory.inventory) + inv_count:
+                    Player_audio.opening_a_barrel_audio(self, False)
 
-                        text = "Not enough space in Inventory."
-                        UniversalVariables.ui_elements.append(text)
+                    text = "Not enough space in Inventory."
+                    UniversalVariables.ui_elements.append(text)
 
-                        if text in Fading_text.shown_texts:  # Check if the text is in the set before removing
-                            Fading_text.shown_texts.remove(text)
+                    if text in Fading_text.shown_texts:  # Check if the text is in the set before removing
+                        Fading_text.shown_texts.remove(text)
 
-                    else:
-                        return
+                else:
+                    return
 
     def get_random_loot(self):
         shuffle(UniversalVariables.loot)
