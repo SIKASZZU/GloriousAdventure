@@ -28,6 +28,8 @@ class Cooking:
     click_delay = 0.1
     mouse_button_down = False
 
+    cooking_list:list = []
+
     @staticmethod
     def player_in_range(station_x: int, station_y: int) -> bool:
         """
@@ -49,39 +51,49 @@ class Cooking:
         )
 
     @staticmethod
+    def find_cookable_item(raw_item_name: str):
+        return Cooking.cooking_list.get(raw_item_name)
+
+    @staticmethod
     def cooking_in_progress() -> None:
+        if not Cooking.cooking_list:
+            # Populate the cooking list as a dictionary
+            if not Cooking.cooking_list:
+                Cooking.cooking_list = {item.get("Name"): item.get("Cookable") for item in items_list if item.get("Cookable")}
+
         for station_key, station_data in Cooking.stations.items():
             raw_item, raw_item_quantity = station_data['station_raw_item']
             cooked_item, cooked_item_quantity = station_data['station_cooked_item']
             station_cooking_delay = station_data.get("station_cooking_delay", 0)
 
-            # Skip if no raw item is present or if the station is full
-            if not raw_item or cooked_item_quantity >= UniversalVariables.station_capacity:
+            # Kui raw item'it pole
+            if not raw_item:
                 continue
 
-            # Process cooking if the delay is sufficient
+            # Kui raw item'it pole list'is
+            if raw_item not in Cooking.cooking_list:
+                continue
+
+            # Vaatab kas ruumi on station'is
+            if cooked_item_quantity >= UniversalVariables.station_capacity:
+                continue
+
+            # Cook'ib stabiilselt | ühtlaste vahedega, liiga kiirelt ei cook'iks
             if station_cooking_delay >= UniversalVariables.cooking_delay:
-                cooked_item_name = None
+                cooked_item_name = Cooking.find_cookable_item(raw_item)
 
-                # Find if the raw item is cookable
-                for item in items_list:
-                    if item.get("Name") == raw_item:
-                        cooked_item_name = item.get("Cookable")
-                        break
+                # Update quantities and reset delay
+                raw_item_quantity -= 1
+                cooked_item_quantity += 1
+                station_cooking_delay = 0
 
-                if cooked_item_name and cooked_item_name:
-                    # Update quantities and reset delay
-                    raw_item_quantity -= 1
-                    cooked_item_quantity += 1
-                    station_cooking_delay = 0
+                # Update station data with the cooked item
+                station_data["station_raw_item"] = (raw_item, raw_item_quantity)
+                station_data["station_cooked_item"] = (cooked_item_name, cooked_item_quantity)
 
-                    # Update station data with the cooked item
-                    station_data["station_raw_item"] = (raw_item, raw_item_quantity)
-                    station_data["station_cooked_item"] = (cooked_item_name, cooked_item_quantity)
-
-                    # Remove raw item if its quantity is zero
-                    if raw_item_quantity <= 0:
-                        station_data["station_raw_item"] = (None, 0)
+                # Remove raw item if its quantity is zero
+                if raw_item_quantity <= 0:
+                    station_data["station_raw_item"] = (None, 0)
 
             # Increment cooking delay if there's a raw item
             station_data["station_cooking_delay"] = station_cooking_delay + 1 if raw_item_quantity > 0 else 0
@@ -235,21 +247,21 @@ class Cooking:
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         if mouse_buttons[2]:  # Right click
-            if Camera.right_click_x and Camera.right_click_y:
-                click_x: int = Camera.right_click_x // UniversalVariables.block_size
-                click_y: int = Camera.right_click_y // UniversalVariables.block_size
+            click_x, click_y = Camera.right_click_x, Camera.right_click_y
+            if click_x is not None and click_y is not None:
+                click_x //= UniversalVariables.block_size
+                click_y //= UniversalVariables.block_size
 
                 # Kui on click'itud cooking station'i peale
                 if self.terrain_data[click_y][click_x] in UniversalVariables.cooking_stations:
                     Cooking.station_key = f"station_{click_y}_{click_x}"
 
-                    if Cooking.station_key not in Cooking.stations:
-                        Cooking.stations[Cooking.station_key] = {
-                            "station_coordinates": (click_y, click_x),
-                            "station_raw_item": (None, 0),
-                            "station_cooked_item": (None, 0),
-                            "station_cooking_delay": 0
-                        }
+                    station = Cooking.stations.setdefault(Cooking.station_key, {
+                        "station_coordinates": (click_y, click_x),
+                        "station_raw_item": (None, 0),
+                        "station_cooked_item": (None, 0),
+                        "station_cooking_delay": 0
+                    })
 
                     # Kui vajutad uuesti cooking station'i peale kui cooking menu on lahti siis sulgeb cooking menu
                     if Cooking.menu_visible:
@@ -264,9 +276,6 @@ class Cooking:
                         Inventory.inv_count = 0
                         Inventory.render_inv = False
                         UniversalVariables.is_cooking = False
-
-                        raw_item, cooked_item = None, None
-                        raw_item_quantity, cooked_item_quantity = 0, 0
 
             Camera.right_click_x, Camera.right_click_y = None, None
 
@@ -371,8 +380,10 @@ class Cooking:
                                      (0, 0, progress * progress_bar_width, progress_bar_height))
                     self.screen.blit(progress_surface, (progress_bar_x, progress_bar_y))
 
-                # Käsitleb item'ite panemist ja võtmist cooking station'ist
-                Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
+                # Läheb siia ainult siis kui mingit nuppu on vajutatud
+                if True in mouse_buttons:
+                    # Käsitleb item'ite panemist ja võtmist cooking station'ist
+                    Cooking.handle_item_interaction(self, mouse_x, mouse_y, mouse_buttons)
 
             else:
                 Cooking.menu_visible = False
