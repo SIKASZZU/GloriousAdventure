@@ -55,6 +55,9 @@ class ItemFunctionality:
                 print('Canteen = no functionality yet')
                 ### TODO: fix code repetition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FUNCTIOOONS FUNCTIOOOOOOOOONS
                 ### TODO: Bottle Wateril võiks olla 3 võimalust kasutada vmdgi
+
+                equiped_item = UniversalVariables.current_equipped_item
+
                 for item in items.items_list:
                     if item["Name"] == item_at_hand and item["Type"] == "Food":
                         satisfaction_gain = item.get("Satisfaction_Gain", 0)
@@ -73,7 +76,7 @@ class ItemFunctionality:
                             self.player.thirst.current_thirst = new_thirst
 
                         UniversalVariables.hunger_resistance = item.get("Thirst_Resistance")
-                        ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
+                        ObjectManagement.remove_object_from_inv(equiped_item)  # v6tab s66dud itemi 2ra
                         Player_audio.drinking_audio(self)
                         self.click_position = ()
 
@@ -96,7 +99,7 @@ class ItemFunctionality:
                             self.player.hunger.current_hunger = new_hunger
 
                         UniversalVariables.hunger_resistance = item.get("Hunger_Resistance")
-                        ObjectManagement.remove_object_from_inv(UniversalVariables.current_equipped_item)  # v6tab s66dud itemi 2ra
+                        ObjectManagement.remove_object_from_inv(equiped_item)  # v6tab s66dud itemi 2ra
                         Player_audio.eating_audio(self)
                         self.click_position = ()
             UniversalVariables.item_delay = 0
