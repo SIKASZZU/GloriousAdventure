@@ -10,6 +10,7 @@ class Building:
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.
         Return'ib (item_name, object_id) if valid, else False.
         """
+
         item_name = UniversalVariables.current_equipped_item
 
         if not item_name:
@@ -68,6 +69,9 @@ class Building:
             return False
 
     def update(self) -> bool:
+        if not UniversalVariables.allow_building:
+            return
+
         if Building.is_valid_item(self) and Building.is_valid_location(self):
             item_name, item_id = Building.is_valid_item(self)
             grid_x, grid_y = Building.is_valid_location(self)
