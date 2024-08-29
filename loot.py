@@ -18,19 +18,19 @@ class Loot:
         inv_count = len(UniversalVariables.loot)
         barrel_x, barrel_y = None, None
 
+        if player_pressed_pick_up == True:
+            barrel_x, barrel_y = UniversalVariables.player_x, UniversalVariables.player_y
+        else:
+            if not click_position:
+                return
+            barrel_x, barrel_y = click_position
+
+        if not barrel_x or not barrel_y:
+            return
+
         for item, quantity in UniversalVariables.loot:
             if item in Inventory.inventory:
                 inv_count -= 1
-
-            if player_pressed_pick_up == True:
-                barrel_x, barrel_y = UniversalVariables.player_x, UniversalVariables.player_y
-            else:
-                if not click_position:
-                    return
-                barrel_x, barrel_y = click_position
-
-            if not barrel_x or not barrel_y:
-                return
 
             barrel_x = int(barrel_x // UniversalVariables.block_size)
             barrel_y = int(barrel_y // UniversalVariables.block_size)
