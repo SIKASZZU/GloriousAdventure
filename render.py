@@ -94,114 +94,118 @@ class RenderPictures:
                 current_row = []
 
                 for col in range(col_range_0, col_range_1):
-                    if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
-                        current_row.append((col, row))
-                        terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
-                        terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
-                        terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
-                        position = (col, row)
-                        if terrain_value in UniversalVariables.interactable_items:  # see peks olema mingi no background needed list .. et ei renderiks topelt object ja map renderis
-                            continue
+                    if not (0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row])):
+                        continue
 
-                        if terrain_value is not None:
+                    current_row.append((col, row))
+                    terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
+                    terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
+                    terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
+                    position = (col, row)
+                    if terrain_value in UniversalVariables.interactable_items:  # see peks olema mingi no background needed list .. et ei renderiks topelt object ja map renderis
+                        continue
+
+                    if terrain_value is None:
+                        continue
+
+                    image = None
+
+                    ### FIXME: maze uksed ja blade maze flickerib
+
+                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+
+                    # Kui terrain data on 0 - 10
+                    # Teeb Water/Ground imaged v background imaged
+                    if 0 <= terrain_value <= 10 or terrain_value >= 1004:
+                        if terrain_value != 0:
+
+                            surroundings = TileSet.check_surroundings(self, row, col, 0)
+                            image_name = TileSet.determine_ground_image_name(self, surroundings)
+
+                        else:
+                            if random.random() < 0.6:
+                                image_name = 'Water_0'
+                            else:
+                                image_name = 'Water_' + str(random.randint(1, 3))
+
+                        if type(image_name) != str:
+                            image = image_name
+
+                        if image is None:
+                            image = ImageLoader.load_image(image_name)
+
+                        # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
+                        if terrain_value in {7, 10}:
                             image = None
 
-                            ### FIXME: maze uksed ja blade maze flickerib
+                        if image:
+                            if position not in RenderPictures.occupied_positions:
+                                scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
 
-                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-
-                            # Kui terrain data on 0 - 10
-                            # Teeb Water/Ground imaged v background imaged
-                            if 0 <= terrain_value <= 10:
-                                if terrain_value != 0:
-
-                                    surroundings = TileSet.check_surroundings(self, row, col, 0)
-                                    image_name = TileSet.determine_ground_image_name(self, surroundings)
-
-                                else:
-                                    if random.random() < 0.6:
-                                        image_name = 'Water_0'
-                                    else:
-                                        image_name = 'Water_' + str(random.randint(1, 3))
-
-                                if type(image_name) != str:
-                                    image = image_name
-
-                                if image == None:
-                                    image = ImageLoader.load_image(image_name)
-
-                                # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
-                                if terrain_value in {7, 10}:
-                                    image = None
-
-                                if image:
-                                    if position not in RenderPictures.occupied_positions:
-                                        scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                            UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-                                        RenderPictures.occupied_positions[position] = scaled_image
-                                    else:
-                                        scaled_image = RenderPictures.occupied_positions[position]
-                                        if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                            UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-                            
-                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-                            elif terrain_value == 98:
-                                if random.random() < 0.95:
-                                    image_name = 'Maze_Ground'
-                                else:
-                                    image_name = 'Maze_Ground_' + str(random.randint(1, 3))
-
-
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value == 99:
-                                image_name = 'Maze_Wall_' + str(random.randint(0, 9))
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value == 107:
-                                image_name = TileSet.determine_farmland_image_name(self, row, col)
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value in {933, 977}:
-                                if EssentialsUpdate.day_night_text == 'Night':
-                                    self.terrain_data[row][col] = 977
-                                    image = ImageLoader.load_image('Maze_End_Bottom')
-                                else:
-                                    self.terrain_data[row][col] = 933
-
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value == 1000:
-                                image = ImageLoader.load_image('Final_Maze_Ground_2')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                            elif terrain_value in {1001, 1002, 1003}:
-                                image = ImageLoader.load_image('Maze_Ground')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
+                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
+                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
+                                RenderPictures.occupied_positions[position] = scaled_image
                             else:
-                                image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
-                                if image_name:
-                                    image = ImageLoader.load_image(image_name)
-                                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                                scaled_image = RenderPictures.occupied_positions[position]
+                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
+                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
 
-                            # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+                    elif terrain_value == 98:
+                        if random.random() < 0.95:
+                            image_name = 'Maze_Ground'
+                        else:
+                            image_name = 'Maze_Ground_' + str(random.randint(1, 3))
 
-                            # See on peale else: sest kui see oleks enne siis
-                            # hakkavad flickerima ja tekivad topelt pildid teistele
-                            if terrain_value in {7, 107}:
-                                image_name = TileSet.determine_farmland_image_name(self, row, col)
-                                image = ImageLoader.load_image(image_name)
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                            elif terrain_value in {10, 11}:
-                                image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value == 99:
+                        image_name = 'Maze_Wall_' + str(random.randint(0, 9))
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value == 107:
+                        image_name = TileSet.determine_farmland_image_name(self, row, col)
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value in {933, 977}:
+                        if EssentialsUpdate.day_night_text == 'Night':
+                            self.terrain_data[row][col] = 977
+                            image = ImageLoader.load_image('Maze_End_Bottom')
+                        else:
+                            self.terrain_data[row][col] = 933
+
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value == 1000:
+                        image = ImageLoader.load_image('Final_Maze_Ground_2')
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value in {1001, 1002, 1003}:
+                        image = ImageLoader.load_image('Maze_Ground')
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    else:
+                        image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
+                        if image_name:
+                            image = ImageLoader.load_image(image_name)
+                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
+
+                    # See on peale else: sest kui see oleks enne siis
+                    # hakkavad flickerima ja tekivad topelt pildid teistele
+                    if terrain_value in {7, 107}:
+                        image_name = TileSet.determine_farmland_image_name(self, row, col)
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value in {10, 11}:
+                        image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.terrain_in_view.append(current_row)
 

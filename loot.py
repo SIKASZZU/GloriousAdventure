@@ -16,17 +16,22 @@ class Loot:
             return
         count = randint(1, 3)
         inv_count = len(UniversalVariables.loot)
+        barrel_x, barrel_y = None, None
 
         for item, quantity in UniversalVariables.loot:
             if item in Inventory.inventory:
                 inv_count -= 1
 
-
-            if player_pressed_pick_up == True: 
+            if player_pressed_pick_up == True:
                 barrel_x, barrel_y = UniversalVariables.player_x, UniversalVariables.player_y
-            else:  
+            else:
+                if not click_position:
+                    return
                 barrel_x, barrel_y = click_position
-            
+
+            if not barrel_x or not barrel_y:
+                return
+
             barrel_x = int(barrel_x // UniversalVariables.block_size)
             barrel_y = int(barrel_y // UniversalVariables.block_size)
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
@@ -40,11 +45,7 @@ class Loot:
                 elif self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots < len(Inventory.inventory) + inv_count:
                     Player_audio.opening_a_barrel_audio(self, False)
 
-                    text = "Not enough space in Inventory."
-                    UniversalVariables.ui_elements.append(text)
-
-                    if text in Fading_text.shown_texts:  # Check if the text is in the set before removing
-                        Fading_text.shown_texts.remove(text)
+                    Fading_text.re_display_fading_text("Not enough space in Inventory.")
 
                 else:
                     return
