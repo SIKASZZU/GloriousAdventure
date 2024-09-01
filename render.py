@@ -152,10 +152,12 @@ class RenderPictures:
 
                     # SEE FUNCTION BLITIB AINULT BACKGROUNDI
                     elif terrain_value == 98:
-                        if random.random() < 0.95:
+                        if random.random() < 0.65:
                             image_name = 'Maze_Ground'
-                        else:
-                            image_name = 'Maze_Ground_' + str(random.randint(1, 3))
+                        elif random.random() < 0.45:  # cracks
+                            image_name = 'Maze_Ground_' + str(random.randint(1, 4))
+                        else: # cracks + stones
+                            image_name = 'Maze_Ground_' + str(random.randint(1, 9))
 
 
                         image = ImageLoader.load_image(image_name)
