@@ -86,8 +86,6 @@ ideas:
 
 	Player eisaa mitte surma, vaid laheb unconni, aeg laheb mooda, arkab yles ning infected ja food health koik pekkis
 
-	Visual vision glitch
-		Random vision points delete
 
 
 render::::
@@ -98,3 +96,7 @@ render::::
     (ground pilt, (x, y)),
     ]
 
+
+	playeril on sleepida vaja. nagu forestis on. Ja kui ta magab, ss on ta unenäos ja mängija saab mängida unenäos midagi, mingit teist storit edasi.
+		see unenägu peaks olema rõõmus ja tore võrreldes labürindiga. Kui ta ärkab üles, võib teha mingi rõõmu näidiku, ehk ss on ta motiveeritud tegelema ja pääsema välja.
+		Unenägu ei pea olema see sama iga öö vaid paar erinevat tsenaariumi, mis võivad erineda iga kord.
