@@ -74,7 +74,6 @@ class RenderPictures:
         return row_range_0, row_range_1, col_range_0, col_range_1
 
     def map_render(self) -> None:
-        UniversalVariables.screen.fill('black')
         RenderPictures.terrain_in_view.clear()
 
         camera_grid_row = int(
