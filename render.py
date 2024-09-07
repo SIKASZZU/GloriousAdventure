@@ -207,7 +207,6 @@ class RenderPictures:
                     elif terrain_value in {10, 11}:
                         image = ImageLoader.load_image('Maze_Ground_Keyhole')
                         RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
                 RenderPictures.terrain_in_view.append(current_row)
 
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
@@ -240,7 +239,8 @@ class RenderPictures:
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
 
 class ObjectCreation:
-
+    random_offsets = {}
+    
     def creating_lists(self):
         # print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
         # print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
@@ -338,22 +338,31 @@ class ObjectCreation:
 
             for row in RenderPictures.terrain_in_view:
                 for x, y in row:
-                    if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
+                    if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
                         terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                         terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                        new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
-                        random_placement = [10, 1001, 1002, 1003]
-                        
-                        if new_object[5] in random_placement:
-                            position = (terrain_x + UniversalVariables.block_size * RenderPictures.randomizer_x, terrain_y + UniversalVariables.block_size * RenderPictures.randomizer_y)
+                        if object_id in UniversalVariables.random_placement:
+                            position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
+
+                            # Check if the random offset for this position already exists
+                            if position_key not in ObjectCreation.random_offsets:
+                                # Generate and store the random offsets
+                                randomizer_x = round(random.uniform(0.1, 0.6), 1)
+                                randomizer_y = round(random.uniform(0.1, 0.6), 1)
+                                ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
+                            else:
+                                # Retrieve the stored random offsets
+                                randomizer_x, randomizer_y = ObjectCreation.random_offsets[position_key]
+
+                            # Apply the random offset to the object's position
+                            position = (terrain_x + UniversalVariables.block_size * randomizer_x,
+                                        terrain_y + UniversalVariables.block_size * randomizer_y)
                             new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
+                        else:
+                            new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
 
                         if new_object not in UniversalVariables.object_list:
                             # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-                            UniversalVariables.object_list.append(
-                                (new_object[0], new_object[1], new_object[2], new_object[3], new_object[4], new_object[5])
-                                )
-
-
+                            UniversalVariables.object_list.append(new_object)
 if __name__ == '__main__':  ...

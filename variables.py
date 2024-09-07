@@ -166,6 +166,9 @@ class UniversalVariables():
 
     offset_x: int = 0
     offset_y: int = 0
+    
+    random_placement = [10, 1001, 1002, 1003]  # gridi sees random position nendel itemitel.
+
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
