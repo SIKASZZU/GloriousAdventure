@@ -154,7 +154,7 @@ class Game:
         Building.update(self)
 
     def check_keys(self):
-        EssentialsUpdate.check_pressed_keys(self)  # Check pressed keys
+        Event_handler.check_pressed_keys(self)  # Check pressed keys
 
     def reset_lists(self):
         UniversalVariables.text_sequence = []

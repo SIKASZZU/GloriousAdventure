@@ -5,6 +5,7 @@ import items
 from loot import Loot
 from inventory import Inventory
 from menu import PauseMenu
+import vision
 
 def update_object_dimensions():
     for item in items.items_list:
@@ -51,4 +52,21 @@ class Event_handler:
                     PauseMenu.screenshot = None
                     PauseMenu.game_paused = False
                     self.pause_menu_state = "main"
-                    PauseMenu.screenshot = None
+                    PauseMenu.screenshot = None        
+                    
+    def check_pressed_keys(self):
+        if UniversalVariables.debug_mode == True:
+
+            keys = pygame.key.get_pressed()
+
+            # H key, HITBOX SHOW
+            if keys[pygame.K_h] and not self.h_pressed:
+                self.h_pressed = True
+                UniversalVariables.render_boxes_counter += 1
+            elif not keys[pygame.K_h]: self.h_pressed = False
+
+            # J KEY, LIGHT ON/OFF
+            if keys[pygame.K_j] and not self.j_pressed:
+                self.j_pressed = True
+                vision.vision_count += 1
+            elif not keys[pygame.K_j]: self.j_pressed = False
