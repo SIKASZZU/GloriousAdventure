@@ -24,8 +24,8 @@ from status import PlayerStatus
 from HUD import HUD_class
 from equipped_items import ItemFunctionality
 from building import Building
-
 from cooking import Cooking
+from maze_changes import MazeChanges
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -109,6 +109,7 @@ class Game:
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        # MazeChanges.change_maze(self)
 
         vision.find_boxes_in_window()
 
