@@ -132,6 +132,27 @@ items_list = [
         "Breakable": True,
         "Object_width": int(block_size * 0.45),
         "Object_height": int(block_size * 0.45),
+        "Recipes": [
+            {"Recipe": {"Maze_Key_1": 1, "Maze_Key_2": 1}, "Amount": 1},
+            ],
+        "Render_when": (block_size * -1)
+    },
+{
+        "Type": "Object",
+        "Name": "Maze_Key_1",
+        "ID": 12,
+        "Breakable": True,
+        "Object_width": int(block_size * 0.45),
+        "Object_height": int(block_size * 0.45),
+        "Render_when": (block_size * -1)
+    },
+{
+        "Type": "Object",
+        "Name": "Maze_Key_2",
+        "ID": 13,
+        "Breakable": True,
+        "Object_width": int(block_size * 0.45),
+        "Object_height": int(block_size * 0.45),
         "Render_when": (block_size * -1)
     },
 

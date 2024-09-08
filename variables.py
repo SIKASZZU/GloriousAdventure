@@ -142,7 +142,7 @@ class UniversalVariables():
     ]
 
     render_range_small: list = [
-        10, 11,  # Key
+        10, 11, 12, 13,  # Key
         90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
@@ -167,7 +167,7 @@ class UniversalVariables():
     offset_x: int = 0
     offset_y: int = 0
     
-    random_placement = [10, 1001, 1002, 1003]  # gridi sees random position nendel itemitel.
+    random_placement = [10, 12, 13, 1001, 1002, 1003]  # gridi sees random position nendel itemitel.
 
 
     # ******************** Enemy ******************** #

@@ -75,7 +75,10 @@ class ObjectManagement:
                 terrain_update = {
                     4: 5,  # Oak tree stump
                     10: 11,  # Empty key slot
+                    12: 11,  # Empty key slot
+                    13: 11,  # Empty key slot
                     7: 107,  # Farmland
+                    
                 }
                 self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 

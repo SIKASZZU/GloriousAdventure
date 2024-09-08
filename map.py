@@ -408,6 +408,11 @@ class MapData:
 
     def create_maze_items(maze, size):
 
+        def spawn_key(maze, puzzle_x, puzzle_y):
+            if random.random() < 0.1: maze[puzzle_x][puzzle_y] = 10   # 10% full key
+            elif random.random() < 0.5: maze[puzzle_x][puzzle_y] = 12 # 50% key top half
+            else: maze[puzzle_x][puzzle_y] = 13                       # else, 50%, key bottom half
+
         # Maze puzzle pieces
         for i in range(MapData._puzzle_pieces):
             while True:
@@ -415,7 +420,7 @@ class MapData:
                 puzzle_y = random.randint(3, (size - 3))
                 if maze[puzzle_x][puzzle_y] == 99:
                     if not MapData.is_dead_end(maze, puzzle_x, puzzle_y):
-                        maze[puzzle_x][puzzle_y] = 10
+                        spawn_key(maze, puzzle_x, puzzle_y)
                         break
 
         # Maze keyholders

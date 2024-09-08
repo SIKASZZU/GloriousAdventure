@@ -115,7 +115,7 @@ class RenderPictures:
 
                     # Kui terrain data on 0 - 10
                     # Teeb Water/Ground imaged v background imaged
-                    if 0 <= terrain_value <= 10 or terrain_value >= 1004:
+                    if 0 <= terrain_value <= 6 or terrain_value >= 1004:
                         if terrain_value != 0:
 
                             surroundings = TileSet.check_surroundings(self, row, col, 0)
@@ -132,10 +132,6 @@ class RenderPictures:
 
                         if image is None:
                             image = ImageLoader.load_image(image_name)
-
-                        # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
-                        if terrain_value in {7, 10}:
-                            image = None
 
                         if image:
                             if position not in RenderPictures.occupied_positions:
@@ -189,24 +185,21 @@ class RenderPictures:
                         image = ImageLoader.load_image('Maze_Ground')
                         RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
+                    elif terrain_value in {7, 107}:
+                        image_name = TileSet.determine_farmland_image_name(self, row, col)
+                        image = ImageLoader.load_image(image_name)
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
+                    elif terrain_value in {10, 11, 12, 13}:
+                        image = ImageLoader.load_image('Maze_Ground_Keyhole')
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
+
                     else:
                         image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
                         if image_name:
                             image = ImageLoader.load_image(image_name)
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-
-                    # See on peale else: sest kui see oleks enne siis
-                    # hakkavad flickerima ja tekivad topelt pildid teistele
-                    if terrain_value in {7, 107}:
-                        image_name = TileSet.determine_farmland_image_name(self, row, col)
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {10, 11}:
-                        image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
                 RenderPictures.terrain_in_view.append(current_row)
 
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
