@@ -9,7 +9,7 @@ def find_random_index_in_list_of_lists(list_of_lists, number, grid_name='block_m
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists
     for index, grid in enumerate(UniversalVariables.map_list):
         if grid == grid_name:
-            grid_data = # nyyd siia vot peaks tulema selle leitud mazei data....
+            #grid_data = # nyyd siia vot peaks tulema selle leitud mazei data....
             
             # Optionally trim edges (remove first and last row/column)
             grid_data = grid_data[1:-1]  # Remove first and last rows
