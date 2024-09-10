@@ -10,7 +10,7 @@ from tile_set import TileSet
 
 class RenderPictures:
     render_range: int = 0
-    terrain_in_view: list = []
+    terrain_in_view: dict = {}
     occupied_positions: dict = {}
     randomizer_x = round(random.uniform(0.1, 0.6) , 1)
     randomizer_y = round(random.uniform(0.1, 0.6) , 1)
@@ -41,7 +41,7 @@ class RenderPictures:
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         #TODO: fix this
         
-        # Determine the render range based on terrain type
+        # # Determine the render range based on terrain type
         if terrain_type in UniversalVariables.render_range_small:
             
             RenderPictures.render_range = 2
@@ -90,14 +90,15 @@ class RenderPictures:
             row_range_0, row_range_1, col_range_0, col_range_1 = RenderPictures.get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type)
 
             for row in range(row_range_0, row_range_1):
-                current_row = []
+                current_row = {}
 
                 for col in range(col_range_0, col_range_1):
                     if not (0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row])):
                         continue
 
-                    current_row.append((col, row))
                     terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
+                    current_row[(col, row)] = terrain_value
+                    
                     terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
                     terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
                     position = (col, row)
@@ -200,8 +201,7 @@ class RenderPictures:
                             image = ImageLoader.load_image(image_name)
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                RenderPictures.terrain_in_view.append(current_row)
-
+                RenderPictures.terrain_in_view = current_row
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
         except IndexError:
@@ -303,21 +303,20 @@ class ObjectCreation:
             object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item
             object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
 
-        for row in RenderPictures.terrain_in_view:
-            for x, y in row:
-                if self.terrain_data[y][x] in object_collision_boxes:
-                    object_id = self.terrain_data[y][x]
-                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+        for grid, object_id in RenderPictures.terrain_in_view.items():
+            x,y = grid
+            if object_id in object_collision_boxes:
+                terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                    _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
-                    collision_box_width = int(UniversalVariables.block_size * end_corner_width)
-                    collision_box_height = int(UniversalVariables.block_size * end_corner_height)
+                _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
+                collision_box_width = int(UniversalVariables.block_size * end_corner_width)
+                collision_box_height = int(UniversalVariables.block_size * end_corner_height)
 
-                    new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
+                new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
 
-                    if new_object not in UniversalVariables.collision_boxes:
-                        UniversalVariables.collision_boxes.append(new_object)
+                if new_object not in UniversalVariables.collision_boxes:
+                    UniversalVariables.collision_boxes.append(new_object)
 
 
     def object_list_creation(self, non_collision_items) -> None:
@@ -329,33 +328,33 @@ class ObjectCreation:
             elif len(item) == 9:
                 object_id, _, _, _, _, _, object_width, object_height, object_image = item
 
-            for row in RenderPictures.terrain_in_view:
-                for x, y in row:
-                    if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
-                        terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                        terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            for grid, _  in RenderPictures.terrain_in_view.items():
+                x,y = grid
+                if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
+                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                        if object_id in UniversalVariables.random_placement:
-                            position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
+                    if object_id in UniversalVariables.random_placement:
+                        position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
 
-                            # Check if the random offset for this position already exists
-                            if position_key not in ObjectCreation.random_offsets:
-                                # Generate and store the random offsets
-                                randomizer_x = round(random.uniform(0.1, 0.6), 1)
-                                randomizer_y = round(random.uniform(0.1, 0.6), 1)
-                                ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
-                            else:
-                                # Retrieve the stored random offsets
-                                randomizer_x, randomizer_y = ObjectCreation.random_offsets[position_key]
-
-                            # Apply the random offset to the object's position
-                            position = (terrain_x + UniversalVariables.block_size * randomizer_x,
-                                        terrain_y + UniversalVariables.block_size * randomizer_y)
-                            new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
+                        # Check if the random offset for this position already exists
+                        if position_key not in ObjectCreation.random_offsets:
+                            # Generate and store the random offsets
+                            randomizer_x = round(random.uniform(0.1, 0.6), 1)
+                            randomizer_y = round(random.uniform(0.1, 0.6), 1)
+                            ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
                         else:
-                            new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                            # Retrieve the stored random offsets
+                            randomizer_x, randomizer_y = ObjectCreation.random_offsets[position_key]
 
-                        if new_object not in UniversalVariables.object_list:
-                            # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-                            UniversalVariables.object_list.append(new_object)
+                        # Apply the random offset to the object's position
+                        position = (terrain_x + UniversalVariables.block_size * randomizer_x,
+                                    terrain_y + UniversalVariables.block_size * randomizer_y)
+                        new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
+                    else:
+                        new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+
+                    if new_object not in UniversalVariables.object_list:
+                        # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+                        UniversalVariables.object_list.append(new_object)
 if __name__ == '__main__':  ...
