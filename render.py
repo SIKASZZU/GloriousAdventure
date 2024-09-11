@@ -37,6 +37,7 @@ class RenderPictures:
                 elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
                     UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
+
     @staticmethod
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         #TODO: fix this
@@ -73,8 +74,10 @@ class RenderPictures:
 
         return row_range_0, row_range_1, col_range_0, col_range_1
 
-    def map_render(self) -> None:
+
+    def find_terrain_in_view(self) -> None:
         RenderPictures.terrain_in_view.clear()
+        UniversalVariables.screen.fill('black')
 
         camera_grid_row = int(
             (Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
@@ -98,117 +101,70 @@ class RenderPictures:
 
                     terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
                     current_row[(col, row)] = terrain_value
-                    
-                    terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
-                    position = (col, row)
-                    if terrain_value in UniversalVariables.interactable_items:  # see peks olema mingi no background needed list .. et ei renderiks topelt object ja map renderis
-                        continue
-
-                    if terrain_value is None:
-                        continue
-
-                    image = None
-
-                    ### FIXME: maze uksed ja blade maze flickerib
-
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-
-                    # Kui terrain data on 0 - 10
-                    # Teeb Water/Ground imaged v background imaged
-                    if 0 <= terrain_value <= 6 or terrain_value >= 1004:
-                        if terrain_value != 0:
-
-                            surroundings = TileSet.check_surroundings(self, row, col, 0)
-                            image_name = TileSet.determine_ground_image_name(self, surroundings)
-
-                        else:
-                            if random.random() < 0.6:
-                                image_name = 'Water_0'
-                            else:
-                                image_name = 'Water_' + str(random.randint(1, 3))
-
-                        if type(image_name) != str:
-                            image = image_name
-
-                        if image is None:
-                            image = ImageLoader.load_image(image_name)
-
-                        if image:
-                            if position not in RenderPictures.occupied_positions:
-                                scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-                                RenderPictures.occupied_positions[position] = scaled_image
-                            else:
-                                scaled_image = RenderPictures.occupied_positions[position]
-                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-                    elif terrain_value == 98:
-                        if random.random() < 0.65:
-                            image_name = 'Maze_Ground'
-                        elif random.random() < 0.45:  # cracks
-                            image_name = 'Maze_Ground_' + str(random.randint(1, 4))
-                        else: # cracks + stones
-                            image_name = 'Maze_Ground_' + str(random.randint(1, 9))
-
-
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 99:
-                        image_name = 'Maze_Wall_' + str(random.randint(0, 9))
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 107:
-                        image_name = TileSet.determine_farmland_image_name(self, row, col)
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {933, 977}:
-                        if EssentialsUpdate.day_night_text == 'Night':
-                            self.terrain_data[row][col] = 977
-                            image = ImageLoader.load_image('Maze_End_Bottom')
-                        else:
-                            self.terrain_data[row][col] = 933
-
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 1000:
-                        image = ImageLoader.load_image('Final_Maze_Ground_2')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {1001, 1002, 1003}:
-                        image = ImageLoader.load_image('Maze_Ground')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {7, 107}:
-                        image_name = TileSet.determine_farmland_image_name(self, row, col)
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {10, 11, 12, 13}:
-                        image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    else:
-                        image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
-                        if image_name:
-                            image = ImageLoader.load_image(image_name)
-                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
                 RenderPictures.terrain_in_view.update(current_row)
-            UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
         except IndexError:
             return
 
+
+    def select_choice(image_name):
+
+        if image_name == 'Maze_Wall':  
+            return 'Maze_Wall_' + str(random.randint(0, 9))
+        
+        # FIXME water ja groundi ei ole, sest item listis ei ole neid itemeid >:D idk.
+        if image_name == 'Water':
+            if random.random() < 0.6:
+                return 'Water_0'
+            else:
+                return 'Water_' + str(random.randint(1, 3))
+                
+        if image_name == 'Maze_Ground':
+            if random.random() < 0.65:
+                return 'Maze_Ground_1'
+            elif random.random() < 0.45:  # cracks
+                return 'Maze_Ground_' + str(random.randint(1, 4))
+            else: # cracks + stones
+                return 'Maze_Ground_' + str(random.randint(5, 9))
+
+
+    # renderib k6ik objektide all, backgroundi,terraini, seinad
+    def map_render(self):
+        RenderPictures.find_terrain_in_view(self)
+        
+        many_choices = [98,99,1,0]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
+        
+        for grid_info in RenderPictures.terrain_in_view.items():
+            image_name = None  # reset
+            grid, object_id = grid_info
+            x,y = grid
+            terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
+            terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            
+            
+            if object_id in UniversalVariables.interactable_items:  # see funk suudab objekte ka renderida, ehk ss see if statement removib objektid 2ra.
+                continue
+            
+            if object_id in [1, 0]:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
+                if object_id == 1:
+                    image_name = 'Ground_'
+                    
+                else:
+                    if random.random() < 0.6:  image_name = 'Water_0'
+                    else: image_name = 'Water_' + str(random.randint(1, 3))
+                        
+            if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
+            if image_name:
+                
+                if object_id in many_choices: image_name = RenderPictures.select_choice(image_name)  # m6nel asjal on mitu varianti.
+                image = ImageLoader.load_image(image_name)
+                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
+                
+        UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+
+
     # See func renderib objecteid
-    #TODO: objeckte me hetkel blitimie, mitte blitsime, 
     def object_render():
         desired_order = UniversalVariables.object_render_order
 
