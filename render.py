@@ -108,12 +108,14 @@ class RenderPictures:
             return
 
 
-    def select_choice(image_name):
+    def select_choice(self, image_name, surroundings):
 
         if image_name == 'Maze_Wall':  
             return 'Maze_Wall_' + str(random.randint(0, 9))
         
-        # FIXME water ja groundi ei ole, sest item listis ei ole neid itemeid >:D idk.
+        if image_name == 'Ground':
+            return TileSet.determine_ground_image_name(self, surroundings)
+                            
         if image_name == 'Water':
             if random.random() < 0.6:
                 return 'Water_0'
@@ -148,16 +150,25 @@ class RenderPictures:
             
             if object_id in [1, 0]:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
                 if object_id == 1:
-                    image_name = 'Ground_'
+                    image_name = 'Ground'
                     
                 else:
-                    if random.random() < 0.6:  image_name = 'Water_0'
-                    else: image_name = 'Water_' + str(random.randint(1, 3))
+                    image_name = 'Water'
                         
             if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
             if image_name:
                 
-                if object_id in many_choices: image_name = RenderPictures.select_choice(image_name)  # m6nel asjal on mitu varianti.
+                if object_id in many_choices: 
+                    surroundings = TileSet.check_surroundings(self, y, x, 0)
+                    image_name = RenderPictures.select_choice(self, image_name, surroundings)  # m6nel asjal on mitu varianti.
+                
+                # FIXME mdv, see see Tileset.determine ground image name returnib mingi surfaci kogu aeg...
+                # insane hack 
+                if type(image_name) == pygame.surface.Surface: 
+                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image_name, object_id)
+                    continue
+                
+                
                 image = ImageLoader.load_image(image_name)
                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
                 
