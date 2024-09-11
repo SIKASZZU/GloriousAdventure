@@ -201,7 +201,7 @@ class RenderPictures:
                             image = ImageLoader.load_image(image_name)
                             RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
 
-                RenderPictures.terrain_in_view = current_row
+                RenderPictures.terrain_in_view.update(current_row)
             UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
         except IndexError:
