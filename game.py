@@ -1,3 +1,5 @@
+# when my code is returning values I can't even explain (theory can only take you so far) - Robert Oppenheimer
+
 import pygame
 import sys
 import os
