@@ -1,3 +1,5 @@
+# when my code is returning values I can't even explain (theory can only take you so far) - Robert Oppenheimer
+
 import pygame
 import sys
 import os
@@ -24,8 +26,8 @@ from status import PlayerStatus
 from HUD import HUD_class
 from equipped_items import ItemFunctionality
 from building import Building
-
 from cooking import Cooking
+from maze_changes import MazeChanges
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -109,6 +111,7 @@ class Game:
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        # MazeChanges.change_maze(self)
 
         vision.find_boxes_in_window()
 
@@ -154,7 +157,7 @@ class Game:
         Building.update(self)
 
     def check_keys(self):
-        EssentialsUpdate.check_pressed_keys(self)  # Check pressed keys
+        Event_handler.check_pressed_keys(self)  # Check pressed keys
 
     def reset_lists(self):
         UniversalVariables.text_sequence = []

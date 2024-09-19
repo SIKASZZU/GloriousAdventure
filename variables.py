@@ -99,7 +99,7 @@ class UniversalVariables():
     # ******************** COLLISION ******************** #
     collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
     object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-    interactable_items: list = [94, 95, 96, 97, 981, 982]
+    interactable_items: list = [2, 4, 10, 94, 95, 96, 97, 981, 982, 1001, 1002]  # ei renderi topelt map_renderi all
 
     # ******************** VISION ******************** #
     light_range: int = 420
@@ -142,7 +142,7 @@ class UniversalVariables():
     ]
 
     render_range_small: list = [
-        10, 11,  # Key
+        10, 11, 12, 13,  # Key
         90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
         98, 99,  # Ground ja Wall
         981, 982,  # Keyholder
@@ -166,6 +166,9 @@ class UniversalVariables():
 
     offset_x: int = 0
     offset_y: int = 0
+    
+    random_placement = [10, 12, 13, 1001, 1002, 1003]  # gridi sees random position nendel itemitel.
+
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()

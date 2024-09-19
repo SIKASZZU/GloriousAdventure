@@ -10,7 +10,7 @@ from tile_set import TileSet
 
 class RenderPictures:
     render_range: int = 0
-    terrain_in_view: list = []
+    terrain_in_view: dict = {}
     occupied_positions: dict = {}
     randomizer_x = round(random.uniform(0.1, 0.6) , 1)
     randomizer_y = round(random.uniform(0.1, 0.6) , 1)
@@ -37,11 +37,12 @@ class RenderPictures:
                 elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
                     UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
+
     @staticmethod
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         #TODO: fix this
         
-        # Determine the render range based on terrain type
+        # # Determine the render range based on terrain type
         if terrain_type in UniversalVariables.render_range_small:
             
             RenderPictures.render_range = 2
@@ -73,9 +74,10 @@ class RenderPictures:
 
         return row_range_0, row_range_1, col_range_0, col_range_1
 
-    def map_render(self) -> None:
-        UniversalVariables.screen.fill('black')
+
+    def find_terrain_in_view(self) -> None:
         RenderPictures.terrain_in_view.clear()
+        UniversalVariables.screen.fill('black')
 
         camera_grid_row = int(
             (Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
@@ -91,131 +93,89 @@ class RenderPictures:
             row_range_0, row_range_1, col_range_0, col_range_1 = RenderPictures.get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type)
 
             for row in range(row_range_0, row_range_1):
-                current_row = []
+                current_row = {}
 
                 for col in range(col_range_0, col_range_1):
                     if not (0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row])):
                         continue
 
-                    current_row.append((col, row))
                     terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
-                    terrain_x = col * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y = row * UniversalVariables.block_size + UniversalVariables.offset_y
-                    position = (col, row)
-                    if terrain_value in UniversalVariables.interactable_items:  # see peks olema mingi no background needed list .. et ei renderiks topelt object ja map renderis
-                        continue
+                    current_row[(col, row)] = terrain_value
 
-                    if terrain_value is None:
-                        continue
-
-                    image = None
-
-                    ### FIXME: maze uksed ja blade maze flickerib
-
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-
-                    # Kui terrain data on 0 - 10
-                    # Teeb Water/Ground imaged v background imaged
-                    if 0 <= terrain_value <= 10 or terrain_value >= 1004:
-                        if terrain_value != 0:
-
-                            surroundings = TileSet.check_surroundings(self, row, col, 0)
-                            image_name = TileSet.determine_ground_image_name(self, surroundings)
-
-                        else:
-                            if random.random() < 0.6:
-                                image_name = 'Water_0'
-                            else:
-                                image_name = 'Water_' + str(random.randint(1, 3))
-
-                        if type(image_name) != str:
-                            image = image_name
-
-                        if image is None:
-                            image = ImageLoader.load_image(image_name)
-
-                        # Näiteks wheat ja key alla ei pane pilti siin vaid all pool, muidu tuleks topelt
-                        if terrain_value in {7, 10}:
-                            image = None
-
-                        if image:
-                            if position not in RenderPictures.occupied_positions:
-                                scaled_image = pygame.transform.scale(image, (UniversalVariables.block_size, UniversalVariables.block_size))
-
-                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-                                RenderPictures.occupied_positions[position] = scaled_image
-                            else:
-                                scaled_image = RenderPictures.occupied_positions[position]
-                                if [scaled_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                                    UniversalVariables.blits_sequence_collision.append([scaled_image, (terrain_x, terrain_y)])
-
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-                    elif terrain_value == 98:
-                        if random.random() < 0.95:
-                            image_name = 'Maze_Ground'
-                        else:
-                            image_name = 'Maze_Ground_' + str(random.randint(1, 3))
-
-
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 99:
-                        image_name = 'Maze_Wall_' + str(random.randint(0, 9))
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 107:
-                        image_name = TileSet.determine_farmland_image_name(self, row, col)
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {933, 977}:
-                        if EssentialsUpdate.day_night_text == 'Night':
-                            self.terrain_data[row][col] = 977
-                            image = ImageLoader.load_image('Maze_End_Bottom')
-                        else:
-                            self.terrain_data[row][col] = 933
-
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value == 1000:
-                        image = ImageLoader.load_image('Final_Maze_Ground_2')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {1001, 1002, 1003}:
-                        image = ImageLoader.load_image('Maze_Ground')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    else:
-                        image_name = next((item['Name'] for item in items_list if terrain_value == item['ID']),None)
-                        if image_name:
-                            image = ImageLoader.load_image(image_name)
-                            RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    # SEE FUNCTION BLITIB AINULT BACKGROUNDI
-
-                    # See on peale else: sest kui see oleks enne siis
-                    # hakkavad flickerima ja tekivad topelt pildid teistele
-                    if terrain_value in {7, 107}:
-                        image_name = TileSet.determine_farmland_image_name(self, row, col)
-                        image = ImageLoader.load_image(image_name)
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                    elif terrain_value in {10, 11}:
-                        image = ImageLoader.load_image('Maze_Ground_Keyhole')
-                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, position, image, terrain_value)
-
-                RenderPictures.terrain_in_view.append(current_row)
-
-            UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+                RenderPictures.terrain_in_view.update(current_row)
 
         except IndexError:
             return
 
+
+    def select_choice(self, image_name, surroundings):
+
+        if image_name == 'Maze_Wall':  
+            return 'Maze_Wall_' + str(random.randint(0, 9))
+        
+        if image_name == 'Ground':
+            return TileSet.determine_ground_image_name(self, surroundings)
+                            
+        if image_name == 'Water':
+            if random.random() < 0.6:
+                return 'Water_0'
+            else:
+                return 'Water_' + str(random.randint(1, 3))
+                
+        if image_name == 'Maze_Ground':
+            if random.random() < 0.65:
+                return 'Maze_Ground_1'
+            elif random.random() < 0.45:  # cracks
+                return 'Maze_Ground_' + str(random.randint(1, 4))
+            else: # cracks + stones
+                return 'Maze_Ground_' + str(random.randint(5, 9))
+
+
+    # renderib k6ik objektide all, backgroundi,terraini, seinad
+    def map_render(self):
+        RenderPictures.find_terrain_in_view(self)
+        
+        many_choices = [98,99,1,0]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
+        
+        for grid_info in RenderPictures.terrain_in_view.items():
+            image_name = None  # reset
+            grid, object_id = grid_info
+            x,y = grid
+            terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
+            terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            
+            
+            if object_id in UniversalVariables.interactable_items:  # see funk suudab objekte ka renderida, ehk ss see if statement removib objektid 2ra.
+                continue
+            
+            if object_id in [1, 0]:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
+                if object_id == 1:
+                    image_name = 'Ground'
+                    
+                else:
+                    image_name = 'Water'
+                        
+            if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
+            if image_name:
+                
+                if object_id in many_choices: 
+                    surroundings = TileSet.check_surroundings(self, y, x, 0)
+                    image_name = RenderPictures.select_choice(self, image_name, surroundings)  # m6nel asjal on mitu varianti.
+                
+                # FIXME mdv, see see Tileset.determine ground image name returnib mingi surfaci kogu aeg...
+                # insane hack 
+                if type(image_name) == pygame.surface.Surface: 
+                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image_name, object_id)
+                    continue
+                
+                
+                image = ImageLoader.load_image(image_name)
+                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
+                
+        UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+
+
     # See func renderib objecteid
-    #TODO: objeckte me hetkel blitimie, mitte blitsime, 
     def object_render():
         desired_order = UniversalVariables.object_render_order
 
@@ -239,7 +199,8 @@ class RenderPictures:
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
 
 class ObjectCreation:
-
+    random_offsets = {}
+    
     def creating_lists(self):
         # print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
         # print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
@@ -309,21 +270,20 @@ class ObjectCreation:
             object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item
             object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
 
-        for row in RenderPictures.terrain_in_view:
-            for x, y in row:
-                if self.terrain_data[y][x] in object_collision_boxes:
-                    object_id = self.terrain_data[y][x]
-                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+        for grid, object_id in RenderPictures.terrain_in_view.items():
+            x,y = grid
+            if object_id in object_collision_boxes:
+                terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                    _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
-                    collision_box_width = int(UniversalVariables.block_size * end_corner_width)
-                    collision_box_height = int(UniversalVariables.block_size * end_corner_height)
+                _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
+                collision_box_width = int(UniversalVariables.block_size * end_corner_width)
+                collision_box_height = int(UniversalVariables.block_size * end_corner_height)
 
-                    new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
+                new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
 
-                    if new_object not in UniversalVariables.collision_boxes:
-                        UniversalVariables.collision_boxes.append(new_object)
+                if new_object not in UniversalVariables.collision_boxes:
+                    UniversalVariables.collision_boxes.append(new_object)
 
 
     def object_list_creation(self, non_collision_items) -> None:
@@ -335,24 +295,33 @@ class ObjectCreation:
             elif len(item) == 9:
                 object_id, _, _, _, _, _, object_width, object_height, object_image = item
 
-            for row in RenderPictures.terrain_in_view:
-                for x, y in row:
-                    if self.terrain_data[y][x] == object_id:  # object on leitud kuvatult terrainilt
-                        terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                        terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            for grid, _  in RenderPictures.terrain_in_view.items():
+                x,y = grid
+                if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
+                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
+                    if object_id in UniversalVariables.random_placement:
+                        position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
+
+                        # Check if the random offset for this position already exists
+                        if position_key not in ObjectCreation.random_offsets:
+                            # Generate and store the random offsets
+                            randomizer_x = round(random.uniform(0.1, 0.6), 1)
+                            randomizer_y = round(random.uniform(0.1, 0.6), 1)
+                            ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
+                        else:
+                            # Retrieve the stored random offsets
+                            randomizer_x, randomizer_y = ObjectCreation.random_offsets[position_key]
+
+                        # Apply the random offset to the object's position
+                        position = (terrain_x + UniversalVariables.block_size * randomizer_x,
+                                    terrain_y + UniversalVariables.block_size * randomizer_y)
+                        new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
+                    else:
                         new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
-                        random_placement = [10, 1001, 1002, 1003]
-                        
-                        if new_object[5] in random_placement:
-                            position = (terrain_x + UniversalVariables.block_size * RenderPictures.randomizer_x, terrain_y + UniversalVariables.block_size * RenderPictures.randomizer_y)
-                            new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
 
-                        if new_object not in UniversalVariables.object_list:
-                            # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-                            UniversalVariables.object_list.append(
-                                (new_object[0], new_object[1], new_object[2], new_object[3], new_object[4], new_object[5])
-                                )
-
-
+                    if new_object not in UniversalVariables.object_list:
+                        # terrain_x, terrain_y, object_width, object_height, object_image, object_id
+                        UniversalVariables.object_list.append(new_object)
 if __name__ == '__main__':  ...
