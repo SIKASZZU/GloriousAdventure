@@ -1,6 +1,51 @@
 import random
 import pygame
 
+from enum import Enum
+
+
+class GameConfig(Enum):
+    # Render: wheat -> rock -> stump -> tree
+    OBJECT_RENDER_ORDER: tuple[int, ...] = (7, 2, 5, 4)
+
+    RANDOM_PLACEMENT: tuple[int, ...] = (10, 12, 13, 1001, 1002, 1003)  # Random position items
+
+    INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 6, 8, 9)
+
+    FARMABLES           : tuple[int, ...] = (7, )
+    FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + (107, )
+
+    GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1014))  # GLADE_ITEMS + 1004 -> 1013
+    MAZE_GROUND_IMAGE   : tuple[int, ...] = (90, 91, 92, 93, 94, 95, 96, 97, 98)
+
+    GLADE_ITEMS         : tuple[int, ...] = INITIAL_GLADE_ITEMS + FARMABLES
+    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 10, 94, 95, 96, 97, 981, 982, 1001, 1002)  # ei renderi topelt map_renderi all
+
+    RENDER_RANGE_SMALL  : tuple[int, ...] = (
+        10, 11, 12, 13,  # Key
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        1001, 1002, 1003,  # Barrel, Chest
+        989, 98998, 9099, 909998, 900  # Blade walls, Grounds
+    )
+
+
+    ### FIXME: MIND POLE VAJA JU VÕI ON??? Paneme pildid ainult sinna kuhu vaja
+    ###        ja mujale mitte ehk ss GROUND_IMAGE ja MAZE_GROUND_IMAGE jne...
+    NO_TERRAIN_BACKGROUND_ITEMS: tuple[int, ...] = (
+        None,
+        98, 99,  # Ground ja Wall
+        981, 982,  # Keyholder
+        500, 550, 555, 988, 999  # Portal, ground, wall
+    )
+
+    OPEN_DOOR_IDS: tuple[int, ...] = (90, 91, 92, 93, 933)
+    CLOSED_DOOR_IDS: tuple[int, ...] = (94, 95, 96, 97, 977)
+    ALL_THE_DOORS: tuple[int, ...] = OPEN_DOOR_IDS + CLOSED_DOOR_IDS  # Combine the tuples
+
+    COOKING_STATIONS: tuple[int, ...] = (8, )  # Campfire
+
 class UniversalVariables():
 
     debug_mode = True
@@ -24,7 +69,7 @@ class UniversalVariables():
 
     if debug_mode:
         jagatis: float = 10
-        
+
         # Mängu max tick rate
         FPS = 200
 
@@ -61,8 +106,8 @@ class UniversalVariables():
     player_hitbox_offset_y: float = 0.22 * player_height
 
     # Playeri koordinaatide arvutamine
-    player_x: int = random.randint(1 * block_size, 38 * block_size)
-    player_y: int = random.randint(40 * block_size, 77 * block_size)
+    player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
+    player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
 
     health_status     = None
     hunger_resistance = None
@@ -93,13 +138,12 @@ class UniversalVariables():
         ("Raw_Meat", (2, 3)),
         ("Bandage", (4, 5)),
         ("Bottle_Water", (4, 5)),
-                
+
     ]
 
     # ******************** COLLISION ******************** #
     collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
     object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-    interactable_items: list = [2, 4, 10, 94, 95, 96, 97, 981, 982, 1001, 1002]  # ei renderi topelt map_renderi all
 
     # ******************** VISION ******************** #
     light_range: int = 420
@@ -131,44 +175,14 @@ class UniversalVariables():
     already_looped_blades = None
 
     # ******************** Render ******************** #
-    map_list: list = [['block_maze'],['glade']]
+    map_list: list = [['block_maze'], ['glade']]
 
     blits_sequence_collision: list = []
     blits_sequence_objects: list = []
     text_sequence: list = []
 
-    object_render_order = [
-        7, 2, 5, 4  # Render: wheat -> rock -> stump -> tree
-    ]
-
-    render_range_small: list = [
-        10, 11, 12, 13,  # Key
-        90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
-        98, 99,  # Ground ja Wall
-        981, 982,  # Keyholder
-        1001, 1002, 1003,  # Barrel, Chest
-        989, 989_98, 9099, 9099_98, 900,  # Blade walls, Grounds
-    ]
-    
-    no_terrain_background_items: list = [
-        None,
-        98, 99,  # Ground ja Wall
-        981, 982,  # Keyholder
-        500, 550, 555, 988, 999,  # Portal, ground, wall
-        #
-    ]
-
-    glade_items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 107]
-
-    open_door_ids   = [90, 91, 92, 93, 933]
-    closed_door_ids = [94, 95, 96, 97, 977]
-    door_ids: list  = set(open_door_ids + closed_door_ids)
-
     offset_x: int = 0
     offset_y: int = 0
-    
-    random_placement = [10, 12, 13, 1001, 1002, 1003]  # gridi sees random position nendel itemitel.
-
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
@@ -181,7 +195,6 @@ class UniversalVariables():
     render_boxes_counter: int = 0
 
     # ******************** Cooking ******************** #
-    cooking_stations = [8]  # Campfire
     station_capacity = 24  # Max raw ja cooked item'ite kogus cooking station'is
 
     is_cooking: bool = False  # Invi lockimiseks
