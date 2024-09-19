@@ -1,4 +1,4 @@
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 import pygame
 import math
 
@@ -52,7 +52,7 @@ def draw_shadows(self, screen, visible_points):
     player_cone_light_strenght = self.daylight_strength
 
     try:
-        if self.terrain_data[player_y_col][player_x_row] not in UniversalVariables.render_range_small:
+        if self.terrain_data[player_y_col][player_x_row] not in GameConfig.RENDER_RANGE_SMALL.value:
             UniversalVariables.light_range *= 6
             UniversalVariables.opposite_light_range *= 34
             if self.terrain_data[player_y_col][player_x_row] not in {988, 9882, 500, 550, 555}:

@@ -1,7 +1,7 @@
 import pygame
 import time  # Import time module for cooldown functionality
 from images import ImageLoader
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 from camera import Camera
 from items import items_list
 from inventory import Inventory
@@ -253,7 +253,7 @@ class Cooking:
                 click_y //= UniversalVariables.block_size
 
                 # Kui on click'itud cooking station'i peale
-                if self.terrain_data[click_y][click_x] in UniversalVariables.cooking_stations:
+                if self.terrain_data[click_y][click_x] in GameConfig.COOKING_STATIONS.value:
                     Cooking.station_key = f"station_{click_y}_{click_x}"
 
                     station = Cooking.stations.setdefault(Cooking.station_key, {
@@ -284,7 +284,7 @@ class Cooking:
             station_x, station_y = Cooking.station_coordinates
 
             # Kontrollib, et cooking station oleks endiselt olemas, kui ei ole siis ei render'i cooking menu'd
-            if not self.terrain_data[station_y][station_x] in UniversalVariables.cooking_stations:
+            if not self.terrain_data[station_y][station_x] in GameConfig.COOKING_STATIONS.value:
                 Inventory.inv_count = 0
                 Inventory.render_inv = False
                 UniversalVariables.is_cooking = False
