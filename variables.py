@@ -10,24 +10,29 @@ class GameConfig(Enum):
 
     RANDOM_PLACEMENT: tuple[int, ...] = (10, 12, 13, 1001, 1002, 1003)  # Random position items
 
-    INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 6, 8, 9)
+    INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9)
 
     FARMABLES           : tuple[int, ...] = (7, )
     FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + (107, )
 
     GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1014))  # GLADE_ITEMS + 1004 -> 1013
-    MAZE_GROUND_IMAGE   : tuple[int, ...] = (90, 91, 92, 93, 94, 95, 96, 97, 98)
-
+    MAZE_GROUND_IMAGE   : tuple[int, ...] = (
+        # 6,                      # String
+        10, 12, 13,             # Maze Keys
+        90, 91, 92, 93, 933,    # Maze Doors
+        98,                     # Maze Ground
+        1001, 1002, 1003,       # Barrel, Chest
+    )
     GLADE_ITEMS         : tuple[int, ...] = INITIAL_GLADE_ITEMS + FARMABLES
-    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 10, 94, 95, 96, 97, 981, 982, 1001, 1002)  # ei renderi topelt map_renderi all
+    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 6, 10, 94, 95, 96, 97, 981, 982, 1001, 1002)  # ei renderi topelt map_renderi all
 
     RENDER_RANGE_SMALL  : tuple[int, ...] = (
-        10, 11, 12, 13,  # Key
-        90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,  # Uksed
-        98, 99,  # Ground ja Wall
-        981, 982,  # Keyholder
-        1001, 1002, 1003,  # Barrel, Chest
-        989, 98998, 9099, 909998, 900  # Blade walls, Grounds
+        10, 11, 12, 13,                                 # Key
+        90, 91, 92, 93, 93, 94, 95, 96, 97, 933, 977,   # Uksed
+        98, 99,                                         # Ground ja Wall
+        981, 982,                                       # Keyholder
+        1001, 1002, 1003,                               # Barrel, Chest
+        989, 98998, 9099, 909998, 900                   # Blade walls, Grounds
     )
 
 
@@ -136,8 +141,10 @@ class UniversalVariables():
         ("Serum", 1),
         ("Bread", (2, 3)),
         ("Raw_Meat", (2, 3)),
-        ("Bandage", (4, 5)),
-        ("Bottle_Water", (4, 5)),
+        ("Bandage", (1, 4)),
+        ("Bottle_Water", (2, 3)),
+        ("Glowstick", (1, 3)),
+        ("String", (1, 3)),
 
     ]
 

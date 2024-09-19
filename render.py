@@ -114,7 +114,10 @@ class RenderPictures:
             return 'Maze_Wall_' + str(random.randint(0, 9))
 
         if image_name == 'Ground':
-            return TileSet.determine_ground_image_name(self, surroundings)
+            return TileSet.determine_ground_image(self, surroundings)
+
+        # if image_name == 'String':
+        #     return TileSet.determine_string_image(self, surroundings)
 
         if image_name == 'Farmland':
             return TileSet.determine_farmland_image_name(self, surroundings)
@@ -152,15 +155,21 @@ class RenderPictures:
             if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
                 image_name = 'Water'
 
-            if object_id in GameConfig.GROUND_IMAGE.value:
+            elif object_id in GameConfig.GROUND_IMAGE.value:
                 image_name = 'Ground'
                 object_id = 1
                 surrounding_values = (0, )
 
-            if object_id in GameConfig.FARMLAND_IMAGE.value:
+            elif object_id in GameConfig.MAZE_GROUND_IMAGE.value:
+                image_name = 'Maze_Ground'
+                object_id = 98
+
+            elif object_id in GameConfig.FARMLAND_IMAGE.value:
                 image_name = 'Farmland'
                 object_id = 107
                 surrounding_values = (1, 2, 4, 5)
+
+            ### FIXME: STRING ???
 
             if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
             if image_name:

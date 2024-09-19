@@ -23,7 +23,7 @@ class TileSet:
         return top_empty, bottom_empty, left_empty, right_empty
 
 
-    def determine_ground_image_name(self, surroundings):
+    def determine_ground_image(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
         tileset_image = TileSet.get_tileset_image('images/Tile_Sets/Water_Ground_Tileset.png')
 
@@ -65,6 +65,51 @@ class TileSet:
             return 'Ground_19'
         else:
             return 'Ground_' + str(random.randint(0, 18))
+
+    def determine_string_image(self, surroundings):
+        top_empty, bottom_empty, left_empty, right_empty = surroundings
+        tileset_image = TileSet.get_tileset_image('images/Tile_Sets/String_Tile_Set.png')
+
+        if right_empty and left_empty and top_empty and bottom_empty:
+            return TileSet.get_tile(tileset_image, 32, 1, 1)
+
+        # if right_empty and left_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 3, 2)
+        # if right_empty and left_empty and top_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 3, 0)
+        # if right_empty and top_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 6, 0)
+        # if left_empty and top_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 4, 0)
+        #
+        # if right_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 2, 2)
+        # if left_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 0, 2)
+        # if left_empty and top_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 0, 0)
+        # if right_empty and top_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 2, 0)
+        #
+        # if right_empty and left_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 3, 1)
+        # if top_empty and bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 5, 0)
+        #
+        # if right_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 2, 1)
+        # if left_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 0, 1)
+        # if bottom_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 1, 2)
+        # if top_empty:
+        #     return TileSet.get_tile(tileset_image, 32, 1, 0)
+        #
+        # if random.random() < 0.5:
+        #     return 'Ground_19'
+        # else:
+        #     return 'Ground_' + str(random.randint(0, 18))
+
 
 
     def determine_farmland_image_name(self, surroundings):

@@ -74,9 +74,9 @@ class ObjectManagement:
 
                 terrain_update = {
                     4: 5,  # Oak tree stump
-                    10: 11,  # Empty key slot
-                    12: 11,  # Empty key slot
-                    13: 11,  # Empty key slot
+                    10: 98,  # Empty key slot
+                    12: 98,  # Empty key slot
+                    13: 98,  # Empty key slot
                     7: 107,  # Farmland
                     
                 }

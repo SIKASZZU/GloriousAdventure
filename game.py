@@ -188,7 +188,7 @@ class Game:
         if UniversalVariables.debug_mode:
             if not self.restrict_looping:
                 ObjectManagement.add_object_from_inv("Maze_Key", 30)
-                ObjectManagement.add_object_from_inv("Raw_Meat", 30)
+                ObjectManagement.add_object_from_inv("String", 30)
                 # ObjectManagement.add_object_from_inv("Cooked_Meat", 100)
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True

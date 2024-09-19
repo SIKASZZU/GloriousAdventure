@@ -79,13 +79,14 @@ items_list = [
 
     {
         "Type": "Object",
-        "Name": "Flower",
+        "Name": "String",
         "ID": 6,
         "Breakable": True,
         "Placeable": True,
-        "Object_width": int(block_size * 0.5),
-        "Object_height": int(block_size * 0.5),
-        "Render_when": -(block_size * 0.23)
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size
+
     },
 
     {
@@ -210,7 +211,7 @@ items_list = [
     {
         "Type": "Tool",
         "Name": "Wood_Pickaxe",
-        "ID": 24,
+        "ID": 50,
         "Recipes": [
             {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
         ],
@@ -220,7 +221,7 @@ items_list = [
     {
         "Type": "Tool",
         "Name": "Wood_Axe",
-        "ID": 25,
+        "ID": 51,
         "Recipes": [
             {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
         ],
@@ -230,11 +231,62 @@ items_list = [
     {
         "Type": "Tool",
         "Name": "Wood_Shovel",
-        "ID": 26,
+        "ID": 52,
         "Recipes": [
             {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1,},
         ],
         "Durability": 128,
+    },
+
+    {
+        "Type": "Tool",
+        "Name": "Wood_Sword",
+        "ID": 53,
+        "Recipes": [
+            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1},
+        ],
+        "Durability": 128,
+
+    },
+
+    {
+        "Type": "Tool",
+        "Name": "Stone_Pickaxe",
+        "ID": 54,
+        "Recipes": [
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1},
+        ],
+        "Durability": 256,
+    },
+
+    {
+        "Type": "Tool",
+        "Name": "Stone_Axe",
+        "ID": 55,
+        "Recipes": [
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1},
+        ],
+        "Durability": 256,
+    },
+
+    {
+        "Type": "Tool",
+        "Name": "Stone_Shovel",
+        "ID": 56,
+        "Recipes": [
+            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1,},
+        ],
+        "Durability": 256,
+    },
+
+    {
+        "Type": "Tool",
+        "Name": "Rock_Sword",
+        "ID": 57,
+        "Recipes": [
+            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1},
+        ],
+        "Durability": 256,
     },
 
     {
@@ -249,12 +301,8 @@ items_list = [
 
     {
         "Type": "Tool",
-        "Name": "Small_Rock_Sword",
+        "Name": "Glowstick",
         "ID": 28,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Stone_Shard": 1}, "Amount": 1},
-        ],
-        "Durability": 256,
     },
 
     {
