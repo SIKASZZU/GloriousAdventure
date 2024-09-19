@@ -15,11 +15,11 @@ class TileSet:
         tile = tileset.subsurface(rect)
         return tile
 
-    def check_surroundings(self, row, col, terrain_value):
-        top_empty = row > 0 and self.terrain_data[row - 1][col] == terrain_value
-        bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] == terrain_value
-        left_empty = col > 0 and self.terrain_data[row][col - 1] == terrain_value
-        right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] == terrain_value
+    def check_surroundings(self, row: int, col: int, terrain_values: tuple):
+        top_empty = row > 0 and self.terrain_data[row - 1][col] in terrain_values
+        bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] in terrain_values
+        left_empty = col > 0 and self.terrain_data[row][col - 1] in terrain_values
+        right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] in terrain_values
         return top_empty, bottom_empty, left_empty, right_empty
 
 
@@ -67,11 +67,8 @@ class TileSet:
             return 'Ground_' + str(random.randint(0, 18))
 
 
-    def determine_farmland_image_name(self, row, col):
-        top_empty = row > 0 and self.terrain_data[row - 1][col] in [1, 2, 4, 5]
-        bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] in [1, 2, 4, 5]
-        left_empty = col > 0 and self.terrain_data[row][col - 1] in [1, 2, 4, 5]
-        right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] in [1, 2, 4, 5]
+    def determine_farmland_image_name(self, surroundings):
+        top_empty, bottom_empty, left_empty, right_empty = surroundings
 
         if bottom_empty and top_empty and left_empty and right_empty:
             return "Farmland_Stand_Alone"
