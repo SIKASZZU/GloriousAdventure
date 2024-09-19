@@ -20,15 +20,11 @@ class TileSet:
         bottom_empty = row < len(self.terrain_data) - 1 and self.terrain_data[row + 1][col] == terrain_value
         left_empty = col > 0 and self.terrain_data[row][col - 1] == terrain_value
         right_empty = col < len(self.terrain_data[0]) - 1 and self.terrain_data[row][col + 1] == terrain_value
-        top_left_empty = row > 0 and col > 0 and self.terrain_data[row - 1][col - 1] == 0
-        top_right_empty = row > 0 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row - 1][col + 1] == terrain_value
-        bottom_left_empty = row < len(self.terrain_data) - 1 and col > 0 and self.terrain_data[row + 1][col - 1] == terrain_value
-        bottom_right_empty = row < len(self.terrain_data) - 1 and col < len(self.terrain_data[0]) - 1 and self.terrain_data[row + 1][col + 1] == terrain_value
-        return top_empty, bottom_empty, left_empty, right_empty, top_left_empty, top_right_empty, bottom_left_empty, bottom_right_empty
+        return top_empty, bottom_empty, left_empty, right_empty
 
 
     def determine_ground_image_name(self, surroundings):
-        top_empty, bottom_empty, left_empty, right_empty, _, _, _, _ = surroundings
+        top_empty, bottom_empty, left_empty, right_empty = surroundings
         tileset_image = TileSet.get_tileset_image('images/Tile_Sets/Water_Ground_Tileset.png')
 
         if right_empty and left_empty and top_empty and bottom_empty:
