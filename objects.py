@@ -25,12 +25,12 @@ class ObjectManagement:
                     if item["Breakable"] != True:
                         return
 
-                    if UniversalVariables.pick_up_delay < 45:
-                        print("Don't pick up so fast:", UniversalVariables.pick_up_delay, "<", 45)
+                    if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
+                        if UniversalVariables.debug_mode:
+                            print("Don't pick up so fast:", UniversalVariables.interaction_delay, "<", 45)
                         return
 
                     choice = None
-                    choice_len = 0
                     amount = 1
 
                     if "Drops" in item:
@@ -38,7 +38,6 @@ class ObjectManagement:
                         item_name = np.random.choice(choice, p=item["Drops"][1])
                         amount = item["Drops"][2]
 
-                    if choice:
                         choice_len = len(choice)
                         for item in choice:
                             if item in Inventory.inventory:
@@ -49,9 +48,7 @@ class ObjectManagement:
                             return
 
                         else:
-                            Player_audio.error_audio(self)
-                            Fading_text.re_display_fading_text("Not enough space in Inventory.")
-                            UniversalVariables.pick_up_delay = 0
+                            Inventory.inventory_full_error(self)
                             return
 
                     if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
@@ -59,9 +56,7 @@ class ObjectManagement:
                         return
 
                     else:
-                        Player_audio.error_audio(self)
-                        Fading_text.re_display_fading_text("Not enough space in Inventory.")
-                        UniversalVariables.pick_up_delay = 0
+                        Inventory.inventory_full_error(self)
                         return
 
     def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str, amount: int) -> bool:
@@ -78,13 +73,16 @@ class ObjectManagement:
                     12: 98,  # Empty key slot
                     13: 98,  # Empty key slot
                     7: 107,  # Farmland
+                    1008: 1009,  # Berry bush - Large
+                    1010: 1011,  # Berry bush - Medium
+                    1012: 1013,  # Berry bush - Small
                     
                 }
                 self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
                 ObjectManagement.add_object_from_inv(item_name, amount)
                 Player_audio.player_item_audio(self)
-                UniversalVariables.pick_up_delay = 0
+                UniversalVariables.interaction_delay = 0
                 return
 
             else:

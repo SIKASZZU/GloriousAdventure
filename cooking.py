@@ -185,18 +185,22 @@ class Cooking:
                             raw_item_quantity -= 1
                             Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
-                        if raw_item in inventory:
-                            inventory[raw_item] += quantity
+                        if Inventory.total_slots > len(Inventory.inventory) or raw_item in Inventory.inventory:
+
+                            if raw_item in inventory:
+                                inventory[raw_item] += quantity
+                            else:
+                                inventory[raw_item] = quantity
+
+                            if raw_item_quantity <= 0:
+                                raw_item = None
+                                raw_item_quantity = 0
+
+                                Cooking.stations[selected_station_key]["station_raw_item"] = (None, 0)
+                                station_data["station_cooking_delay"] = 0
+
                         else:
-                            inventory[raw_item] = quantity
-
-                        if raw_item_quantity <= 0:
-                            raw_item = None
-                            raw_item_quantity = 0
-
-                            Cooking.stations[selected_station_key]["station_raw_item"] = (None, 0)
-                            station_data["station_cooking_delay"] = 0
-
+                            Inventory.inventory_full_error(self)
 
 
         # Vaatab cooked item slot'ti
@@ -213,22 +217,26 @@ class Cooking:
                         # Kui shift'i all hoida eemaldab max koguse mis võimalik, kas kõik mis on või max station capacity
                         quantity = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else cooked_item_quantity
 
+                        if Inventory.total_slots > len(Inventory.inventory) or item in Inventory.inventory:
 
-                        # Paneb item'i invi
-                        if item in inventory:
-                            inventory[item] += quantity
+                            # Paneb item'i invi
+                            if item in inventory:
+                                inventory[item] += quantity
+                            else:
+                                inventory[item] = quantity
+
+                            # Eemaldab item'i cooked item slot'ist
+                            if cooked_item_quantity > quantity:
+                                cooked_item_quantity -= quantity
+                            else:
+                                cooked_item = None
+                                cooked_item_quantity = 0
+                                Cooking.stations[selected_station_key]["station_cooked_item"] = (None, 0)
+
+                            Cooking.stations[selected_station_key]["station_cooked_item"] = cooked_item, cooked_item_quantity
+
                         else:
-                            inventory[item] = quantity
-
-                        # Eemaldab item'i cooked item slot'ist
-                        if cooked_item_quantity > quantity:
-                            cooked_item_quantity -= quantity
-                        else:
-                            cooked_item = None
-                            cooked_item_quantity = 0
-                            Cooking.stations[selected_station_key]["station_cooked_item"] = (None, 0)
-
-                        Cooking.stations[selected_station_key]["station_cooked_item"] = cooked_item, cooked_item_quantity
+                            Inventory.inventory_full_error(self)
 
         if not any(mouse_buttons):
             Cooking.mouse_button_down = False
@@ -268,6 +276,7 @@ class Cooking:
                         UniversalVariables.cooking_menu = False
                     else:
                         # Kui vajutad cooking station'i peale siis avab cooking menu ja salvestab selle kordinaadid
+                        Inventory.crafting_menu_open = False
                         Cooking.station_coordinates = (click_x, click_y)
                         UniversalVariables.cooking_menu = True
 
@@ -275,6 +284,7 @@ class Cooking:
                     if not UniversalVariables.cooking_menu or not Cooking.player_in_range(click_x, click_y):
                         Inventory.inv_count = 0
                         Inventory.render_inv = False
+                        Inventory.crafting_menu_open = False
                         UniversalVariables.is_cooking = False
 
             Camera.right_click_x, Camera.right_click_y = None, None
@@ -287,6 +297,7 @@ class Cooking:
             if not self.terrain_data[station_y][station_x] in GameConfig.COOKING_STATIONS.value:
                 Inventory.inv_count = 0
                 Inventory.render_inv = False
+                Inventory.crafting_menu_open = False
                 UniversalVariables.is_cooking = False
 
                 raw_item, cooked_item = None, None
@@ -297,6 +308,7 @@ class Cooking:
             elif Cooking.player_in_range(station_x, station_y):
                 Inventory.inv_count = 1
                 Inventory.render_inv = True
+                Inventory.crafting_menu_open = False
                 UniversalVariables.is_cooking = True
 
                 # Load'ib ja resize'ib pildid
@@ -389,6 +401,7 @@ class Cooking:
                 UniversalVariables.cooking_menu = False
                 Inventory.inv_count = 0
                 Inventory.render_inv = False
+                Inventory.crafting_menu_open = False
                 UniversalVariables.is_cooking = False
 
     def update(self):

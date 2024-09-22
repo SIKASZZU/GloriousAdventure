@@ -767,11 +767,12 @@ items_list = [
         "Type": "Object",
         "Name": "Berry_Bush_0",
         "ID": 1008,
-        "Breakable": False,
+        "Breakable": True,
         "Block_vision": False,
         "Object_width": int(block_size),
         "Object_height": int(block_size),
-        "Render_when": -block_size
+        "Render_when": -block_size,
+        "Drops": (['Berry'], [1], 6)  # Choices, Ratio, Amount
     },
 
     {
@@ -789,11 +790,12 @@ items_list = [
         "Type": "Object",
         "Name": "Berry_Bush_1",
         "ID": 1010,
-        "Breakable": False,
+        "Breakable": True,
         "Block_vision": False,
         "Object_width": int(block_size),
         "Object_height": int(block_size),
-        "Render_when": -block_size
+        "Render_when": -block_size,
+        "Drops": (['Berry'], [1], 3),  # Choices, Ratio, Amount
     },
 
     {
@@ -811,7 +813,19 @@ items_list = [
         "Type": "Object",
         "Name": "Berry_Bush_4",
         "ID": 1012,
-        "Breakable": False,
+        "Breakable": True,
+        "Block_vision": False,
+        "Object_width": int(block_size),
+        "Object_height": int(block_size),
+        "Render_when": -block_size,
+        "Drops": (['Berry'], [1], 1),  # Choices, Ratio, Amount
+    },
+
+    {
+        "Type": "Object",
+        "Name": "Bush_4",
+        "ID": 1013,
+            "Breakable": False,
         "Block_vision": False,
         "Object_width": int(block_size),
         "Object_height": int(block_size),
@@ -819,14 +833,11 @@ items_list = [
     },
 
     {
-        "Type": "Object",
-        "Name": "Bush_4",
-        "ID": 1013,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size
+        "Type": "Food",
+        "Name": "Berry",
+        "ID": 1014,
+        "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
+        "Hunger_Resistance": 150,  # Mitu ticki ei lähe hungerit
     },
 
 ]
