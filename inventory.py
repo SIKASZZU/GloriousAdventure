@@ -442,12 +442,17 @@ class Inventory:
                                  pygame.SRCALPHA)
         overlay.set_alpha(100)
 
-        if UniversalVariables.item_delay < UniversalVariables.item_delay_max:
+        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
             tl_point = position[0]
             tr_point = position[1]
             
-            progress = int((UniversalVariables.item_delay / UniversalVariables.item_delay_max) * height)
+            progress = int((UniversalVariables.interaction_delay / UniversalVariables.interaction_delay_max) * height)
 
             loading_bar_border_rect = pygame.Rect(tl_point, tr_point + progress, width, height - progress,)
             pygame.draw.rect(overlay, 'black', loading_bar_border_rect)
             UniversalVariables.screen.blit(overlay, (0,0))
+
+    def inventory_full_error(self):
+        Player_audio.error_audio(self)
+        Fading_text.re_display_fading_text("Not enough space in Inventory.")
+        UniversalVariables.interaction_delay = 0
