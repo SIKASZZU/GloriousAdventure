@@ -136,7 +136,7 @@ class Game:
 
         Enemy.spawn(self)
         EssentialsUpdate.calculate_daylight_strength(self)
-        if Inventory.crafting_menu_open:
+        if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
             Inventory.render_craftable_items(self)
             if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
                 text = "Nothing to craft."
@@ -177,8 +177,8 @@ class Game:
 
     @staticmethod
     def add_counts():
-        if UniversalVariables.item_delay < UniversalVariables.item_delay_max:  UniversalVariables.item_delay += 1
-        UniversalVariables.pick_up_delay += 1
+        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:  UniversalVariables.interaction_delay += 1
+        UniversalVariables.interaction_delay += 1
 
     def printing(self):
         Camera.print_clicks(self)
