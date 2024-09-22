@@ -167,7 +167,7 @@ class RenderPictures:
             elif object_id in GameConfig.FARMLAND_IMAGE.value:
                 image_name = 'Farmland'
                 object_id = 107
-                surrounding_values = (1, 2, 4, 5)
+                surrounding_values = GameConfig.GROUND_IMAGE.value
 
             ### FIXME: STRING ???
 
