@@ -27,7 +27,7 @@ class ObjectManagement:
 
                     if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
                         if UniversalVariables.debug_mode:
-                            print("Don't pick up so fast:", UniversalVariables.interaction_delay, "<", 45)
+                            print("Don't pick up so fast:", UniversalVariables.interaction_delay, "<", UniversalVariables.interaction_delay_max)
                         return
 
                     choice = None
