@@ -102,7 +102,8 @@ class UniversalVariables():
     # ******************** PLAYER ******************** #
     current_equipped_item = None
     current_equipped_item_item_type = None
-    pick_up_delay = 100
+    interaction_delay = 100  # Delay tegevuse vahel, näiteks söömine, ehitamine, asjade ülesse võtmine
+    interaction_delay_max = interaction_delay
 
     player_height: int = block_size * 0.45
     player_width: int = block_size * 0.45
@@ -121,9 +122,6 @@ class UniversalVariables():
     player_bleeding   = False
     serum_active      = False
     player_sprinting  = False
-
-    item_delay = 70  # includes drinking & eating
-    item_delay_max = item_delay
 
     # ******************** Screen ******************** #
     ui_elements: list = []
