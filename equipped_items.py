@@ -34,8 +34,10 @@ class ItemFunctionality:
 
         if is_click_inside_player_rect(self):
 
-            if UniversalVariables.item_delay < UniversalVariables.item_delay_max:
-                return print(f'Item delay: {UniversalVariables.item_delay} < 70 ')
+            if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
+                if UniversalVariables.debug_mode:
+                    print(f'Item delay: {UniversalVariables.interaction_delay} < UniversalVariables.interaction_delay_max ')
+                return
 
             equiped_item = UniversalVariables.current_equipped_item
 
@@ -101,7 +103,7 @@ class ItemFunctionality:
                         ObjectManagement.remove_object_from_inv(equiped_item)  # v6tab s66dud itemi 2ra
                         Player_audio.eating_audio(self)
                         self.click_position = ()
-            UniversalVariables.item_delay = 0
+            UniversalVariables.interaction_delay = 0
 
     #if item == 'Flashlight':
     #    new_player_cone_light_strenght = -70
