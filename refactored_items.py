@@ -25,6 +25,7 @@ class ObjectItem(Item):
             self,
             name: str, item_id: int, hp: int,
             width: int | float=1, height: int | float=1, render_when: int | float=None,
+            
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
             breakable=False, placeable=False, cookable=False
@@ -39,6 +40,18 @@ class ObjectItem(Item):
         self.drops = drops
         self.breakable = breakable
         self.placeable = placeable
+
+class WorldItem(Item):
+    def __init__(self, 
+            name: str, item_id: int,
+            width: int, height: int,
+            render_when: int | float=None, cookable: str = False
+    ) -> None:
+        
+        super().__init__('World', name, item_id, cookable)
+        self.width = width
+        self.height = height
+        self.render_when = render_when
 
 
 class MineralItem(Item):
@@ -148,6 +161,211 @@ items_list = [
     ToolItem(
         name="Glowstick",
         item_id=28,
+    ),
+
+    # - # - # - # - # - # - # World # - # - # - # - # - # - #
+
+    # maze
+
+    WorldItem(
+        name='Maze_Ground',
+        item_id=98,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Wall',
+        item_id=99,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Wall',
+        item_id=99,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Ground_Keyhole',
+        item_id=11,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Keyholder_with_key',
+        item_id=982,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Keyholder_without_key',
+        item_id=981,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+    
+    WorldItem(
+        name='Status_gray',
+        item_id=500,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Status_yellow',
+        item_id=550,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Status_green',
+        item_id=555,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Final_Maze_Ground',
+        item_id=988,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Final_Maze_Ground_2',
+        item_id=9882,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Void',
+        item_id=999,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Endgate',
+        item_id=1000,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+
+    # blade maze
+
+    WorldItem(
+        name='Maze_Blade',
+        item_id=9099,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Blade',
+        item_id=989,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Blade',
+        item_id=900,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Ground',
+        item_id=9099_98,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Ground',
+        item_id=989_98,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+    
+    # doors
+
+    WorldItem(
+        name='Maze_Start_Top',
+        item_id=91,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Start_Right',
+        item_id=92,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Start_Left',
+        item_id=90,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Start_Bottom',
+        item_id=93,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_Start_Bottom',
+        item_id=933,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_End_Bottom',
+        item_id=97,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_End_Bottom',
+        item_id=977,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_End_Top',
+        item_id=95,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_End_Right',
+        item_id=96,
+        width=int(block_size),
+        height=int(block_size)
+    ),
+
+    WorldItem(
+        name='Maze_End_Left',
+        item_id=94,
+        width=int(block_size),
+        height=int(block_size)
     ),
 
     # - # - # - # - # - # - # Objects # - # - # - # - # - # - #
@@ -346,6 +564,20 @@ items_list = [
 
         breakable=True,
         placeable=True
+    ),
+    ObjectItem(
+        name="Opened_Loot_Barrel",
+        item_id=1002,
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
+        render_when=(block_size * 0.2),
+    ),
+
+    ObjectItem(
+        name="Loot_Barrel",
+        item_id=1001,
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
     ),
 
     # - # - # - # - # - # - # Minerals # - # - # - # - # - # - #
