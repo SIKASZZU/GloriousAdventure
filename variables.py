@@ -15,7 +15,7 @@ class GameConfig(Enum):
     FARMABLES           : tuple[int, ...] = (7, )
     FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + (107, )
 
-    GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1014))  # GLADE_ITEMS + 1004 -> 1013
+    GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1016))  # GLADE_ITEMS + 1004 -> 1015
     MAZE_GROUND_IMAGE   : tuple[int, ...] = (
         # 6,                      # String
         10, 12, 13,             # Maze Keys
