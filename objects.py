@@ -1,17 +1,13 @@
 import pygame
-from items import items_list
+import items
 from inventory import Inventory
 from variables import UniversalVariables
 from audio import Player_audio
 from text import Fading_text
 import numpy as np
 
-# Preprocess'ib item'id dicti mida
-def preprocess_items(items_list):
-    return {item["ID"]: item for item in items_list}
 
 class ObjectManagement:
-    items_dict = preprocess_items(items_list)
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, object_id: int = None) -> None:
         """ Items cannot be picked up until they are added to the minerals list """
@@ -21,15 +17,15 @@ class ObjectManagement:
             return
 
         # Fetch the item from the dictionary
-        item = ObjectManagement.items_dict.get(object_id)
+        item = items.find_item_by_id(object_id)
 
         if not item:
             return
 
-        item_name = item.get("Name")
+        name = item.name
 
         # Check if item is breakable
-        if not item.get("Breakable", False):
+        if not item.breakable:
             return
 
         # Check interaction delay
@@ -43,27 +39,27 @@ class ObjectManagement:
         amount = 1
 
         if "Drops" in item:
-            choice, probabilities, amount = item["Drops"]
-            item_name = np.random.choice(choice, p=probabilities)
+            choice, probabilities, amount = item.drops
+            name = np.random.choice(choice, p=probabilities)
 
             # Check inventory space for the dropped items
             choice_len = sum(1 for drop_item in choice if drop_item not in Inventory.inventory)
 
             if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
-                ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
+                ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
                 return
             else:
                 Inventory.inventory_full_error(self)
                 return
 
         # Check if there is space in the inventory or if the item is already in the inventory
-        if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
-            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
+        if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
             return
         else:
             Inventory.inventory_full_error(self)
             return
-    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str, amount: int) -> bool:
+    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, name: str, amount: int) -> bool:
         grid_col: int = int(terrain_x // UniversalVariables.block_size)
         grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
@@ -84,7 +80,7 @@ class ObjectManagement:
                 }
                 self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
-                ObjectManagement.add_object_from_inv(item_name, amount)
+                ObjectManagement.add_object_from_inv(name, amount)
                 Player_audio.player_item_audio(self)
                 UniversalVariables.interaction_delay = 0
                 return

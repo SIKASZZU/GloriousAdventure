@@ -59,7 +59,7 @@ class Cooking:
         if not Cooking.cooking_list:
             # Populate the cooking list as a dictionary
             if not Cooking.cooking_list:
-                Cooking.cooking_list = {item.get("Name"): item.get("Cookable") for item in items_list if item.get("Cookable")}
+                Cooking.cooking_list = {item.name: item.cookable for item in items_list if item.cookable}
 
         for station_key, station_data in Cooking.stations.items():
             raw_item, raw_item_quantity = station_data['station_raw_item']

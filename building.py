@@ -8,22 +8,22 @@ class Building:
     def is_valid_item(self) -> tuple:
         """
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.
-        Return'ib (item_name, object_id) if valid, else False.
+        Return'ib (name, object_id) if valid, else False.
         """
 
-        item_name = UniversalVariables.current_equipped_item
+        name = UniversalVariables.current_equipped_item
 
-        if not item_name:
+        if not name:
             return False
 
         for item in items_list:
-            if item_name == item.get("Name"):
-                item_id = item["ID"]
+            if name == item.get("Name"):
+                id = item["ID"]
 
                 if not item.get("Placeable", False):
                     return False
 
-                return item_name, item_id
+                return name, id
 
         return False
 
@@ -53,14 +53,14 @@ class Building:
 
         return False
 
-    def change_terrain_value(self, item_name: str, item_id: int, grid_x: int, grid_y: int) -> bool:
+    def change_terrain_value(self, name: str, id: int, grid_x: int, grid_y: int) -> bool:
         """
         Muudab valitud asukoha terrain value antud itemi valueks ja võtab selle invi'st ära.
         """
         try:
             if 0 <= grid_y < len(self.terrain_data) and 0 <= grid_x < len(self.terrain_data[0]):
-                self.terrain_data[grid_y][grid_x] = item_id
-                ObjectManagement.remove_object_from_inv(item_name)
+                self.terrain_data[grid_y][grid_x] = id
+                ObjectManagement.remove_object_from_inv(name)
                 Player_audio.player_item_audio(self)
                 return True
             else:
@@ -73,8 +73,8 @@ class Building:
             return
 
         if Building.is_valid_item(self) and Building.is_valid_location(self):
-            item_name, item_id = Building.is_valid_item(self)
+            name, id = Building.is_valid_item(self)
             grid_x, grid_y = Building.is_valid_location(self)
-            return Building.change_terrain_value(self, item_name, item_id, grid_x, grid_y)
+            return Building.change_terrain_value(self, name, id, grid_x, grid_y)
 
         return False

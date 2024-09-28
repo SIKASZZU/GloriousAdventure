@@ -76,8 +76,8 @@ class Collisions:
             terrain_y: int = terrain_y - UniversalVariables.offset_y
 
             for item in items_list:
-               if item.get("ID") == object_id:
-                    render_when = item.get("Render_when")
+                if item.id == object_id:
+                    render_when = item.render_when
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             if self.player_rect.colliderect(collision_object_rect):
                 pick_up_items = {item[5] for item in UniversalVariables.object_list}

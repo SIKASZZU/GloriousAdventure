@@ -82,16 +82,16 @@ class Inventory:
     def handle_crafting_click(self, x: int, y: int) -> None:
         """ Lubab hiit kasutades craftida """
         try:
-            for item_name, rect in Inventory.craftable_items_display_rects.items():
+            for name, rect in Inventory.craftable_items_display_rects.items():
                 if not rect.collidepoint(x, y):
                     continue
 
-                if item_name not in Inventory.inventory and Inventory.total_slots <= len(Inventory.inventory):
+                if name not in Inventory.inventory and Inventory.total_slots <= len(Inventory.inventory):
                     Player_audio.error_audio(self)
                     Fading_text.re_display_fading_text("Not enough space in Inventory.")
                     return
 
-                crafted_item = Inventory.craft_item(self, item_name)  # Pass 'self' and 'item_name'
+                crafted_item = Inventory.craft_item(self, name)  # Pass 'self' and 'name'
 
         except AttributeError:
             return
@@ -223,13 +223,13 @@ class Inventory:
         UniversalVariables.screen.blit(overlay, (0, 0))
     
         new_white_items = set()
-        for rect, (item_name, count) in zip(Inventory.inventory_display_rects, Inventory.inventory.items()):
+        for rect, (name, count) in zip(Inventory.inventory_display_rects, Inventory.inventory.items()):
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
     
             if count < 0:
                 continue
 
-            item_image = ImageLoader.load_image(item_name)
+            item_image = ImageLoader.load_image(name)
             if not item_image:
                 continue
 
@@ -239,16 +239,16 @@ class Inventory:
             font = pygame.font.Font(None, 20)
 
             # Check if the item is new or its count has changed
-            if (item_name not in Inventory.old_inventory or
-                (item_name in Inventory.old_inventory and Inventory.inventory[item_name] != Inventory.old_inventory[item_name])):
+            if (name not in Inventory.old_inventory or
+                (name in Inventory.old_inventory and Inventory.inventory[name] != Inventory.old_inventory[name])):
                 Inventory.white_text = True
-                new_white_items.add(item_name)
-                Inventory.white_text_counters[item_name] = 0  # Initialize the counter for the new item
+                new_white_items.add(name)
+                Inventory.white_text_counters[name] = 0  # Initialize the counter for the new item
     
             text_color = 'black'
-            if item_name in Inventory.white_colored_items:
+            if name in Inventory.white_colored_items:
                 text_color = 'white'  # color for item change
-                Inventory.white_text_counters[item_name] += 1  # Increment the counter for the item
+                Inventory.white_text_counters[name] += 1  # Increment the counter for the item
     
             text = font.render(str(count), True, text_color)
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
@@ -325,17 +325,17 @@ class Inventory:
 
         # Pre-load images and resize them
         resized_images = {}
-        for item_name, rect in Inventory.craftable_items_display_rects.items():
-            object_image = ImageLoader.load_image(item_name)
+        for name, rect in Inventory.craftable_items_display_rects.items():
+            object_image = ImageLoader.load_image(name)
             if object_image is not None:
                 object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
-                resized_images[item_name] = object_image
+                resized_images[name] = object_image
 
         # Prepare the list of blit operations
         blit_operations = []
 
         # Draw the background and items on the overlay
-        for item_name, rect in Inventory.craftable_items_display_rects.items():
+        for name, rect in Inventory.craftable_items_display_rects.items():
             pygame.draw.rect(overlay, (177, 177, 177), rect)  # Draw semi-transparent background
             pygame.draw.rect(overlay, 'black', rect, 2)  # Draw black border
 
@@ -343,13 +343,13 @@ class Inventory:
             pygame.draw.rect(overlay, (0, 0, 0, 180), item_rect)  # Draw item background
 
             # Blit the pre-loaded and resized image
-            if item_name in resized_images:
-                object_image = resized_images[item_name]
+            if name in resized_images:
+                object_image = resized_images[name]
                 item_image_rect = object_image.get_rect(center=item_rect.center)
                 blit_operations.append((object_image, item_image_rect.topleft))
 
             # Render the amount of craftable items
-            text = font.render(str(self.craftable_items[item_name]), True, 'Black')
+            text = font.render(str(self.craftable_items[name]), True, 'Black')
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
             blit_operations.append((text, text_rect))
 
@@ -359,10 +359,10 @@ class Inventory:
         # Blit the overlay to the screen once
         UniversalVariables.screen.blit(overlay, (0, 0))
 
-    def craft_item(self, item_name):
+    def craft_item(self, name):
         """ Craftib itemi ja uuendab invi """
         # Võtab item_list'ist nimed
-        crafted_item = next((item for item in items_list if item["Name"] == item_name), None)
+        crafted_item = next((item for item in items_list if item["Name"] == name), None)
 
         if crafted_item:
             recipes = crafted_item.get("Recipes", [])
@@ -385,23 +385,23 @@ class Inventory:
                     amount += recipe.get("Amount", 1)
 
             # Lisab craftitud itemi invi
-            Inventory.inventory[item_name] = Inventory.inventory.get(item_name, 0) + amount
+            Inventory.inventory[name] = Inventory.inventory.get(name, 0) + amount
 
             # Remove items with a count of zero from the inventory
             Inventory.inventory = {k: v for k, v in Inventory.inventory.items() if v > 0}
 
-    def render_equipped_slot(self, item_name):
+    def render_equipped_slot(self, name):
         # Initialize blit operations list
         blit_operations = [(Inventory.resized_slot_image, Inventory.position)]
 
         # Check if the item name is valid
-        if item_name is None or item_name not in Inventory.inventory:
+        if name is None or name not in Inventory.inventory:
             UniversalVariables.screen.blits(blit_operations)
             UniversalVariables.current_equipped_item = None
             return
 
         # Load and resize item image
-        item_image = ImageLoader.load_image(item_name)
+        item_image = ImageLoader.load_image(name)
         slot_width, slot_height = Inventory.resized_slot_image.get_size()
         max_item_size = (slot_width - 15, slot_height - 15)
         resized_item_image = pygame.transform.scale(item_image, max_item_size)
@@ -414,7 +414,7 @@ class Inventory:
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count if greater than 1
-        item_count = Inventory.inventory.get(item_name, 0)
+        item_count = Inventory.inventory.get(name, 0)
         if item_count > 1:
             count_text = str(item_count)
             if count_text not in Inventory.text_cache:

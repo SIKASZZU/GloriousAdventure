@@ -2,7 +2,7 @@ import pygame
 import random
 
 from camera import Camera
-from items import items_list
+from items import *
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
@@ -116,7 +116,6 @@ class RenderPictures:
                     current_row[(col, row)] = terrain_value
 
                 RenderPictures.terrain_in_view.update(current_row)
-                print(RenderPictures.terrain_in_view)
 
         except IndexError:
             return
@@ -188,7 +187,7 @@ class RenderPictures:
 
             ### FIXME: STRING ???
 
-            if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
+            if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
             if image_name:
 
                 if object_id in many_choices:
@@ -211,8 +210,8 @@ class RenderPictures:
         desired_order = GameConfig.OBJECT_RENDER_ORDER.value
 
         def sort_key(item):
-            item_id = item[5]
-            return desired_order.index(item_id) if item_id in desired_order else float('inf')
+            id = item[5]
+            return desired_order.index(id) if id in desired_order else float('inf')
 
         # Filter and sort the objects
         sorted_objects = sorted(
@@ -242,23 +241,25 @@ class ObjectCreation:
         items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
 
         for item in items_list:
-            if item.get("Type") == "Object":
-                object_id = item.get("ID")
+
+            if isinstance(item, ObjectItem):
+                object_dir = find_item_by_name(item.name)
+                object_id = object_dir.id
                 if object_id in items_not_designed_for_list:
                     continue
                 else:
-                    object_image_name = item.get("Name")
-                    breakability      = item.get('Breakable')
-                    object_width      = item.get("Object_width")
-                    object_height     = item.get("Object_height")
-                    collision_box     = item.get("Collision_box")
+                    object_image_name = item.name
+                    breakability      = item.breakable
+                    object_width      = item.width
+                    object_height     = item.height
+                    # if hasattr(item, 'collision_box'):  collision_box = item.collision_box
                     object_image      = ImageLoader.load_image(object_image_name)
-
+                    collision_box = [0,0,0,0]
 
                 if breakability == None:  breakability = False
 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-
+                print(a_item)
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
