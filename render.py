@@ -100,9 +100,23 @@ class RenderPictures:
                         continue
 
                     terrain_value = self.terrain_data[row][col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
+
+                    if terrain_value in GameConfig.GROUND_IMAGE.value and terrain_value != 1:
+                        terrain_value = (1, terrain_value)
+                    
+                    elif terrain_value in GameConfig.MAZE_GROUND_IMAGE.value and terrain_value != 98:
+                        terrain_value = (98, terrain_value)
+
+                    elif terrain_value in GameConfig.FARMLAND_IMAGE.value and terrain_value != 107:
+                        terrain_value = (107, terrain_value)
+
+                    else:
+                        terrain_value = (terrain_value, )
+                    
                     current_row[(col, row)] = terrain_value
 
                 RenderPictures.terrain_in_view.update(current_row)
+                print(RenderPictures.terrain_in_view)
 
         except IndexError:
             return
@@ -147,10 +161,13 @@ class RenderPictures:
 
             surrounding_values = (None, )  # Valued mille järgi valib vajalikud tile-set'i pildid
             image_name = None  # reset
-            grid, object_id = grid_info
+            grid, grid_ids = grid_info
+
             x, y = grid
             terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
             terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
+
+            object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
 
             if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
                 image_name = 'Water'
@@ -216,8 +233,6 @@ class ObjectCreation:
     random_offsets = {}
 
     def creating_lists(self):
-        # print(f'\n UniversalVariables.collision_boxes len:{len(UniversalVariables.collision_boxes)} {UniversalVariables.collision_boxes}')
-        # print(f'\n UniversalVariables.object_list len:{len(UniversalVariables.object_list)} {UniversalVariables.object_list}')
 
         UniversalVariables.collision_boxes = []
         UniversalVariables.object_list = []
@@ -284,8 +299,10 @@ class ObjectCreation:
             object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item
             object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
 
-        for grid, object_id in RenderPictures.terrain_in_view.items():
+        for grid, grid_ids in RenderPictures.terrain_in_view.items():
+        
             x,y = grid
+            object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
             if object_id in object_collision_boxes:
                 terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                 terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
@@ -309,20 +326,19 @@ class ObjectCreation:
             elif len(item) == 9:
                 object_id, _, _, _, _, _, object_width, object_height, object_image = item
 
-            for grid, _  in RenderPictures.terrain_in_view.items():
+            for grid, grid_ids in RenderPictures.terrain_in_view.items():
                 x,y = grid
                 if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
                     terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                     terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                    ### FIXME: EI TÖÖTA ÕIGESTI, IGAL ITEMIL ON SAMA RANDOM PLACEMENT!!!!
                     if object_id in GameConfig.RANDOM_PLACEMENT.value:
                         position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
 
                         # Check if the random offset for this position already exists
                         if position_key not in ObjectCreation.random_offsets:
                             # Generate and store the random offsets
-                            randomizer_x = round(random.uniform(0.1, 0.6), 1)
+                            randomizer_x = round(random.uniform(0.1, 0.6), 1)  # TODO: fix hard coded 0.6. 1 - object width peab olema.
                             randomizer_y = round(random.uniform(0.1, 0.6), 1)
                             ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
                         else:
@@ -339,4 +355,5 @@ class ObjectCreation:
                     if new_object not in UniversalVariables.object_list:
                         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
                         UniversalVariables.object_list.append(new_object)
+
 if __name__ == '__main__':  ...
