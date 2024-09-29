@@ -334,8 +334,27 @@ class ObjectCreation:
                         # Check if the random offset for this position already exists
                         if position_key not in ObjectCreation.random_offsets:
                             # Generate and store the random offsets
-                            randomizer_x = round(random.uniform(0.1, 0.6), 1)  # TODO: fix hard coded 0.6. 1 - object width peab olema.
-                            randomizer_y = round(random.uniform(0.1, 0.6), 1)
+                            def surrounding_walls(x,y):
+                                """ Objektid lahevad yle seinte, kui randomx,y on liiga suured. """
+                                try:
+                                    if self.terrain_data[y+1][x] == 99 or self.terrain_data[y+2][x] == 99:
+                                        print('Y+1', self.terrain_data[y+1][x] == 99, 'Y+2', self.terrain_data[y+2][x] == 99)
+                                        return True
+                                    if self.terrain_data[y][x+1] == 99 or self.terrain_data[y][x+1] == 99:
+                                        print('X+1', self.terrain_data[y][x+1] == 99, 'X+2', self.terrain_data[y][x+1] == 99)
+                                        return True
+                                    return False
+                                except IndexError: return False
+
+                            if surrounding_walls(x, y) == True:
+                                randomizer_x = round(random.uniform(0, 0.2), 1)
+                                randomizer_y = round(random.uniform(0, 0.2), 1)
+                            else:    
+                                randomizer_x = round(random.uniform(0, 1), 1)
+                                randomizer_y = round(random.uniform(0, 1), 1)
+                            
+
+                            #print(object_id, object_width, object_height, randomizer_x, randomizer_y)
                             ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
                         else:
                             # Retrieve the stored random offsets

@@ -8,7 +8,7 @@ class GameConfig(Enum):
     # Render: wheat -> rock -> stump -> tree
     OBJECT_RENDER_ORDER: tuple[int, ...] = (7, 2, 5, 4)
 
-    RANDOM_PLACEMENT: tuple[int, ...] = (2, 4, 10, 12, 13, 1001, 1002, 1003)  # Random position items
+    RANDOM_PLACEMENT: tuple[int, ...] = (2, 4, 5, 10, 12, 13, 1001, 1002, 1003)  # Random position items
 
     INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9)
 
