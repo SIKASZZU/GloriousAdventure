@@ -28,7 +28,7 @@ class ObjectItem(Item):
     def __init__(
             self,
             name: str, id: int, hp: int,
-            width: int | float=1, height: int | float=1, render_when: int | float=None,
+            width: int | float=block_size, height: int | float=block_size, render_when: int | float=None,
             
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
@@ -351,6 +351,8 @@ items_list = [
         id=4,
         hp=5,
 
+        width=int(block_size * 2),
+        height=int(block_size * 2),
         render_when=block_size * 1.5,
 
         drops=(['Oak_Log'], [1], 1),
