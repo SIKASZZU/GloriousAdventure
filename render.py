@@ -241,21 +241,20 @@ class ObjectCreation:
 
         for item_list in [object_items, world_items]:
             for item in item_list:
-                if isinstance(item, (ObjectItem, WorldItem)):
-                    object_dir = find_item_by_name(item.name)
-                    object_id = object_dir.id
-                    if object_id in items_not_designed_for_list:
-                        continue
+                object_dir = find_item_by_name(item.name)
+                object_id = object_dir.id
+                if object_id in items_not_designed_for_list:
+                    continue
 
-                    object_image_name = item.name
-                    object_width = item.width
-                    object_height = item.height
-                    object_image = ImageLoader.load_image(object_image_name)
+                object_image_name = item.name
+                object_width = item.width
+                object_height = item.height
+                object_image = ImageLoader.load_image(object_image_name)
 
-                    breakability = item.breakable if isinstance(item, ObjectItem) else False
-                    collision_box = item.collision_box if isinstance(item, WorldItem) else None
+                breakability = item.breakable if isinstance(item, ObjectItem) else False
+                collision_box = item.collision_box if isinstance(item, WorldItem) else None
 
-                    a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
+                a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
