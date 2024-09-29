@@ -32,10 +32,10 @@ class ObjectItem(Item):
             
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
-            breakable=False, placeable=False, cookable=False
+            breakable=False, placeable=False
     ) -> None:
 
-        super().__init__('Object', name, id, cookable)
+        super().__init__('Object', name, id)
         self.hp = hp
         self.recipe = recipe
         self.width = width
@@ -53,10 +53,10 @@ class WorldItem(Item):
             name: str, id: int,
             width: int=block_size, height: int=block_size,
             collision_box: list=None,
-            render_when: int | float=None, cookable: str = False
+            render_when: int | float=None
     ) -> None:
         
-        super().__init__('World', name, id, cookable)
+        super().__init__('World', name, id)
         self.width = width
         self.height = height
         self.render_when = render_when
@@ -83,10 +83,9 @@ class ConsumableItem(Item):
             hunger_resistance: int | float=None, thirst_resistance: int | float=None,
             healing_amount: int=None,
             timer: int=None,
-            cookable=False
     ) -> None:
 
-        super().__init__('Consumable', name, id, cookable)
+        super().__init__('Consumable', name, id)
         self.satisfaction_gain = satisfaction_gain
         self.hunger_resistance = hunger_resistance
         self.healing_amount = healing_amount
