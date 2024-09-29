@@ -403,7 +403,7 @@ items_list = [
         render_when=block_size * 1.5,
         width=int(block_size * 2),
         height=int(block_size * 2),
-
+        
         drops=(['Oak_Log'], [1], 1),
         breakable=True
     ),
@@ -515,57 +515,7 @@ items_list = [
         breakable=True,
         placeable=True
     ),
-
-    ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
-
-    ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
-
-    ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
+    
     ObjectItem(
         name="Opened_Loot_Barrel",
         id=1002,
@@ -708,6 +658,12 @@ items_list = [
 
 ]
 
+# List'id item type kohta
+world_items = [item for item in items_list if isinstance(item, WorldItem)]
+object_items = [item for item in items_list if isinstance(item, ObjectItem)]
+tool_items = [item for item in items_list if isinstance(item, ToolItem)]
+mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
+consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
 
 # Teeb dict'id, et saaks kiiremini asju ülesse otsida. (efficient)
 items_dict_by_id = {item.id: item for item in items_list}
