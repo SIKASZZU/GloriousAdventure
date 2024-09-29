@@ -4,6 +4,7 @@
 from variables import UniversalVariables
 block_size = UniversalVariables.block_size
 
+block_size = UniversalVariables.block_size
 
 class Item:
     def __init__(self, type: str, name: str, id: int, cookable: str=False):
@@ -45,10 +46,13 @@ class ObjectItem(Item):
         self.breakable = breakable
         self.placeable = placeable
 
+        if self.drops is None:
+            self.drops = ([self.name], [1], 1)
+
 class WorldItem(Item):
     def __init__(self, 
             name: str, id: int,
-            width: int, height: int,
+            width: int=block_size, height: int=block_size,
             collision_box: list=None,
             render_when: int | float=None, cookable: str = False
     ) -> None:
@@ -98,89 +102,66 @@ items_list = [
     WorldItem(
         name='Maze_Ground',
         id=98,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Wall',
         id=99,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Maze_Ground_Keyhole',
         id=11,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_With_Key',
         id=982,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_Without_Key',
         id=981,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
+
     ),
     
     WorldItem(
         name='Status_Gray',
         id=500,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Status_Yellow',
         id=550,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Status_Green',
         id=555,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Final_Maze_Ground',
         id=988,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Final_Maze_Ground_2',
         id=9882,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Void',
         id=999,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Endgate',
         id=1000,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     # blade maze
@@ -188,36 +169,26 @@ items_list = [
     WorldItem(
         name='Maze_Blade',
         id=9099,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Blade',
         id=989,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Blade',
         id=900,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Ground',
         id=9099_98,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Ground',
         id=989_98,
-        width=int(block_size),
-        height=int(block_size)
     ),
     
     # doors
@@ -225,71 +196,51 @@ items_list = [
     WorldItem(
         name='Maze_Start_Top',
         id=91,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Right',
         id=92,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Left',
         id=90,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Bottom',
         id=93,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Bottom',
         id=933,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Bottom',
         id=97,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Bottom',
         id=977,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Top',
         id=95,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Right',
         id=96,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Left',
         id=94,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     # - # - # - # - # - # - # Tools # - # - # - # - # - # - #
@@ -669,6 +620,16 @@ consumable_item = [item for item in items_list if isinstance(item, ConsumableIte
 items_dict_by_id = {item.id: item for item in items_list}
 items_dict_by_name = {item.name: item for item in items_list}
 
+# List'id item type kohta
+world_items = [item for item in items_list if isinstance(item, WorldItem)]
+object_items = [item for item in items_list if isinstance(item, ObjectItem)]
+tool_items = [item for item in items_list if isinstance(item, ToolItem)]
+mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
+consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
+
+
+# for obj_item in object_items:
+#     print(vars(obj_item))
 
 # Otsib itemi selle ID järgi.
 def find_item_by_id(id) -> dict:
@@ -701,6 +662,3 @@ def search_item_from_items(type: type, item_name_or_id: str | int, target_attrib
 
 # result = search_item_from_items(type=ConsumableItem, item_name_or_id='berry', target_attribute='satisfaction_gain')
 # print(result)
-
-x = find_item_by_id(99)
-print(dir(x))
