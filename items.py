@@ -45,6 +45,9 @@ class ObjectItem(Item):
         self.breakable = breakable
         self.placeable = placeable
 
+        if self.drops is None:
+            self.drops = ([self.name], [1], 1)
+
 class WorldItem(Item):
     def __init__(self, 
             name: str, id: int,
@@ -464,56 +467,6 @@ items_list = [
     ),
 
     ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
-
-    ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
-
-    ObjectItem(
-        name="Campfire",
-        id=8,
-        hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size * 0.2),
-
-        recipe=[
-            {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
-    ObjectItem(
         name="Opened_Loot_Barrel",
         id=1002,
         hp=1,
@@ -660,6 +613,16 @@ items_list = [
 items_dict_by_id = {item.id: item for item in items_list}
 items_dict_by_name = {item.name: item for item in items_list}
 
+# List'id item type kohta
+world_items = [item for item in items_list if isinstance(item, WorldItem)]
+object_items = [item for item in items_list if isinstance(item, ObjectItem)]
+tool_items = [item for item in items_list if isinstance(item, ToolItem)]
+mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
+consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
+
+
+# for obj_item in object_items:
+#     print(vars(obj_item))
 
 # Otsib itemi selle ID järgi.
 def find_item_by_id(id) -> dict:
@@ -692,6 +655,3 @@ def search_item_from_items(type: type, item_name_or_id: str | int, target_attrib
 
 # result = search_item_from_items(type=ConsumableItem, item_name_or_id='berry', target_attribute='satisfaction_gain')
 # print(result)
-
-x = find_item_by_id(99)
-print(dir(x))
