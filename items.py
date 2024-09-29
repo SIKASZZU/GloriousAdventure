@@ -4,7 +4,6 @@
 from variables import UniversalVariables
 block_size = UniversalVariables.block_size
 
-block_size = UniversalVariables.block_size
 
 class Item:
     def __init__(self, type: str, name: str, id: int, cookable: str=False):
@@ -619,13 +618,6 @@ items_list = [
     # ),
 
 ]
-
-# List'id item type kohta
-world_items = [item for item in items_list if isinstance(item, WorldItem)]
-object_items = [item for item in items_list if isinstance(item, ObjectItem)]
-tool_items = [item for item in items_list if isinstance(item, ToolItem)]
-mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
-consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
 
 # Teeb dict'id, et saaks kiiremini asju ülesse otsida. (efficient)
 items_dict_by_id = {item.id: item for item in items_list}
