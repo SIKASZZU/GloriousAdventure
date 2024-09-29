@@ -3,7 +3,7 @@ import time  # Import time module for cooldown functionality
 from images import ImageLoader
 from variables import UniversalVariables, GameConfig
 from camera import Camera
-from items import items_list
+from items import items_list, MineralItem
 from inventory import Inventory
 
 
@@ -325,10 +325,12 @@ class Cooking:
 
                 # Progress bar'i jaoks
                 cookable_item = False
+
                 for item in items_list:
-                    if item.get("Name") == raw_item and "Cookable" in item:
-                        cookable_item = True
-                        break
+                    if isinstance(item, MineralItem) and hasattr(item, 'cookable'):
+                        if item.cookable:  # Check if the item is cookable
+                            cookable_item = item.cookable  # Get the item produced after cooking
+                            break  # Exit the loop if a cookable item is found
 
                 if raw_item:
                     raw_item = ImageLoader.load_image(raw_item)
