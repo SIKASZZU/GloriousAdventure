@@ -135,7 +135,6 @@ class UniversalVariables():
         #("Oak_Planks", (2, 3)),
         #("Oak_Wood", (1, 2)),
         ("Flashlight", 1),
-        ("Canteen", 1),
         ("Serum", 1),
         ("Bread", (2, 3)),
         ("Raw_Meat", (2, 3)),
