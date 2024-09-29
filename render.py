@@ -338,10 +338,8 @@ class ObjectCreation:
                                 """ Objektid lahevad yle seinte, kui randomx,y on liiga suured. """
                                 try:
                                     if self.terrain_data[y+1][x] == 99 or self.terrain_data[y+2][x] == 99:
-                                        print('Y+1', self.terrain_data[y+1][x] == 99, 'Y+2', self.terrain_data[y+2][x] == 99)
                                         return True
-                                    if self.terrain_data[y][x+1] == 99 or self.terrain_data[y][x+1] == 99:
-                                        print('X+1', self.terrain_data[y][x+1] == 99, 'X+2', self.terrain_data[y][x+1] == 99)
+                                    if self.terrain_data[y][x+1] == 99 or self.terrain_data[y][x+2] == 99:
                                         return True
                                     return False
                                 except IndexError: return False
