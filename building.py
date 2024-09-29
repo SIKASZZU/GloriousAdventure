@@ -18,9 +18,9 @@ class Building:
 
         for item in items_list:
             if name == item.name:
-                id = item["ID"]
+                id = item.id
 
-                if not item.placable:
+                if not item.placeable:
                     return False
 
                 return name, id

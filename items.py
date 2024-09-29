@@ -1,3 +1,6 @@
+""" K6ik pildid on images/Items folderis, sest need k6ik pildid k2ivad items_list'i kohta. """
+""" Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
+
 # from variables import UniversalVariables
 
 
@@ -88,83 +91,6 @@ class ConsumableItem(Item):
 
 block_size = 100  # UniversalVariables.block_size
 
-tools_list = [
-        ToolItem(
-        name="Wood_Pickaxe",
-        id=50,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Wood_Axe",
-        id=51,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Wood_Shovel",
-        id=52,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Wood_Sword",
-        id=53,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Stone_Pickaxe",
-        id=54,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Stone_Axe",
-        id=55,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Rock_Sword",
-        id=57,
-        recipe=[
-            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1}
-        ]
-    ),
-
-    ToolItem(
-        name="Flashlight",
-        id=31,
-    ),
-
-    ToolItem(
-        name="Stone_Shard",
-        id=27,
-        recipe=[
-            {"Recipe": {"Stone": 2}, "Amount": 1,}
-        ]
-    ),
-
-    ToolItem(
-        name="Glowstick",
-        id=28,
-    ),
-
-]
-
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
 
@@ -194,7 +120,7 @@ items_list = [
     ),
 
     WorldItem(
-        name='Keyholder_with_key',
+        name='Keyholder_With_Key',
         id=982,
         width=int(block_size),
         height=int(block_size),
@@ -202,7 +128,7 @@ items_list = [
     ),
 
     WorldItem(
-        name='Keyholder_without_key',
+        name='Keyholder_Without_Key',
         id=981,
         width=int(block_size),
         height=int(block_size),
@@ -210,21 +136,21 @@ items_list = [
     ),
     
     WorldItem(
-        name='Status_gray',
+        name='Status_Gray',
         id=500,
         width=int(block_size),
         height=int(block_size)
     ),
 
     WorldItem(
-        name='Status_yellow',
+        name='Status_Yellow',
         id=550,
         width=int(block_size),
         height=int(block_size)
     ),
 
     WorldItem(
-        name='Status_green',
+        name='Status_Green',
         id=555,
         width=int(block_size),
         height=int(block_size)
@@ -257,7 +183,6 @@ items_list = [
         width=int(block_size),
         height=int(block_size)
     ),
-
 
     # blade maze
 
@@ -368,6 +293,82 @@ items_list = [
         height=int(block_size)
     ),
 
+    # - # - # - # - # - # - # Tools # - # - # - # - # - # - #
+    
+    ToolItem(
+        name="Wood_Pickaxe",
+        id=50,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Axe",
+        id=51,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Shovel",
+        id=52,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Sword",
+        id=53,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Stone_Pickaxe",
+        id=54,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Stone_Axe",
+        id=55,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Rock_Sword",
+        id=57,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Flashlight",
+        id=31,
+    ),
+
+    ToolItem(
+        name="Stone_Shard",
+        id=27,
+        recipe=[
+            {"Recipe": {"Stone": 2}, "Amount": 1,}
+        ]
+    ),
+
+    ToolItem(
+        name="Glowstick",
+        id=28,
+    ),
+    
     # - # - # - # - # - # - # Objects # - # - # - # - # - # - #
 
     ObjectItem(
@@ -586,15 +587,17 @@ items_list = [
 
     # - # - # - # - # - # - # Minerals # - # - # - # - # - # - #
 
-    MineralItem(
-        name="Maze_Key_1",
-        id=12,
-    ),
+    # need id 12,13 on juba objectitemi all olemas? id peab olema teine muidu tekib error
 
-    MineralItem(
-        name="Maze_Key_2",
-        id=13,
-    ),
+    # MineralItem(
+    #     name="Maze_Key_1",
+    #     id=12,
+    # ),
+
+    # MineralItem(
+    #     name="Maze_Key_2",
+    #     id=13,
+    # ),
 
     MineralItem(
         name="Oak_Log",
@@ -688,19 +691,6 @@ items_list = [
     name="Bandage",
     id=32,
     healing_amount=5,
-    ),
-
-    ConsumableItem(
-    name="Serum",
-    id=34,
-    timer=10,
-    ),
-
-    ConsumableItem(
-        name="Bottle_Water",
-        id=38,
-        satisfaction_gain=3,
-        thirst_resistance=150
     ),
 
     ConsumableItem(

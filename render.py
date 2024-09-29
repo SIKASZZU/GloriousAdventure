@@ -186,10 +186,8 @@ class RenderPictures:
                 surrounding_values = GameConfig.GROUND_IMAGE.value
 
             ### FIXME: STRING ???
-
             if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
             if image_name:
-
                 if object_id in many_choices:
                     surroundings = TileSet.check_surroundings(self, y, x, surrounding_values)
                     image_name = RenderPictures.select_choice(self, image_name, surroundings)  # m6nel asjal on mitu varianti.
@@ -254,13 +252,13 @@ class ObjectCreation:
                     object_height     = item.height
                     object_image      = ImageLoader.load_image(object_image_name)
                     
-                    if hasattr(item, 'breakability'):   breakability  = item.breakable       # omane ObjectItemil
-                    if hasattr(item, 'collision_box'):  collision_box = item.collision_box   # omane WorldItemil
+                    if isinstance(item, ObjectItem):  breakability  = item.breakable       # omane ObjectItemil
+                    if isinstance(item, WorldItem):   collision_box = item.collision_box   # omane WorldItemil
 
                 if breakability == None:  breakability = False
 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                print(a_item)
+
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)

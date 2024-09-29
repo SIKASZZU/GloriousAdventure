@@ -90,22 +90,22 @@ class ImageLoader:
 
                     # Peab siin ära LOADima, sest neid ei ole item_list'is
                     if image_name.startswith("Ground_"):
-                        image_path = resource_path(f"images/Objects/Ground/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/Ground/{image_name}.png")
                         name = "Ground"
                     elif image_name.startswith("Water_"):
-                        image_path = resource_path(f"images/Objects/Water/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/Water/{image_name}.png")
                         name = "Water"
                     elif image_name.startswith("Maze_Wall_"):
-                        image_path = resource_path(f"images/Objects/Maze_Wall/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/Maze_Wall/{image_name}.png")
                         name = "Maze_Wall"
                     elif image_name.startswith("Maze_Ground_"):
-                        image_path = resource_path(f"images/Objects/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/{image_name}.png")
                         name = "Maze_Ground"
                     elif image_name.startswith("Endgate"):
-                        image_path = resource_path(f"images/Objects/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/{image_name}.png")
                         name = "Endgate"
                     elif image_name.startswith("Farmland_"):
-                        image_path = resource_path(f"images/Objects/Farmland/{image_name}.png")
+                        image_path = resource_path(f"images/Items/World/Farmland/{image_name}.png")
                         name = "Farmland"
 
                     if image_path is None:
@@ -113,20 +113,23 @@ class ImageLoader:
                         if name == image_name:
                             type = item.type
                             if type == "Object":
-                                image_path = resource_path(f"images/Objects/{image_name}.png")
+                                image_path = resource_path(f"images/Items/Objects/{image_name}.png")
+                            elif type == 'World':
+                                image_path = resource_path(f"images/Items/World/{image_name}.png")
                             elif type == "Mineral":
                                 image_path = resource_path(f"images/Items/Minerals/{image_name}.png")
                             elif type == "Tool":
                                 image_path = resource_path(f"images/Items/Tools/{image_name}.png")
-                            elif type == "Food":
-                                image_path = resource_path(f"images/Items/Foods/{image_name}.png")
+                            elif type == "Consumable":
+                                image_path = resource_path(f"images/Items/Consumables/{image_name}.png")
+
 
                     if image_path:
                         if image_path.startswith(resource_path("images/Objects")):
                             
                             object_width = item.width
                             object_height = item.height
-                            
+
                             loaded_image = pygame.image.load(image_path)
                             resized_image = pygame.transform.scale(loaded_image, (object_width, object_height))
                             converted_image = resized_image.convert_alpha()
