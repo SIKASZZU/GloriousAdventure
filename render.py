@@ -1,6 +1,7 @@
 import pygame
 import random
 
+import items
 from camera import Camera
 from items import *
 from images import ImageLoader
@@ -239,25 +240,23 @@ class ObjectCreation:
         items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
         breakability = None
 
-        for item in items_list:
+        for item_list in [items.object_items, items.world_items]:
+            for item in item_list:
+                if isinstance(item, (ObjectItem, WorldItem)):
+                    object_dir = find_item_by_name(item.name)
+                    object_id = object_dir.id
+                    if object_id in items_not_designed_for_list:
+                        continue
 
-            if isinstance(item, ObjectItem) or isinstance(item, WorldItem):
-                object_dir = find_item_by_name(item.name)
-                object_id = object_dir.id
-                if object_id in items_not_designed_for_list:
-                    continue
-                else:
                     object_image_name = item.name
-                    object_width      = item.width
-                    object_height     = item.height
-                    object_image      = ImageLoader.load_image(object_image_name)
-                    
-                    if isinstance(item, ObjectItem):  breakability  = item.breakable       # omane ObjectItemil
-                    if isinstance(item, WorldItem):   collision_box = item.collision_box   # omane WorldItemil
+                    object_width = item.width
+                    object_height = item.height
+                    object_image = ImageLoader.load_image(object_image_name)
 
-                if breakability == None:  breakability = False
+                    breakability = item.breakable if isinstance(item, ObjectItem) else False
+                    collision_box = item.collision_box if isinstance(item, WorldItem) else None
 
-                a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
+                    a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
 
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
