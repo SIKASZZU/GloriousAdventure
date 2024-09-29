@@ -239,22 +239,23 @@ class ObjectCreation:
         collision_items = []
         non_collision_items = []
         items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
+        breakability = None
 
         for item in items_list:
 
-            if isinstance(item, ObjectItem):
+            if isinstance(item, ObjectItem) or isinstance(item, WorldItem):
                 object_dir = find_item_by_name(item.name)
                 object_id = object_dir.id
                 if object_id in items_not_designed_for_list:
                     continue
                 else:
                     object_image_name = item.name
-                    breakability      = item.breakable
                     object_width      = item.width
                     object_height     = item.height
-                    # if hasattr(item, 'collision_box'):  collision_box = item.collision_box
                     object_image      = ImageLoader.load_image(object_image_name)
-                    collision_box = [0,0,0,0]
+                    
+                    if hasattr(item, 'breakability'):   breakability  = item.breakable       # omane ObjectItemil
+                    if hasattr(item, 'collision_box'):  collision_box = item.collision_box   # omane WorldItemil
 
                 if breakability == None:  breakability = False
 

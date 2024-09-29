@@ -17,10 +17,10 @@ class Building:
             return False
 
         for item in items_list:
-            if name == item.get("Name"):
+            if name == item.name:
                 id = item["ID"]
 
-                if not item.get("Placeable", False):
+                if not item.placable:
                     return False
 
                 return name, id

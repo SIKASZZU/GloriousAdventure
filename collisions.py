@@ -75,9 +75,9 @@ class Collisions:
             terrain_x: int = terrain_x - UniversalVariables.offset_x
             terrain_y: int = terrain_y - UniversalVariables.offset_y
 
-            for item in items_list:
-                if item.id == object_id:
-                    render_when = item.render_when
+            #for item in items_list:
+            #    if item.id == object_id:
+            #        render_when = item.render_when
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             if self.player_rect.colliderect(collision_object_rect):
                 pick_up_items = {item[5] for item in UniversalVariables.object_list}
@@ -92,13 +92,13 @@ class Collisions:
                     else:
                         ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
 
-                if object_id == 99 or object_id == 98:  Collisions.render_after = True
-
-                else:
-                    if render_when != None:
-                        point_of_render_after = collision_object_rect[1] + render_when
-                        if point_of_render_after <= self.player_rect[1]:  Collisions.render_after = True
-                        else:  Collisions.render_after = False
+                #if object_id == 99 or object_id == 98:  Collisions.render_after = True
+#
+                #else:
+                #    if render_when != None:
+                #        point_of_render_after = collision_object_rect[1] + render_when
+                #        if point_of_render_after <= self.player_rect[1]:  Collisions.render_after = True
+                #        else:  Collisions.render_after = False
 
             if self.click_window_x and self.click_window_y:
                 try:

@@ -45,6 +45,7 @@ class WorldItem(Item):
     def __init__(self, 
             name: str, id: int,
             width: int, height: int,
+            collision_box: list=None,
             render_when: int | float=None, cookable: str = False
     ) -> None:
         
@@ -52,6 +53,7 @@ class WorldItem(Item):
         self.width = width
         self.height = height
         self.render_when = render_when
+        self.collision_box = collision_box
 
 
 class MineralItem(Item):
@@ -179,35 +181,32 @@ items_list = [
         name='Maze_Wall',
         id=99,
         width=int(block_size),
-        height=int(block_size)
-    ),
-
-    WorldItem(
-        name='Maze_Wall',
-        id=99,
-        width=int(block_size),
-        height=int(block_size)
+        height=int(block_size),
+        collision_box=[0,0,1,1]
     ),
 
     WorldItem(
         name='Maze_Ground_Keyhole',
         id=11,
         width=int(block_size),
-        height=int(block_size)
+        height=int(block_size),
+        collision_box=[0,0,1,1]
     ),
 
     WorldItem(
         name='Keyholder_with_key',
         id=982,
         width=int(block_size),
-        height=int(block_size)
+        height=int(block_size),
+        collision_box=[0,0,1,1]
     ),
 
     WorldItem(
         name='Keyholder_without_key',
         id=981,
         width=int(block_size),
-        height=int(block_size)
+        height=int(block_size),
+        collision_box=[0,0,1,1]
     ),
     
     WorldItem(

@@ -1,5 +1,5 @@
 import pygame
-import items
+from items import *
 from inventory import Inventory
 from variables import UniversalVariables
 from audio import Player_audio
@@ -17,7 +17,7 @@ class ObjectManagement:
             return
 
         # Fetch the item from the dictionary
-        item = items.find_item_by_id(object_id)
+        item = find_item_by_id(object_id)
 
         if not item:
             return
@@ -25,8 +25,10 @@ class ObjectManagement:
         name = item.name
 
         # Check if item is breakable
-        if not item.breakable:
+        if not isinstance(item, ObjectItem) and not item.breakable:
             return
+        
+        print(item, dir(item))
 
         # Check interaction delay
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
@@ -38,7 +40,7 @@ class ObjectManagement:
         choice = None
         amount = 1
 
-        if "Drops" in item:
+        if isinstance(item, ObjectItem):  # objectitemitel on drop attrib
             choice, probabilities, amount = item.drops
             name = np.random.choice(choice, p=probabilities)
 
