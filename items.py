@@ -1,8 +1,9 @@
 """ K6ik pildid on images/Items folderis, sest need k6ik pildid k2ivad items_list'i kohta. """
 """ Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
 
-# from variables import UniversalVariables
+from variables import UniversalVariables
 
+block_size = UniversalVariables.block_size
 
 class Item:
     def __init__(self, type: str, name: str, id: int, cookable: str=False):
@@ -47,7 +48,7 @@ class ObjectItem(Item):
 class WorldItem(Item):
     def __init__(self, 
             name: str, id: int,
-            width: int, height: int,
+            width: int=block_size, height: int=block_size,
             collision_box: list=None,
             render_when: int | float=None, cookable: str = False
     ) -> None:
@@ -89,7 +90,6 @@ class ConsumableItem(Item):
         self.timer = timer
         self.thirst_resistance = thirst_resistance
 
-block_size = 100  # UniversalVariables.block_size
 
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
@@ -99,89 +99,66 @@ items_list = [
     WorldItem(
         name='Maze_Ground',
         id=98,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Wall',
         id=99,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Maze_Ground_Keyhole',
         id=11,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_With_Key',
         id=982,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_Without_Key',
         id=981,
-        width=int(block_size),
-        height=int(block_size),
-        collision_box=[0,0,1,1]
+        collision_box=[0, 0, 1, 1]
+
     ),
     
     WorldItem(
         name='Status_Gray',
         id=500,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Status_Yellow',
         id=550,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Status_Green',
         id=555,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Final_Maze_Ground',
         id=988,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Final_Maze_Ground_2',
         id=9882,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Void',
         id=999,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Endgate',
         id=1000,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     # blade maze
@@ -189,36 +166,26 @@ items_list = [
     WorldItem(
         name='Maze_Blade',
         id=9099,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Blade',
         id=989,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Blade',
         id=900,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Ground',
         id=9099_98,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Ground',
         id=989_98,
-        width=int(block_size),
-        height=int(block_size)
     ),
     
     # doors
@@ -226,71 +193,51 @@ items_list = [
     WorldItem(
         name='Maze_Start_Top',
         id=91,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Right',
         id=92,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Left',
         id=90,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Bottom',
         id=93,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_Start_Bottom',
         id=933,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Bottom',
         id=97,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Bottom',
         id=977,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Top',
         id=95,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Right',
         id=96,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     WorldItem(
         name='Maze_End_Left',
         id=94,
-        width=int(block_size),
-        height=int(block_size)
     ),
 
     # - # - # - # - # - # - # Tools # - # - # - # - # - # - #
