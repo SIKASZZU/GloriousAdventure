@@ -27,8 +27,6 @@ class ObjectManagement:
         # Check if item is breakable
         if not isinstance(item, ObjectItem) and not item.breakable:
             return
-        
-        print(item, dir(item))
 
         # Check interaction delay
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:

@@ -106,4 +106,6 @@ render::::
 
 	See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
 	
+	keyholderitel on topelt pildid. Yks renderib object_renderis, teine renderib map_renderis
+
 	kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.

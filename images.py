@@ -111,7 +111,9 @@ class ImageLoader:
                     if image_path is None:
                         # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
                         if name == image_name:
+
                             type = item.type
+
                             if type == "Object":
                                 image_path = resource_path(f"images/Items/Objects/{image_name}.png")
                             elif type == 'World':
@@ -126,7 +128,7 @@ class ImageLoader:
 
                     if image_path:
                         if image_path.startswith(resource_path("images/Objects")):
-                            
+                            print(image_path, image_name)
                             object_width = item.width
                             object_height = item.height
 

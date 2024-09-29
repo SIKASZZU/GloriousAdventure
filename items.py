@@ -1,7 +1,8 @@
 """ K6ik pildid on images/Items folderis, sest need k6ik pildid k2ivad items_list'i kohta. """
 """ Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
 
-# from variables import UniversalVariables
+from variables import UniversalVariables
+block_size = UniversalVariables.block_size
 
 
 class Item:
@@ -27,7 +28,7 @@ class ObjectItem(Item):
     def __init__(
             self,
             name: str, id: int, hp: int,
-            width: int | float=1, height: int | float=1, render_when: int | float=None,
+            width: int | float=block_size, height: int | float=block_size, render_when: int | float=None,
             
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
@@ -88,8 +89,6 @@ class ConsumableItem(Item):
         self.healing_amount = healing_amount
         self.timer = timer
         self.thirst_resistance = thirst_resistance
-
-block_size = 100  # UniversalVariables.block_size
 
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
@@ -402,9 +401,10 @@ items_list = [
         hp=5,
 
         render_when=block_size * 1.5,
+        width=int(block_size * 2),
+        height=int(block_size * 2),
 
         drops=(['Oak_Log'], [1], 1),
-
         breakable=True
     ),
 
