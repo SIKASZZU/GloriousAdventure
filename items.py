@@ -316,6 +316,14 @@ items_list = [
         name="Glowstick",
         id=28,
     ),
+
+    ToolItem(
+        name="Fishing_Rod",
+        id=43,
+        recipe=[
+            {"Recipe": {"Stick": 3, "String": 5}, "Amount": 1,}
+        ]
+    ),
     
     # - # - # - # - # - # - # Objects # - # - # - # - # - # - #
 
@@ -462,7 +470,6 @@ items_list = [
         breakable=True,
     ),
 
-    ### TODO: kuhu panna? object - tool?
     ObjectItem(
         name="Torch",
         id=30,
@@ -543,7 +550,7 @@ items_list = [
     MineralItem(
         name="Raw_Meat",
         id=36,
-        cookable="Cooked_Meat"
+        cookable="Meat"
     ),
 
 
@@ -559,6 +566,12 @@ items_list = [
             {"Recipe": {"Wheat": 3}, "Amount": 1}
         ],
         cookable="Bread"
+    ),
+
+    MineralItem(
+        name="Raw_Fish",
+        id=41,
+        cookable="Fish"
     ),
 
     # - # - # - # - # - # - # Consumables # - # - # - # - # - # - #
@@ -578,7 +591,7 @@ items_list = [
     ),
 
     ConsumableItem(
-        name="Cooked_Meat",
+        name="Meat",
         id=37,
         satisfaction_gain=2,
         hunger_resistance=500
@@ -610,12 +623,12 @@ items_list = [
     timer=10,
     ),
 
-    # ConsumableItem(
-    #     name="",
-    #     id=,
-    #     satisfaction_gain=,
-    #     hunger_resistance=
-    # ),
+    ConsumableItem(
+        name="Fish",
+        id=42,
+        satisfaction_gain=2,
+        hunger_resistance=500
+    ),
 
 ]
 
