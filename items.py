@@ -393,6 +393,17 @@ items_list = [
     ),
 
     ObjectItem(
+        name="Wheat_Sapling",
+        id=69,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
         name="Campfire",
         id=8,
         hp=1,

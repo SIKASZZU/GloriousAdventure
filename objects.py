@@ -72,7 +72,7 @@ class ObjectManagement:
             10: 98,  # Empty key slot
             12: 98,  # Empty key slot
             13: 98,  # Empty key slot
-            7: 107,  # Farmland
+            7: 69,  # Farmland
             1008: 1009,  # Berry bush - Large
             1010: 1011,  # Berry bush - Medium
             1012: 1013  # Berry bush - Small
