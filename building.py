@@ -2,7 +2,7 @@ from variables import UniversalVariables
 from objects import ObjectManagement
 from audio import Player_audio
 from camera import Camera
-from items import items_list
+from items import items_list, ObjectItem
 
 class Building:
     def is_valid_item(self) -> tuple:
@@ -10,7 +10,6 @@ class Building:
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.
         Return'ib (name, object_id) if valid, else False.
         """
-
         name = UniversalVariables.current_equipped_item
 
         if not name:
@@ -18,12 +17,8 @@ class Building:
 
         for item in items_list:
             if name == item.name:
-                id = item.id
-
-                if not item.placeable:
-                    return False
-
-                return name, id
+                if isinstance(item, ObjectItem) and item.placeable:
+                    return name, item.id
 
         return False
 
