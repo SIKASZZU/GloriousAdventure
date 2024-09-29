@@ -2,6 +2,7 @@
 """ Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
 
 from variables import UniversalVariables
+block_size = UniversalVariables.block_size
 
 block_size = UniversalVariables.block_size
 
@@ -91,7 +92,6 @@ class ConsumableItem(Item):
         self.healing_amount = healing_amount
         self.timer = timer
         self.thirst_resistance = thirst_resistance
-
 
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
@@ -353,9 +353,10 @@ items_list = [
         width=int(block_size * 2),
         height=int(block_size * 2),
         render_when=block_size * 1.5,
-
+        width=int(block_size * 2),
+        height=int(block_size * 2),
+        
         drops=(['Oak_Log'], [1], 1),
-
         breakable=True
     ),
 
@@ -466,7 +467,7 @@ items_list = [
         breakable=True,
         placeable=True
     ),
-
+    
     ObjectItem(
         name="Opened_Loot_Barrel",
         id=1002,
@@ -609,6 +610,12 @@ items_list = [
 
 ]
 
+# List'id item type kohta
+world_items = [item for item in items_list if isinstance(item, WorldItem)]
+object_items = [item for item in items_list if isinstance(item, ObjectItem)]
+tool_items = [item for item in items_list if isinstance(item, ToolItem)]
+mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
+consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
 
 # Teeb dict'id, et saaks kiiremini asju ülesse otsida. (efficient)
 items_dict_by_id = {item.id: item for item in items_list}

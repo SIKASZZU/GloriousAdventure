@@ -1,9 +1,8 @@
 import pygame
 import random
 
-import items
 from camera import Camera
-from items import *
+from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
@@ -240,7 +239,7 @@ class ObjectCreation:
         items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
         breakability = None
 
-        for item_list in [items.object_items, items.world_items]:
+        for item_list in [object_items, world_items]:
             for item in item_list:
                 if isinstance(item, (ObjectItem, WorldItem)):
                     object_dir = find_item_by_name(item.name)
@@ -257,7 +256,6 @@ class ObjectCreation:
                     collision_box = item.collision_box if isinstance(item, WorldItem) else None
 
                     a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
