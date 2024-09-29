@@ -353,8 +353,6 @@ items_list = [
         width=int(block_size * 2),
         height=int(block_size * 2),
         render_when=block_size * 1.5,
-        width=int(block_size * 2),
-        height=int(block_size * 2),
         
         drops=(['Oak_Log'], [1], 1),
         breakable=True
@@ -549,7 +547,8 @@ items_list = [
         id=40,
         recipe=[
             {"Recipe": {"Wheat": 3}, "Amount": 1}
-        ]
+        ],
+        cookable="Bread"
     ),
 
     # - # - # - # - # - # - # Consumables # - # - # - # - # - # - #

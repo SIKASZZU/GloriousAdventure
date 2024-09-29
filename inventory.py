@@ -1,9 +1,10 @@
 import pygame
 
+import items
 from images import ImageLoader
 from camera import Camera
 from variables import UniversalVariables
-from items import items_list
+from items import items_list, object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
 from audio import Player_audio
 from text import Fading_text
 
@@ -45,6 +46,11 @@ class Inventory:
     total_rows = 0
     total_cols = 0
     old_x = 500
+
+    craftable_items = {}
+    previous_inventory = None  # Track the previous state of the inventory
+
+
     @staticmethod
     def print_inventory() -> None:
         """ Prints out the contents of the inventory."""
@@ -264,44 +270,76 @@ class Inventory:
         Inventory.white_colored_items.update(new_white_items)
         Inventory.old_inventory = Inventory.inventory.copy()
 
+
+    def has_inventory_changed(self) -> bool:
+        """Check if the inventory has changed since the last calculation."""
+        current_inventory = Inventory.inventory
+
+        # If previous_inventory is None, it means we haven't calculated yet
+        if Inventory.previous_inventory is None:
+            Inventory.previous_inventory = current_inventory.copy()
+            return True  # Recalculate on first run
+
+        # Check if the current inventory is different from the previous one
+        if current_inventory != Inventory.previous_inventory:
+            Inventory.previous_inventory = current_inventory.copy()
+            return True
+
+        return False
+
     def calculate_craftable_items(self):
-        """ Otsib kõik itemid ülesse mida
-        saab craftida vastavalt invile """
+        """Otsib kõik itemid ülesse, mida saab craftida vastavalt invile."""
 
-        self.craftable_items = {}
+        # Check if inventory has changed before recalculating
+        if not Inventory.has_inventory_changed(self):
+            return  # Skip calculation if inventory has not changed
 
-        for item in items_list:
-            if "Recipes" in item:
-                # Käib kõik itemi retseptid läbi
-                for recipe in item["Recipes"]:
-                    can_craft = True
+        Inventory.craftable_items = {}
+
+        for item_list in [object_items, mineral_items, tool_items]:
+            for item in item_list:
+                recipes = item.recipe if isinstance(item, (ObjectItem, MineralItem, ToolItem)) else None
+
+                if not recipes:
+                    continue
+
+                # Iterate through the recipes
+                for recipe in recipes:
                     required_items = recipe.get("Recipe", {})
 
-                    for required_item, required_amount in required_items.items():
-                        if required_item not in Inventory.inventory or \
-                                Inventory.inventory[required_item] < required_amount:
-                            can_craft = False
-                            break
+                    # Check if all required items are available
+                    can_craft = all(
+                        Inventory.inventory.get(required_item, 0) >= required_amount
+                        for required_item, required_amount in required_items.items()
+                    )
 
                     if can_craft:
-                        self.craftable_items[item["Name"]] = recipe.get("Amount", 1)
+                        # Use dot notation to access item attributes
+                        Inventory.craftable_items[item.name] = recipe.get("Amount",
+                                                                     1)  # Use item.name instead of item["Name"]
+
+        Inventory.update_craftable_items_display(self)
+
+    def update_craftable_items_display(self):
+        """Update the display for craftable items."""
 
         Inventory.craftable_items_display_rects = {}
 
         rect_width: int = UniversalVariables.block_size / 2
         rect_height: int = UniversalVariables.block_size / 2
-        max_cols: int = 3  # Max tulpade arv reas
+        max_cols: int = 3  # Max columns in a row
 
-        # Arvutab inventoryle asukoha vastavalt playeri asukohale ja inventory settingutele
+        # Calculate inventory item positions based on player location and inventory settings
         rect_x: int = 50
         rect_y: int = 50
 
-        craftable_items = list(self.craftable_items.keys())  # Extractib craftitud itemite nimed
+        craftable_items = list(Inventory.craftable_items.keys())  # Extract craftable item names
 
         for index, craftable_item in enumerate(craftable_items):
             rows = index // max_cols
             cols = index % max_cols
 
+            # Create a rectangle for displaying the craftable item
             rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
             Inventory.craftable_items_display_rects[craftable_item] = rect
 
@@ -349,7 +387,7 @@ class Inventory:
                 blit_operations.append((object_image, item_image_rect.topleft))
 
             # Render the amount of craftable items
-            text = font.render(str(self.craftable_items[name]), True, 'Black')
+            text = font.render(str(Inventory.craftable_items[name]), True, 'Black')
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
             blit_operations.append((text, text_rect))
 
@@ -360,31 +398,32 @@ class Inventory:
         UniversalVariables.screen.blit(overlay, (0, 0))
 
     def craft_item(self, name):
-        """ Craftib itemi ja uuendab invi """
-        # Võtab item_list'ist nimed
-        crafted_item = next((item for item in items_list if item["Name"] == name), None)
+        """Craft an item and update the inventory."""
+        # Get the crafted item from the lists
+        crafted_item = next((item for item_list in [object_items, mineral_items, tool_items] for item in item_list if
+                             item.name == name), None)
 
         if crafted_item:
-            recipes = crafted_item.get("Recipes", [])
+            recipes = crafted_item.recipe if hasattr(crafted_item, 'recipe') else []
             amount = 0
 
-            # Läheb läbi iga retsepti
+            # Iterate through each recipe
             for recipe in recipes:
                 required_items = recipe.get("Recipe", {})
                 can_craft = all(
-                    Inventory.inventory.get(required_item, 0) >= required_amount for required_item, required_amount in
-                    required_items.items()
+                    Inventory.inventory.get(required_item, 0) >= required_amount
+                    for required_item, required_amount in required_items.items()
                 )
 
                 if can_craft:
-                    # Võtab invist kasutatud itemid ära
+                    # Remove used items from the inventory
                     for required_item, required_amount in required_items.items():
                         Inventory.inventory[required_item] -= required_amount
 
-                    # Arvutab craftimisest saadud koguse vastavalt retseptile
+                    # Calculate the amount crafted based on the recipe
                     amount += recipe.get("Amount", 1)
 
-            # Lisab craftitud itemi invi
+            # Add the crafted item to the inventory
             Inventory.inventory[name] = Inventory.inventory.get(name, 0) + amount
 
             # Remove items with a count of zero from the inventory
