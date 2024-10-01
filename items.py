@@ -83,6 +83,7 @@ class ConsumableItem(Item):
             hunger_resistance: int | float=None, thirst_resistance: int | float=None,
             healing_amount: int=None,
             timer: int=None,
+            cure: bool=False,
     ) -> None:
 
         super().__init__('Consumable', name, id)
@@ -91,6 +92,7 @@ class ConsumableItem(Item):
         self.healing_amount = healing_amount
         self.timer = timer
         self.thirst_resistance = thirst_resistance
+        self.cure = cure
 
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
@@ -601,7 +603,7 @@ items_list = [
         name="Bottle_Water",
         id=38,
         satisfaction_gain=3,
-        hunger_resistance=350
+        thirst_resistance=350
     ),
 
     ConsumableItem(
@@ -621,6 +623,7 @@ items_list = [
     name="Serum",
     id=34,
     timer=10,
+    cure=True
     ),
 
     ConsumableItem(
@@ -664,12 +667,11 @@ def search_item_from_items(type: type, item_name_or_id: str | int, target_attrib
     #   search_item_from_items(type=ConsumableItem, item_name_or_id='bread', target_attribute='satisfaction_gain')
 
     item = None
-
     if isinstance(item_name_or_id, int):
         item = find_item_by_id(item_name_or_id)
 
     elif isinstance(item_name_or_id, str):
-        item = find_item_by_name(item_name_or_id.capitalize())
+        item = find_item_by_name(item_name_or_id)
 
     # Vaatab kas item'il on target_attribute, kui ei ole siis return'ib None.
     if item and isinstance(item, type):
