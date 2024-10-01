@@ -157,13 +157,12 @@ class HUD_class:
             icon = ImageLoader.load_gui_image(effect_name)
             scaled_icon = pygame.transform.scale(icon, (icon_width, icon_height))
 
-            # Calculate positions for top-right corner
+            # Arvutab parema nurga asukoha
             screen_width = HUD_class.screen_x
             pos = (screen_width - icon_width - 10, 10 + i * (icon_height + 10))  # Margin of 10
 
             effect_blits_sequence.append((scaled_icon, pos))
 
-        # Perform blits using the effect_blits_sequence list
         UniversalVariables.screen.blits(effect_blits_sequence)
 
 
