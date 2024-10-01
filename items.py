@@ -84,6 +84,8 @@ class ConsumableItem(Item):
             healing_amount: int=None,
             timer: int=None,
             cure: bool=False,
+            poisonous: bool=False,
+
     ) -> None:
 
         super().__init__('Consumable', name, id)
@@ -93,6 +95,7 @@ class ConsumableItem(Item):
         self.timer = timer
         self.thirst_resistance = thirst_resistance
         self.cure = cure
+        self.poisonous = poisonous
 
 items_list = [
     # - # - # - # - # - # - # World # - # - # - # - # - # - #
@@ -589,7 +592,8 @@ items_list = [
         name="Bad_Bread",
         id=10000,
         satisfaction_gain=-1.75,
-        hunger_resistance=-200
+        hunger_resistance=-200,
+        poisonous=True
     ),
 
     ConsumableItem(
@@ -604,6 +608,14 @@ items_list = [
         id=38,
         satisfaction_gain=3,
         thirst_resistance=350
+    ),
+
+    ConsumableItem(
+        name="Dirty_Bottle_Water",
+        id=44,
+        satisfaction_gain=-3,
+        thirst_resistance=-350,
+        poisonous=True
     ),
 
     ConsumableItem(
