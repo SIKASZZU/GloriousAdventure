@@ -43,24 +43,18 @@ class HealthComponent:
         if self.current_health > self.max_health:
             self.current_health = self.max_health
         
-    def heal(self, item):
+    def heal(self, amount):
         # et player ei overhealiks ennast. Health cap on ikkagi olemas.
         if self.current_health == self.max_health:
-            text = f'Max health reached! {self.max_health} HP'
-            
-            if text in Fading_text.shown_texts:
-                Fading_text.shown_texts.remove(text)
-            UniversalVariables.ui_elements.append(text)
+            Fading_text.re_display_fading_text(f'Max health reached!')
             return False  # no healing
-            
-        else:
-            if item == 'Bandage':
-                self.current_health += 5
-                UniversalVariables.health_status = True
 
-            if self.current_health > self.max_health:
-                self.current_health = self.max_health
-            return True  # healing == True
+        self.current_health += amount
+        UniversalVariables.health_status = True
+
+        if self.current_health > self.max_health:
+            self.current_health = self.max_health
+        return True  # healing == True
 
     def check_health(self, hunger=None):
         self.hunger = hunger
@@ -189,7 +183,7 @@ class HungerComponent:
         if UniversalVariables.hunger_resistance:
             UniversalVariables.hunger_resistance -= hunger_resist
             if UniversalVariables.hunger_resistance <= 0:
-                UniversalVariables.hunger_resistance = None
+                UniversalVariables.hunger_resistance = 0
                 HungerComponent.hunger_timer = 100
             return
 
@@ -197,12 +191,7 @@ class HungerComponent:
 
             if HungerComponent.health_timer <= 0:
                 if self.player.health.current_health > 0:
-                    text = "Starving."
-
-                    if text in Fading_text.shown_texts:
-                        Fading_text.shown_texts.remove(text)
-
-                    UniversalVariables.ui_elements.append(text)
+                    Fading_text.re_display_fading_text("Starving")
 
                 self.player.health.damage(0.5)
                 HungerComponent.health_timer = 300
@@ -222,7 +211,7 @@ class HungerComponent:
         if rounded_hunger == self.min_hunger:
             return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Starving"
         else:
-            if UniversalVariables.hunger_resistance is not None:
+            if UniversalVariables.hunger_resistance != 0:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
             else:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {HungerComponent.hunger_timer} ticks"
@@ -258,19 +247,14 @@ class ThirstComponent:
             return
 
         elif self.player.thirst.current_thirst <= 0:
-
             if ThirstComponent.health_timer <= 0:
                 if self.player.health.current_health > 0:
-                    text = "Dying from hydration."
-
-                    if text in Fading_text.shown_texts:
-                        Fading_text.shown_texts.remove(text)
-
-                    UniversalVariables.ui_elements.append(text)
+                    Fading_text.re_display_fading_text("Dying from hydration.")
 
                 self.player.health.damage(0.5)
                 ThirstComponent.health_timer = 150
             ThirstComponent.health_timer -= 1
+
         else:
             if ThirstComponent.thirst_timer <= 0:
                 self.player.thirst.current_thirst = max(self.player.thirst.min_thirst, self.player.thirst.current_thirst - thirst_decrease)
