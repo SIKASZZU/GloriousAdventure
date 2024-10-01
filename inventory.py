@@ -440,7 +440,6 @@ class Inventory:
             return
 
         # Load and resize item image
-        print(name, 'inv')
         item_image = ImageLoader.load_image(name)
         slot_width, slot_height = Inventory.resized_slot_image.get_size()
         max_item_size = (slot_width - 15, slot_height - 15)
