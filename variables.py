@@ -69,6 +69,11 @@ class UniversalVariables():
     # ******************** Screen ******************** #
     screen = pygame.display.set_mode((screen_x, screen_y))
 
+    # Effectide suurused
+
+    icon_width: int = 60
+    icon_height: int = 60
+
     # Block size muutmiseks kui zoomitakse sisse või välja
     prev_block_size: int = 0
 
@@ -76,7 +81,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS = 200
+        FPS: int = 200
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 15
@@ -90,7 +95,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS = 60
+        FPS: int = 60
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
@@ -116,8 +121,9 @@ class UniversalVariables():
     player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
 
     health_status     = None
-    hunger_resistance = None
-    thirst_resistance = None
+    hunger_resistance = 0
+    thirst_resistance = 0
+    player_poisoned   = False
     player_infected   = False
     player_bleeding   = False
     serum_active      = False
