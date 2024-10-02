@@ -20,13 +20,13 @@ class PlayerStatus:
 
     # Cure
     cure_timer: int = 0
-    cure_start_time: int = None
+    cure_duration: int = 1000
 
     def update(self):
         PlayerStatus.bleed(self)
         PlayerStatus.poison(self)
         PlayerStatus.infection(self)
-        PlayerStatus.cure()
+        PlayerStatus.cure(self)
 
     def poison(self):
         if not UniversalVariables.player_poisoned:
@@ -64,26 +64,26 @@ class PlayerStatus:
         # increase water needence
         # hallucinations? -- fuck up the vision code :D
 
-    @staticmethod
-    def cure():
+    def cure(self):
         if not UniversalVariables.serum_active:
             return
 
-        if PlayerStatus.cure_start_time is None:
-            PlayerStatus.cure_start_time = 1000
+        # Kui effecte pole ss returnib
+        if not UniversalVariables.player_infected and not UniversalVariables.player_poisoned:
+            UniversalVariables.serum_active = False
+            return
+
+        if PlayerStatus.cure_timer == 0:
+            PlayerStatus.cure_timer = PlayerStatus.cure_duration
 
         if UniversalVariables.debug_mode:
-            print('debug mode print: remaining_time', PlayerStatus.cure_start_time, 'sec')
+            print('debug mode print: remaining_time', PlayerStatus.cure_timer, 'sec')
 
-        if PlayerStatus.cure_start_time > 0:
-            PlayerStatus.cure_start_time -= 1
+        if PlayerStatus.cure_timer > 0:
+            PlayerStatus.cure_timer -= 1
 
-        if PlayerStatus.cure_start_time == 0:
-            PlayerStatus.cure_start_time = None
-
-            # - Effects
+        if PlayerStatus.cure_timer == 0:
             UniversalVariables.player_infected = False
             UniversalVariables.player_poisoned = False
-
-            # Deactivate'ib serumi
             UniversalVariables.serum_active = False
+            PlayerStatus.cure_timer = 0  # Reset the timer for future use
