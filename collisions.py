@@ -321,63 +321,66 @@ class Collisions:
                                            UniversalVariables.block_size, UniversalVariables.block_size)
                 
                 # Vaatab terrain recti ja playeri collisoneid
-                if self.player_rect.colliderect(terrain_rect):
-                    ### FIXME: Sul on vaja terrain rect v22rtuse asemel collison boxi v22rtusi just row,col koordinaatidel.
-                    try:
-                        collision_items = {item[4] for item in UniversalVariables.collision_boxes}  # teeb id seti. 
-                        
-                        if self.terrain_data[row][col] in collision_items:
-                            Collisions.player_hit_collision(self, terrain_rect)
-                        
-                        else:
-                            sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
-                                        keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
-                                        keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
-                                        keys[pygame.K_LSHIFT] and keys[pygame.K_s]
-                            # Kontrollib kas terrain block jääb faili terrain_data piiridesse
-                            
-                            if sprinting: UniversalVariables.player_sprinting = True
-                            else: UniversalVariables.player_sprinting = False
-                            
-                            if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
-                                in_water = self.terrain_data[row][col] == 0
-                                
-                                stamina_cost = 0.05
-                                stamina_regen = 0.05
-                                if UniversalVariables.player_infected == True:
-                                    stamina_cost = 0.15
-                                    stamina_regen = 0.025
+                if not self.player_rect.colliderect(terrain_rect):
+                    continue
 
-                                run_speed_multiplier = 1.5
-                                if UniversalVariables.player_bleeding == True:
-                                    run_speed_multiplier = 1.2
+                ### FIXME: Sul on vaja terrain rect v22rtuse asemel collison boxi v22rtusi just row,col koordinaatidel.
 
-                                if in_water != True:
-                                    if sprinting:  # Player asub maal
-                                        # stamina = 0 - playeri speed = base speed
-                                        if self.player.stamina.current_stamina == 0:
-                                            self.player.stamina.stamina_regenerate(stamina_regen)
-                                            self.player.speed.current_speed = self.player.speed.base_speed
-                                        else:
-                                            self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
-                                            HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                            self.player.stamina.use_stamina(stamina_cost)
+                try:
+                    collision_items = {item[4] for item in UniversalVariables.collision_boxes}  # teeb id seti.
+
+                    if self.terrain_data[row][col] in collision_items:
+                        Collisions.player_hit_collision(self, terrain_rect)
+
+                    else:
+                        sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
+                                    keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
+                                    keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
+                                    keys[pygame.K_LSHIFT] and keys[pygame.K_s]
+                        # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+
+                        if sprinting: UniversalVariables.player_sprinting = True
+                        else: UniversalVariables.player_sprinting = False
+
+                        if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
+                            in_water = self.terrain_data[row][col] == 0
+
+                            stamina_cost = 0.05
+                            stamina_regen = 0.05
+                            if UniversalVariables.player_infected == True:
+                                stamina_cost = 0.15
+                                stamina_regen = 0.025
+
+                            run_speed_multiplier = 1.5
+                            if UniversalVariables.player_bleeding == True:
+                                run_speed_multiplier = 1.2
+
+                            if in_water != True:
+                                if sprinting:  # Player asub maal
+                                    # stamina = 0 - playeri speed = base speed
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
+                                        self.player.speed.current_speed = self.player.speed.base_speed
+                                    else:
+                                        self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
+                                        HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.player.stamina.use_stamina(stamina_cost)
+                                else:
+                                    self.player.speed.current_speed = self.player.speed.base_speed
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
+
+                            else:  # Player asub vees
+                                if sprinting:
+                                    # stamina = 0 - playeri speed = base speed
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
+                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed
-                                        self.player.stamina.stamina_regenerate(stamina_regen)
+                                        HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.player.stamina.use_stamina(stamina_cost)
+                                else:
+                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
 
-                                else:  # Player asub vees
-                                    if sprinting:
-                                        # stamina = 0 - playeri speed = base speed
-                                        if self.player.stamina.current_stamina == 0:
-                                            self.player.stamina.stamina_regenerate(stamina_regen)
-                                            self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                        else:
-                                            self.player.speed.current_speed = self.player.speed.base_speed
-                                            HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                            self.player.stamina.use_stamina(stamina_cost)
-                                    else:
-                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
-                                        self.player.stamina.stamina_regenerate(stamina_regen)
-                                        
-                    except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)
+                except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)

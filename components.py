@@ -242,7 +242,7 @@ class ThirstComponent:
         if UniversalVariables.thirst_resistance:
             UniversalVariables.thirst_resistance -= thirst_resist
             if UniversalVariables.thirst_resistance <= 0:
-                UniversalVariables.thirst_resistance = None
+                UniversalVariables.thirst_resistance = 0
                 ThirstComponent.thirst_timer = 100
             return
 
