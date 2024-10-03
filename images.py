@@ -107,6 +107,9 @@ class ImageLoader:
                     elif image_name.startswith("Farmland_"):
                         image_path = resource_path(f"images/Items/World/Farmland/{image_name}.png")
                         name = "Farmland"
+                    elif image_name.startswith("Wheat_Sapling"):
+                        image_path = resource_path(f"images/Items/Objects/Wheat/{image_name}.png")
+                        name = "Wheat_Sapling"
 
                     if image_path is None:
                         # Võtab itemi type ja jagab selle statement'idesse laiali ja 'loadib/convertib/lisab listi'
