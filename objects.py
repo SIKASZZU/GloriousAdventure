@@ -82,11 +82,15 @@ class ObjectManagement:
             return False
 
         terrain_update = {
-            4: 5,  # Oak tree stump
-            10: 98,  # Empty key slot
-            12: 98,  # Empty key slot
-            13: 98,  # Empty key slot
-            7: 69,  # Farmland
+            4: 5,       # Oak tree stump
+            10: 98,     # Empty key slot
+            12: 98,     # Empty key slot
+            13: 98,     # Empty key slot
+            7: 69,      # Farmland
+            71: 72,      # Farmland
+            74: 75,      # Farmland
+            77: 78,      # Farmland
+
             1008: 1009,  # Berry bush - Large
             1010: 1011,  # Berry bush - Medium
             1012: 1013  # Berry bush - Small

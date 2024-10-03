@@ -433,7 +433,9 @@ items_list = [
 
         render_when=block_size * 0.2,
 
-        breakable=False
+        drops=(['Potato'], [1], 1),
+
+        breakable=True
 
     ),
 
@@ -451,6 +453,76 @@ items_list = [
     ObjectItem(
         name="Potato_Sapling_1",
         id=73,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Carrot_Crop",
+        id=74,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        drops=(['Carrot'], [1], 1),
+
+        breakable=True
+
+    ),
+
+    ObjectItem(
+        name="Carrot_Sapling_0",
+        id=75,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Carrot_Sapling_1",
+        id=76,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Corn_Crop",
+        id=77,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        drops=(['Corn'], [1], 1),
+
+        breakable=True
+
+    ),
+
+    ObjectItem(
+        name="Corn_Sapling_0",
+        id=78,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Corn_Sapling_1",
+        id=79,
         hp=1,
 
         render_when=block_size * 0.2,
@@ -660,6 +732,24 @@ items_list = [
         satisfaction_gain=-3,
         thirst_resistance=-350,
         poisonous=True
+    ),
+
+
+    MineralItem(
+        name="Carrot",
+        id=45,
+    ),
+
+
+    MineralItem(
+        name="Potato",
+        id=46,
+    ),
+
+
+    MineralItem(
+        name="Corn",
+        id=46,
     ),
 
     ConsumableItem(

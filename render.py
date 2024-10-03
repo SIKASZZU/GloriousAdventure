@@ -188,9 +188,27 @@ class RenderPictures:
                 def remove_items_by_pos(pos_to_remove):
                     UniversalVariables.farmable_stage_list[:] = [item for item in UniversalVariables.farmable_stage_list if item[0] != pos_to_remove]
 
-                if object_id in GameConfig.WHEAT_STAGES.value:
+                if object_id in GameConfig.FARMABLE_STAGES.value:
                     found = False
-                    random_a, random_b = UniversalVariables.wheat_minus_random_range
+
+                    if object_id in GameConfig.WHEAT_STAGES.value:
+                        random_a, random_b = UniversalVariables.wheat_minus_random_range
+                        stage_growth_time = UniversalVariables.wheat_stage_growth_time
+
+                    if object_id in GameConfig.CARROT_TAGES.value:
+                        random_a, random_b = UniversalVariables.carrot_minus_random_range
+                        stage_growth_time = UniversalVariables.carrot_stage_growth_time
+
+                    if object_id in GameConfig.CORN_STAGES.value:
+                        random_a, random_b = UniversalVariables.corn_minus_random_range
+                        stage_growth_time = UniversalVariables.corn_stage_growth_time
+
+                    if object_id in GameConfig.POTATO_STAGES.value:
+                        random_a, random_b = UniversalVariables.potato_minus_random_range
+                        stage_growth_time = UniversalVariables.potato_stage_growth_time
+
+
+
                     for index, (pos, current_object_id, timer) in enumerate(UniversalVariables.farmable_stage_list):
                         if pos == grid:
                             found = True
@@ -199,24 +217,41 @@ class RenderPictures:
                                 timer -= 1
 
                             if timer == 0:
-
                                 if current_object_id == 69:
                                     current_object_id = 70
+
+                                elif current_object_id == 72:
+                                    current_object_id = 73
+
+                                elif current_object_id == 75:
+                                    current_object_id = 76
+
+                                elif current_object_id == 78:
+                                    current_object_id = 79
 
                                 elif current_object_id == 70:
                                     current_object_id = 7
 
-                                timer = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                                elif current_object_id == 73:
+                                    current_object_id = 71
+
+                                elif current_object_id == 76:
+                                    current_object_id = 74
+
+                                elif current_object_id == 79:
+                                    current_object_id = 77
+
+                                timer = stage_growth_time - random.randint(random_a, random_b)
                                 self.terrain_data[y][x] = current_object_id
 
 
                             UniversalVariables.farmable_stage_list[index] = (pos, current_object_id, timer) # Uuendab valuet
-                            if current_object_id == 7:
+                            if current_object_id in GameConfig.FARMABLES.value:
                                 remove_items_by_pos(pos)
                             break
 
                     if not found:
-                        growth_time = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                        growth_time = stage_growth_time - random.randint(random_a, random_b)
                         UniversalVariables.farmable_stage_list.append((grid, object_id, growth_time))
 
                         print(growth_time)
