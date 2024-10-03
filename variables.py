@@ -217,6 +217,9 @@ class UniversalVariables():
     allow_building = True
 
     # ******************** Farming ******************** #
+    farmable_stage_list = []
+
+
     # Avg Growth Time
     avg_growth_time_wheat   = 105  # (real - time)
     # avg_growth_time_potato  = 90   # (real - time)
