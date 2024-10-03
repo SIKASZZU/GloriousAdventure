@@ -2,7 +2,7 @@ import pygame
 import random
 
 from camera import Camera
-from items import items_list
+from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
@@ -116,7 +116,6 @@ class RenderPictures:
                     current_row[(col, row)] = terrain_value
 
                 RenderPictures.terrain_in_view.update(current_row)
-                print(RenderPictures.terrain_in_view)
 
         except IndexError:
             return
@@ -182,15 +181,53 @@ class RenderPictures:
                 object_id = 98
 
             elif object_id in GameConfig.FARMLAND_IMAGE.value:
+                # Check if the wheat stage should be updated
+                object_id = self.terrain_data[y][x]
+
+                @staticmethod
+                def remove_items_by_pos(pos_to_remove):
+                    UniversalVariables.farmable_stage_list[:] = [item for item in UniversalVariables.farmable_stage_list if item[0] != pos_to_remove]
+
+                if object_id in GameConfig.WHEAT_STAGES.value:
+                    found = False
+                    random_a, random_b = UniversalVariables.wheat_minus_random_range
+                    for index, (pos, current_object_id, timer) in enumerate(UniversalVariables.farmable_stage_list):
+                        if pos == grid:
+                            found = True
+
+                            if timer > 0:
+                                timer -= 1
+
+                            if timer == 0:
+
+                                if current_object_id == 69:
+                                    current_object_id = 70
+
+                                elif current_object_id == 70:
+                                    current_object_id = 7
+
+                                timer = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                                self.terrain_data[y][x] = current_object_id
+
+
+                            UniversalVariables.farmable_stage_list[index] = (pos, current_object_id, timer) # Uuendab valuet
+                            if current_object_id == 7:
+                                remove_items_by_pos(pos)
+                            break
+
+                    if not found:
+                        growth_time = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                        UniversalVariables.farmable_stage_list.append((grid, object_id, growth_time))
+
+                        print(growth_time)
+
                 image_name = 'Farmland'
                 object_id = 107
                 surrounding_values = GameConfig.GROUND_IMAGE.value
 
             ### FIXME: STRING ???
-
-            if image_name == None:  image_name = next((item['Name'] for item in items_list if object_id == item['ID']), None)
+            if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
             if image_name:
-
                 if object_id in many_choices:
                     surroundings = TileSet.check_surroundings(self, y, x, surrounding_values)
                     image_name = RenderPictures.select_choice(self, image_name, surroundings)  # m6nel asjal on mitu varianti.
@@ -211,8 +248,8 @@ class RenderPictures:
         desired_order = GameConfig.OBJECT_RENDER_ORDER.value
 
         def sort_key(item):
-            item_id = item[5]
-            return desired_order.index(item_id) if item_id in desired_order else float('inf')
+            id = item[5]
+            return desired_order.index(id) if id in desired_order else float('inf')
 
         # Filter and sort the objects
         sorted_objects = sorted(
@@ -223,7 +260,9 @@ class RenderPictures:
         # Render the objects
         for item in sorted_objects:
             position = item[:2]  # x, y
-            scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
+            image = item[4]
+
+            scaled_object_image = pygame.transform.scale(image, item[2:4])  # image, sizes
             if [scaled_object_image, position] not in UniversalVariables.blits_sequence_objects:
                 UniversalVariables.blits_sequence_objects.append([scaled_object_image, position])
 
@@ -240,25 +279,24 @@ class ObjectCreation:
         collision_items = []
         non_collision_items = []
         items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
+        breakability = None
 
-        for item in items_list:
-            if item.get("Type") == "Object":
-                object_id = item.get("ID")
+        for item_list in [object_items, world_items]:
+            for item in item_list:
+                object_dir = find_item_by_name(item.name)
+                object_id = object_dir.id
                 if object_id in items_not_designed_for_list:
                     continue
-                else:
-                    object_image_name = item.get("Name")
-                    breakability      = item.get('Breakable')
-                    object_width      = item.get("Object_width")
-                    object_height     = item.get("Object_height")
-                    collision_box     = item.get("Collision_box")
-                    object_image      = ImageLoader.load_image(object_image_name)
 
+                object_image_name = item.name
+                object_width = item.width
+                object_height = item.height
+                object_image = ImageLoader.load_image(object_image_name)
 
-                if breakability == None:  breakability = False
+                breakability = item.breakable if isinstance(item, ObjectItem) else False
+                collision_box = item.collision_box if isinstance(item, WorldItem) else None
 
                 a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-
                 if collision_box != None:
                     start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
                     a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
@@ -338,8 +376,25 @@ class ObjectCreation:
                         # Check if the random offset for this position already exists
                         if position_key not in ObjectCreation.random_offsets:
                             # Generate and store the random offsets
-                            randomizer_x = round(random.uniform(0.1, 0.6), 1)  # TODO: fix hard coded 0.6. 1 - object width peab olema.
-                            randomizer_y = round(random.uniform(0.1, 0.6), 1)
+                            def surrounding_walls(x,y):
+                                """ Objektid lahevad yle seinte, kui randomx,y on liiga suured. """
+                                try:
+                                    if self.terrain_data[y+1][x] == 99 or self.terrain_data[y+2][x] == 99:
+                                        return True
+                                    if self.terrain_data[y][x+1] == 99 or self.terrain_data[y][x+2] == 99:
+                                        return True
+                                    return False
+                                except IndexError: return False
+
+                            if surrounding_walls(x, y) == True:
+                                randomizer_x = round(random.uniform(0, 0.2), 1)
+                                randomizer_y = round(random.uniform(0, 0.2), 1)
+                            else:    
+                                randomizer_x = round(random.uniform(0, 1), 1)
+                                randomizer_y = round(random.uniform(0, 1), 1)
+                            
+
+                            #print(object_id, object_width, object_height, randomizer_x, randomizer_y)
                             ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
                         else:
                             # Retrieve the stored random offsets

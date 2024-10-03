@@ -1,884 +1,705 @@
-import random
+""" K6ik pildid on images/Items folderis, sest need k6ik pildid k2ivad items_list'i kohta. """
+""" Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
 
 from variables import UniversalVariables
-
 block_size = UniversalVariables.block_size
-"""
-Collision_box: [offset_x, offset_y, width, height]
 
 
-"Recipes": [
-        {"Recipe": {"Item Name": Amount needed}, "Amount": Amount receive},
-        {"Recipe": {"Item Name": Amount needed, "Item Name": Amount needed}, "Amount": Amount receive},
-]
+class Item:
+    def __init__(self, type: str, name: str, id: int, cookable: str=False):
+        self.type = type
+        self.name = name
+        self.id = id
+        self.cookable = cookable
 
 
+class ToolItem(Item):
+    def __init__(
+            self,
+            name: str, id: int,
+            recipe: [list[str, ...], list[int | float, ...], int]=None,  # {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+    ) -> None:
 
-"Breakable": True ///
-
-"Breakable": [
-    {"hardness": "None"},        +///     None: any // Wood: wood & higher // Stone & higher....     ///+
-    {"amount": ("Item Name you receive", Amount receive)},
-],
-
-
-
-///
+        super().__init__('Tool', name, id)
+        self.recipe = recipe
 
 
+class ObjectItem(Item):
+    def __init__(
+            self,
+            name: str, id: int, hp: int,
+            width: int | float=block_size, height: int | float=block_size, render_when: int | float=None,
+            
+            recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+            drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
+            breakable=False, placeable=False
+    ) -> None:
 
-"""
+        super().__init__('Object', name, id)
+        self.hp = hp
+        self.recipe = recipe
+        self.width = width
+        self.height = height
+        self.render_when = render_when
+        self.drops = drops
+        self.breakable = breakable
+        self.placeable = placeable
+
+        if self.drops is None:
+            self.drops = ([self.name], [1], 1)
+
+class WorldItem(Item):
+    def __init__(self, 
+            name: str, id: int,
+            width: int=block_size, height: int=block_size,
+            collision_box: list=None,
+            render_when: int | float=None
+    ) -> None:
+        
+        super().__init__('World', name, id)
+        self.width = width
+        self.height = height
+        self.render_when = render_when
+        self.collision_box = collision_box
 
 
-### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
-### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
+class MineralItem(Item):
+    def __init__(
+            self,
+            name: str, id: int,
+            recipe: list[dict[str, dict[str, int, ...], str, int], ...]=None, #  {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
+            cookable=False
+    ) -> None:
+
+        super().__init__('Mineral', name, id, cookable)
+        self.recipe = recipe
+
+
+class ConsumableItem(Item):
+    def __init__(
+            self,
+            name: str, id: int,
+            satisfaction_gain: int | float=None,
+            hunger_resistance: int | float=None, thirst_resistance: int | float=None,
+            healing_amount: int=None,
+            timer: int=None,
+            cure: bool=False,
+            poisonous: bool=False,
+
+    ) -> None:
+
+        super().__init__('Consumable', name, id)
+        self.satisfaction_gain = satisfaction_gain
+        self.hunger_resistance = hunger_resistance
+        self.healing_amount = healing_amount
+        self.timer = timer
+        self.thirst_resistance = thirst_resistance
+        self.cure = cure
+        self.poisonous = poisonous
 
 items_list = [
-    {
-        "Type": "Object",
-        "Name": "Rock",
-        "ID": 2,
-        "HP": 5,
-        "Breakable": True,
-        "Object_width": int(block_size * 0.69),  # suhe 5:4
-        "Object_height": int(block_size * 0.55),
-        "Render_when": -(block_size * 0.1),
-        "Drops": (['Stone', 'Coal'], [0.85, 0.15], 1)  # Choices, Ratio, Amount
+    # - # - # - # - # - # - # World # - # - # - # - # - # - #
 
-    },
+    # maze
 
-    {
-        "Type": "Object",
-        "Name": "Farmland",
-        "ID": 3,
-        "Object_width": int(block_size * 0.5),
-        "Object_height": int(block_size * 0.5),
-    },
+    WorldItem(
+        name='Maze_Ground',
+        id=98,
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Oak_Tree",
-        "ID": 4,
-        "HP": 5,
-        "Breakable": True,
-        "Object_width": int(block_size * 2),
-        "Object_height": int(block_size * 2),
-        "Render_when": block_size * 1.5,
-        "Drops": (['Oak_Log'], [1], 1)  # Choices, Ratio, Amount
-    },
+    WorldItem(
+        name='Maze_Wall',
+        id=99,
+        collision_box=[0, 0, 1, 1]
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Oak_Tree_Stump",
-        "ID": 5,
-        "Breakable": False,
-        "Object_width": int(block_size * 2),
-        "Object_height": int(block_size * 2),
-        "Render_when": block_size * 0.6
-    },
+    WorldItem(
+        name='Maze_Ground_Keyhole',
+        id=11,
+        collision_box=[0, 0, 1, 1]
+    ),
 
-    {
-        "Type": "Tool",
-        "Name": "String",
-        "ID": 6,
-        "Breakable": True,
-        "Placeable": True,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size
+    WorldItem(
+        name='Keyholder_With_Key',
+        id=982,
+        collision_box=[0, 0, 1, 1]
+    ),
 
-    },
+    WorldItem(
+        name='Keyholder_Without_Key',
+        id=981,
+        collision_box=[0, 0, 1, 1]
 
-    {
-        "Type": "Object",
-        "Name": "Wheat_Crop",
-        "ID": 7,
-        "Breakable": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * .2),
-        "Drops": (['Wheat'], [1], 1)  # Choices, Ratio, Amount
-    },
+    ),
+    
+    WorldItem(
+        name='Status_Gray',
+        id=500,
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Campfire",
-        "ID": 8,
-        "Placeable": True,
-        "Breakable": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1),
+    WorldItem(
+        name='Status_Yellow',
+        id=550,
+    ),
 
-        "Recipes": [
+    WorldItem(
+        name='Status_Green',
+        id=555,
+    ),
+
+    WorldItem(
+        name='Final_Maze_Ground',
+        id=988,
+    ),
+
+    WorldItem(
+        name='Final_Maze_Ground_2',
+        id=9882,
+    ),
+
+    WorldItem(
+        name='Void',
+        id=999,
+    ),
+
+    WorldItem(
+        name='Endgate',
+        id=1000,
+    ),
+
+    # blade maze
+
+    WorldItem(
+        name='Maze_Blade',
+        id=9099,
+    ),
+
+    WorldItem(
+        name='Maze_Blade',
+        id=989,
+    ),
+
+    WorldItem(
+        name='Maze_Blade',
+        id=900,
+    ),
+
+    WorldItem(
+        name='Maze_Ground',
+        id=9099_98,
+    ),
+
+    WorldItem(
+        name='Maze_Ground',
+        id=989_98,
+    ),
+    
+    # doors
+
+    WorldItem(
+        name='Maze_Start_Top',
+        id=91,
+    ),
+
+    WorldItem(
+        name='Maze_Start_Right',
+        id=92,
+    ),
+
+    WorldItem(
+        name='Maze_Start_Left',
+        id=90,
+    ),
+
+    WorldItem(
+        name='Maze_Start_Bottom',
+        id=93,
+    ),
+
+    WorldItem(
+        name='Maze_Start_Bottom',
+        id=933,
+    ),
+
+    WorldItem(
+        name='Maze_End_Bottom',
+        id=97,
+    ),
+
+    WorldItem(
+        name='Maze_End_Bottom',
+        id=977,
+    ),
+
+    WorldItem(
+        name='Maze_End_Top',
+        id=95,
+    ),
+
+    WorldItem(
+        name='Maze_End_Right',
+        id=96,
+    ),
+
+    WorldItem(
+        name='Maze_End_Left',
+        id=94,
+    ),
+
+    # - # - # - # - # - # - # Tools # - # - # - # - # - # - #
+    
+    ToolItem(
+        name="Wood_Pickaxe",
+        id=50,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Axe",
+        id=51,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Shovel",
+        id=52,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Wood_Sword",
+        id=53,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Stone_Pickaxe",
+        id=54,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Stone_Axe",
+        id=55,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Rock_Sword",
+        id=57,
+        recipe=[
+            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1}
+        ]
+    ),
+
+    ToolItem(
+        name="Flashlight",
+        id=31,
+    ),
+
+    ToolItem(
+        name="Stone_Shard",
+        id=27,
+        recipe=[
+            {"Recipe": {"Stone": 2}, "Amount": 1,}
+        ]
+    ),
+
+    ToolItem(
+        name="Glowstick",
+        id=28,
+    ),
+
+    ToolItem(
+        name="Fishing_Rod",
+        id=43,
+        recipe=[
+            {"Recipe": {"Stick": 3, "String": 5}, "Amount": 1,}
+        ]
+    ),
+    
+    # - # - # - # - # - # - # Objects # - # - # - # - # - # - #
+
+    ObjectItem(
+        name="Rock",
+        id=2,
+        hp=5,
+
+        width=int(block_size * 0.69),
+        height=int(block_size * 0.55),
+        render_when=-(block_size * 0.1),
+
+        drops=(['Stone', 'Coal'], [0.85, 0.15], 1),
+
+        breakable=True
+
+    ),
+
+    ObjectItem(
+        name="Farmland",
+        id=3,
+        hp=100,
+
+        width=int(block_size),
+        height=int(block_size),
+
+    ),
+
+    ObjectItem(
+        name="Oak_Tree",
+        id=4,
+        hp=5,
+
+        width=int(block_size * 2),
+        height=int(block_size * 2),
+        render_when=block_size * 1.5,
+        
+        drops=(['Oak_Log'], [1], 1),
+        breakable=True
+    ),
+
+    ObjectItem(
+        name="Oak_Tree_Stump",
+        id=5,
+        hp=100,
+
+        width=int(block_size * 2),
+        height=int(block_size * 2),
+        render_when=block_size * 0.6,
+
+    ),
+
+    ObjectItem(
+        name="String",
+        id=6,
+        hp=1,
+
+        breakable=True,
+        placeable=True
+
+    ),
+
+    ObjectItem(
+        name="Wheat_Crop",
+        id=7,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        drops=(['Wheat'], [1], 1),
+
+        breakable=True
+
+    ),
+
+    ObjectItem(
+        name="Wheat_Sapling_0",
+        id=69,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Wheat_Sapling_1",
+        id=70,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Campfire",
+        id=8,
+        hp=1,
+
+        render_when=(block_size * 0.2),
+
+        recipe=[
             {"Recipe": {"Oak_Log": 2, "Coal": 1, "Stone": 3}, "Amount": 1},
         ],
 
-    },
+        breakable=True,
+        placeable=True
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Big_Bush",
-        "ID": 9,
-        "Breakable": True,
-        "Object_width": int(block_size * .7),
-        "Object_height": int(block_size * .7),
-        "Render_when": (block_size * .2)
-    },
+    ObjectItem(
+        name="Big_Bush",
+        id=9,
+        hp=1,
 
-    {
-        "Type": "Object",
-        "Name": "Maze_Key",
-        "ID": 10,
-        "Breakable": True,
-        "Object_width": int(block_size * 0.45),
-        "Object_height": int(block_size * 0.45),
-        "Recipes": [
-            {"Recipe": {"Maze_Key_1": 1, "Maze_Key_2": 1}, "Amount": 1},
-            ],
-        "Render_when": (block_size * -1)
-    },
-{
-        "Type": "Object",
-        "Name": "Maze_Key_1",
-        "ID": 12,
-        "Breakable": True,
-        "Object_width": int(block_size * 0.45),
-        "Object_height": int(block_size * 0.45),
-        "Render_when": (block_size * -1)
-    },
-{
-        "Type": "Object",
-        "Name": "Maze_Key_2",
-        "ID": 13,
-        "Breakable": True,
-        "Object_width": int(block_size * 0.45),
-        "Object_height": int(block_size * 0.45),
-        "Render_when": (block_size * -1)
-    },
+        width=int(block_size * 0.7),
+        height=int(block_size * 0.7),
+        render_when=(block_size * 0.2),
 
-    # Items
+        breakable=True
+    ),
 
-    {
-        "Type": "Mineral",
-        "Name": "Oak_Log",
-        "ID": 19,
-    },
+    ObjectItem(
+        name="Maze_Key",
+        id=10,
+        hp=1,
 
-    {
-        "Type": "Mineral",
-        "Name": "Oak_Planks",
-        "ID": 21,
-        "Recipes": [
-            {"Recipe": {"Oak_Log": 1}, "Amount": 2},  ### TODO: SEE KASUTAB SELLE ITEMI IGAT RETSEPTI EHK SIIS PRAEGU SIIN TA CRAFTIB OAK WOODIST JA OAK TREEST EHK SIIS ÜHE CLICKIGA SAAB 6 ÄRA VAJA FIXIDA
-            # {"Recipe": {"Oak_Tree": 1}, "Amount": 4},
-        ],
-        # "Placeable": True,
-        # "Breakable": True,
-    },
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
 
-    {
-        "Type": "Mineral",
-        "Name": "Stick",
-        "ID": 22,
-        "Recipes": [
-            # {"Recipe": {"Oak_Tree": 1}, "Amount": 8},
-            # {"Recipe": {"Oak_Wood": 1}, "Amount": 4},
-            {"Recipe": {"Oak_Planks": 1}, "Amount": 2},
-        ],
-    },
+        breakable=True,
+    ),
 
-    {
-        "Type": "Mineral",
-        "Name": "Stone",
-        "ID": 23,
-        # "Placeable": True,
-        # "Breakable": True,
-    },
+    ObjectItem(
+        name="Maze_Key_1",
+        id=12,
+        hp=1,
 
-    {
-        "Type": "Tool",
-        "Name": "Wood_Pickaxe",
-        "ID": 50,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
-        ],
-        "Durability": 128,
-    },
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
 
-    {
-        "Type": "Tool",
-        "Name": "Wood_Axe",
-        "ID": 51,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1},
-        ],
-        "Durability": 128,
-    },
+        breakable=True,
+    ),
 
-    {
-        "Type": "Tool",
-        "Name": "Wood_Shovel",
-        "ID": 52,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1,},
-        ],
-        "Durability": 128,
-    },
+    ObjectItem(
+        name="Maze_Key_2",
+        id=13,
+        hp=1,
 
-    {
-        "Type": "Tool",
-        "Name": "Wood_Sword",
-        "ID": 53,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Oak_Planks": 2}, "Amount": 1},
-        ],
-        "Durability": 128,
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
 
-    },
+        breakable=True,
+    ),
 
-    {
-        "Type": "Tool",
-        "Name": "Stone_Pickaxe",
-        "ID": 54,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1},
-        ],
-        "Durability": 256,
-    },
+    ObjectItem(
+        name="Torch",
+        id=30,
+        hp=1,
 
-    {
-        "Type": "Tool",
-        "Name": "Stone_Axe",
-        "ID": 55,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Stone_Shard": 3}, "Amount": 1},
-        ],
-        "Durability": 256,
-    },
-
-    {
-        "Type": "Tool",
-        "Name": "Stone_Shovel",
-        "ID": 56,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1,},
-        ],
-        "Durability": 256,
-    },
-
-    {
-        "Type": "Tool",
-        "Name": "Rock_Sword",
-        "ID": 57,
-        "Recipes": [
-            {"Recipe": {"Stick": 2, "Stone_Shard": 2}, "Amount": 1},
-        ],
-        "Durability": 256,
-    },
-
-    {
-        "Type": "Tool",
-        "Name": "Stone_Shard",
-        "ID": 27,
-        "Recipes": [
-            {"Recipe": {"Stone": 2}, "Amount": 1,},  # Tuleb Stone'iks ära muuta
-        ],
-        "Durability": 128,
-    },
-
-    {
-        "Type": "Tool",
-        "Name": "Glowstick",
-        "ID": 28,
-    },
-
-    {
-        "Type": "Mineral",
-        "Name": "Coal",
-        "ID": 29,
-    },
-
-    {
-        "Type": "Tool",
-        "Name": "Torch",
-        "ID": 30,
-        "Recipes": [
+        recipe=[
             {"Recipe": {"Stick": 2, "Coal": 1}, "Amount": 4},
         ],
-        "Durability": 256,
-        # "Placeable": True,
-        # "Breakable": True,
-    },
 
-    {
-        "Type": "Tool",
-        "Name": "Flashlight",
-        "ID": 31,
-    },
+        breakable=True,
+        placeable=True
+    ),
+    
+    ObjectItem(
+        name="Opened_Loot_Barrel",
+        id=1002,
+        hp=1,
+        
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
+        render_when=(block_size * 0.2),
+    ),
 
-    {
-        "Type": "Tool",
-        "Name": "Bandage",
-        "ID": 32,
-    },
+    ObjectItem(
+        name="Loot_Barrel",
+        id=1001,
+        hp=1,
 
-    {
-        "Type": "Tool",
-        "Name": "Canteen",
-        "ID": 33,
-    },
+        width=int(block_size * 0.45),
+        height=int(block_size * 0.45),
+    ),
 
-    {
-        "Type": "Tool",
-        "Name": "Serum",
-        "ID": 34,
-    },
+    # - # - # - # - # - # - # Minerals # - # - # - # - # - # - #
 
-# food
+    # need id 12,13 on juba objectitemi all olemas? id peab olema teine muidu tekib error
 
-    {
-        "Type": "Food",
-        "Name": "Bread",
-        "ID": 35,
-        "Satisfaction_Gain": 1,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": 150,  # Mitu ticki ei lähe hungerit
-    },
+    # MineralItem(
+    #     name="Maze_Key_1",
+    #     id=12,
+    # ),
 
-    # DEBUG ITEM
-    {
-        "Type": "Food",
-        "Name": "Bad_Bread",
-        "ID": 10000,
-        "Satisfaction_Gain": -1.75,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
-    },
+    # MineralItem(
+    #     name="Maze_Key_2",
+    #     id=13,
+    # ),
 
-    {
-        "Type": "Food",
-        "Name": "Raw_Meat",
-        "ID": 37,
-        "Satisfaction_Gain": -1,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": -200,  # Mitu ticki ei lähe hungerit
-        "Cookable": "Cooked_Meat"
-    },
+    MineralItem(
+        name="Oak_Log",
+        id=19,
+    ),
 
-    {
-        "Type": "Food",
-        "Name": "Cooked_Meat",
-        "ID": 37,
-        "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": 500,  # Mitu ticki ei lähe hungerit
-    },
+    MineralItem(
+        name='Oak_Planks',
+        id=21,
+        recipe=[
+            {"Recipe": {"Oak_Log": 1}, "Amount": 2}
+        ]
+    ),
 
-    {
-        "Type": "Food",
-        "Name": "Bottle_Water",
-        "ID": 38,
-        "Satisfaction_Gain": 3,
-        "Thirst_Resistance": 350,
-    },
+    MineralItem(
+        name="Stick",
+        id=22,
+        recipe=[
+            {"Recipe": {"Oak_Planks": 1}, "Amount": 2},
+        ]
+    ),
 
-    {
-        "Type": "Food",
-        "Name": "Wheat",
-        "ID": 39,
-    },
+    MineralItem(
+        name="Stone",
+        id=23,
+    ),
 
-    {
-        "Type": "Food",
-        "Name": "Bread_Dough",
-        "Recipes": [{"Recipe": {"Wheat": 3}, "Amount": 1}],
-        "Cookable": "Bread",
-        "ID": 40,
-    },
-    # Unbreakable Blocks - Items
+    MineralItem(
+        name="Coal",
+        id=29,
+    ),
 
-### TODO: Blocke lõhkudes peab määrama palju ja mida ta saab näiteks "Oak_Tree"d
-### TODO: lõhkudes ei ta lic puukest invi, selle asemel saab ta 2 "Oak_Plank"u
+    MineralItem(
+        name="Raw_Meat",
+        id=36,
+        cookable="Meat"
+    ),
 
-        {
-        "Type": "Object",
-        "Name": "Farmland",
-        "ID": 107,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Ground",
-        "ID": 98,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Wall",
-        "ID": 99,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    ### maze blade
-    {
-        "Type": "Object",
-        "Name": "Maze_Blade",
-        "ID": 9099,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Blade",
-        "ID": 989,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Blade",
-        "ID": 900,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Ground",
-        "ID": 9099_98,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Ground",
-        "ID": 989_98,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": -block_size
-        },
-    ###
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Left",
-        "ID": 90,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Top",
-        "ID": 91,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Right",
-        "ID": 92,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Bottom",
-        "ID": 93,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Bottom",
-        "ID": 933,
-        "Breakable": False,
-        "Block_vision": True,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_End_Left",
-        "ID": 94,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_End_Top",
-        "ID": 95,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_End_Right",
-        "ID": 96,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_End_Bottom",
-        "ID": 97,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_End_Bottom",
-        "ID": 977,
-        "Breakable": False,
-        "Block_vision": True,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Puzzle_Piece",
-        "ID": 89,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": 0
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Ground_Keyhole",
-        "ID": 11,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Keyholder_without_key",
-        "ID": 981,
-        "Breakable": False,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Keyholder_with_key",
-        "ID": 982,
-        "Breakable": False,
-        "Collision_box": [0, 0, 1, 1],
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Status_gray",
-        "ID": 500,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Status_yellow",
-        "ID": 550,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Status_green",
-        "ID": 555,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Maze_Start_Bottom",
-        "ID": 909,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-    },
-    {
-        "Type": "Object",
-        "Name": "Final_Maze_Ground",
-        "ID": 988,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Final_Maze_Ground_2",
-        "ID": 9882,
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Void",
-        "ID": 999,
-        "Collision_box": [0, 0, 1, 1],
-        "Breakable": False,
-        "Object_width": int(block_size * 1),
-        "Object_height": int(block_size * 1),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Endgate",
-        "ID": 1000,
-        "Breakable": False,
-        "Object_width": int(block_size * 2),
-        "Object_height": int(block_size * 2),
-        "Render_when": (block_size * -1)
-        },
-    {
-        "Type": "Object",
-        "Name": "Loot_Barrel",
-        "ID": 1001,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * 0.45),
-        "Object_height": int(block_size * 0.45),
-        "Render_when": -block_size
-        },
-    {
-        "Type": "Object",
-        "Name": "Opened_Loot_Barrel",
-        "ID": 1002,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * 0.45),
-        "Object_height": int(block_size * 0.45),
-        "Render_when": -block_size
-        },
 
-    {
-        "Type": "Object",
-        "Name": "Loot_Chest",
-        "ID": 1003,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * .5),
-        "Object_height": int(block_size * .5),
-        "Render_when": -block_size
-    },
+    MineralItem(
+        name="Wheat",
+        id=39,
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Rotten_Log_0",
-        "ID": 1004,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * .5),
-        "Object_height": int(block_size * .5),
-        "Render_when": -block_size
-    },
+    MineralItem(
+        name="Bread_Dough",
+        id=40,
+        recipe=[
+            {"Recipe": {"Wheat": 3}, "Amount": 1}
+        ],
+        cookable="Bread"
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Rotten_Log_1",
-        "ID": 1005,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * .5),
-        "Object_height": int(block_size * .5),
-        "Render_when": -block_size
-    },
+    MineralItem(
+        name="Raw_Fish",
+        id=41,
+        cookable="Fish"
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Rotten_Log_2",
-        "ID": 1006,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size * .5),
-        "Object_height": int(block_size * .5),
-        "Render_when": -block_size
-    },
+    # - # - # - # - # - # - # Consumables # - # - # - # - # - # - #
 
-    {
-        "Type": "Object",
-        "Name": "Berry_Bush_0",
-        "ID": 1008,
-        "Breakable": True,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size,
-        "Drops": (['Berry'], [1], 6)  # Choices, Ratio, Amount
-    },
+    ConsumableItem(
+        name="Bread",
+        id=35,
+        satisfaction_gain=1,
+        hunger_resistance=150
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Bush_0",
-        "ID": 1009,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size
-    },
+    ConsumableItem(
+        name="Bad_Bread",
+        id=10000,
+        satisfaction_gain=-1.75,
+        hunger_resistance=-200,
+        poisonous=True
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Berry_Bush_1",
-        "ID": 1010,
-        "Breakable": True,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size,
-        "Drops": (['Berry'], [1], 3),  # Choices, Ratio, Amount
-    },
+    ConsumableItem(
+        name="Meat",
+        id=37,
+        satisfaction_gain=2,
+        hunger_resistance=500
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Bush_1",
-        "ID": 1011,
-        "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size
-    },
+    ConsumableItem(
+        name="Bottle_Water",
+        id=38,
+        satisfaction_gain=3,
+        thirst_resistance=350
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Berry_Bush_4",
-        "ID": 1012,
-        "Breakable": True,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size,
-        "Drops": (['Berry'], [1], 1),  # Choices, Ratio, Amount
-    },
+    ConsumableItem(
+        name="Dirty_Bottle_Water",
+        id=44,
+        satisfaction_gain=-3,
+        thirst_resistance=-350,
+        poisonous=True
+    ),
 
-    {
-        "Type": "Object",
-        "Name": "Bush_4",
-        "ID": 1013,
-            "Breakable": False,
-        "Block_vision": False,
-        "Object_width": int(block_size),
-        "Object_height": int(block_size),
-        "Render_when": -block_size
-    },
+    ConsumableItem(
+        name="Berry",
+        id=1014,
+        satisfaction_gain=2,
+        hunger_resistance=150
+    ),
 
-    {
-        "Type": "Food",
-        "Name": "Berry",
-        "ID": 1014,
-        "Satisfaction_Gain": 2,  # Kui palju hunger bar juurde saab
-        "Hunger_Resistance": 150,  # Mitu ticki ei lähe hungerit
-    },
+    ConsumableItem(
+    name="Bandage",
+    id=32,
+    healing_amount=5,
+    ),
+
+    ConsumableItem(
+    name="Serum",
+    id=34,
+    timer=10,
+    cure=True
+    ),
+
+    ConsumableItem(
+        name="Fish",
+        id=42,
+        satisfaction_gain=2,
+        hunger_resistance=500
+    ),
 
 ]
 
-# Testida asju mis on seotud ainult item'ga
-if __name__ == "__main__":
-    item_name_to_find = "Rock"
-    item_value_to_find = "Collision_box"
+# Teeb dict'id, et saaks kiiremini asju ülesse otsida. (efficient)
+items_dict_by_id = {item.id: item for item in items_list}
+items_dict_by_name = {item.name: item for item in items_list}
 
-    # Otsib listist itemi nime ja otsitavad valued
-    for item in items_list:
-        try:
-            if item["Name"].capitalize() == item_name_to_find.capitalize():
-                item_value = item[item_value_to_find]
-                print(f"The {item_value_to_find} of {item_name_to_find} is {item_value}")
-                break  # Väljub loopist peale itemi nime / value leidmist
+# List'id item type kohta
+world_items = [item for item in items_list if isinstance(item, WorldItem)]
+object_items = [item for item in items_list if isinstance(item, ObjectItem)]
+tool_items = [item for item in items_list if isinstance(item, ToolItem)]
+mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
+consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
 
-        except:
-            print(f"{item_name_to_find} has no {item_value_to_find}.")
-            break  # Väljub loopist kui itemi nime / valuet ei leitud
 
-    else:
-        # Kui itemi nime / value ei leitud listist
-        print(f"{item_name_to_find} not found in the list")
+# for obj_item in object_items:
+#     print(vars(obj_item))
 
-    print()
-    print()
-    print()
+# Otsib itemi selle ID järgi.
+def find_item_by_id(id) -> dict:
+    return items_dict_by_id.get(id, None)
 
-    # Tekitab tühja listi kuhu paneb itemid mille type on object
-    object_items = []
 
-    # Otsib listist itemi ID'd mille type on object
-    for item in items_list:
-        if item.get("Type") == "Object":
-            object_items.append(item)
+# # Otsib itemi selle Name järgi.
+def find_item_by_name(search_name) -> dict:
+    return items_dict_by_name.get(search_name, None)
 
-    # Otsib itemi ID / Collision_boxi ja prindib need välja ka siis kui listis pole seda olemas
-    for object_item in object_items:
-        print("ID:", object_item.get("ID", None))
-        print("HP:", object_item.get("HP", None))
-        print("Collision_box:", object_item.get("Collision_box", None))
-        print("test:", object_item.get("test", "Mind ei ole listis"))
-        print()
+
+# Otsib valitud attribute item'ite seast.
+def search_item_from_items(type: type, item_name_or_id: str | int, target_attribute: str) -> any:
+    # Näidis:
+    #   search_item_from_items(type=ObjectItem, item_name_or_id=2, target_attribute='drops')
+    #   search_item_from_items(type=ConsumableItem, item_name_or_id='bread', target_attribute='satisfaction_gain')
+
+    item = None
+    if isinstance(item_name_or_id, int):
+        item = find_item_by_id(item_name_or_id)
+
+    elif isinstance(item_name_or_id, str):
+        item = find_item_by_name(item_name_or_id)
+
+    # Vaatab kas item'il on target_attribute, kui ei ole siis return'ib None.
+    if item and isinstance(item, type):
+        return getattr(item, target_attribute.lower(), None)
+    return None
+
+# result = search_item_from_items(type=ConsumableItem, item_name_or_id='berry', target_attribute='satisfaction_gain')
+# print(result)

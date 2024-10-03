@@ -8,12 +8,13 @@ class GameConfig(Enum):
     # Render: wheat -> rock -> stump -> tree
     OBJECT_RENDER_ORDER: tuple[int, ...] = (7, 2, 5, 4)
 
-    RANDOM_PLACEMENT: tuple[int, ...] = (10, 12, 13, 1001, 1002, 1003)  # Random position items
+    RANDOM_PLACEMENT: tuple[int, ...] = (2, 4, 5, 10, 12, 13, 1001, 1002, 1003)  # Random position items
 
     INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9)
 
     FARMABLES           : tuple[int, ...] = (7, )
-    FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + (107, )
+    WHEAT_STAGES        : tuple[int, ...] = (69, 70)
+    FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + WHEAT_STAGES + (107, )
 
     GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1016))  # GLADE_ITEMS + 1004 -> 1015
     MAZE_GROUND_IMAGE   : tuple[int, ...] = (
@@ -69,6 +70,11 @@ class UniversalVariables():
     # ******************** Screen ******************** #
     screen = pygame.display.set_mode((screen_x, screen_y))
 
+    # Effectide suurused
+
+    icon_width: int = 60
+    icon_height: int = 60
+
     # Block size muutmiseks kui zoomitakse sisse või välja
     prev_block_size: int = 0
 
@@ -76,7 +82,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS = 200
+        FPS: int = 200
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 15
@@ -90,7 +96,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS = 60
+        FPS: int = 60
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
@@ -116,8 +122,9 @@ class UniversalVariables():
     player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
 
     health_status     = None
-    hunger_resistance = None
-    thirst_resistance = None
+    hunger_resistance = 0
+    thirst_resistance = 0
+    player_poisoned   = False
     player_infected   = False
     player_bleeding   = False
     serum_active      = False
@@ -135,7 +142,6 @@ class UniversalVariables():
         #("Oak_Planks", (2, 3)),
         #("Oak_Wood", (1, 2)),
         ("Flashlight", 1),
-        ("Canteen", 1),
         ("Serum", 1),
         ("Bread", (2, 3)),
         ("Raw_Meat", (2, 3)),
@@ -209,6 +215,28 @@ class UniversalVariables():
 
     # ******************** Building ******************** #
     allow_building = True
+
+    # ******************** Farming ******************** #
+    farmable_stage_list = []
+
+
+    # Avg Growth Time
+    avg_growth_time_wheat   = 105  # (real - time)
+    # avg_growth_time_potato  = 90   # (real - time)
+    # avg_growth_time_corn    = 80   # (real - time)
+    # avg_growth_time_carrot  = 75   # (real - time)
+
+    wheat_stage_growth_time = 20 * avg_growth_time_wheat  # Default: 75 * avg_growth_time_wheat
+    wheat_minus_random_range = (0, wheat_stage_growth_time // 1.1)
+
+    # potato_stage_growth_time = avg_growth_time_potato * wheat_stage_growth_time // avg_growth_time_wheat
+    # potato_minus_random_range = (0, potato_stage_growth_time // 1.1)
+    #
+    # corn_stage_growth_time = avg_growth_time_corn * wheat_stage_growth_time // avg_growth_time_wheat
+    # corn_minus_random_range = (0, corn_stage_growth_time // 1.1)
+    #
+    # carrot_stage_growth_time = avg_growth_time_carrot * wheat_stage_growth_time // avg_growth_time_wheat
+    # carrot_minus_random_range = (0, carrot_stage_growth_time // 1.1)
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):

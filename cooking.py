@@ -3,7 +3,7 @@ import time  # Import time module for cooldown functionality
 from images import ImageLoader
 from variables import UniversalVariables, GameConfig
 from camera import Camera
-from items import items_list
+from items import items_list, MineralItem
 from inventory import Inventory
 
 
@@ -59,7 +59,7 @@ class Cooking:
         if not Cooking.cooking_list:
             # Populate the cooking list as a dictionary
             if not Cooking.cooking_list:
-                Cooking.cooking_list = {item.get("Name"): item.get("Cookable") for item in items_list if item.get("Cookable")}
+                Cooking.cooking_list = {item.name: item.cookable for item in items_list if item.cookable}
 
         for station_key, station_data in Cooking.stations.items():
             raw_item, raw_item_quantity = station_data['station_raw_item']
@@ -325,10 +325,12 @@ class Cooking:
 
                 # Progress bar'i jaoks
                 cookable_item = False
+
                 for item in items_list:
-                    if item.get("Name") == raw_item and "Cookable" in item:
-                        cookable_item = True
-                        break
+                    if isinstance(item, MineralItem) and hasattr(item, 'cookable'):
+                        if item.cookable:  # Check if the item is cookable
+                            cookable_item = item.cookable  # Get the item produced after cooking
+                            break  # Exit the loop if a cookable item is found
 
                 if raw_item:
                     raw_item = ImageLoader.load_image(raw_item)

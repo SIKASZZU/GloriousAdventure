@@ -256,10 +256,18 @@ class Enemy:
             Enemy.save_enemy_direction_y = enemy_direct_y
 
         if Enemy.damage_delay >= 60:
+
+            if not UniversalVariables.player_bleeding and random.randint(1, 10) <= 6:
+                UniversalVariables.player_bleeding = True
+
+            if not UniversalVariables.player_infected and random.randint(1, 10) <= 3:
+                UniversalVariables.player_infected = True
+
             self.player.health.damage(damage)
             PlayerStatus.infection(self)
             PlayerStatus.bleed(self)
-            
+
+
             # Calculate knockback direction
             dx = Camera.player_window_x - Enemy.save_enemy_direction_x
             dy = Camera.player_window_y - Enemy.save_enemy_direction_y

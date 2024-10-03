@@ -1,17 +1,13 @@
 import pygame
-from items import items_list
+from items import *
 from inventory import Inventory
 from variables import UniversalVariables
 from audio import Player_audio
 from text import Fading_text
 import numpy as np
 
-# Preprocess'ib item'id dicti mida
-def preprocess_items(items_list):
-    return {item["ID"]: item for item in items_list}
 
 class ObjectManagement:
-    items_dict = preprocess_items(items_list)
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, object_id: int = None) -> None:
         """ Items cannot be picked up until they are added to the minerals list """
@@ -21,80 +17,74 @@ class ObjectManagement:
             return
 
         # Fetch the item from the dictionary
-        item = ObjectManagement.items_dict.get(object_id)
+        item = find_item_by_id(object_id)
 
         if not item:
             return
 
-        item_name = item.get("Name")
-
-        # Check if item is breakable
-        if not item.get("Breakable", False):
+        # Check if item is breakable (only ObjectItem has the breakable attribute)
+        if isinstance(item, ObjectItem):
+            if not item.breakable:
+                return
+        else:
             return
 
         # Check interaction delay
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
             if UniversalVariables.debug_mode:
-                print(f"Don't pick up so fast: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max}")
+                print(
+                    f"Don't pick up so fast: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max}")
             return
 
         # Handle item drops
+        name = item.name
         choice = None
         amount = 1
 
-        if "Drops" in item:
-            choice, probabilities, amount = item["Drops"]
-            item_name = np.random.choice(choice, p=probabilities)
+        if isinstance(item, ObjectItem):  # object item'itel on drop attribute
+            choice, probabilities, amount = item.drops
+            name = np.random.choice(choice, p=probabilities)
 
             # Check inventory space for the dropped items
             choice_len = sum(1 for drop_item in choice if drop_item not in Inventory.inventory)
 
             if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
-                ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
-                return
+                ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
             else:
                 Inventory.inventory_full_error(self)
-                return
-
-        # Check if there is space in the inventory or if the item is already in the inventory
-        if Inventory.total_slots > len(Inventory.inventory) or item_name in Inventory.inventory:
-            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, item_name, amount)
             return
+
+        if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
         else:
             Inventory.inventory_full_error(self)
-            return
-    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, item_name: str, amount: int) -> bool:
+
+    def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, name: str, amount: int) -> bool:
         grid_col: int = int(terrain_x // UniversalVariables.block_size)
         grid_row: int = int(terrain_y // UniversalVariables.block_size)
 
-        try:
-            # Kontrollib kas jääb mapi sissse
-            if 0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0]):
+        # Ensure the coordinates are within the terrain boundaries
+        if not (0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0])):
+            return False
 
-                terrain_update = {
-                    4: 5,  # Oak tree stump
-                    10: 98,  # Empty key slot
-                    12: 98,  # Empty key slot
-                    13: 98,  # Empty key slot
-                    7: 107,  # Farmland
-                    1008: 1009,  # Berry bush - Large
-                    1010: 1011,  # Berry bush - Medium
-                    1012: 1013,  # Berry bush - Small
-                    
-                }
-                self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
+        terrain_update = {
+            4: 5,  # Oak tree stump
+            10: 98,  # Empty key slot
+            12: 98,  # Empty key slot
+            13: 98,  # Empty key slot
+            7: 69,  # Farmland
+            1008: 1009,  # Berry bush - Large
+            1010: 1011,  # Berry bush - Medium
+            1012: 1013  # Berry bush - Small
+        }
+        self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
-                ObjectManagement.add_object_from_inv(item_name, amount)
-                Player_audio.player_item_audio(self)
-                UniversalVariables.interaction_delay = 0
-                return
+        ObjectManagement.add_object_from_inv(name, amount)
+        Player_audio.player_item_audio(self)
+        UniversalVariables.interaction_delay = 0
+        return True
 
-            else:
-                return
-
-        except Exception:
-            return
-
+    @staticmethod
     def add_object_from_inv(item, amount=1):
         if item in Inventory.inventory:
             # Kui ese on juba inventoris, suurendab eseme kogust
@@ -106,7 +96,7 @@ class ObjectManagement:
 
         else: return
 
-
+    @staticmethod
     def remove_object_from_inv(item):
         if Inventory.inventory[item] > 0 :
             Inventory.inventory[item] -= 1
@@ -131,7 +121,6 @@ class ObjectManagement:
 
 
     def render_interaction_box() -> None:
-        ### TODO: hetkel renderib isegi non-breakalbe objekt itemitle selle rooosa ruudu ymber
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
         for box_item in UniversalVariables.object_list:
             outline_thickness = 3
