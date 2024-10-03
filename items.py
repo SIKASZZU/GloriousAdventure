@@ -427,6 +427,39 @@ items_list = [
     ),
 
     ObjectItem(
+        name="Potato_Crop",
+        id=71,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Potato_Sapling_0",
+        id=72,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Potato_Sapling_1",
+        id=73,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
         name="Campfire",
         id=8,
         hp=1,
