@@ -15,6 +15,8 @@ class RenderPictures:
     randomizer_x = round(random.uniform(0.1, 0.6) , 1)
     randomizer_y = round(random.uniform(0.1, 0.6) , 1)
 
+    wheat_stage_list = []
+
     def image_to_sequence(self, terrain_x: int, terrain_y: int, position: tuple[int, int], image,
                           terrain_value) -> None:
         if image:
@@ -181,6 +183,46 @@ class RenderPictures:
                 object_id = 98
 
             elif object_id in GameConfig.FARMLAND_IMAGE.value:
+                # Check if the wheat stage should be updated
+                object_id = self.terrain_data[y][x]
+
+                @staticmethod
+                def remove_items_by_pos(pos_to_remove):
+                    RenderPictures.wheat_stage_list[:] = [item for item in RenderPictures.wheat_stage_list if item[0] != pos_to_remove]
+
+                if object_id in GameConfig.WHEAT_STAGES.value:
+                    found = False
+                    random_a, random_b = UniversalVariables.wheat_minus_random_range
+                    for index, (pos, current_object_id, timer) in enumerate(RenderPictures.wheat_stage_list):
+                        if pos == grid:
+                            found = True
+
+                            if timer > 0:
+                                timer -= 1
+
+                            if timer == 0:
+
+                                if current_object_id == 69:
+                                    current_object_id = 70
+
+                                elif current_object_id == 70:
+                                    current_object_id = 7
+
+                                timer = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                                self.terrain_data[y][x] = current_object_id
+
+
+                            RenderPictures.wheat_stage_list[index] = (pos, current_object_id, timer) # Uuendab valuet
+                            if current_object_id == 7:
+                                remove_items_by_pos(pos)
+                            break
+
+                    if not found:
+                        growth_time = UniversalVariables.wheat_stage_growth_time - random.randint(random_a, random_b)
+                        RenderPictures.wheat_stage_list.append((grid, object_id, growth_time))
+
+                        print(growth_time)
+
                 image_name = 'Farmland'
                 object_id = 107
                 surrounding_values = GameConfig.GROUND_IMAGE.value
@@ -220,7 +262,9 @@ class RenderPictures:
         # Render the objects
         for item in sorted_objects:
             position = item[:2]  # x, y
-            scaled_object_image = pygame.transform.scale(item[4], item[2:4])  # image, sizes
+            image = item[4]
+
+            scaled_object_image = pygame.transform.scale(image, item[2:4])  # image, sizes
             if [scaled_object_image, position] not in UniversalVariables.blits_sequence_objects:
                 UniversalVariables.blits_sequence_objects.append([scaled_object_image, position])
 
