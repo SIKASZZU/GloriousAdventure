@@ -12,8 +12,9 @@ class GameConfig(Enum):
 
     INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9)
 
-    FARMABLES           : tuple[int, ...] = (7, 69)
-    FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + (107, )
+    FARMABLES           : tuple[int, ...] = (7, )
+    WHEAT_STAGES        : tuple[int, ...] = (69, 70)
+    FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + WHEAT_STAGES + (107, )
 
     GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1016))  # GLADE_ITEMS + 1004 -> 1015
     MAZE_GROUND_IMAGE   : tuple[int, ...] = (
@@ -214,6 +215,25 @@ class UniversalVariables():
 
     # ******************** Building ******************** #
     allow_building = True
+
+    # ******************** Farming ******************** #
+    # Avg Growth Time
+    avg_growth_time_wheat   = 105  # (real - time)
+    # avg_growth_time_potato  = 90   # (real - time)
+    # avg_growth_time_corn    = 80   # (real - time)
+    # avg_growth_time_carrot  = 75   # (real - time)
+
+    wheat_stage_growth_time = 20 * avg_growth_time_wheat  # Default: 75 * avg_growth_time_wheat
+    wheat_minus_random_range = (0, wheat_stage_growth_time // 1.1)
+
+    # potato_stage_growth_time = avg_growth_time_potato * wheat_stage_growth_time // avg_growth_time_wheat
+    # potato_minus_random_range = (0, potato_stage_growth_time // 1.1)
+    #
+    # corn_stage_growth_time = avg_growth_time_corn * wheat_stage_growth_time // avg_growth_time_wheat
+    # corn_minus_random_range = (0, corn_stage_growth_time // 1.1)
+    #
+    # carrot_stage_growth_time = avg_growth_time_carrot * wheat_stage_growth_time // avg_growth_time_wheat
+    # carrot_minus_random_range = (0, carrot_stage_growth_time // 1.1)
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
