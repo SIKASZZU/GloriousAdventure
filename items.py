@@ -405,8 +405,19 @@ items_list = [
     ),
 
     ObjectItem(
-        name="Wheat_Sapling",
+        name="Wheat_Sapling_0",
         id=69,
+        hp=1,
+
+        render_when=block_size * 0.2,
+
+        breakable=False
+
+    ),
+
+    ObjectItem(
+        name="Wheat_Sapling_1",
+        id=70,
         hp=1,
 
         render_when=block_size * 0.2,
