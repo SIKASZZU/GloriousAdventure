@@ -14,7 +14,7 @@ class HUD_class:
 
     @staticmethod
     def update():
-        HUD_class.player_effect(icon_width=UniversalVariables.icon_width, icon_height=UniversalVariables.icon_height)
+        HUD_class.display_effects_icons(icon_width=UniversalVariables.icon_width, icon_height=UniversalVariables.icon_height)
 
     def bar_visualization(self):
         half_w = HUD_class.half_w
@@ -28,33 +28,31 @@ class HUD_class:
         return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm, hyr, hyb, hybg, hywm, hyhm, swm, shm
 
     def stamina_bar(self, half_w):
-        stamina_bar_size: int = 200
-        stamina_bar_size_bg: int = 200
-        stamina_bar_size_border: int = 200
-        ratio = stamina_bar_size // 20  # Stamina bari suuruse muutmiseks
+        bar_width = 200
+        bar_height = 15
+        ratio = bar_width // 20
+        screen_y = HUD_class.screen_y - 75
 
-        if self.player.stamina.current_stamina >= self.player.stamina.max_stamina and HUD_class.stamina_bar_decay != 120:
-            HUD_class.stamina_bar_decay += 1
+        if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
+            HUD_class.stamina_bar_decay = min(HUD_class.stamina_bar_decay + 1, 120)
+        else:
+            HUD_class.stamina_bar_decay = 0
 
         if HUD_class.stamina_bar_decay == 120:
-            stamina_rect_bg = pygame.Rect(0, 0, 0, 0)
-            stamina_rect_border = pygame.Rect(0, 0, 0, 0)
-            stamina_rect = pygame.Rect(0, 0, 0, 0)
+            return pygame.Rect(0, 0, 0, 0), pygame.Rect(0, 0, 0, 0), pygame.Rect(0, 0, 0, 0), 0, 0
 
-        else:
-            stamina_bar_size = self.player.stamina.current_stamina * ratio  # arvutab stamina bari laiuse
+        current_stamina_width = self.player.stamina.current_stamina * ratio
+        center_x = half_w - 6
 
-            stamina_rect_bg = pygame.Rect(half_w - (stamina_bar_size_bg / 2) - 6, HUD_class.screen_y - 75,
-                                          stamina_bar_size_bg + 12, 15)  # Kui staminat kulub, ss on background taga
+        # Create rectangles for the stamina bar
+        stamina_rect_bg = pygame.Rect(center_x - (bar_width // 2), screen_y, bar_width + 12, bar_height)
+        stamina_rect_border = pygame.Rect(center_x - (bar_width // 2), screen_y, bar_width + 12, bar_height)
+        stamina_rect = pygame.Rect(center_x - (current_stamina_width // 2), screen_y, current_stamina_width + 12,
+                                   bar_height)
 
-            stamina_rect_border = pygame.Rect(half_w - (stamina_bar_size_border / 2) - 6, HUD_class.screen_y - 75,
-                                              stamina_bar_size_border + 12, 15)  # K6igi stamina baride ymber border
-
-            stamina_rect = pygame.Rect(half_w - (stamina_bar_size / 2) - 6, HUD_class.screen_y - 75,
-                                       stamina_bar_size + 12, 15)
-
-        stamina_width_midpoint = stamina_rect_border[0] + (stamina_rect_border[2] // 2) - 18
-        stamina_height_midpoint = stamina_rect_border[1] + (stamina_rect_border[3] // 2) - 15
+        # Calculate midpoints for positioning
+        stamina_width_midpoint = stamina_rect_border.centerx - 18
+        stamina_height_midpoint = stamina_rect_border.centery - 15
 
         return stamina_rect, stamina_rect_border, stamina_rect_bg, stamina_width_midpoint, stamina_height_midpoint
 
@@ -134,7 +132,7 @@ class HUD_class:
         return hydration_rect, hydration_rect_border, hydration_rect_bg, hydration_w_midpoint, hydration_h_midpoint
 
     @staticmethod
-    def player_effect(icon_width=50, icon_height=50):
+    def display_effects_icons(icon_width=50, icon_height=50):
         effect_blits_sequence = []
         effects = []
 
@@ -157,9 +155,9 @@ class HUD_class:
             icon = ImageLoader.load_gui_image(effect_name)
             scaled_icon = pygame.transform.scale(icon, (icon_width, icon_height))
 
-            # Arvutab parema nurga asukoha
-            screen_width = HUD_class.screen_x
-            pos = (screen_width - icon_width - 10, 10 + i * (icon_height + 10))  # Margin of 10
+            # Arvutab TOP-RIGHT asukoha iga effectile, mis parasjagu playeril on
+            screen_width = UniversalVariables.screen_x
+            pos = (screen_width - icon_width - 10, 10 + i * (icon_height + 10))  # Margin 10
 
             effect_blits_sequence.append((scaled_icon, pos))
 
