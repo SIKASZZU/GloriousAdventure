@@ -1,11 +1,11 @@
 import pygame
 from items import *
 from inventory import Inventory
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 from audio import Player_audio
 from text import Fading_text
 import numpy as np
-
+from cooking import Cooking
 
 class ObjectManagement:
 
@@ -35,6 +35,20 @@ class ObjectManagement:
                 print(
                     f"Don't pick up so fast: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max}")
             return
+
+
+        if object_id in GameConfig.COOKING_STATIONS.value:
+
+            for key, station in Cooking.stations.items():
+                raw_item, _ = station["station_raw_item"]
+                cooked_item, _ = station["station_cooked_item"]
+
+                if not raw_item == None or not cooked_item == None:
+                    Fading_text.re_display_fading_text("Aren't you forgetting something?")
+                    UniversalVariables.interaction_delay = 0
+                    Player_audio.error_audio(self)
+                    return
+
 
         # Handle item drops
         name = item.name
