@@ -42,6 +42,8 @@ class ItemFunctionality:
                 print(f'Item delay: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max} ')
             return
 
+ # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
+
         equiped_item = UniversalVariables.current_equipped_item
         cure = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="cure")
         poisonous = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="poisonous")
@@ -59,7 +61,7 @@ class ItemFunctionality:
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
-        if poisonous :
+        if poisonous:
             UniversalVariables.interaction_delay = 0
 
             if probably(35 / 100):
