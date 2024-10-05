@@ -241,7 +241,7 @@ class RenderPictures:
                                 elif current_object_id == 79:
                                     current_object_id = 77
 
-                                timer = stage_growth_time - random.randint(random_a, random_b)
+                                timer = stage_growth_time - random.randint(int(random_a), int(random_b))
                                 self.terrain_data[y][x] = current_object_id
 
 
@@ -251,7 +251,7 @@ class RenderPictures:
                             break
 
                     if not found:
-                        growth_time = stage_growth_time - random.randint(random_a, random_b)
+                        growth_time = stage_growth_time - random.randint(int(random_a), int(random_b))
                         UniversalVariables.farmable_stage_list.append((grid, object_id, growth_time))
 
                         print(growth_time)
