@@ -292,8 +292,11 @@ class RenderPictures:
             key=sort_key
         )
 
+        render_double_fuckers = {981, 982}  # objektid, mis on collisioniga kuid ka peavad olema objectid, ehk interactalbe.
         # Render the objects
         for item in sorted_objects:
+            if item[5] in render_double_fuckers:
+                continue
             position = item[:2]  # x, y
             image = item[4]
 
