@@ -3,17 +3,18 @@ from variables import UniversalVariables
 from update import EssentialsUpdate
 
 
-def find_random_index_in_list_of_lists(list_of_lists, number, grid_name='block_maze'):
+def find_random_index_in_list_of_lists(list_of_lists, number, grid_name=['block_maze']):
     occurrences = []
     
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists
     for index, grid in enumerate(UniversalVariables.map_list):
         if grid == grid_name:
             #grid_data = # nyyd siia vot peaks tulema selle leitud mazei data....
-            
+            grid_data = list_of_lists
             # Optionally trim edges (remove first and last row/column)
-            grid_data = grid_data[1:-1]  # Remove first and last rows
-            grid_data = [row[1:-1] for row in grid_data]  # Remove first and last columns from each remaining row
+            # grid_data = grid_data[1:-1]  # Remove first and last rows
+            # grid_data = [row[1:-1] for row in grid_data]  # Remove first and last columns from each remaining row
+            grid_data = [row[:40] for row in grid_data[:40]]  # Slice first 40 rows and first 40 columns
             
             # Find occurrences of the number in the grid
             for row_index, sublist in enumerate(grid_data):
@@ -40,13 +41,13 @@ class MazeChanges:
         
         # only change maze at night
         else:
-            if MazeChanges.times_changed > 150:
+            if MazeChanges.times_changed > 155550:
                 pass
             else:
                 # peab olema mingi in range. Mingi min, max peaks olema 
                 index_of_wall = find_random_index_in_list_of_lists(self.terrain_data, 99)
-                self.terrain_data[index_of_wall[0]][index_of_wall[1]] = 98
+                self.terrain_data[index_of_wall[0]][index_of_wall[1]] = 2
                 index_of_pathway = find_random_index_in_list_of_lists(self.terrain_data, 98)
-                self.terrain_data[index_of_pathway[0]][index_of_pathway[1]] = 99
+                self.terrain_data[index_of_pathway[0]][index_of_pathway[1]] = 2
                 
                 MazeChanges.times_changed += 1
