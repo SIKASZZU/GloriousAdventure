@@ -28,7 +28,7 @@ class ObjectItem(Item):
     def __init__(
             self,
             name: str, id: int, hp: int,
-            width: int | float=block_size, height: int | float=block_size, render_when: int | float=None,
+            width: int | float=block_size, height: int | float=block_size, render_when: int | float=block_size,
             
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
@@ -541,13 +541,46 @@ items_list = [
     ),
 
     ObjectItem(
+        name="Rotten_Log_0",
+        id=1004,
+        hp=1,
+
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
+        name="Rotten_Log_1",
+        id=1005,
+        hp=1,
+
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
+        name="Rotten_Log_2",
+        id=1006,
+        hp=1,
+
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
         name="Berry_Bush_0",
         id=1008,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         drops=(['Berry'], [1], 6),
         
@@ -558,10 +591,7 @@ items_list = [
         name="Berry_Bush_1",
         id=1010,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         drops=(['Berry'], [1], 3),
 
@@ -572,10 +602,7 @@ items_list = [
         name="Berry_Bush_4",
         id=1012,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         drops=(['Berry'], [1], 1),
 
@@ -586,10 +613,7 @@ items_list = [
         name="Bush_4",
         id=1013,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         breakable=False
     ),
@@ -598,10 +622,7 @@ items_list = [
         name="Bush_0",
         id=1015,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         breakable=False
     ),
@@ -610,10 +631,7 @@ items_list = [
         name="Bush_1",
         id=1016,
         hp=1,
-
-        width=int(block_size),
-        height=int(block_size),
-        render_when=(block_size),
+        render_when=block_size * 0.3,
 
         breakable=False
     ),

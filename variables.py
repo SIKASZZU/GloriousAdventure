@@ -22,7 +22,7 @@ class GameConfig(Enum):
 
     FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + FARMABLE_STAGES + (107, )
 
-    GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1016))  # GLADE_ITEMS + 1004 -> 1015
+    GROUND_IMAGE        : tuple[int, ...] = INITIAL_GLADE_ITEMS + tuple(id for id in range(1004, 1017))  # GLADE_ITEMS + 1004 -> 1015
     MAZE_GROUND_IMAGE   : tuple[int, ...] = (
         # 6,                      # String
         10, 12, 13,             # Maze Keys
@@ -36,8 +36,11 @@ class GameConfig(Enum):
     ALL_THE_DOORS: tuple[int, ...] = OPEN_DOOR_IDS + CLOSED_DOOR_IDS  # Combine the tuples
 
     GLADE_ITEMS         : tuple[int, ...] = INITIAL_GLADE_ITEMS + FARMABLES
+    ABND_GLADE_ITEMS    : tuple[int, ...] = (1004, 1005, 1006)
     BERRY_ITEMS         : tuple[int, ...] = (1008, 1010, 1012, 1013, 1015, 1016)
-    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 5, 6, 7, 9, 10, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 981, 982, 1001, 1002) + ALL_THE_DOORS + BERRY_ITEMS  # ei renderi topelt map_renderi all
+    
+    # TODO: interactalbe itemid on siis objekt itemid? K6ik objekt itemid ei ole ju interactable? mdea.. hetkel k6ik interactable itemid renderib object_renderer.
+    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 5, 6, 7, 9, 10, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 981, 982, 1001, 1002) + ALL_THE_DOORS + BERRY_ITEMS + ABND_GLADE_ITEMS # ei renderi topelt map_renderi all
     COLLISION_ITEMS     : tuple[int, ...] = (99, 981, 982)
 
     RENDER_RANGE_SMALL  : tuple[int, ...] = (
