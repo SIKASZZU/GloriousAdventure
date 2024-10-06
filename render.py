@@ -320,8 +320,8 @@ class ObjectCreation:
 
         for item_list in [object_items, world_items]:
             for item in item_list:
-                object_dir = find_item_by_name(item.name)
-                object_id = object_dir.id
+                object_id = item.id
+
                 if object_id in items_not_designed_for_list:
                     continue
 
