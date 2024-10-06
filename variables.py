@@ -30,8 +30,15 @@ class GameConfig(Enum):
         98,                     # Maze Ground
         1001, 1002, 1003,       # Barrel, Chest
     )
+
+    OPEN_DOOR_IDS: tuple[int, ...] = (90, 91, 92, 93, 933)
+    CLOSED_DOOR_IDS: tuple[int, ...] = (94, 95, 96, 97, 977)
+    ALL_THE_DOORS: tuple[int, ...] = OPEN_DOOR_IDS + CLOSED_DOOR_IDS  # Combine the tuples
+
     GLADE_ITEMS         : tuple[int, ...] = INITIAL_GLADE_ITEMS + FARMABLES
-    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 6, 10, 94, 95, 96, 97, 981, 982, 1001, 1002)  # ei renderi topelt map_renderi all
+    BERRY_ITEMS         : tuple[int, ...] = (1008, 1010, 1012, 1013, 1015, 1016)
+    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 5, 6, 7, 9, 10, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 981, 982, 1001, 1002) + ALL_THE_DOORS + BERRY_ITEMS  # ei renderi topelt map_renderi all
+    COLLISION_ITEMS     : tuple[int, ...] = (99, 981, 982)
 
     RENDER_RANGE_SMALL  : tuple[int, ...] = (
         10, 11, 12, 13,                                 # Key
@@ -51,10 +58,6 @@ class GameConfig(Enum):
         981, 982,  # Keyholder
         500, 550, 555, 988, 999  # Portal, ground, wall
     )
-
-    OPEN_DOOR_IDS: tuple[int, ...] = (90, 91, 92, 93, 933)
-    CLOSED_DOOR_IDS: tuple[int, ...] = (94, 95, 96, 97, 977)
-    ALL_THE_DOORS: tuple[int, ...] = OPEN_DOOR_IDS + CLOSED_DOOR_IDS  # Combine the tuples
 
     COOKING_STATIONS: tuple[int, ...] = (8, )  # Campfire
 

@@ -91,9 +91,10 @@ class ObjectManagement:
             74: 75,      # Farmland
             77: 78,      # Farmland
 
-            1008: 1009,  # Berry bush - Large
-            1010: 1011,  # Berry bush - Medium
+            1008: 1015,  # Berry bush - Large
+            1010: 1016,  # Berry bush - Medium
             1012: 1013  # Berry bush - Small
+
         }
         self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 

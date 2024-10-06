@@ -292,10 +292,9 @@ class RenderPictures:
             key=sort_key
         )
 
-        render_double_fuckers = {981, 982}  # objektid, mis on collisioniga kuid ka peavad olema objectid, ehk interactalbe.
         # Render the objects
         for item in sorted_objects:
-            if item[5] in render_double_fuckers:
+            if item[5] in GameConfig.COLLISION_ITEMS.value:  # Skip need itemid, sest collisionis renderib kaa. SEe peab siin olema, et roosa ruut tekiks.
                 continue
             position = item[:2]  # x, y
             image = item[4]
@@ -327,32 +326,23 @@ class ObjectCreation:
                     continue
 
                 object_image_name = item.name
-                object_width = item.width
-                object_height = item.height
-                object_image = ImageLoader.load_image(object_image_name)
+                object_width      = item.width
+                object_height     = item.height
+                object_image      = ImageLoader.load_image(object_image_name)
+                breakability      = item.breakable if isinstance(item, ObjectItem) else False
 
-                breakability = item.breakable if isinstance(item, ObjectItem) else False
-                collision_box = item.collision_box if isinstance(item, WorldItem) else None
+                a_item = (object_id, breakability, object_width, object_height, object_image)
 
-                a_item = (object_id, breakability, collision_box, object_width, object_height, object_image)
-                if collision_box != None:
-                    start_corner_x, start_corner_y, end_corner_x, end_corner_y = collision_box
-                    a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
-
-                # otsib itemeite collision boxe, et filtreerida neid.
-                # a_item = (object_id, breakability, start_corner_x, start_corner_y, end_corner_x, end_corner_y, object_width, object_height, object_image)
+                # item on juba yhe korra loopi l2bi teinud.
                 if a_item in non_collision_items or a_item in collision_items:
                     pass
+
                 else:
-                    if a_item[2] is None:  # if collision box is none, ehk tegu on interactable objektiga
+                    if a_item[0] in GameConfig.INTERACTABLE_ITEMS.value:
                         non_collision_items.append(a_item)
-                    else:
+
+                    if a_item[0] in GameConfig.COLLISION_ITEMS.value:
                         collision_items.append(a_item)
-
-                        # lisa see pede box topelt, et oleks click v6imalus ja rohelist boxi ka
-                        if a_item[0] in GameConfig.INTERACTABLE_ITEMS.value:
-                            non_collision_items.append(a_item)
-
 
         ObjectCreation.collision_box_list_creation(self, collision_items)
         ObjectCreation.object_list_creation(self, non_collision_items)
@@ -360,47 +350,31 @@ class ObjectCreation:
 
     def collision_box_list_creation(self, collision_items) -> None:
         """
-            Teeb collision boxid objektidele, millel on vaja collisionit. Roheline ruut.
+            Teeb collision boxid objektidele, millel on vaja collisionit. 
+            Roheline ruut.
             See list on vajalik visioni tegemisel.
         """
-        start_corner_x = 0
-        start_corner_y = 0
-        end_corner_x   = 0
-        end_corner_y   = 0
-        object_id      = 0
-
-        object_collision_boxes: dict = {}
 
         for item in collision_items:
-            object_id, _, start_corner_x, start_corner_y, end_corner_x, end_corner_y, _, _, _ = item
-            object_collision_boxes[object_id] = [start_corner_x, start_corner_y, end_corner_x, end_corner_y]
+            object_id, _, object_width, object_height, _, = item
 
-        for grid, grid_ids in RenderPictures.terrain_in_view.items():
-        
-            x,y = grid
-            object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
-            if object_id in object_collision_boxes:
-                terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+            for grid, grid_ids in RenderPictures.terrain_in_view.items():
+            
+                x,y = grid
+                object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
+                if object_id in GameConfig.COLLISION_ITEMS.value:
+                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                _, _, end_corner_width, end_corner_height = object_collision_boxes.get(object_id, [0, 0, 0, 0])
-                collision_box_width = int(UniversalVariables.block_size * end_corner_width)
-                collision_box_height = int(UniversalVariables.block_size * end_corner_height)
+                    new_object: tuple[int, ...] = (terrain_x, terrain_y, object_width, object_height, object_id)
 
-                new_object: tuple[int, ...] = (terrain_x, terrain_y, collision_box_width, collision_box_height, object_id)
-
-                if new_object not in UniversalVariables.collision_boxes:
-                    UniversalVariables.collision_boxes.append(new_object)
+                    if new_object not in UniversalVariables.collision_boxes:
+                        UniversalVariables.collision_boxes.append(new_object)
 
 
     def object_list_creation(self, non_collision_items) -> None:
         for item in non_collision_items:
-
-            # see vajalik, sest hetkel on selline UniversalVariables.interactable_items abomination
-            if len(item) == 6:
-                object_id, _, _, object_width, object_height, object_image = item
-            elif len(item) == 9:
-                object_id, _, _, _, _, _, object_width, object_height, object_image = item
+            object_id, _, object_width, object_height, object_image = item
 
             for grid, grid_ids in RenderPictures.terrain_in_view.items():
                 x,y = grid
