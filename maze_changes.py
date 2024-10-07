@@ -3,24 +3,25 @@ from variables import UniversalVariables
 from update import EssentialsUpdate
 
 
-def find_random_index_in_list_of_lists(list_of_lists, number, grid_name=['block_maze']):
+def find_random_index_in_list_of_lists(grid_data, number, grid_name=['block_maze']):
     occurrences = []
     
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists
     for index, grid in enumerate(UniversalVariables.map_list):
         if grid == grid_name:
-            #grid_data = # nyyd siia vot peaks tulema selle leitud mazei data....
-            grid_data = list_of_lists
-            # Optionally trim edges (remove first and last row/column)
-            # grid_data = grid_data[1:-1]  # Remove first and last rows
-            # grid_data = [row[1:-1] for row in grid_data]  # Remove first and last columns from each remaining row
-            grid_data = [row[:40] for row in grid_data[:40]]  # Slice first 40 rows and first 40 columns
-            
+
+            buffer = 2  # removib bufferi ridadest, et ei replaciks outer seinu ning hiljem lisab bufferi et 6ige indexi juurde kukuks ikka.
+
+            # TODO: grid data peaks olema ainult 40x40 ala, MITTE KOGU FKING TERRAIN DATA             
+            grid_data = grid_data[buffer:-1]  # Remove first and last rows
+            grid_data = [row[buffer:-1] for row in grid_data]  # Remove first and last columns from each remaining row
+            print(len(grid_data), len(grid_data[0]), len(grid_data[1]))
             # Find occurrences of the number in the grid
             for row_index, sublist in enumerate(grid_data):
+                print(sublist)
                 for col_index, element in enumerate(sublist):
                     if element == number:
-                        occurrences.append((row_index, col_index))  # Append tuple (row_index, col_index)
+                        occurrences.append((col_index+buffer, row_index+buffer))  # Append tuple (row_index, col_index)
     
     # Return a random occurrence if found, otherwise return None
     if occurrences:
@@ -36,7 +37,7 @@ class MazeChanges:
     def change_maze(self):
         """ Muudab random maze pathwayisid (id 98) maze blockideks (id 99) ja vastupidi. """        
 
-        if EssentialsUpdate.day_night_text == 'Day':
+        if EssentialsUpdate.day_night_text == 'Night':
             MazeChanges.times_changed = 0
         
         # only change maze at night
@@ -44,10 +45,12 @@ class MazeChanges:
             if MazeChanges.times_changed > 155550:
                 pass
             else:
-                # peab olema mingi in range. Mingi min, max peaks olema 
-                index_of_wall = find_random_index_in_list_of_lists(self.terrain_data, 99)
-                self.terrain_data[index_of_wall[0]][index_of_wall[1]] = 2
-                index_of_pathway = find_random_index_in_list_of_lists(self.terrain_data, 98)
-                self.terrain_data[index_of_pathway[0]][index_of_pathway[1]] = 2
-                
-                MazeChanges.times_changed += 1
+                try:
+                    # peab olema mingi in range. Mingi min, max peaks olema 
+                    index_of_wall = find_random_index_in_list_of_lists(self.terrain_data, 99)
+                    self.terrain_data[index_of_wall[0]][index_of_wall[1]] = 2
+                    index_of_pathway = find_random_index_in_list_of_lists(self.terrain_data, 98)
+                    self.terrain_data[index_of_pathway[0]][index_of_pathway[1]] = 2
+                    
+                    MazeChanges.times_changed += 1
+                except IndexError: pass
