@@ -9,19 +9,15 @@ def find_random_index_in_list_of_lists(grid_data, number, grid_name=['block_maze
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists
     for index, grid in enumerate(UniversalVariables.map_list):
         if grid == grid_name:
-
-            buffer = 2  # removib bufferi ridadest, et ei replaciks outer seinu ning hiljem lisab bufferi et 6ige indexi juurde kukuks ikka.
-
             # TODO: grid data peaks olema ainult 40x40 ala, MITTE KOGU FKING TERRAIN DATA             
-            grid_data = grid_data[buffer:-1]  # Remove first and last rows
-            grid_data = [row[buffer:-1] for row in grid_data]  # Remove first and last columns from each remaining row
-            print(len(grid_data), len(grid_data[0]), len(grid_data[1]))
+            grid_data = grid_data[2:-1]  # Remove first and last rows
+            grid_data = [row[2:-1] for row in grid_data]  # Remove first and last columns from each remaining row
+
             # Find occurrences of the number in the grid
             for row_index, sublist in enumerate(grid_data):
-                print(sublist)
                 for col_index, element in enumerate(sublist):
                     if element == number:
-                        occurrences.append((col_index+buffer, row_index+buffer))  # Append tuple (row_index, col_index)
+                        occurrences.append((col_index+1, row_index+1))  # Append tuple (row_index, col_index)
     
     # Return a random occurrence if found, otherwise return None
     if occurrences:
@@ -37,7 +33,7 @@ class MazeChanges:
     def change_maze(self):
         """ Muudab random maze pathwayisid (id 98) maze blockideks (id 99) ja vastupidi. """        
 
-        if EssentialsUpdate.day_night_text == 'Night':
+        if EssentialsUpdate.day_night_text == 'Day':
             MazeChanges.times_changed = 0
         
         # only change maze at night
