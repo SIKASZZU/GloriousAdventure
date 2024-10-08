@@ -8,9 +8,15 @@ def find_random_index_in_list_of_lists(grid_data, number, grid_name='block_maze'
     
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists
     for y, sublist in enumerate(UniversalVariables.map_list):
-        for x in sublist:
-            print(y, x, 'INDEX', UniversalVariables.map_list)
-            if x == grid_name:
+        for x, value in enumerate(sublist):
+            print()
+            print(x,y, value, 'INDEX', UniversalVariables.map_list)
+
+            for row in UniversalVariables.map_list: print(row)
+            print()
+            print()
+
+            if value == grid_name:
                 # TODO: grid data peaks olema ainult 40x40 ala, MITTE KOGU FKING TERRAIN DATA             
 
 
