@@ -53,11 +53,12 @@ class Camera:
     def click_on_screen(self):
         if not self.click_position:
             return
-
-        self.click_window_x = self.click_position[0] - Camera.player_window_x
-        self.click_window_y = self.click_position[1] - Camera.player_window_y
-
-
+        try:
+            self.click_window_x = self.click_position[0] - Camera.player_window_x
+            self.click_window_y = self.click_position[1] - Camera.player_window_y
+        except TypeError: 
+            print('Click too fast and crash. All gucci my G'); return
+ 
         if not UniversalVariables.player_range:
             player_range = 0
         else:
