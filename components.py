@@ -303,24 +303,23 @@ class Player:
         
 
         if direction == 'up':
-            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box * 1.5
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
 
         elif direction == 'down':
             start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] + self.player_rect[3]
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
 
         elif direction == 'right':
             start_x, start_y = self.player_rect[0] + self.player_rect[2], self.player_rect[1] - len_of_attack_box
-            start_y = self.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box, len_of_attack_box * 2 + self.player_rect[3]
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
 
         elif direction == 'left':
-            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box, len_of_attack_box * 2 + self.player_rect[3]
+            start_x, start_y = self.player_rect[0] - len_of_attack_box * 1.5, self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
 
-        player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
-        pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), player_attack_rect, 6)
+        self.player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), self.player_attack_rect, 6)  # visuaal
 
     def __str__(self):
         return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"

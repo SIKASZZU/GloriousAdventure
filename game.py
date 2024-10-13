@@ -75,6 +75,8 @@ class Game:
         self.right_click_window_x = None
         self.right_click_window_y = None
 
+        self.player_attack_rect = None
+
         if not self.terrain_data:
             self.terrain_data = MapData.map_list_to_map(self)
 
