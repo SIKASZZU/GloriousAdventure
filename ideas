@@ -2,8 +2,6 @@ ideas:
 	water canteen - refill in glade water
 	old glade (abandoned) - greenish water, terrrain fucked, creepy, broken trees, rocks, oil lakes or sm shit
 
-	maze resetting - oosel hakkab mazei random blocks muutuma, iga mingi 3 sekundi tagant.
-
 	vine blockid on lambist mazeis mille taha mangija saab ennast peita.
 
 	teha random movement enemyle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
@@ -43,7 +41,6 @@ ideas:
 
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
 
-	bow - arrows -- string + wood,
 	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas, yle seinte saab naha
 	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
 	kui player on hungry v6i thirsty, ss jookseb aeglasemini, stamina kulub kiiremini ja taastub aeglasemini
@@ -57,10 +54,6 @@ ideas:
 			Teine v6imalus on lihtsalt print mode
 
 
-	# pildi suurused, objekti suurused, k6ik teha nagu rohkem reaalsusele sobilikud
-		# sellele aitab kaasa, kui block sizei jagatis muuta 15->10.
-		# et seinad ei oleks sama suured kui barrelid v6i player :D
-
 	praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
 		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
 	
@@ -68,18 +61,8 @@ ideas:
 
 	erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
 
-	klikkides ja vajutades spacei saab v6tta v6tmeid yles v6i collectida barreleid.
-
-	Prygi mazei
-		Oksad
-		Kivid (väikses)
-		Praod
-
-		Tripwires
+	Tripwires
 	Jalaluumurd
-
-	Augud, kust peab yle hyppama
-		Kui kukub sisse ss peab yles ronima
 
 	Vihm (erinevad tasemed, n6rk, tugev, vmdgi)
 		Lombid
@@ -88,26 +71,17 @@ ideas:
 
 	random object placement. et alati ei oleks ruudu yleval vasakul objekt.
 
-render::::
-
-    list = [
-    (ground pilt, (x, y)),
-    (puu pilt, (x, y)), (ground pilt, (x, y)),
-    (ground pilt, (x, y)),
-    ]
-	{(x,y): (1),
-	(x2,y): (1, 2)}
-
 	playeril on sleepida vaja. nagu forestis on. Ja kui ta magab, ss on ta unenäos ja mängija saab mängida unenäos midagi, mingit teist storit edasi.
 		see unenägu peaks olema rõõmus ja tore võrreldes labürindiga. Kui ta ärkab üles, võib teha mingi rõõmu näidiku, ehk ss on ta motiveeritud tegelema ja pääsema välja.
 		Unenägu ei pea olema see sama iga öö vaid paar erinevat tsenaariumi, mis võivad erineda iga kord.
 
 
-
 	See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
 	
-	keyholderitel on topelt pildid. Yks renderib object_renderis, teine renderib map_renderis. Sellep keyholderil pilt ei flikeri.
+	keyholderitel on topelt pildid. Yks renderib object_renderis, teine renderib map_renderis. Sellep keyholderil pilt ei flikeri. Good bug!
 
 	kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
 
 	need wallid, mis muutuvad v6iksid n2ha teistsugused v2lja. n2itkes rohelist on v2hem
+
+	hiirega v6iks ka olla v6imalik attackiga. Rect v6ib sama olla. Peab vaatama kuhu see click j22b v6rreldes playeriga. Siis saab attack_recti ehitada.
