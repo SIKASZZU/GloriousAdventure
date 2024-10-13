@@ -2,12 +2,13 @@ import random
 from variables import UniversalVariables
 from update import EssentialsUpdate
 
+already_changed = set()
+
 def find_random_index_in_list_of_lists(grid_data, number, grid_name='block_maze'):
     occurrences = []
 
-
     # TODO: praegu v6tab lihtsalt esimese block mazei. V6iks randomly valida millist muudab.
-    
+    #     
     # Assuming UniversalVariables.map_list contains the names of the grids in the same order as list_of_lists    
     for y, sublist in enumerate(UniversalVariables.map_list):
         for x, value in enumerate(sublist):
@@ -29,13 +30,15 @@ def find_random_index_in_list_of_lists(grid_data, number, grid_name='block_maze'
                 for row_index, sublist in enumerate(grid_data):
                     for col_index, element in enumerate(sublist):                        
                         if element == number:
-                            # FIXME: see et ta lisab start_cuti, keerab self.terrain_dataga v6rreldes koordinaadid perse.
-                                # element peaks olema kas 98,99. Grid datas on 6ige aga self.terrain-datas on vale, +-1 peab kuidagi tekkima sia >:D
-                            occurrences.append((col_index + start_cut_x, row_index + start_cut_y))  # liidan start cuti, sest self.terrain_dataga ei klapiks muidu
+                            grid = (col_index + start_cut_x, row_index + start_cut_y)
+                            if grid not in already_changed:
+                                occurrences.append(grid)  # liidan start cuti, sest self.terrain_dataga ei klapiks muidu
     
     # Return a random occurrence if found, otherwise return None
     if occurrences:
-        return random.choice(occurrences)
+        chosen_grid = random.choice(occurrences)
+        already_changed.add(chosen_grid)
+        return chosen_grid
     else:
         return None
     
@@ -50,6 +53,8 @@ class MazeChanges:
 
         if EssentialsUpdate.day_night_text == 'Day':
             MazeChanges.times_changed = 0
+            global already_changed
+            already_changed = set()
             pass
 
         else:
