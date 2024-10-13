@@ -6,6 +6,7 @@ from loot import Loot
 from inventory import Inventory
 from menu import PauseMenu
 import vision
+from components import Player
 
 def update_object_dimensions():
     for item in items.items_list:
@@ -55,9 +56,10 @@ class Event_handler:
                     PauseMenu.screenshot = None        
                     
     def check_pressed_keys(self):
+        keys = pygame.key.get_pressed()
+
         if UniversalVariables.debug_mode == True:
 
-            keys = pygame.key.get_pressed()
 
             # H key, HITBOX SHOW
             if keys[pygame.K_h] and not self.h_pressed:
@@ -70,3 +72,13 @@ class Event_handler:
                 self.j_pressed = True
                 vision.vision_count += 1
             elif not keys[pygame.K_j]: self.j_pressed = False
+
+        # ARROW KEYS (ATTACK KEYS)
+        if keys[pygame.K_UP]:
+            Player.attack(self, 'up')
+        elif keys[pygame.K_DOWN]:
+            Player.attack(self, 'down')
+        elif keys[pygame.K_LEFT]:
+            Player.attack(self, 'left')
+        elif keys[pygame.K_RIGHT]:
+            Player.attack(self, 'right')

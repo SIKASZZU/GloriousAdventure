@@ -295,5 +295,32 @@ class Player:
         UniversalVariables.player_x += dx * knockback_force
         UniversalVariables.player_y += dy * knockback_force
 
+    def attack(self, direction):
+        """ Return player's attack rect. """
+
+
+        len_of_attack_box = 3 * self.player_rect[2]  # self.player_rect[2] LAIUS, self.player_rect[3] K6RGUS
+        
+
+        if direction == 'up':
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box
+
+        elif direction == 'down':
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] + self.player_rect[3]
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box
+
+        elif direction == 'right':
+            start_x, start_y = self.player_rect[0] + self.player_rect[2], self.player_rect[1] - len_of_attack_box
+            start_y = self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box, len_of_attack_box * 2 + self.player_rect[3]
+
+        elif direction == 'left':
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box, len_of_attack_box * 2 + self.player_rect[3]
+
+        player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), player_attack_rect, 6)
+
     def __str__(self):
         return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"
