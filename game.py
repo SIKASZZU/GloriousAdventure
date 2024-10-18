@@ -135,16 +135,13 @@ class Game:
         ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
+        from attack import AttackEnemy
+        AttackEnemy.update(self)
         EssentialsUpdate.calculate_daylight_strength(self)
         if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
             Inventory.render_craftable_items(self)
             if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
-                text = "Nothing to craft."
-
-                if text in Fading_text.shown_texts:
-                    Fading_text.shown_texts.remove(text)
-
-                UniversalVariables.ui_elements.append(text)
+                Fading_text.re_display_fading_text("Nothing to craft.")
                 Inventory.crafting_menu_open = False
 
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)

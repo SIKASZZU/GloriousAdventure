@@ -18,7 +18,7 @@ import random
 class Enemy:
     ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
                                          (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
-    spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int]] = {}  # (Enemy_image, y, x)
+    spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (Enemy_image, y, x, HP)
     enemy_in_range: set[tuple[str, str]] = set()
 
     damage_delay: int = 50  # esimese hiti jaoks, et esimene hit oleks kiirem kui teised
@@ -55,8 +55,7 @@ class Enemy:
 
                     # Spawn an enemy
                     Enemy.spawned_enemy_dict[f'Enemy_{UniversalVariables.enemy_counter}'] = Enemy.ghost_image, \
-                        spawn_point[1], \
-                        spawn_point[0]
+                        spawn_point[1], spawn_point[0], UniversalVariables.ghost_hp
 
                     spawned_enemy_count += 1
                     UniversalVariables.enemy_counter += 1
@@ -147,7 +146,7 @@ class Enemy:
     def move(self):
         """ Move enemies based on their individual decisions."""
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
-            image, x, y = enemy_info
+            image, x, y, HP = enemy_info
             direction = None
 
             # Check if the player is in range
@@ -202,7 +201,7 @@ class Enemy:
                 if next_y == y and next_x != x and str(next_y).endswith('.5'):
                     next_y = math.ceil(next_y)                        
 
-                Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y
+                Enemy.spawned_enemy_dict[enemy_name] = image, next_x, next_y, HP
 
                 # Increment path ticks
                 if enemy_name in Enemy.path_ticks:
@@ -330,7 +329,7 @@ class Enemy:
                         enemy_y += dy * displacement
 
                         # update position
-                        Enemy.spawned_enemy_dict[enemy_name] = (enemy_info[0], enemy_x, enemy_y)
+                        Enemy.spawned_enemy_dict[enemy_name] = (enemy_info[0], enemy_x, enemy_y, enemy_info[3])
 
     def update(self):
         Enemy.detection(self)
