@@ -75,6 +75,8 @@ class Game:
         self.right_click_window_x = None
         self.right_click_window_y = None
 
+        self.player_attack_rect = None
+
         if not self.terrain_data:
             self.terrain_data = MapData.map_list_to_map(self)
 
@@ -111,7 +113,7 @@ class Game:
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
-        # MazeChanges.change_maze(self)
+        MazeChanges.change_maze(self)
 
         vision.find_boxes_in_window()
 

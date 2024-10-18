@@ -293,7 +293,7 @@ class Enemy:
         pass
 
     @staticmethod
-    def collision_with_entities():
+    def collision_with_entities(self):
         for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
                                      enemy_info[2] * UniversalVariables.block_size, 73, 73)
@@ -331,8 +331,18 @@ class Enemy:
                         # update position
                         Enemy.spawned_enemy_dict[enemy_name] = (enemy_info[0], enemy_x, enemy_y, enemy_info[3])
 
+            
+
+            # converted to window size coord
+            enemy_rect_converted: pygame.Rect = pygame.Rect(
+                enemy_rect[0] + UniversalVariables.offset_x, enemy_rect[1] + UniversalVariables.offset_y, enemy_rect[2], enemy_rect[3]
+                )
+
+            if self.player_attack_rect != None and self.player_attack_rect.colliderect(enemy_rect_converted):
+                print("Player attacked enemy!!!!")
+
     def update(self):
         Enemy.detection(self)
         Enemy.move(self)
-        Enemy.collision_with_entities()
+        Enemy.collision_with_entities(self)
         Enemy.despawn()

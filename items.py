@@ -28,7 +28,7 @@ class ObjectItem(Item):
     def __init__(
             self,
             name: str, id: int, hp: int,
-            width: int | float=block_size, height: int | float=block_size, render_when: int | float=None,
+            width: int | float=block_size, height: int | float=block_size, render_when: int | float=block_size,
             
             recipe: [list[str, ...], list[int | float, ...], int]=None,# {"Recipe": {"Stick": 2, "Oak_Planks": 3}, "Amount": 1}
             drops: tuple[list[str, ...], list[int | float, ...], int]=None,  # drops=(['Stone', 'Coal'], [0.85, 0.15], 1)
@@ -52,7 +52,6 @@ class WorldItem(Item):
     def __init__(self, 
             name: str, id: int,
             width: int=block_size, height: int=block_size,
-            collision_box: list=None,
             render_when: int | float=None
     ) -> None:
         
@@ -60,7 +59,6 @@ class WorldItem(Item):
         self.width = width
         self.height = height
         self.render_when = render_when
-        self.collision_box = collision_box
 
 
 class MineralItem(Item):
@@ -110,25 +108,21 @@ items_list = [
     WorldItem(
         name='Maze_Wall',
         id=99,
-        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Maze_Ground_Keyhole',
         id=11,
-        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_With_Key',
         id=982,
-        collision_box=[0, 0, 1, 1]
     ),
 
     WorldItem(
         name='Keyholder_Without_Key',
         id=981,
-        collision_box=[0, 0, 1, 1]
 
     ),
     
@@ -547,15 +541,99 @@ items_list = [
     ),
 
     ObjectItem(
-        name="Big_Bush",
-        id=9,
+        name="Rotten_Log_0",
+        id=1004,
         hp=1,
 
-        width=int(block_size * 0.7),
-        height=int(block_size * 0.7),
-        render_when=(block_size * 0.2),
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
+        name="Rotten_Log_1",
+        id=1005,
+        hp=1,
+
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
+        name="Rotten_Log_2",
+        id=1006,
+        hp=1,
+
+        width=int(block_size * 0.5),
+        height=int(block_size * 0.5),
+        render_when=block_size * 0.3,
+
+        breakable=False,
+    ),
+
+    ObjectItem(
+        name="Berry_Bush_0",
+        id=1008,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        drops=(['Berry'], [1], 6),
+        
+        breakable=True,
+    ),
+
+    ObjectItem(
+        name="Berry_Bush_1",
+        id=1010,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        drops=(['Berry'], [1], 3),
 
         breakable=True
+    ),
+
+    ObjectItem(
+        name="Berry_Bush_4",
+        id=1012,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        drops=(['Berry'], [1], 1),
+
+        breakable=True
+    ),
+
+    ObjectItem(
+        name="Bush_4",
+        id=1013,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        breakable=False
+    ),
+
+    ObjectItem(
+        name="Bush_0",
+        id=1015,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        breakable=False
+    ),
+
+    ObjectItem(
+        name="Bush_1",
+        id=1016,
+        hp=1,
+        render_when=block_size * 0.3,
+
+        breakable=False
     ),
 
     ObjectItem(
