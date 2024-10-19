@@ -47,17 +47,18 @@ class Camera:
         Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + 450 - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
     def click_on_screen_to_grid(self):
-        return self.terrain_data[int(Camera.click_y // UniversalVariables.block_size)][int(Camera.click_x // UniversalVariables.block_size)]
+        if Camera.click_y and Camera.click_x:
+            return Camera.click_y // UniversalVariables.block_size, Camera.click_x // UniversalVariables.block_size
 
 
     def click_on_screen(self):
         if not self.click_position:
             return
         try:
-            self.click_window_x = self.click_position[0] - Camera.player_window_x
-            self.click_window_y = self.click_position[1] - Camera.player_window_y
-        except TypeError: 
-            print('Click too fast and crash. All gucci my G'); return
+            self.click_window_x = self.click_position[0] - Camera.player_window_x  # Click playerist (window)
+            self.click_window_y = self.click_position[1] - Camera.player_window_y  # Click playerist (window)
+        except TypeError:
+            print('Click too fast and crash. All gucci my G'); return  # Armas comment <3
  
         if not UniversalVariables.player_range:
             player_range = 0

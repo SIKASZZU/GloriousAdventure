@@ -200,7 +200,7 @@ class RenderPictures:
                         random_a, random_b = UniversalVariables.wheat_minus_random_range
                         stage_growth_time = UniversalVariables.wheat_stage_growth_time
 
-                    if object_id in GameConfig.CARROT_TAGES.value:
+                    if object_id in GameConfig.CARROT_STAGES.value:
                         random_a, random_b = UniversalVariables.carrot_minus_random_range
                         stage_growth_time = UniversalVariables.carrot_stage_growth_time
 

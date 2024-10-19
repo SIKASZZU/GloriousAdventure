@@ -137,8 +137,10 @@ class Game:
         ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
-        from attack import AttackEnemy
-        AttackEnemy.update(self)
+
+        from attack import AttackEnemy, AttackObject, Attack
+        Attack.update(self)
+
         EssentialsUpdate.calculate_daylight_strength(self)
         if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
             Inventory.render_craftable_items(self)
