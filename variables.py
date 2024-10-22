@@ -14,11 +14,11 @@ class GameConfig(Enum):
 
     FARMABLES           : tuple[int, ...] = (7, 71, 74, 77)
     WHEAT_STAGES        : tuple[int, ...] = (69, 70)
-    CARROT_TAGES        : tuple[int, ...] = (75, 76)
+    CARROT_STAGES        : tuple[int, ...] = (75, 76)
     CORN_STAGES         : tuple[int, ...] = (78, 79)
     POTATO_STAGES       : tuple[int, ...] = (72, 73)
 
-    FARMABLE_STAGES     : tuple[int, ...] = WHEAT_STAGES + CARROT_TAGES + CORN_STAGES  + POTATO_STAGES
+    FARMABLE_STAGES     : tuple[int, ...] = WHEAT_STAGES + CARROT_STAGES + CORN_STAGES  + POTATO_STAGES
 
     FARMLAND_IMAGE      : tuple[int, ...] = FARMABLES + FARMABLE_STAGES + (107, )
 
@@ -142,6 +142,8 @@ class UniversalVariables():
     serum_active      = False
     player_sprinting  = False
 
+    player_damage = 2
+
     # ******************** Screen ******************** #
     ui_elements: list = []
 
@@ -213,6 +215,8 @@ class UniversalVariables():
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 5 + random.randint(15, 20)
+
+    ghost_hp = 8
 
     # ******************** Counters ******************** #
     render_boxes_counter: int = 0

@@ -38,6 +38,8 @@ class Player_audio:
     cant_open_a_barrel_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Cant_Open_A_Barrel.mp3'))
     eating_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Eating_Sound.mp3'))
     drinking_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Drinking_Sound.mp3'))
+    ghost_hurt = pygame.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Hurt.mp3'))
+    ghost_died = pygame.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Died.mp3'))
 
     opening_a_barrel_sounds = [
         pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_0.mp3')),
@@ -233,7 +235,16 @@ class Player_audio:
             Player_audio.event_channel.stop()
         Player_audio.event_channel.play(Player_audio.drinking_sound)
 
+    def ghost_hurt_audio(self) -> None:
+        if Player_audio.event_channel.get_busy():
+            Player_audio.event_channel.stop()
+        Player_audio.event_channel.play(Player_audio.ghost_hurt)
 
+
+    def ghost_died_audio(self) -> None:
+        if Player_audio.event_channel.get_busy():
+            Player_audio.event_channel.stop()
+        Player_audio.event_channel.play(Player_audio.ghost_died)
     def player_audio_update(self) -> None:
         Player_audio.player_movement_audio(self)
         Player_audio.player_hurt_audio(self)
