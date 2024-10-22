@@ -109,3 +109,6 @@ render::::
 	keyholderitel on topelt pildid. Yks renderib object_renderis, teine renderib map_renderis
 
 	kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
+
+
+	# tra, kusagil appendib np.str_'blockMaze' mingi siukest sitta map_listi, ning ss mingi maze_changes vaataja on perses.
