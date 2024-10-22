@@ -58,6 +58,8 @@ class Event_handler:
     def check_pressed_keys(self):
         keys = pygame.key.get_pressed()
 
+        arrow_keys = (keys[pygame.K_UP], keys[pygame.K_DOWN], keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
+
         if UniversalVariables.debug_mode == True:
 
 
@@ -74,11 +76,15 @@ class Event_handler:
             elif not keys[pygame.K_j]: self.j_pressed = False
 
         # ARROW KEYS (ATTACK KEYS)
-        if keys[pygame.K_UP]:
-            Player.attack(self, 'up')
-        elif keys[pygame.K_DOWN]:
-            Player.attack(self, 'down')
-        elif keys[pygame.K_LEFT]:
-            Player.attack(self, 'left')
-        elif keys[pygame.K_RIGHT]:
-            Player.attack(self, 'right')
+
+        if any(arrow_keys):
+            UniversalVariables.attack_key_pressed = True
+            
+            if keys[pygame.K_UP]:
+                Player.attack(self, 'up')
+            elif keys[pygame.K_DOWN]:
+                Player.attack(self, 'down')
+            elif keys[pygame.K_LEFT]:
+                Player.attack(self, 'left')
+            elif keys[pygame.K_RIGHT]:
+                Player.attack(self, 'right')

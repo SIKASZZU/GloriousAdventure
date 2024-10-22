@@ -133,14 +133,15 @@ class UniversalVariables():
     player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
     player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
 
-    health_status     = None
-    hunger_resistance = 0
-    thirst_resistance = 0
-    player_poisoned   = False
-    player_infected   = False
-    player_bleeding   = False
-    serum_active      = False
-    player_sprinting  = False
+    health_status      = None
+    hunger_resistance  = 0
+    thirst_resistance  = 0
+    player_poisoned    = False
+    player_infected    = False
+    player_bleeding    = False
+    serum_active       = False
+    player_sprinting   = False
+    attack_key_pressed = False
 
     player_damage = 2
 

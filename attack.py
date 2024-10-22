@@ -9,32 +9,60 @@ from items import search_item_from_items, ObjectItem, find_item_by_id
 class Attack:
     def update(self):
 
-        if not self.click_position:
-            return
+        
+        if self.click_position:
+            enemy_click = Camera.click_on_screen(self)  # x, y (Coords)
+            object_click = self.click_position[0], self.click_position[1]  # x, y (Coords)
 
-        enemy_click = Camera.click_on_screen(self)  # x, y (Coords)
-        object_click = self.click_position[0], self.click_position[1]  # x, y (Coords)
+            if not enemy_click and not object_click:
+                return
 
-        if not enemy_click and not object_click:
-            return
+            if enemy_click:   # klikkisid hiirega enemy peale.
+                AttackEnemy.update(self, click=enemy_click)
 
-        if enemy_click:
-            AttackEnemy.update(self, enemy_click)
+            if object_click:
+                AttackObject.update(self, object_click)
 
-        if object_click:
-            AttackObject.update(self, object_click)
+        else:
+            enemy_pressed = UniversalVariables.attack_key_pressed
+
+            if enemy_pressed:  # vajutasid noolekeyd ja hittis enemy.
+                AttackEnemy.update(self, pressed=True)
+                UniversalVariables.attack_key_pressed = False
 
 
 class AttackEnemy:
-    def find_enemy(self, click):
+    # saved_enemy_x = 0
+    # saved_enemy_y = 0
+
+    def find_enemy(self, click=False, pressed=False):
         for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
                                      enemy_info[2] * UniversalVariables.block_size, 73, 73)
 
-            if not enemy_rect.collidepoint(click):
-                continue
+            if click:
+                if not enemy_rect.collidepoint(click):
+                    continue
 
-            return enemy_name, enemy_info
+                return enemy_name, enemy_info
+        
+            if pressed:
+                # converted to window size coord
+                enemy_rect_converted: pygame.Rect = pygame.Rect(
+                    enemy_rect[0] + UniversalVariables.offset_x, enemy_rect[1] + UniversalVariables.offset_y, enemy_rect[2], enemy_rect[3]
+                    )
+
+                if self.player_attack_rect != None and self.player_attack_rect.colliderect(enemy_rect_converted):
+                    return enemy_name, enemy_info
+                else:
+                    continue
+
+    # def calculate_knockback(previous_y, previous_x, now_y, now_x):
+    #     knockback_force = 60.0  # Knockback strength, 100.0 == 1 block size almost...
+    #     now_x += previous_x * knockback_force
+    #     now_y += previous_y * knockback_force
+
+    #     return now_y, now_x
 
     def damage_enemy(self, enemy_name, enemy_info):
         enemy_image, y, x, HP = enemy_info
@@ -51,6 +79,9 @@ class AttackEnemy:
 
             return
 
+        # # Add knockback to enemy
+        # y, x = AttackEnemy.calculate_knockback(AttackEnemy.saved_enemy_y, AttackEnemy.saved_enemy_x, y, x)
+
         Enemy.spawned_enemy_dict[enemy_name] = enemy_image, y, x, new_HP
         Player_audio.ghost_hurt_audio(self)
 
@@ -60,11 +91,22 @@ class AttackEnemy:
             return
         return
 
-    def update(self, click):
-        enemy_data = AttackEnemy.find_enemy(self, click)
-        if enemy_data:
-            enemy_name, enemy_info = enemy_data
-            AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+    def update(self, click=False, pressed=False):
+
+        if click:
+            enemy_data = AttackEnemy.find_enemy(self, click=click)
+            if enemy_data:
+                enemy_name, enemy_info = enemy_data
+                _, y, x, _ = enemy_info
+                AttackEnemy.saved_enemy_x, AttackEnemy.saved_enemy_y = y
+                print('Saving enemy info for knockback.', y, x)
+                AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+        if pressed:
+            enemy_data = AttackEnemy.find_enemy(self, pressed=pressed)
+            if enemy_data:
+                enemy_name, enemy_info = enemy_data
+                AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+
 
 class AttackObject:
     def find_object(self, click):
