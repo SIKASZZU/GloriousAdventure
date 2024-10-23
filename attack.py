@@ -7,10 +7,17 @@ from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
 
 class Attack:
+    last_attack_cooldown_max = 100
+    last_attack_cooldown = last_attack_cooldown_max
     def update(self):
 
-        
-        if self.click_position:
+        enemy_pressed = UniversalVariables.attack_key_pressed
+
+        if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
+            Attack.last_attack_cooldown += 2
+            enemy_pressed = UniversalVariables.attack_key_pressed = False  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
+
+        elif self.click_position:
             enemy_click = Camera.click_on_screen(self)  # x, y (Coords)
             object_click = self.click_position[0], self.click_position[1]  # x, y (Coords)
 
@@ -19,17 +26,15 @@ class Attack:
 
             if enemy_click:   # klikkisid hiirega enemy peale.
                 AttackEnemy.update(self, click=enemy_click)
+                Attack.last_attack_cooldown = 0
 
             if object_click:
                 AttackObject.update(self, object_click)
 
-        else:
-            enemy_pressed = UniversalVariables.attack_key_pressed
-
-            if enemy_pressed:  # vajutasid noolekeyd ja hittis enemy.
-                AttackEnemy.update(self, pressed=True)
-                UniversalVariables.attack_key_pressed = False
-
+        elif enemy_pressed:  # arrow keydega hittisid enemyt
+            AttackEnemy.update(self, pressed=True)
+            enemy_pressed = UniversalVariables.attack_key_pressed = False
+            Attack.last_attack_cooldown = 0
 
 class AttackEnemy:
     # saved_enemy_x = 0
@@ -98,8 +103,7 @@ class AttackEnemy:
             if enemy_data:
                 enemy_name, enemy_info = enemy_data
                 _, y, x, _ = enemy_info
-                AttackEnemy.saved_enemy_x, AttackEnemy.saved_enemy_y = y
-                print('Saving enemy info for knockback.', y, x)
+                # AttackEnemy.saved_enemy_x, AttackEnemy.saved_enemy_y = y
                 AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
         if pressed:
             enemy_data = AttackEnemy.find_enemy(self, pressed=pressed)
