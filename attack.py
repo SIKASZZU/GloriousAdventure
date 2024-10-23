@@ -45,14 +45,11 @@ class Attack:
 
 
 class AttackEnemy:
-    # saved_enemy_x = 0
-    # saved_enemy_y = 0
-
     def find_enemy(self, click=False, pressed=False):
         for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
                                      enemy_info[2] * UniversalVariables.block_size, 73, 73)
-
+            
             if click:
                 if not enemy_rect.collidepoint(click):
                     continue
@@ -71,12 +68,26 @@ class AttackEnemy:
                 else:
                     continue
 
-    # def calculate_knockback(previous_y, previous_x, now_y, now_x):
-    #     knockback_force = 60.0  # Knockback strength, 100.0 == 1 block size almost...
-    #     now_x += previous_x * knockback_force
-    #     now_y += previous_y * knockback_force
+    def calculate_enemy_knockback(self, y,x):
+        player_grid_y = UniversalVariables.player_y // UniversalVariables.block_size
+        player_grid_x = UniversalVariables.player_x // UniversalVariables.block_size
+        xdx, ydx = x, y
+        knockback_stenght = 0.55
 
-    #     return now_y, now_x
+        # if enemy is to the left
+        if x < player_grid_x:
+            xdx -= knockback_stenght
+        # if enemy is on top
+        if y < player_grid_y:
+            ydx -= knockback_stenght
+        # if enemy is to the right
+        if x > player_grid_x:
+            xdx += knockback_stenght
+        # if enemy is below
+        if y > player_grid_y:
+            ydx += knockback_stenght
+
+        return ydx, xdx
 
     def damage_enemy(self, enemy_name, enemy_info):
         enemy_image, y, x, HP = enemy_info
@@ -94,8 +105,7 @@ class AttackEnemy:
             return
 
         # # Add knockback to enemy
-        # y, x = AttackEnemy.calculate_knockback(AttackEnemy.saved_enemy_y, AttackEnemy.saved_enemy_x, y, x)
-
+        y, x = AttackEnemy.calculate_enemy_knockback(self, y,x)
         Enemy.spawned_enemy_dict[enemy_name] = enemy_image, y, x, new_HP
         Player_audio.ghost_hurt_audio(self)
 
