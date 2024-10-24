@@ -41,6 +41,8 @@ class Attack:
             enemy_pressed = UniversalVariables.attack_key_pressed = False
             Attack.last_attack_cooldown = 0
 
+        Camera.reset_clicks(self)
+
 
 class AttackEnemy:
     # saved_enemy_x = 0
