@@ -66,7 +66,7 @@ class ObjectManagement:
                 ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
             else:
                 Inventory.inventory_full_error(self)
-            return
+            return False
 
         if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
             ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)

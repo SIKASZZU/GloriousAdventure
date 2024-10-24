@@ -28,6 +28,8 @@ from equipped_items import ItemFunctionality
 from building import Building
 from cooking import Cooking
 from maze_changes import MazeChanges
+from attack import Attack
+
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -137,8 +139,6 @@ class Game:
         ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
-
-        from attack import AttackEnemy, AttackObject, Attack
         Attack.update(self)
 
         EssentialsUpdate.calculate_daylight_strength(self)
@@ -222,6 +222,7 @@ class Game:
             # print(self.player)
 
         self.click_position = ()
+
 
     def run(self):
         self.load_variables()

@@ -5,11 +5,16 @@ from camera import Camera
 from entity import Enemy
 from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
+from objects import ObjectManagement
+
 
 class Attack:
     last_attack_cooldown_max = 100
     last_attack_cooldown = last_attack_cooldown_max
+
     def update(self):
+        AttackObject.update_timers(self)
+
 
         enemy_pressed = UniversalVariables.attack_key_pressed
 
@@ -24,7 +29,7 @@ class Attack:
             if not enemy_click and not object_click:
                 return
 
-            if enemy_click:   # klikkisid hiirega enemy peale.
+            if enemy_click:  # klikkisid hiirega enemy peale.
                 AttackEnemy.update(self, click=enemy_click)
                 Attack.last_attack_cooldown = 0
 
@@ -35,6 +40,7 @@ class Attack:
             AttackEnemy.update(self, pressed=True)
             enemy_pressed = UniversalVariables.attack_key_pressed = False
             Attack.last_attack_cooldown = 0
+
 
 class AttackEnemy:
     # saved_enemy_x = 0
@@ -50,12 +56,13 @@ class AttackEnemy:
                     continue
 
                 return enemy_name, enemy_info
-        
+
             if pressed:
                 # converted to window size coord
                 enemy_rect_converted: pygame.Rect = pygame.Rect(
-                    enemy_rect[0] + UniversalVariables.offset_x, enemy_rect[1] + UniversalVariables.offset_y, enemy_rect[2], enemy_rect[3]
-                    )
+                    enemy_rect[0] + UniversalVariables.offset_x, enemy_rect[1] + UniversalVariables.offset_y,
+                    enemy_rect[2], enemy_rect[3]
+                )
 
                 if self.player_attack_rect != None and self.player_attack_rect.colliderect(enemy_rect_converted):
                     return enemy_name, enemy_info
@@ -113,31 +120,84 @@ class AttackEnemy:
 
 
 class AttackObject:
-    def find_object(self, click):
+
+    def find_object(self, click: tuple[int, int]) -> bool:
         for object_info in list(UniversalVariables.object_list):
+            object_id: int = object_info[5]
+            is_valid_object: bool = search_item_from_items(type=ObjectItem, item_name_or_id=object_id,
+                                                     target_attribute="Breakable")
 
-            object_id = object_info[5]
-            is_valid_object = search_item_from_items(type=ObjectItem, item_name_or_id=object_id, target_attribute="Breakable")
             if not is_valid_object:
-                return
+                continue
 
-            x = object_info[0]  # window x
-            y = object_info[1]  # window y
-            width = object_info[2]
-            height = object_info[3]
-            object_id = object_info[5]
-
+            x, y, width, height = object_info[:4]
             object_rect = pygame.Rect(x, y, width, height)
 
             if not object_rect.collidepoint(click):
                 continue
 
-            if UniversalVariables.debug_mode:
-                item = find_item_by_id(object_id)
-                item_name = item.name if item and hasattr(item, 'name') else 'Unknown'
-                return print(f"Breaking: {item_name}"), print(), print()
+            # Ei saa listi salvestada vale offsetiga, võtab praegu ära ja liidab hiljem juurde
+            x_minus_offset: float = y - UniversalVariables.offset_y
+            y_minus_offset: float = x - UniversalVariables.offset_x
 
+            rect_key: tuple = x_minus_offset, y_minus_offset, width, height
+
+            item: dict[str, any] = find_item_by_id(object_id)
+            if rect_key not in UniversalVariables.object_hp_dict:
+                hp: float = item['hp'] if isinstance(item, dict) else item.hp if item and hasattr(item, 'hp') else 3
+                UniversalVariables.object_hp_dict[rect_key] = {'hp': hp, 'id': object_id, 'timer': UniversalVariables.object_reset_timer}
+
+            # Resetib timerit iga kord, kui objectit attackid
+            else:
+                UniversalVariables.object_hp_dict[rect_key]['timer'] = UniversalVariables.object_reset_timer
+
+            AttackObject.deal_damage(self, rect_key)
+
+            if UniversalVariables.debug_mode:
+                item_name = item.name if item and hasattr(item, 'name') else 'Unknown'
+                return True
+
+            return True
+
+    def deal_damage(self, rect_key: tuple[float, float, int, int]) -> None:
+        object_data: dict[str, any] = UniversalVariables.object_hp_dict.get(rect_key)
+
+        if not object_data:
             return
 
-    def update(self, click):
-        AttackObject.find_object(self, click)
+        current_hp: float = object_data['hp']
+        new_hp: float = current_hp - UniversalVariables.player_damage
+
+        if new_hp < 0:
+            new_hp = 0
+
+        object_data['hp'] = new_hp
+
+        x_minus_offset, y_minus_offset, _, _ = rect_key
+
+        if new_hp <= 0:
+            # X ja Y peavad olema vastupidi --> grid asi
+            was_removed = ObjectManagement.remove_object_at_position(self, y_minus_offset, x_minus_offset, object_data['id'])
+            if was_removed:
+                del UniversalVariables.object_hp_dict[rect_key]
+
+            # Kui inv oli täis ja itemit ülesse ei saanud võtta siis jätab objecti 'HP'ks 1
+            else:
+                new_hp = 1
+                object_data['hp'] = new_hp
+
+        print('New HP:', new_hp)
+
+    def update_timers(self) -> None:
+        for rect_key in list(UniversalVariables.object_hp_dict.keys()):
+            object_data = UniversalVariables.object_hp_dict[rect_key]
+            object_data['timer'] -= 1
+
+            if object_data['timer'] <= 0:
+                del UniversalVariables.object_hp_dict[rect_key]
+
+    def update(self, click: tuple[int, int]) -> None:
+        valid: bool = AttackObject.find_object(self, click)
+        if valid:
+            ...
+

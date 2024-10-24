@@ -145,6 +145,9 @@ class UniversalVariables():
 
     player_damage = 2
 
+    object_hp_dict = {}
+    object_reset_timer = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
+
     # ******************** Screen ******************** #
     ui_elements: list = []
 
