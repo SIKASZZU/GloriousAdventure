@@ -78,7 +78,7 @@ class Event_handler:
         # ARROW KEYS (ATTACK KEYS)
 
         if any(arrow_keys):
-            UniversalVariables.attack_key_pressed = True
+            UniversalVariables.attack_key_pressed = (True, (arrow_keys))
             
             if keys[pygame.K_UP]:
                 Player.attack(self, 'up')

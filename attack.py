@@ -20,7 +20,7 @@ class Attack:
 
         if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
             Attack.last_attack_cooldown += 2
-            enemy_pressed = UniversalVariables.attack_key_pressed = False  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
+            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
 
         elif self.click_position:
             enemy_click = Camera.click_on_screen(self)  # x, y (Coords)
@@ -38,7 +38,7 @@ class Attack:
 
         elif enemy_pressed:  # arrow keydega hittisid enemyt
             AttackEnemy.update(self, pressed=True)
-            enemy_pressed = UniversalVariables.attack_key_pressed = False
+            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
             Attack.last_attack_cooldown = 0
 
         Camera.reset_clicks(self)
