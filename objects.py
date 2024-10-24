@@ -14,27 +14,27 @@ class ObjectManagement:
 
         # If object ID is None, skip to avoid errors
         if object_id is None:
-            return
+            return False
 
         # Fetch the item from the dictionary
         item = find_item_by_id(object_id)
 
         if not item:
-            return
+            return False
 
         # Check if item is breakable (only ObjectItem has the breakable attribute)
         if isinstance(item, ObjectItem):
             if not item.breakable:
-                return
+                return False
         else:
-            return
+            return False
 
         # Check interaction delay
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
             if UniversalVariables.debug_mode:
                 print(
                     f"Don't pick up so fast: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max}")
-            return
+            return False
 
 
         if object_id in GameConfig.COOKING_STATIONS.value:
@@ -47,7 +47,7 @@ class ObjectManagement:
                     Fading_text.re_display_fading_text("Aren't you forgetting something?")
                     UniversalVariables.interaction_delay = 0
                     Player_audio.error_audio(self)
-                    return
+                    return False
 
 
         # Handle item drops
@@ -64,14 +64,17 @@ class ObjectManagement:
 
             if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
                 ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
+                return True
             else:
                 Inventory.inventory_full_error(self)
             return False
 
         if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
             ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
+            return True
         else:
             Inventory.inventory_full_error(self)
+            return False
 
     def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, name: str, amount: int) -> bool:
         grid_col: int = int(terrain_x // UniversalVariables.block_size)
