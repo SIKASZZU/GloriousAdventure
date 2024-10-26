@@ -117,7 +117,6 @@ def draw_light_source_and_rays(self, screen, position):
     visible_points = []
     vision_step = 5
     attack_key_tuple = UniversalVariables.attack_key_pressed[1]
-    print(attack_key_tuple)
     
     if UniversalVariables.attack_key_pressed[0] == True:  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
         
