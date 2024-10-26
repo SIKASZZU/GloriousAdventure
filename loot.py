@@ -11,7 +11,8 @@ class Loot:
     obtained_loot_list = []
 
     def toggle_loot_barrel(self, player_pressed_pick_up=False):
-        click_position = Camera.click_on_screen(self)
+        click_position = Camera.right_click_on_screen(self)
+        print(click_position)
         if click_position and click_position == (None, None) and player_pressed_pick_up == False:  # or player collision
             return
         count = randint(1, 3)
