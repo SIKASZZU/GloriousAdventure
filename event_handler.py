@@ -23,9 +23,9 @@ class Event_handler:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.click_position = event.pos
-                Camera.click_on_screen(self)
+                Camera.left_click_on_screen(self)
                 Loot.loot_update(self)
-                Camera.click_on_screen(self)
+                Camera.left_click_on_screen(self)
             if event.button == 3:
                 self.right_click_position = event.pos
                 Camera.right_click_on_screen(self)
