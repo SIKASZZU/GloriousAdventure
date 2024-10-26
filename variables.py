@@ -40,7 +40,7 @@ class GameConfig(Enum):
     BERRY_ITEMS         : tuple[int, ...] = (1008, 1010, 1012, 1013, 1015, 1016)
     
     # TODO: interactalbe itemid on siis objekt itemid? K6ik objekt itemid ei ole ju interactable? mdea.. hetkel k6ik interactable itemid renderib object_renderer.
-    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 5, 6, 7, 9, 10, 12, 13, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 981, 982, 1001, 1002) + ALL_THE_DOORS + BERRY_ITEMS + ABND_GLADE_ITEMS # ei renderi topelt map_renderi all
+    INTERACTABLE_ITEMS  : tuple[int, ...] = (2, 4, 5, 6, 7, 8, 9, 10, 12, 13, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 981, 982, 1001, 1002) + ALL_THE_DOORS + BERRY_ITEMS + ABND_GLADE_ITEMS # ei renderi topelt map_renderi all
     COLLISION_ITEMS     : tuple[int, ...] = (99, 981, 982)
 
     RENDER_RANGE_SMALL  : tuple[int, ...] = (
@@ -50,16 +50,6 @@ class GameConfig(Enum):
         981, 982,                                       # Keyholder
         1001, 1002, 1003,                               # Barrel, Chest
         989, 98998, 9099, 909998, 900                   # Blade walls, Grounds
-    )
-
-
-    ### FIXME: MIND POLE VAJA JU VÕI ON??? Paneme pildid ainult sinna kuhu vaja
-    ###        ja mujale mitte ehk ss GROUND_IMAGE ja MAZE_GROUND_IMAGE jne...
-    NO_TERRAIN_BACKGROUND_ITEMS: tuple[int, ...] = (
-        None,
-        98, 99,  # Ground ja Wall
-        981, 982,  # Keyholder
-        500, 550, 555, 988, 999  # Portal, ground, wall
     )
 
     COOKING_STATIONS: tuple[int, ...] = (8, )  # Campfire
