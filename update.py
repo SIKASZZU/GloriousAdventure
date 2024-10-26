@@ -69,8 +69,6 @@ class PlayerUpdate:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
         if UniversalVariables.cutscene:  # Check if cutscene is active
             keys = pygame.key.get_pressed()  # Track keyboard inputs
-
-            self.animation_index = 2  # Up animation
             UniversalVariables.last_input = 'w'
 
             x = 0 * int(keys[pygame.K_a]) + 0 * int(keys[pygame.K_d])
@@ -98,18 +96,18 @@ class PlayerUpdate:
             else:
                 self.frame_delay = 7  # Default walking speed
             if keys[pygame.K_d]:
-                self.animation_index = 1  # Right animation
+                UniversalVariables.animation_index = 1  # Right animation
                 UniversalVariables.last_input = 'd'
             if keys[pygame.K_a]:
-                self.animation_index = 0  # Left animation
+                UniversalVariables.animation_index = 0  # Left animation
                 UniversalVariables.last_input = 'a'
             if keys[pygame.K_s]:
-                self.animation_index = 3  # Down animation
+                UniversalVariables.animation_index = 3  # Down animation
                 UniversalVariables.last_input = 's'
                 if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
                 if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
             if keys[pygame.K_w]:
-                self.animation_index = 2  # Up animation
+                UniversalVariables.animation_index = 2  # Up animation
                 UniversalVariables.last_input = 'w'
                 if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
                 if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
