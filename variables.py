@@ -10,7 +10,7 @@ class GameConfig(Enum):
 
     RANDOM_PLACEMENT: tuple[int, ...] = (2, 4, 5, 10, 12, 13, 1001, 1002, 1003)  # Random position items
 
-    INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9)
+    INITIAL_GLADE_ITEMS : tuple[int, ...] = (1, 2, 3, 4, 5, 8, 9,)
 
     FARMABLES           : tuple[int, ...] = (7, 71, 74, 77)
     WHEAT_STAGES        : tuple[int, ...] = (69, 70)
@@ -118,6 +118,8 @@ class UniversalVariables():
         cooking_range:int = 2  # Grid
 
     # ******************** PLAYER ******************** #
+    animation_index = 2
+
     current_equipped_item = None
     current_equipped_item_item_type = None
     interaction_delay = 100  # Delay tegevuse vahel, näiteks söömine, ehitamine, asjade ülesse võtmine
@@ -130,6 +132,7 @@ class UniversalVariables():
     player_hitbox_offset_y: float = 0.22 * player_height
 
     # Playeri koordinaatide arvutamine
+    # Player_x/_y ei ole offsetti lisatud
     player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
     player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
 
@@ -143,10 +146,13 @@ class UniversalVariables():
     player_sprinting   = False
     attack_key_pressed = False
 
-    player_damage = 2
+    player_damage: float = 2
 
-    object_hp_dict = {}
-    object_reset_timer = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
+    object_hp_dict: dict = {}
+    object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
+
+    dropped_items: dict = {}
+    despawn_timer_default: int = 1920  # Dropped itemite despawn timer
 
     # ******************** Screen ******************** #
     ui_elements: list = []
@@ -275,3 +281,8 @@ class UniversalVariables():
                     count += 1
                 else:
                     break
+
+    @staticmethod
+    def print_debug_text(text: any):
+        if UniversalVariables.debug_mode:
+            print(text)
