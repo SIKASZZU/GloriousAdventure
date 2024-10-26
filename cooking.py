@@ -256,36 +256,38 @@ class Cooking:
 
         if mouse_buttons[2]:  # Right click
             click_x, click_y = Camera.right_click_x, Camera.right_click_y
-            if click_x is not None and click_y is not None:
+            if click_x and click_y:
                 click_x //= UniversalVariables.block_size
                 click_y //= UniversalVariables.block_size
 
                 # Kui on click'itud cooking station'i peale
-                if self.terrain_data[click_y][click_x] in GameConfig.COOKING_STATIONS.value:
-                    Cooking.station_key = f"station_{click_y}_{click_x}"
+                try:
+                    if self.terrain_data[click_y][click_x] in GameConfig.COOKING_STATIONS.value:
+                        Cooking.station_key = f"station_{click_y}_{click_x}"
 
-                    station = Cooking.stations.setdefault(Cooking.station_key, {
-                        "station_coordinates": (click_y, click_x),
-                        "station_raw_item": (None, 0),
-                        "station_cooked_item": (None, 0),
-                        "station_cooking_delay": 0
-                    })
+                        station = Cooking.stations.setdefault(Cooking.station_key, {
+                            "station_coordinates": (click_y, click_x),
+                            "station_raw_item": (None, 0),
+                            "station_cooked_item": (None, 0),
+                            "station_cooking_delay": 0
+                        })
 
-                    # Kui vajutad uuesti cooking station'i peale kui cooking menu on lahti siis sulgeb cooking menu
-                    if UniversalVariables.cooking_menu:
-                        UniversalVariables.cooking_menu = False
-                    else:
-                        # Kui vajutad cooking station'i peale siis avab cooking menu ja salvestab selle kordinaadid
-                        Inventory.crafting_menu_open = False
-                        Cooking.station_coordinates = (click_x, click_y)
-                        UniversalVariables.cooking_menu = True
+                        # Kui vajutad uuesti cooking station'i peale kui cooking menu on lahti siis sulgeb cooking menu
+                        if UniversalVariables.cooking_menu:
+                            UniversalVariables.cooking_menu = False
+                        else:
+                            # Kui vajutad cooking station'i peale siis avab cooking menu ja salvestab selle kordinaadid
+                            Inventory.crafting_menu_open = False
+                            Cooking.station_coordinates = (click_x, click_y)
+                            UniversalVariables.cooking_menu = True
 
-                    # Kui cooking menu ei ole nähtav või player ei ole cooking_range'is siis suletakse inventory
-                    if not UniversalVariables.cooking_menu or not Cooking.player_in_range(click_x, click_y):
-                        Inventory.inv_count = 0
-                        Inventory.render_inv = False
-                        Inventory.crafting_menu_open = False
-                        UniversalVariables.is_cooking = False
+                        # Kui cooking menu ei ole nähtav või player ei ole cooking_range'is siis suletakse inventory
+                        if not UniversalVariables.cooking_menu or not Cooking.player_in_range(click_x, click_y):
+                            Inventory.inv_count = 0
+                            Inventory.render_inv = False
+                            Inventory.crafting_menu_open = False
+                            UniversalVariables.is_cooking = False
+                except IndexError: pass
 
             Camera.right_click_x, Camera.right_click_y = None, None
 
