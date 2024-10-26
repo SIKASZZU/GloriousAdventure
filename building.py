@@ -27,7 +27,7 @@ class Building:
         Vaatab kas valitud koht on valid.
         Return'ib (grid_x, grid_y) if valid (terrain_data[grid_y][grid_x] == 1), else False.
         """
-        click_position = Camera.click_on_screen(self)
+        click_position = Camera.left_click_on_screen(self)
 
         if click_position:
             terrain_x, terrain_y = click_position
