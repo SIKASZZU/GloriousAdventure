@@ -116,6 +116,15 @@ def draw_light_source_and_rays(self, screen, position):
     light_source = position
     visible_points = []
     vision_step = 5
+    attack_key_tuple = UniversalVariables.attack_key_pressed[1]
+    
+    if UniversalVariables.attack_key_pressed[0] == True:  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
+        
+        # tra see last inputi settimine siin pole yldse loogiilne aga nii t66tab. idk wtf
+        if attack_key_tuple[1] == True:  UniversalVariables.last_input = 's'
+        elif attack_key_tuple[2] == True:  UniversalVariables.last_input = 'a'
+        elif attack_key_tuple[3] == True:  UniversalVariables.last_input = 'd'
+        else:                            UniversalVariables.last_input = 'w'
 
     if len(UniversalVariables.last_input) == 3:
         main_angles = range(0, 360 + vision_step)

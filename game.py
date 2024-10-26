@@ -140,7 +140,6 @@ class Game:
         ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
-        Attack.update(self)
 
         EssentialsUpdate.calculate_daylight_strength(self)
         if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
@@ -150,6 +149,7 @@ class Game:
                 Inventory.crafting_menu_open = False
 
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
+        Attack.update(self)
         PlayerUpdate.render_HUD(self)  # Render HUD
         EssentialsUpdate.render_general(self)  # Render other elements
         HUD_class.update()
