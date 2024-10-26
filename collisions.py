@@ -287,6 +287,7 @@ class Collisions:
         Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
 
+    # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
     def player_hit_collision(self, collision_box) -> None:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
