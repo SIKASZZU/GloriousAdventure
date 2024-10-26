@@ -673,18 +673,18 @@ items_list = [
         breakable=True,
     ),
 
-    ObjectItem(
-        name="Torch",
-        id=30,
-        hp=1,
-
-        recipe=[
-            {"Recipe": {"Stick": 2, "Coal": 1}, "Amount": 4},
-        ],
-
-        breakable=True,
-        placeable=True
-    ),
+    # ObjectItem(
+    #     name="Torch",
+    #     id=30,
+    #     hp=1,
+    #
+    #     recipe=[
+    #         {"Recipe": {"Stick": 2, "Coal": 1}, "Amount": 4},
+    #     ],
+    #
+    #     breakable=True,
+    #     placeable=True
+    # ),
     
     ObjectItem(
         name="Opened_Loot_Barrel",
