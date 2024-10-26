@@ -5,7 +5,7 @@ from text import Fading_text
 class Camera:
 
     screen = UniversalVariables.screen
-    camera_borders = {'left': 450, 'right': 450, 'top': 276, 'bottom': 326}
+    camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
     l: int = camera_borders['left']
     t: int = camera_borders['top']
     w: int = screen.get_size()[0] - (camera_borders['left'] + camera_borders['right'])
@@ -46,7 +46,7 @@ class Camera:
         Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + Camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
     @staticmethod
-    def is_within_player_range(click_window_x, click_window_y) -> bool:
+    def is_click_within_player_range(click_window_x, click_window_y) -> bool:
         player_range = UniversalVariables.player_range or 0  # Kui player_range = None ---> player_range = 0
 
         # Vaatab, kas player on click on player range'is
@@ -80,7 +80,7 @@ class Camera:
         self.click_window_x = self.click_position[0] - Camera.player_window_x  # Click relative to player (window)
         self.click_window_y = self.click_position[1] - Camera.player_window_y  # Click relative to player (window)
 
-        if Camera.is_within_player_range(self.click_window_x, self.click_window_y):
+        if Camera.is_click_within_player_range(self.click_window_x, self.click_window_y):
             Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
             Camera.click_info_available = True
         else:
@@ -100,7 +100,7 @@ class Camera:
         self.right_click_window_x = self.right_click_position[0] - Camera.player_window_x
         self.right_click_window_y = self.right_click_position[1] - Camera.player_window_y
 
-        if Camera.is_within_player_range(self.right_click_window_x, self.right_click_window_y):
+        if Camera.is_click_within_player_range(self.right_click_window_x, self.right_click_window_y):
             Camera.right_click_x = round(UniversalVariables.player_x + self.right_click_window_x)
             Camera.right_click_y = round(UniversalVariables.player_y + self.right_click_window_y)
             Camera.right_click_info_available = True
