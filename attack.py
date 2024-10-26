@@ -14,17 +14,14 @@ class Attack:
 
     def update(self):
         AttackObject.update_timers(self)
-
-
         enemy_pressed = UniversalVariables.attack_key_pressed
 
         if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
-            Attack.last_attack_cooldown += 2
+            Attack.last_attack_cooldown += 1
             enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
 
-        elif self.click_position:
             enemy_click = Camera.left_click_on_screen(self)  # x, y (Coords)
-            object_click = self.click_position[0], self.click_position[1]  # x, y (Coords)
+            object_click = self.click_position  # x, y (Coords)
 
             if not enemy_click and not object_click:
                 return False
@@ -34,7 +31,8 @@ class Attack:
                 Attack.last_attack_cooldown = 0
 
             if object_click and None not in object_click:  # Check if object_click is valid
-                AttackObject.update(self, object_click)
+                AttackObject.update(self, object_click)  # Offseti asi on perses kuna muutsime camerat
+
 
         elif enemy_pressed:  # arrow keydega hittisid enemyt
             AttackEnemy.update(self, pressed=True)
@@ -214,3 +212,4 @@ class AttackObject:
         if valid:
             ...
 
+        # Animatsiooni vaja teha
