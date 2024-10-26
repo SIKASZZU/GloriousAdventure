@@ -4,6 +4,8 @@ import pygame
 import math
 from camera import Camera
 from text import Fading_text
+from inventory import Inventory
+from objects import ObjectManagement
 
 class Drop:
     # Animatsiooniga seotud asjad
@@ -34,9 +36,13 @@ class Drop:
     toggle_cooldown = 200  # 1000 -> 1 sek
     last_toggle_time = 0  # Timestamp viimasest toggle'imisest
 
+    # Drop
+    drop_delay_max = 15
+    drop_delay = drop_delay_max
+
     def find_location(self) -> tuple[int, int]:  # Coord ilma offsetita
         if UniversalVariables.dropped_items:
-            for position, _ in UniversalVariables.dropped_items.items():
+            for position, contents in UniversalVariables.dropped_items.items():
                 pouch_x, pouch_y = position
                 player_x_minus_offset, player_y_minus_offset = UniversalVariables.player_x, UniversalVariables.player_y
 
@@ -76,6 +82,9 @@ class Drop:
 
     @staticmethod
     def open_pouch(position: tuple[int, int]) -> None:
+        if not Drop.show_pouch:
+            return
+
         if Drop.pouch_position:
             player_x_minus_offset = UniversalVariables.player_x
             player_y_minus_offset = UniversalVariables.player_y
@@ -98,7 +107,7 @@ class Drop:
 
     # TODO: slotid tiba transparent ja iga itemile eraldi transparentcy, kui item hakkab kaduma selle transparency langeb
     @staticmethod
-    def display_pouch_contents(contents: dict) -> None:
+    def display_pouch_contents(contents: dict) -> list:
         # Calculate the UI position and dimensions based on the item count
         current_slot_count = len(contents)
         pouch_y = 25
@@ -108,15 +117,18 @@ class Drop:
 
         # Create a transparent surface with the pouch dimensions
         pouch_surface = pygame.Surface((pouch_width, pouch_height), pygame.SRCALPHA)
-        pouch_surface.fill((0, 0, 0, 0))  # Fully transparent background
 
         # Draw the transparent background and black border on the pouch surface
-        pygame.draw.rect(pouch_surface, (200, 200, 200, 150), (5, 5, pouch_width - 10, pouch_height - 10), border_radius=3)
+        pygame.draw.rect(pouch_surface, (200, 200, 200, 150), (5, 5, pouch_width - 10, pouch_height - 10),
+                         border_radius=3)
         pygame.draw.rect(pouch_surface, (0, 0, 0), (5, 5, pouch_width - 10, pouch_height - 10), 2, border_radius=3)
 
         # Define padding and adjusted slot size for items
         padding = 3
         adjusted_slot_size = (Drop.slot_size[0] - 2 * padding, Drop.slot_size[1] - 2 * padding)
+
+        # List to hold slot hitboxes for item removal
+        slot_hitboxes = []
 
         # Blit each item in a horizontal row
         slot_index = 0
@@ -136,10 +148,43 @@ class Drop:
             quantity_surface = font.render(str(item_quantity), True, (0, 0, 0))
             pouch_surface.blit(quantity_surface, (slot_position[0] + 2, slot_position[1] + 2))
 
+            # Create hitbox for the current slot
+            slot_rect = pygame.Rect(pouch_x + slot_position[0], pouch_y + slot_position[1], Drop.slot_size[0],
+                                    Drop.slot_size[1])
+            slot_hitboxes.append((slot_rect, item_name))  # Store hitbox and associated item name
+
             slot_index += 1  # Move to the next slot
 
         # Blit the completed pouch surface with transparency to the main screen
         UniversalVariables.screen.blit(pouch_surface, (pouch_x, pouch_y))
+
+        return slot_hitboxes  # Return the list of hitboxes
+
+
+    def remove_item_from_pouch(self, position: tuple[int, int], name: str) -> None:
+        # Check if the position exists in dropped_items
+
+        if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+            if position in UniversalVariables.dropped_items:
+                item_data = UniversalVariables.dropped_items[position].get(name)
+
+                if item_data:
+                    # Decrement the quantity
+                    item_data["quantity"] -= 1
+                    ObjectManagement.add_object_from_inv(name)
+
+                    # If quantity reaches zero, remove the item from the dictionary
+                    if item_data["quantity"] <= 0:
+                        del UniversalVariables.dropped_items[position][name]
+
+                        # If no items left at this position, remove the position from the dictionary
+                        if not UniversalVariables.dropped_items[position]:  # Check if the dict is empty
+                            del UniversalVariables.dropped_items[position]
+                            Drop.close_pouch()
+
+        else:
+            Inventory.inventory_full_error(self)
+
 
 
     @staticmethod
@@ -150,7 +195,7 @@ class Drop:
 
     @staticmethod
     def update_timers():
-        # Decrease timer for each item, remove if timer reaches 0
+        Drop.drop_delay += 1
         for position, items in list(UniversalVariables.dropped_items.items()):
             for item_name, item_data in list(items.items()):
                 if item_data["timer"] > 0:
@@ -207,31 +252,65 @@ class Drop:
         return False  # Kas Toggle's või mitte
 
     def update(self, item: str = None, quantity: int = None):
-        if item and quantity:
-            position = Drop.find_location(self)
-            Drop.drop_items(position, item, quantity)
+       # Lisab item'id invi, mida ei saa otse lisada, circular error asi
+        if UniversalVariables.items_to_drop:
+            items_to_remove = []
+
+            for item, quantity in UniversalVariables.items_to_drop.items():
+                position = Drop.find_location(self)
+                Drop.drop_items(position, item, quantity)
+
+                new_quantity = quantity - 1
+
+                if new_quantity > 0:
+                    UniversalVariables.items_to_drop[item] = new_quantity
+
+                else:
+                    items_to_remove.append(item)
+
+            for item in items_to_remove:
+                del UniversalVariables.items_to_drop[item]
 
         Drop.update_timers()
 
         # Kui on dropped item'eid siis display'b Pouch'i
         if UniversalVariables.dropped_items:
-            for position, _ in UniversalVariables.dropped_items.items():
+            # Check if there are dropped items and display the pouch
+            if UniversalVariables.dropped_items:
+                # Iterate over a copy of dropped_items to avoid modification errors
+                for position, contents in list(UniversalVariables.dropped_items.items()):  # Create a list copy
 
-                # Pouchi hitbox
+                    # Pouchi hitbox
 
-                # half_distance = Drop.floating_distance // 2
-                # x, y = position[0] + UniversalVariables.offset_x - half_distance, position[1] + UniversalVariables.offset_y - half_distance
-                # width, height = Drop.half_block_size + Drop.floating_distance, Drop.half_block_size + Drop.floating_distance
-                #
-                # outline_rect = pygame.Rect(x, y, width, height)
-                # pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), outline_rect, 3, 2)  # 1 for outline thickness
+                    # half_distance = Drop.floating_distance // 2
+                    # x, y = position[0] + UniversalVariables.offset_x - half_distance, position[1] + UniversalVariables.offset_y - half_distance
+                    # width, height = Drop.half_block_size + Drop.floating_distance, Drop.half_block_size + Drop.floating_distance
+                    #
+                    # outline_rect = pygame.Rect(x, y, width, height)
+                    # pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), outline_rect, 3, 2)  # 1 for outline thickness
 
-                Drop.display_floating_pouch(position)
 
-        # Pouchi avamine
-        if pygame.mouse.get_pressed()[2]:  # Right-click
-            mouse_position = pygame.mouse.get_pos()
-            Drop.toggle_pouch(mouse_position)
+                    # Display the floating pouch
+                    Drop.display_floating_pouch(position)
 
-        if Drop.show_pouch:
-            Drop.open_pouch(Drop.pouch_position)
+                    # Open the pouch if it's the current position
+                    if Drop.show_pouch and Drop.pouch_position == position:
+                        # Call display_pouch_contents and get the hitboxes
+                        slot_hitboxes = Drop.display_pouch_contents(contents)
+
+                        # Check for right-clicks on item slots
+                        mouse_pos = pygame.mouse.get_pos()
+                        if pygame.mouse.get_pressed()[2]:  # Right-click
+
+                            for slot_rect, item_name in slot_hitboxes:
+                                if slot_rect.collidepoint(mouse_pos):
+
+                                    if Drop.drop_delay >= Drop.drop_delay_max:
+                                        Drop.remove_item_from_pouch(self, Drop.pouch_position, item_name)
+                                        Drop.drop_delay = 0
+                                        break
+
+            # Handle pouch toggling with right-click
+            if pygame.mouse.get_pressed()[2]:  # Right-click
+                mouse_position = pygame.mouse.get_pos()
+                Drop.toggle_pouch(mouse_position)
