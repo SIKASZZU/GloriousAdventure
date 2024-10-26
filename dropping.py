@@ -21,30 +21,20 @@ class Drop:
     # Pouch UI properties
     total_slots = 6
     pouch_slots = (2, 3)
-    slot_size = (50, 50)  # width, height
     pouch_offset = (10, 10)  # Offset Pouch'i sisu jaoks
+    slot_size = (50, 50)  # width, height
 
     # Interaction variables
     click_position = None  # Et saaks vaadata, kas click'id Pouch'i hitbox'i peale -> window click -> x, y
     pouch_position = None  # Coord ilma offsetita -> x, y
     show_pouch = True  # Pouch state -> on / off
-    drop_range = UniversalVariables.block_size * .5
+    drop_range = UniversalVariables.block_size * .8
 
     # Click delay variables
     toggle_cooldown = 200  # 1000 -> 1 sek
     last_toggle_time = 0  # Timestamp viimasest toggle'imisest
 
     def find_location(self) -> tuple[int, int]:  # Coord ilma offsetita
-        # Otsib vanat pouchi player_range seest. Kui pouch on full,
-        # Otsib koha kuhu saab pouchi panna.
-        # 100 playeri vaate suunas --> last input 's' siis dropib seda y + 100
-        # Rect teha 0st, transparent, 2x5 ja locked inv ja dropped items ss
-
-
-
-
-
-
         if UniversalVariables.dropped_items:
             for position, _ in UniversalVariables.dropped_items.items():
                 pouch_x, pouch_y = position
@@ -86,10 +76,25 @@ class Drop:
 
     @staticmethod
     def open_pouch(position: tuple[int, int]) -> None:
-        if position in UniversalVariables.dropped_items:
-            contents = UniversalVariables.dropped_items[position]
-            Drop.display_pouch_contents(contents)
+        if Drop.pouch_position:
+            player_x_minus_offset = UniversalVariables.player_x
+            player_y_minus_offset = UniversalVariables.player_y
 
+            # Playeri kaugus Pouch'i click'i positsioonist
+            distance = math.sqrt((player_x_minus_offset - Drop.pouch_position[0]) ** 2 + (player_y_minus_offset - Drop.pouch_position[1]) ** 2)
+
+            # Vaatab kas player ulatub Pouch'ini
+            if distance > Drop.drop_range:
+                Drop.close_pouch()
+                return False
+
+            if position in UniversalVariables.dropped_items:
+                contents = UniversalVariables.dropped_items[position]
+                Drop.display_pouch_contents(contents)
+                return True
+
+        Drop.close_pouch()
+        return False
 
     # TODO: slotid tiba transparent ja iga itemile eraldi transparentcy, kui item hakkab kaduma selle transparency langeb
     @staticmethod
@@ -106,9 +111,8 @@ class Drop:
         pouch_surface.fill((0, 0, 0, 0))  # Fully transparent background
 
         # Draw the transparent background and black border on the pouch surface
-        pygame.draw.rect(pouch_surface, (200, 200, 200, 150),
-                         (5, 5, pouch_width - 10, pouch_height - 10))  # Light gray, semi-transparent background
-        pygame.draw.rect(pouch_surface, (0, 0, 0), (5, 5, pouch_width - 10, pouch_height - 10), 2)  # Black border
+        pygame.draw.rect(pouch_surface, (200, 200, 200, 150), (5, 5, pouch_width - 10, pouch_height - 10), border_radius=3)
+        pygame.draw.rect(pouch_surface, (0, 0, 0), (5, 5, pouch_width - 10, pouch_height - 10), 2, border_radius=3)
 
         # Define padding and adjusted slot size for items
         padding = 3
@@ -137,26 +141,6 @@ class Drop:
         # Blit the completed pouch surface with transparency to the main screen
         UniversalVariables.screen.blit(pouch_surface, (pouch_x, pouch_y))
 
-    @staticmethod
-    def check_for_right_click(mouse_pos: tuple[int, int]) -> None:
-        if Drop.pouch_position:
-            player_x_minus_offset = UniversalVariables.player_x
-            player_y_minus_offset = UniversalVariables.player_y
-
-            # Playeri kaugus Pouch'i click'i positsioonist
-            distance = math.sqrt((player_x_minus_offset - Drop.pouch_position[0]) ** 2 + (player_y_minus_offset - Drop.pouch_position[1]) ** 2)
-
-            # Vaatab kas player ulatub Pouch'ini
-            if distance > Drop.drop_range:
-                Drop.close_pouch()
-                return
-
-            # Kui Pouch on playeri range'is, avab Pouch'i
-            Drop.open_pouch(Drop.pouch_position)
-            return
-
-        Drop.close_pouch()
-        return
 
     @staticmethod
     def close_pouch() -> None:
@@ -196,21 +180,31 @@ class Drop:
 
     @staticmethod
     def toggle_pouch(mouse_pos=None):
-        current_time = pygame.time.get_ticks()  # Hetkene aeg millisekundites
-        if current_time - Drop.last_toggle_time >= Drop.toggle_cooldown:
-            Drop.show_pouch = not Drop.show_pouch  # Toggle pouch state
-            Drop.last_toggle_time = current_time  # Update the last toggle time
+        if not mouse_pos:
+            return False  # Kas Toggle's või mitte
 
-            if Drop.show_pouch:
-                Drop.click_position = mouse_pos  # Record position when opened
+        current_time = pygame.time.get_ticks()
 
-                for position, hitbox in Drop.pouch_hitboxes.items():
-                    if hitbox.collidepoint(mouse_pos):
-                        Drop.pouch_position = position
-                        break
+        if current_time - Drop.last_toggle_time < Drop.toggle_cooldown:
+            return False  # Kas Toggle's või mitte
 
-            else:
-                Drop.close_pouch()
+        # Vaatab jas ckuck on pouch'i hitboxi'i sees
+        for position, hitbox in Drop.pouch_hitboxes.items():
+            if hitbox.collidepoint(mouse_pos):
+
+                # Sulgeb Pouch'i kui clickid samasse hitbox'i
+                if Drop.show_pouch and Drop.pouch_position == position:
+                    Drop.close_pouch()
+                    Drop.show_pouch = False
+
+                else:
+                    Drop.pouch_position = position
+                    Drop.show_pouch = True  # Avab pouch
+
+                Drop.last_toggle_time = current_time
+                return True  # Kas Toggle's või mitte
+
+        return False  # Kas Toggle's või mitte
 
     def update(self, item: str = None, quantity: int = None):
         if item and quantity:
@@ -222,6 +216,16 @@ class Drop:
         # Kui on dropped item'eid siis display'b Pouch'i
         if UniversalVariables.dropped_items:
             for position, _ in UniversalVariables.dropped_items.items():
+
+                # Pouchi hitbox
+
+                # half_distance = Drop.floating_distance // 2
+                # x, y = position[0] + UniversalVariables.offset_x - half_distance, position[1] + UniversalVariables.offset_y - half_distance
+                # width, height = Drop.half_block_size + Drop.floating_distance, Drop.half_block_size + Drop.floating_distance
+                #
+                # outline_rect = pygame.Rect(x, y, width, height)
+                # pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), outline_rect, 3, 2)  # 1 for outline thickness
+
                 Drop.display_floating_pouch(position)
 
         # Pouchi avamine
@@ -229,49 +233,5 @@ class Drop:
             mouse_position = pygame.mouse.get_pos()
             Drop.toggle_pouch(mouse_position)
 
-        if Drop.show_pouch and Drop.click_position:
-            Drop.check_for_right_click(Drop.click_position)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # Test drops
-        # Drop.drop_items((17, 18), 'Bread', 6)
-        # Drop.drop_items((17, 18), 'Glowstick', 6)
-        # Drop.drop_items((17, 18), 'Pizza', 6)
-        # Drop.drop_items((114, 18), 'Soda', 6)
-        #
-        # for position, items in UniversalVariables.dropped_items.items():
-        #     print()
-        #     print(f"\nPosition: {position} \nItems: {items}")
-        #     # for item, quantity in items.items():
-        #     #     print(f"Item: {item}, Quantity: {quantity}")
-
+        if Drop.show_pouch:
+            Drop.open_pouch(Drop.pouch_position)
