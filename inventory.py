@@ -7,6 +7,7 @@ from variables import UniversalVariables
 from items import items_list, object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
 from audio import Player_audio
 from text import Fading_text
+from dropping import Drop
 
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
@@ -78,12 +79,16 @@ class Inventory:
                     if Inventory.crafting_menu_open:
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
-                    # Vaatab kas click oli invis sees või mitte
-                    for index, rect in enumerate(Inventory.inventory_display_rects):
-                        if rect.collidepoint(mouse_x, mouse_y):
-                            Inventory.check_slot(self, index, mouse_state[2])
-                            clicked_inventory_item = True
-                            break  # Exitib loopist kui keegi clickib
+                    Inventory.is_click_in_inventory(self, mouse_x, mouse_y, mouse_state)
+    def is_click_in_inventory(self, mouse_x, mouse_y, mouse_state):
+        # Vaatab kas click oli invis sees või mitte
+        for index, rect in enumerate(Inventory.inventory_display_rects):
+            if rect.collidepoint(mouse_x, mouse_y):
+                Inventory.check_slot(self, index, mouse_state[2])
+                clicked_inventory_item = True
+                return
+
+        return
 
     def handle_crafting_click(self, x: int, y: int) -> None:
         """ Lubab hiit kasutades craftida """
@@ -115,6 +120,8 @@ class Inventory:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
                 Inventory.inventory[item] -= 1
+                Drop.update(self, item, 1)
+                Fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
                 if value <= 1:
                     del Inventory.inventory[item]
                     UniversalVariables.current_equipped_item = None
@@ -167,6 +174,16 @@ class Inventory:
         if UniversalVariables.maze_counter <= 5:
             Inventory.total_rows = UniversalVariables.maze_counter + 1 if UniversalVariables.maze_counter < 5 else UniversalVariables.maze_counter
             Inventory.total_cols = 3 if UniversalVariables.maze_counter == 5 else 2
+
+        if UniversalVariables.maze_counter <= 5:
+            Inventory.total_rows = UniversalVariables.maze_counter + 1
+            if Inventory.total_rows > 5:
+                Inventory.total_rows = 5
+
+            if UniversalVariables.maze_counter == 5:
+                Inventory.total_cols = 3
+            else:
+                Inventory.total_cols = 2
 
         total_rows = Inventory.total_rows
         total_cols = Inventory.total_cols
