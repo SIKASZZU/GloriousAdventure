@@ -126,7 +126,17 @@ class Fading_text:
         Fading_text.text_elements = new_text_elements
 
     @staticmethod
-    def re_display_fading_text(text: str) -> None:
+    def re_display_fading_text(text: str, debug: bool = False) -> None:
+        # Kui debug = True, disply'b text'i ainult siis kui debug_mode = True
+        if debug and not UniversalVariables.debug_mode:
+            return
+
         UniversalVariables.ui_elements.append(text)
         if text in Fading_text.shown_texts:
             Fading_text.shown_texts.remove(text)
+
+    @staticmethod
+    def display_once_fading_text(text: str) -> None:
+        if text in Fading_text.shown_texts:
+            return
+        UniversalVariables.ui_elements.append(text)
