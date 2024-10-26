@@ -107,6 +107,9 @@ class UniversalVariables():
 
         cooking_range:int = 2  # Grid
 
+
+    items_to_drop = {}
+
     # ******************** PLAYER ******************** #
     animation_index = 2
 
@@ -141,7 +144,7 @@ class UniversalVariables():
     object_hp_dict: dict = {}
     object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
 
-    dropped_items: dict = {}
+    dropped_items: dict = {(2500, 10000): {'Carrot': {'quantity': 1, 'timer': 16730}, 'Oak_Log': {'quantity': 1, 'timer': 1700}, 'Maze_Key': {'quantity': 4, 'timer': 1791}, 'Wheat': {'quantity': 2, 'timer': 1843}}}
     despawn_timer_default: int = 1920  # Dropped itemite despawn timer
 
     # ******************** Screen ******************** #
