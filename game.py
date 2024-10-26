@@ -150,7 +150,10 @@ class Game:
 
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
         Attack.update(self)
+
         PlayerUpdate.render_HUD(self)  # Render HUD
+        Drop.open_pouch(Drop.pouch_position)
+
         EssentialsUpdate.render_general(self)  # Render other elements
         HUD_class.update()
 
