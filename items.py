@@ -641,6 +641,10 @@ items_list = [
         id=10,
         hp=1,
 
+        recipe=[
+            {"Recipe": {"Maze_Key_1": 1, "Maze_Key_2": 1}, "Amount": 1},
+        ],
+
         width=int(block_size * 0.45),
         height=int(block_size * 0.45),
 
