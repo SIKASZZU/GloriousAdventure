@@ -11,8 +11,8 @@ class Drop:
     # Animatsiooniga seotud asjad
     pouch_hitboxes = {}
     floating_angles = {}  # Track'ib iga pouchi positsiooni
-    floating_distance = 5  # Max distance float'imiseks ülesse ja alla
-    floating_speed = 4  # Animatsiooni kiirus
+    floating_distance = 3  # Max distance float'imiseks ülesse ja alla  # Default 3
+    floating_speed = 4  # Animatsiooni kiirus  # Default 4
 
     # Pildiga seotud asjad
     pouch_image = ImageLoader.load_image("Pouch", 'images\Items\Objects\Pouch.png')
