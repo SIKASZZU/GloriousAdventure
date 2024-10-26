@@ -29,7 +29,7 @@ from building import Building
 from cooking import Cooking
 from maze_changes import MazeChanges
 from attack import Attack
-
+from dropping import Drop
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -128,13 +128,14 @@ class Game:
 
     def call_visuals(self):
         RenderPictures.map_render(self)
-
         if Collisions.render_after:
             RenderPictures.object_render()
             PlayerUpdate.render_player(self)
         else:
             PlayerUpdate.render_player(self)
             RenderPictures.object_render()
+
+        Drop.update(self)
 
         ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
