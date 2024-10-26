@@ -9,18 +9,20 @@ from text import Fading_text
 
 
 def is_click_inside_player_rect(self):
-    if self.click_position != ():
-        player_x = self.player_rect[0] + UniversalVariables.offset_x
-        player_y = self.player_rect[1] + UniversalVariables.offset_y
-        
-        click_within_x = player_x < self.click_position[0] and self.click_position[0] < player_x + self.player_rect[2]
-        click_within_y = player_y < self.click_position[1] and self.click_position[1] < player_y + self.player_rect[3]
-        if click_within_x and click_within_y:
-            return True
-        else:
-            return False
-    else:  
+    if not self.click_position:  # Return'ib kui click_position on tühi
         return False
+
+    if None in self.click_position:  # Return'ib kui click_position'is on None
+        return False
+
+    player_x = self.player_rect[0] + UniversalVariables.offset_x
+    player_y = self.player_rect[1] + UniversalVariables.offset_y
+
+    # Vaatab, kas click on player rect'i sees
+    click_within_x = player_x < self.click_position[0] < player_x + self.player_rect[2]
+    click_within_y = player_y < self.click_position[1] < player_y + self.player_rect[3]
+
+    return click_within_x and click_within_y  # Return'ib tulemuse
 
 
 def probably(chance):
