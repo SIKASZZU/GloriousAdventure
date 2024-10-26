@@ -5,7 +5,7 @@ from text import Fading_text
 class Camera:
 
     screen = UniversalVariables.screen
-    camera_borders = {'left': 450, 'right': 450, 'top': 450, 'bottom': 450}    
+    camera_borders = {'left': 450, 'right': 450, 'top': 276, 'bottom': 326}
     l: int = camera_borders['left']
     t: int = camera_borders['top']
     w: int = screen.get_size()[0] - (camera_borders['left'] + camera_borders['right'])
@@ -42,9 +42,8 @@ class Camera:
         UniversalVariables.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
         UniversalVariables.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
 
-
-        Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + 450 - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
-        Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + 450 - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
+        Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + Camera.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
+        Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + Camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
     def click_on_screen_to_grid(self):
         if Camera.click_y and Camera.click_x:
