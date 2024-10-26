@@ -23,17 +23,17 @@ class Attack:
             enemy_pressed = UniversalVariables.attack_key_pressed = False  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
 
         elif self.click_position:
-            enemy_click = Camera.click_on_screen(self)  # x, y (Coords)
+            enemy_click = Camera.left_click_on_screen(self)  # x, y (Coords)
             object_click = self.click_position[0], self.click_position[1]  # x, y (Coords)
 
             if not enemy_click and not object_click:
-                return
+                return False
 
-            if enemy_click:  # klikkisid hiirega enemy peale.
+            if enemy_click and None not in enemy_click:  # Check if enemy_click is valid
                 AttackEnemy.update(self, click=enemy_click)
                 Attack.last_attack_cooldown = 0
 
-            if object_click:
+            if object_click and None not in object_click:  # Check if object_click is valid
                 AttackObject.update(self, object_click)
 
         elif enemy_pressed:  # arrow keydega hittisid enemyt
@@ -53,11 +53,13 @@ class AttackEnemy:
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
                                      enemy_info[2] * UniversalVariables.block_size, 73, 73)
 
-            if click:
-                if not enemy_rect.collidepoint(click):
-                    continue
-
-                return enemy_name, enemy_info
+            try:
+                if click is not None:
+                    if not enemy_rect.collidepoint(click):
+                        continue
+                    return enemy_name, enemy_info
+            except TypeError as TE:
+                print(TE)
 
             if pressed:
                 # converted to window size coord
