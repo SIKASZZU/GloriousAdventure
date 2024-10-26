@@ -45,78 +45,78 @@ class Camera:
         Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + Camera.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
         Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + Camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
-    def click_on_screen_to_grid(self):
-        if Camera.click_y and Camera.click_x:
-            return Camera.click_y // UniversalVariables.block_size, Camera.click_x // UniversalVariables.block_size
+    @staticmethod
+    def is_within_player_range(click_window_x, click_window_y) -> bool:
+        player_range = UniversalVariables.player_range or 0  # Kui player_range = None ---> player_range = 0
 
+        # Vaatab, kas player on click on player range'is
+        return abs(click_window_x) < player_range and abs(click_window_y) < player_range
 
-    def click_on_screen(self):
+    @staticmethod
+    def click_on_screen_to_grid(click_x: float, click_y: float) -> tuple[int | None, int | None]:
+        if not click_x or not click_y:
+            UniversalVariables.print_debug_text('click_y or click_x ---> is invalid')
+            return None, None
+
+        return click_y // UniversalVariables.block_size, click_x // UniversalVariables.block_size
+
+    ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
+    def left_click_on_screen(self) -> tuple[int | None, int | None]:
         if not self.click_position:
-            return
-        try:
-            self.click_window_x = self.click_position[0] - Camera.player_window_x  # Click playerist (window)
-            self.click_window_y = self.click_position[1] - Camera.player_window_y  # Click playerist (window)
-        except TypeError:
-            print('Click too fast and crash. All gucci my G'); return  # Armas comment <3
- 
-        if not UniversalVariables.player_range:
-            player_range = 0
-        else:
-            player_range = UniversalVariables.player_range
+            return None, None
 
-        if abs(self.click_window_x) < player_range and abs(self.click_window_y) < player_range:
+        if not isinstance(self.click_position, tuple) or not len(self.click_position) == 2:
+            UniversalVariables.print_debug_text('Click_position ---> Not tuple or len() > 2')
+            return None, None
+
+        if None in self.click_position:
+            UniversalVariables.print_debug_text('Click_position ---> is None')
+            return None, None
+
+        if not Camera.player_window_x or not Camera.player_window_y:
+            UniversalVariables.print_debug_text('Camera.player_window_x or Camera.player_window_y ---> is None')
+            return None, None
+
+        self.click_window_x = self.click_position[0] - Camera.player_window_x  # Click relative to player (window)
+        self.click_window_y = self.click_position[1] - Camera.player_window_y  # Click relative to player (window)
+
+        if Camera.is_within_player_range(self.click_window_x, self.click_window_y):
             Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
             Camera.click_info_available = True
         else:
-
             Camera.click_x, Camera.click_y = None, None
 
         if UniversalVariables.debug_mode:
-            try:
-                text = f"Clicked item : {Camera.click_on_screen_to_grid(self)}"
-                Fading_text.re_display_fading_text(text)
-            except IndexError:
-                return
-        ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
+            grid_click = Camera.click_on_screen_to_grid(Camera.click_x, Camera.click_y)
+            Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
+
         return Camera.click_x, Camera.click_y
 
+    ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
     def right_click_on_screen(self):
-        try:
-            if self.right_click_position:
-                self.right_click_window_x = self.right_click_position[0] - Camera.player_window_x
-                self.right_click_window_y = self.right_click_position[1] - Camera.player_window_y
+        if not self.right_click_position:
+            return None, None
 
-                if not UniversalVariables.player_range:
-                    player_range = 0
-                else:
-                    player_range = UniversalVariables.player_range
+        self.right_click_window_x = self.right_click_position[0] - Camera.player_window_x
+        self.right_click_window_y = self.right_click_position[1] - Camera.player_window_y
 
+        if Camera.is_within_player_range(self.right_click_window_x, self.right_click_window_y):
+            Camera.right_click_x = round(UniversalVariables.player_x + self.right_click_window_x)
+            Camera.right_click_y = round(UniversalVariables.player_y + self.right_click_window_y)
+            Camera.right_click_info_available = True
+        else:
+            Camera.right_click_x, Camera.right_click_y = None, None
 
-                if abs(self.right_click_window_x) < player_range and abs(self.right_click_window_y) < player_range:
-                    Camera.right_click_x, Camera.right_click_y = round(UniversalVariables.player_x + self.right_click_window_x), round(UniversalVariables.player_y + self.right_click_window_y)
-                    Camera.right_click_info_available = True
-                else:
+        if UniversalVariables.debug_mode:
+            grid_click = Camera.click_on_screen_to_grid(Camera.right_click_x, Camera.right_click_y)
+            Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
-                    Camera.right_click_x, Camera.right_click_y = None, None
-
-                if UniversalVariables.debug_mode:
-                    try:
-                        text = f"Clicked item : {self.terrain_data[int(Camera.right_click_y // UniversalVariables.block_size)][int(Camera.right_click_x // UniversalVariables.block_size)]}"
-                        if text in Fading_text.shown_texts:
-                            Fading_text.shown_texts.remove(text)
-                        UniversalVariables.ui_elements.append(text)
-                    except IndexError:
-                        return
-                ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
-                return Camera.right_click_x, Camera.right_click_y
-            return
-        except TypeError:
-            return
+        return Camera.right_click_x, Camera.right_click_y
 
 
     def reset_clicks(self):
-        if self.click_window_x and self.click_window_y:
         # self.click_position: tuple[int, int] = ()  # ei pea resettima self.click_positioni, vist ikka peab
+        if self.click_window_x and self.click_window_y:
             self.click_window_x = None
             self.click_window_y = None
 
