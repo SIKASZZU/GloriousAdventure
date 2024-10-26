@@ -7,7 +7,6 @@ from variables import UniversalVariables
 from items import items_list, object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
 from audio import Player_audio
 from text import Fading_text
-from dropping import Drop
 
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
@@ -120,7 +119,12 @@ class Inventory:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
                 Inventory.inventory[item] -= 1
-                Drop.update(self, item, 1)
+
+                if item in UniversalVariables.items_to_drop:
+                    UniversalVariables.items_to_drop[item] += 1
+                else:
+                    UniversalVariables.items_to_drop[item] = 1
+
                 Fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
                 if value <= 1:
                     del Inventory.inventory[item]
