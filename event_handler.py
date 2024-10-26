@@ -24,11 +24,12 @@ class Event_handler:
             if event.button == 1:
                 self.click_position = event.pos
                 Camera.left_click_on_screen(self)
-                Loot.loot_update(self)
-                Camera.left_click_on_screen(self)
             if event.button == 3:
                 self.right_click_position = event.pos
                 Camera.right_click_on_screen(self)
+                Loot.loot_update(self)
+                Camera.right_click_on_screen(self)
+
 
             if UniversalVariables.debug_mode == True:
                 if event.button == 4:  # Scroll +
