@@ -180,11 +180,12 @@ class Drop:
                         # If no items left at this position, remove the position from the dictionary
                         if not UniversalVariables.dropped_items[position]:  # Check if the dict is empty
                             del UniversalVariables.dropped_items[position]
+                            # FIXME: Hitbox tleb ka ära kustutada
+                            del Drop.pouch_hitboxes[position]
                             Drop.close_pouch()
 
         else:
             Inventory.inventory_full_error(self)
-
 
 
     @staticmethod

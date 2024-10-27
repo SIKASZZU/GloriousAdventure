@@ -98,7 +98,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS: int = 60
+        FPS: int = 200
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
