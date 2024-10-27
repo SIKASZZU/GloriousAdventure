@@ -17,6 +17,7 @@ class Cooking:
 
     ### TODO: Ratio peaks kõigele mõjuma pildi suurus, itemi asukoht,
     #    numbri suurus jne... praegu lic ainult cooking menu pilt.
+    ### TODO: UI ära muuta, teha samasuguseks nagu dropped itemil on
 
     cooking_menu_ratio = 5
 
