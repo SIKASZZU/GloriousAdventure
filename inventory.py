@@ -118,19 +118,25 @@ class Inventory:
             else:
                 item = list(Inventory.inventory.keys())[index]
                 value = list(Inventory.inventory.values())[index]
-                Inventory.inventory[item] -= 1
 
-                if item in UniversalVariables.items_to_drop:
-                    UniversalVariables.items_to_drop[item] += 1
-                else:
-                    UniversalVariables.items_to_drop[item] = 1
+                # Kui hoiad Shift'i all siis drop'id max amount'i
+                amount = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else Inventory.inventory[item]
 
-                Fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
-                if value <= 1:
+                Inventory.inventory[item] -= amount
+
+                # Võtab itemi invist ära kui on <= 0
+                if Inventory.inventory[item] <= 0:
                     del Inventory.inventory[item]
                     UniversalVariables.current_equipped_item = None
+
+                # Lisab itemi `Floating Pouch`i
+                if item in UniversalVariables.items_to_drop:
+                    UniversalVariables.items_to_drop[item] += amount
                 else:
-                    UniversalVariables.current_equipped_item = item
+                    UniversalVariables.items_to_drop[item] = amount
+
+                Fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
+
 
         except IndexError as IE:
             print(IE)
