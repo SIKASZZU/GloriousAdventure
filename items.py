@@ -705,6 +705,15 @@ items_list = [
         height=int(block_size * 0.45),
     ),
 
+    ObjectItem(
+        name="Tent_House",
+        id=708,
+        hp=10,
+
+        width=int(block_size * 2),
+        height=int(block_size * 2),
+    ),
+
     # - # - # - # - # - # - # Minerals # - # - # - # - # - # - #
 
     # need id 12,13 on juba objectitemi all olemas? id peab olema teine muidu tekib error
