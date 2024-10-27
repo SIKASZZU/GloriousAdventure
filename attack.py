@@ -13,6 +13,9 @@ class Attack:
     last_attack_cooldown = last_attack_cooldown_max
 
     def update(self):
+
+        ### FIXME: Miks on cooldown kui ta ei attacki mitte midagi naq?? peale igat clicki tleb cooldown nahuii????????
+
         AttackObject.update_timers(self)
         enemy_pressed = UniversalVariables.attack_key_pressed
 
