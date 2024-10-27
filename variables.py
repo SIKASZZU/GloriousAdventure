@@ -98,7 +98,7 @@ class UniversalVariables():
         jagatis: float = 10
 
         # Mängu max tick rate
-        FPS: int = 200
+        FPS: int = 60
 
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
@@ -107,8 +107,14 @@ class UniversalVariables():
 
         cooking_range:int = 2  # Grid
 
-
+    # ******************** Dropping ******************** #
     items_to_drop = {}
+    dropped_items: dict = {}
+    despawn_timer_default: int = 800  # Dropped itemite despawn timer
+
+    # ******************** Attacking ******************** #
+    object_hp_dict: dict = {}
+    object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
 
     # ******************** PLAYER ******************** #
     animation_index = 2
@@ -140,12 +146,6 @@ class UniversalVariables():
     attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
 
     player_damage: float = 2
-
-    object_hp_dict: dict = {}
-    object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
-
-    dropped_items: dict = {}
-    despawn_timer_default: int = 1920  # Dropped itemite despawn timer
 
     # ******************** Screen ******************** #
     ui_elements: list = []
