@@ -29,24 +29,28 @@ class Building:
         """
         click_position = Camera.left_click_on_screen(self)
 
-        if click_position:
-            terrain_x, terrain_y = click_position
-            grid_x, grid_y = int(terrain_x // UniversalVariables.block_size), int(
-                terrain_y // UniversalVariables.block_size)
+        if None in click_position:
+            return
 
-            if 0 <= grid_x < len(self.terrain_data[0]) and 0 <= grid_y < len(self.terrain_data):
-                terrain_value = self.terrain_data[grid_y][grid_x]
+        terrain_x, terrain_y = click_position
 
-                if terrain_value == 1:
-                    neighbors = [
-                        self.terrain_data[grid_y - 1][grid_x],
-                        self.terrain_data[grid_y - 1][grid_x - 1],
-                        self.terrain_data[grid_y][grid_x - 1],
-                    ]
-                    if all(value not in {4, 5} for value in neighbors):  # Et puude ja tüvede peale ei saaks midagi ehitada
-                        return grid_x, grid_y
+        grid_x, grid_y = int(terrain_x // UniversalVariables.block_size), int(
+            terrain_y // UniversalVariables.block_size)
 
-        return False
+        if 0 <= grid_x < len(self.terrain_data[0]) and 0 <= grid_y < len(self.terrain_data):
+            terrain_value = self.terrain_data[grid_y][grid_x]
+
+            if not terrain_value == 1:
+                return False
+
+            neighbors = [
+                self.terrain_data[grid_y - 1][grid_x],
+                self.terrain_data[grid_y - 1][grid_x - 1],
+                self.terrain_data[grid_y][grid_x - 1],
+            ]
+            if all(value not in {4, 5} for value in neighbors):  # Et puude ja tüvede peale ei saaks midagi ehitada
+                return grid_x, grid_y
+
 
     def change_terrain_value(self, name: str, id: int, grid_x: int, grid_y: int) -> bool:
         """
