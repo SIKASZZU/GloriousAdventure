@@ -15,7 +15,7 @@ class Drop:
     floating_speed = 4  # Animatsiooni kiirus  # Default 4
 
     # Pildiga seotud asjad
-    pouch_image = ImageLoader.load_image("Pouch", 'images\Items\Objects\Pouch.png')
+    pouch_image = ImageLoader.load_image("Pouch", 'images/Items/Objects/Pouch.png')
     half_block_size = UniversalVariables.block_size // 4
     pouch_image = pygame.transform.scale(pouch_image, (half_block_size, half_block_size))
     pouch_half_width, pouch_half_height = pouch_image.get_width() // 2, pouch_image.get_height() // 2

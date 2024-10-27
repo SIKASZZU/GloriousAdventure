@@ -18,8 +18,17 @@ class Attack:
 
         if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
             Attack.last_attack_cooldown += 1
-            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # panen siia ka muidu mingi double attack jamps, kui liiga kaua peal hoiad
+            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
+            Attack.display_attack_cd_timer(self)
+
+
+        elif enemy_pressed[0] == True:  # arrow keydega hittisid enemyt
+            AttackEnemy.update(self, pressed=True)
+            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
+            Attack.last_attack_cooldown = 0
+            
+        else:
             enemy_click = Camera.left_click_on_screen(self)  # x, y (Coords)
             object_click = self.click_position  # x, y (Coords)
 
@@ -33,14 +42,18 @@ class Attack:
             if object_click and None not in object_click:  # Check if object_click is valid
                 AttackObject.update(self, object_click)  # Offseti asi on perses kuna muutsime camerat
 
-
-        elif enemy_pressed:  # arrow keydega hittisid enemyt
-            AttackEnemy.update(self, pressed=True)
-            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
-            Attack.last_attack_cooldown = 0
-
         Camera.reset_clicks(self)
 
+    def display_attack_cd_timer(self):
+        left = self.player_rect[0] - 25
+        top  = self.player_rect[1] - 50
+
+        cooldown_rect = pygame.Rect(left, top, 50 + self.player_rect[2], 30)
+        progress_to_width = (Attack.last_attack_cooldown / Attack.last_attack_cooldown_max) * (self.player_rect[2] + 50)
+        filler_rect   = pygame.Rect(left, top, progress_to_width, 30)
+
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2)
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), filler_rect)
 
 class AttackEnemy:
     def find_enemy(self, click=False, pressed=False):
