@@ -107,6 +107,12 @@ class Game:
     def load_variables(self):
         UniversalVariables()
 
+    def render_boxes():
+        if (UniversalVariables.render_boxes_counter % 2) != 0:
+            ObjectManagement.render_interaction_box()
+            ObjectManagement.render_collision_box()
+            Drop.display_all_floating_pouch_hitboxes()
+
     def call_technical(self):
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
@@ -136,8 +142,7 @@ class Game:
             RenderPictures.object_render()
 
         Drop.update(self)
-
-        ObjectManagement.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
+        Game.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Enemy.spawn(self)
 

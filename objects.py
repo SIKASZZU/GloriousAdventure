@@ -126,12 +126,6 @@ class ObjectManagement:
         if Inventory.inventory[item] == 0:
             del Inventory.inventory[item]
 
-            
-    def render_boxes():
-        if (UniversalVariables.render_boxes_counter % 2) != 0:
-            ObjectManagement.render_interaction_box()
-            ObjectManagement.render_collision_box()
-
 
     def render_collision_box() -> None:
         for box_item in UniversalVariables.collision_boxes:

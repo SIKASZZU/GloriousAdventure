@@ -211,6 +211,7 @@ class Drop:
 
     @staticmethod
     def display_floating_pouch(position: tuple[int, int]) -> None:
+        """Displays the floating pouch at the specified position."""
         if position not in Drop.floating_angles:
             Drop.floating_angles[position] = 0
 
@@ -219,9 +220,20 @@ class Drop:
         float_offset = int(Drop.floating_distance * math.sin(math.radians(angle)))
         float_position = (base_position[0], base_position[1] + float_offset)
 
+        # Display pouch image at the calculated floating position
         UniversalVariables.screen.blit(Drop.pouch_image, float_position)
-        Drop.pouch_hitboxes[position] = pygame.Rect(float_position, Drop.pouch_image.get_size())
+
+        # Update hitbox in the pouch hitboxes dictionary for position
+        pouch_width, pouch_height = Drop.pouch_image.get_size()
+        Drop.pouch_hitboxes[position] = pygame.Rect(float_position, (pouch_width, pouch_height))
+
+        # Update the angle for floating animation
         Drop.floating_angles[position] = (angle + Drop.floating_speed) % 360
+
+    @staticmethod
+    def display_all_floating_pouch_hitboxes() -> None:
+        for position, original_hitbox in Drop.pouch_hitboxes.items():
+            pygame.draw.rect(UniversalVariables.screen, 'pink', original_hitbox, 3, 5)
 
     @staticmethod
     def toggle_pouch(mouse_pos=None):
@@ -279,16 +291,6 @@ class Drop:
             if UniversalVariables.dropped_items:
                 # Iterate over a copy of dropped_items to avoid modification errors
                 for position, contents in list(UniversalVariables.dropped_items.items()):  # Create a list copy
-
-                    # Pouchi hitbox
-
-                    # half_distance = Drop.floating_distance // 2
-                    # x, y = position[0] + UniversalVariables.offset_x - half_distance, position[1] + UniversalVariables.offset_y - half_distance
-                    # width, height = Drop.half_block_size + Drop.floating_distance, Drop.half_block_size + Drop.floating_distance
-                    #
-                    # outline_rect = pygame.Rect(x, y, width, height)
-                    # pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), outline_rect, 3, 2)  # 1 for outline thickness
-
 
                     # Display the floating pouch
                     Drop.display_floating_pouch(position)
