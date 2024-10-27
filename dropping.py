@@ -335,6 +335,6 @@ class Drop:
                                         break
 
             # Handle pouch toggling with right-click
-            if pygame.mouse.get_pressed()[2]:  # Right-click
+            if pygame.mouse.get_pressed()[2] and not UniversalVariables.cooking_menu:  # Right-click
                 mouse_position = pygame.mouse.get_pos()
                 Drop.toggle_pouch(mouse_position)
