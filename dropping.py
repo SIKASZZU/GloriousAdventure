@@ -105,7 +105,6 @@ class Drop:
         Drop.close_pouch()
         return False
 
-    # TODO: slotid tiba transparent ja iga itemile eraldi transparentcy, kui item hakkab kaduma selle transparency langeb
     @staticmethod
     def display_pouch_contents(contents: dict) -> list:
         # Calculate the UI position and dimensions based on the item count
@@ -115,63 +114,81 @@ class Drop:
         pouch_width = current_slot_count * Drop.slot_size[0] + 10
         pouch_height = Drop.slot_size[1] + 10
 
-        # Create a transparent surface with the pouch dimensions
+        # Create a dedicated surface for the pouch contents
         pouch_surface = pygame.Surface((pouch_width, pouch_height), pygame.SRCALPHA)
 
-        # Draw the transparent background and black border on the pouch surface
+        # Draw background and border on the pouch surface
         pygame.draw.rect(pouch_surface, (200, 200, 200, 150), (5, 5, pouch_width - 10, pouch_height - 10),
                          border_radius=3)
         pygame.draw.rect(pouch_surface, (0, 0, 0), (5, 5, pouch_width - 10, pouch_height - 10), 2, border_radius=3)
 
-        # Define padding and adjusted slot size for items
+        # Define padding and slot size for items within the pouch
         padding = 3
         adjusted_slot_size = (Drop.slot_size[0] - 2 * padding, Drop.slot_size[1] - 2 * padding)
 
-        # List to hold slot hitboxes for item removal
+        # List to hold slot hitboxes for item interaction
         slot_hitboxes = []
 
-        # Blit each item in a horizontal row
+        # Process each item for display in the pouch
         slot_index = 0
         for item_name, item_data in contents.items():
-            item_image = ImageLoader.load_image(item_name)
-            item_quantity = item_data["quantity"]
+            original_image = ImageLoader.load_image(item_name)
+            if original_image is None:
+                continue  # Skip if image not found
 
-            # Calculate item position within the pouch surface
+            # Create a copy of the image specifically for the pouch to adjust transparency
+            item_image = original_image.copy()
+            item_quantity = item_data["quantity"]
+            item_timer = item_data.get("timer", 0)  # Retrieve the timer for this item
+
+            # Calculate transparency based on the despawn timer
+            max_transparency = 255
+            min_transparency = 100
+            despawn_timer_default = UniversalVariables.despawn_timer_default
+
+            # Ratio for transparency
+            transparency_ratio = max(0, min(1, item_timer / despawn_timer_default))
+            transparency = int(min_transparency + (max_transparency - min_transparency) * transparency_ratio)
+            item_image.set_alpha(transparency)  # Apply transparency to the copied image
+
+            # Calculate position within the pouch surface
             slot_position = (slot_index * Drop.slot_size[0] + padding + 5, padding + 5)
 
-            # Resize the image to fit within the slot and blit to the pouch surface
+            # Resize and blit item image to pouch surface
             item_image = pygame.transform.scale(item_image, adjusted_slot_size)
             pouch_surface.blit(item_image, slot_position)
 
-            # Display item quantity at the top-left corner of the item slot
+            # Display quantity as text in top-left corner of each slot
             font = pygame.font.Font(None, 24)
             quantity_surface = font.render(str(item_quantity), True, (0, 0, 0))
             pouch_surface.blit(quantity_surface, (slot_position[0] + 2, slot_position[1] + 2))
 
-            # Create hitbox for the current slot
+            # Create and store the hitbox for interaction
             slot_rect = pygame.Rect(pouch_x + slot_position[0], pouch_y + slot_position[1], Drop.slot_size[0],
                                     Drop.slot_size[1])
-            slot_hitboxes.append((slot_rect, item_name))  # Store hitbox and associated item name
+            slot_hitboxes.append((slot_rect, item_name))
 
-            slot_index += 1  # Move to the next slot
+            slot_index += 1
 
-        # Blit the completed pouch surface with transparency to the main screen
+        # Render the pouch display surface to the main screen without affecting inventory
         UniversalVariables.screen.blit(pouch_surface, (pouch_x, pouch_y))
 
-        return slot_hitboxes  # Return the list of hitboxes
-
+        return slot_hitboxes
 
     def remove_item_from_pouch(self, position: tuple[int, int], name: str) -> None:
         # Check if the position exists in dropped_items
-
+        # TODO: Reset timer to default
         if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
             if position in UniversalVariables.dropped_items:
                 item_data = UniversalVariables.dropped_items[position].get(name)
 
                 if item_data:
+                    # Kui hoiad shifti siis võtab kõik itemid
+                    amount = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else item_data["quantity"]
+
                     # Decrement the quantity
-                    item_data["quantity"] -= 1
-                    ObjectManagement.add_object_from_inv(name)
+                    item_data["quantity"] -= amount
+                    ObjectManagement.add_object_from_inv(name, amount)
 
                     # If quantity reaches zero, remove the item from the dictionary
                     if item_data["quantity"] <= 0:
@@ -182,9 +199,15 @@ class Drop:
                             del UniversalVariables.dropped_items[position]
                             del Drop.pouch_hitboxes[position]
                             Drop.close_pouch()
+                            return
 
+                    # Resetib timeri ja transparency kui võtad itemi invist ära
+                    item_data["timer"] = item_data["timer"] + 200
+                    if item_data["timer"] > UniversalVariables.despawn_timer_default:
+                        item_data["timer"] = UniversalVariables.despawn_timer_default
         else:
             Inventory.inventory_full_error(self)
+            return
 
 
     @staticmethod
@@ -270,17 +293,15 @@ class Drop:
             items_to_remove = []
 
             for item, quantity in UniversalVariables.items_to_drop.items():
+                # Otsib õige Pouch'i
                 position = Drop.find_location(self)
                 Drop.drop_items(position, item, quantity)
 
-                new_quantity = quantity - 1
+                # Viin ühest listist asjad teise listi -> Circular errori pärast
+                UniversalVariables.items_to_drop[item] = 0
+                items_to_remove.append(item)
 
-                if new_quantity > 0:
-                    UniversalVariables.items_to_drop[item] = new_quantity
-
-                else:
-                    items_to_remove.append(item)
-
+            # Listi loopimise ajal ei saa samat listi muuta
             for item in items_to_remove:
                 del UniversalVariables.items_to_drop[item]
 
