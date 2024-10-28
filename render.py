@@ -127,25 +127,25 @@ class RenderPictures:
 
     def select_choice(self, image_name, surroundings):
 
-        if image_name == 'Maze_Wall':
+        if image_name is 'Maze_Wall':
             return 'Maze_Wall_' + str(random.randint(0, 9))
 
-        if image_name == 'Ground':
+        if image_name is 'Ground':
             return TileSet.determine_ground_image(self, surroundings)
 
         # if image_name == 'String':
         #     return TileSet.determine_string_image(self, surroundings)
 
-        if image_name == 'Farmland':
+        if image_name is 'Farmland':
             return TileSet.determine_farmland_image_name(self, surroundings)
 
-        if image_name == 'Water':
+        if image_name is 'Water':
             if random.random() < 0.6:
                 return 'Water_0'
             else:
                 return 'Water_' + str(random.randint(1, 3))
 
-        if image_name == 'Maze_Ground':
+        if image_name is 'Maze_Ground':
             if random.random() < 0.65:
                 return 'Maze_Ground_1'
             elif random.random() < 0.45:  # cracks
@@ -320,7 +320,7 @@ class ObjectCreation:
 
         collision_items = []
         non_collision_items = []
-        items_not_designed_for_list = [11, 98, 989_98, 988]  # maze groundid vmdgi taolist
+        items_not_designed_for_list = [11, 98, 99, 989_98, 988]  # maze groundid vmdgi taolist
         breakability = None
 
         for item_list in [object_items, world_items]:
