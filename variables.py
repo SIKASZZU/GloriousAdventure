@@ -64,9 +64,6 @@ class UniversalVariables():
     screen_x: int = 1366  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
     screen_y: int = 768
 
-    # Mängu heli tugevus
-    sound_volume: int = 0.1
-
     # Mängu max tick rate
 
     # ******************** Screen ******************** #
@@ -83,6 +80,11 @@ class UniversalVariables():
     if debug_mode:
         jagatis: float = 10
 
+        game_minute_lenght = 5
+
+        # Mängu heli tugevus
+        sound_volume: int = 0
+
         # Mängu max tick rate
         FPS: int = 200
 
@@ -96,6 +98,11 @@ class UniversalVariables():
 
     else:
         jagatis: float = 10
+
+        game_minute_lenght = 75
+
+        # Mängu heli tugevus
+        sound_volume: int = 0.1
 
         # Mängu max tick rate
         FPS: int = 60
