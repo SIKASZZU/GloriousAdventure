@@ -159,6 +159,8 @@ items_list = [
     WorldItem(
         name='Endgate',
         id=1000,
+        width=int(block_size * 2),
+        height=int(block_size * 2),
     ),
 
     # blade maze
@@ -341,15 +343,6 @@ items_list = [
 
     ),
 
-    ObjectItem(
-        name="Farmland",
-        id=3,
-        hp=100,
-
-        width=int(block_size),
-        height=int(block_size),
-
-    ),
 
     ObjectItem(
         name="Oak_Tree",
@@ -420,40 +413,40 @@ items_list = [
 
     ),
 
-    ObjectItem(
-        name="Potato_Crop",
-        id=71,
-        hp=1,
+   #ObjectItem(
+   #    name="Potato_Crop",
+   #    id=71,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        drops=(['Potato'], [1], 1),
+   #    drops=(['Potato'], [1], 1),
 
-        breakable=True
+   #    breakable=True
 
-    ),
+   #),
 
-    ObjectItem(
-        name="Potato_Sapling_0",
-        id=72,
-        hp=1,
+   #ObjectItem(
+   #    name="Potato_Sapling_0",
+   #    id=72,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        breakable=False
+   #    breakable=False
 
-    ),
+   #),
 
-    ObjectItem(
-        name="Potato_Sapling_1",
-        id=73,
-        hp=1,
+   #ObjectItem(
+   #    name="Potato_Sapling_1",
+   #    id=73,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        breakable=False
+   #    breakable=False
 
-    ),
+   #),
 
     ObjectItem(
         name="Carrot_Crop",
@@ -490,40 +483,40 @@ items_list = [
 
     ),
 
-    ObjectItem(
-        name="Corn_Crop",
-        id=77,
-        hp=1,
+   #ObjectItem(
+   #    name="Corn_Crop",
+   #    id=77,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        drops=(['Corn'], [1], 1),
+   #    drops=(['Corn'], [1], 1),
 
-        breakable=True
+   #    breakable=True
 
-    ),
+   #),
 
-    ObjectItem(
-        name="Corn_Sapling_0",
-        id=78,
-        hp=1,
+   #ObjectItem(
+   #    name="Corn_Sapling_0",
+   #    id=78,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        breakable=False
+   #    breakable=False
 
-    ),
+   #),
 
-    ObjectItem(
-        name="Corn_Sapling_1",
-        id=79,
-        hp=1,
+   #ObjectItem(
+   #    name="Corn_Sapling_1",
+   #    id=79,
+   #    hp=1,
 
-        render_when=block_size * 0.2,
+   #    render_when=block_size * 0.2,
 
-        breakable=False
+   #    breakable=False
 
-    ),
+   #),
 
     ObjectItem(
         name="Campfire",
@@ -881,7 +874,10 @@ world_items = [item for item in items_list if isinstance(item, WorldItem)]
 object_items = [item for item in items_list if isinstance(item, ObjectItem)]
 tool_items = [item for item in items_list if isinstance(item, ToolItem)]
 mineral_items = [item for item in items_list if isinstance(item, MineralItem)]
-consumable_item = [item for item in items_list if isinstance(item, ConsumableItem)]
+consumable_items = [item for item in items_list if isinstance(item, ConsumableItem)]
+
+
+combined_items = [item for item in items_list if isinstance(item, (WorldItem, ObjectItem, ToolItem, MineralItem, ConsumableItem))]
 
 
 # for obj_item in object_items:
