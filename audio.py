@@ -79,7 +79,11 @@ class Player_audio:
 
         # Tiles
         water_sound, maze_ground_sound,
-        grass_sounds]
+        grass_sounds,
+
+        # Enemy
+        ghost_hurt, ghost_died,
+    ]
 
     for audio_name in audio_list:
         if type(audio_name) == list:
