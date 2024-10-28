@@ -6,8 +6,8 @@ from images import ImageLoader
 class TileSet:
 
     @staticmethod
-    def get_tileset_image(image_path):
-        return ImageLoader.load_image(None, image_path=image_path)
+    def get_tileset_image(image_name, image_path):
+        return ImageLoader.load_image(image_name, image_path=image_path)
 
     @staticmethod
     def get_tile(tileset, tile_size, col, row):
@@ -25,7 +25,7 @@ class TileSet:
 
     def determine_ground_image(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
-        tileset_image = TileSet.get_tileset_image('images/Tile_Sets/Water_Ground_Tileset.png')
+        tileset_image = TileSet.get_tileset_image('Water_Ground_Tileset', 'images/Tile_Sets/Water_Ground_Tileset.png')
 
         if right_empty and left_empty and top_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 6, 1)
@@ -68,7 +68,7 @@ class TileSet:
 
     def determine_string_image(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
-        tileset_image = TileSet.get_tileset_image('images/Tile_Sets/String_Tile_Set.png')
+        tileset_image = TileSet.get_tileset_image('String_Tile_Set', 'images/Tile_Sets/String_Tile_Set.png')
 
         if right_empty and left_empty and top_empty and bottom_empty:
             return TileSet.get_tile(tileset_image, 32, 1, 1)
