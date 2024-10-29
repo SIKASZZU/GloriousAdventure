@@ -29,7 +29,6 @@ class Attack:
         elif enemy_pressed[0] == True:  # arrow keydega hittisid enemyt
             AttackEnemy.update(self, pressed=True)
             enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
-            Attack.last_attack_cooldown = 0
             
         else:
             enemy_click = Camera.left_click_on_screen(self)  # x, y (Coords)
@@ -40,7 +39,6 @@ class Attack:
 
             if enemy_click and None not in enemy_click:  # Check if enemy_click is valid
                 AttackEnemy.update(self, click=enemy_click)
-                Attack.last_attack_cooldown = 0
 
             if object_click and None not in object_click:  # Check if object_click is valid
                 AttackObject.update(self, object_click)  # Offseti asi on perses kuna muutsime camerat
@@ -139,12 +137,14 @@ class AttackEnemy:
                 _, y, x, _ = enemy_info
                 # AttackEnemy.saved_enemy_x, AttackEnemy.saved_enemy_y = y
                 AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+                Attack.last_attack_cooldown = 0
+        
         if pressed:
             enemy_data = AttackEnemy.find_enemy(self, pressed=pressed)
             if enemy_data:
                 enemy_name, enemy_info = enemy_data
                 AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
-
+                Attack.last_attack_cooldown = 0
 
 class AttackObject:
 
