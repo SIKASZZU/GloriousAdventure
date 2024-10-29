@@ -386,42 +386,7 @@ class ObjectCreation:
                     terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
                     terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-                    if object_id in GameConfig.RANDOM_PLACEMENT.value:
-                        position_key = (x, y)  # save object grid. koordinaadiga oleks perses.
-
-                        # Check if the random offset for this position already exists
-                        if position_key not in ObjectCreation.random_offsets:
-                            # Generate and store the random offsets
-                            def surrounding_walls(x, y):
-                                """ Objektid lahevad yle seinte, kui randomx,y on liiga suured. """
-                                try:
-                                    if self.terrain_data[y + 1][x] == 99 or self.terrain_data[y + 2][x] == 99:
-                                        return True
-                                    if self.terrain_data[y][x + 1] == 99 or self.terrain_data[y][x + 2] == 99:
-                                        return True
-                                    return False
-                                except IndexError:
-                                    return False
-
-                            if surrounding_walls(x, y) == True:
-                                randomizer_x = round(random.uniform(0, 0.2), 1)
-                                randomizer_y = round(random.uniform(0, 0.2), 1)
-                            else:
-                                randomizer_x = round(random.uniform(0, 1), 1)
-                                randomizer_y = round(random.uniform(0, 1), 1)
-
-                            # print(object_id, object_width, object_height, randomizer_x, randomizer_y)
-                            ObjectCreation.random_offsets[position_key] = (randomizer_x, randomizer_y)
-                        else:
-                            # Retrieve the stored random offsets
-                            randomizer_x, randomizer_y = ObjectCreation.random_offsets[position_key]
-
-                        # Apply the random offset to the object's position
-                        position = (terrain_x + UniversalVariables.block_size * randomizer_x,
-                                    terrain_y + UniversalVariables.block_size * randomizer_y)
-                        new_object = (position[0], position[1], object_width, object_height, object_image, object_id)
-                    else:
-                        new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
+                    new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
 
                     if new_object not in UniversalVariables.object_list:
                         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
