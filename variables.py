@@ -150,6 +150,7 @@ class UniversalVariables():
     player_bleeding    = False
     serum_active       = False
     player_sprinting   = False
+    player_sneaking    = False
     attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
 
     player_damage: float = 2
