@@ -211,6 +211,10 @@ class Enemy:
         player_window_x = Camera.player_window_x
         player_window_y = Camera.player_window_y
 
+        if UniversalVariables.player_sprinting: detect_range = 25 * UniversalVariables.block_size
+        elif UniversalVariables.player_sneaking:  detect_range = 5 * UniversalVariables.block_size
+        else: detect_range = 10 * UniversalVariables.block_size
+
         Enemy.enemy_in_range = set()
 
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
@@ -221,10 +225,6 @@ class Enemy:
 
             distance_to_player_x_grid = player_window_x - enemy_x
             distance_to_player_y_grid = player_window_y - enemy_y
-
-            detect_range = UniversalVariables.enemy_detection_range
-            if UniversalVariables.player_sprinting == False:
-                detect_range = UniversalVariables.enemy_detection_range // 2
                 
             if abs(distance_to_player_x_grid) <= detect_range and abs(distance_to_player_y_grid) <= detect_range:
                 direction: str = 'none'
