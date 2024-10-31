@@ -73,18 +73,25 @@ class Inventory:
 
                 if current_time - Inventory.check_slot_delay >= CHECK_DELAY_THRESHOLD:
                     Inventory.check_slot_delay = current_time  # Uuendab viimast check_slot_delay
-                    clicked_inventory_item = False
 
                     if Inventory.crafting_menu_open:
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
                     Inventory.is_click_in_inventory(self, mouse_x, mouse_y, mouse_state)
+                    
     def is_click_in_inventory(self, mouse_x, mouse_y, mouse_state):
+        """ Kas click on invi sees ja siis displayb itemi nime mida invis klikkis"""
+
         # Vaatab kas click oli invis sees või mitte
         for index, rect in enumerate(Inventory.inventory_display_rects):
             if rect.collidepoint(mouse_x, mouse_y):
                 Inventory.check_slot(self, index, mouse_state[2])
-                clicked_inventory_item = True
+                try:
+                    item = list(Inventory.inventory.keys())[index]
+                    item = str(item).replace('_', ' ')
+                    Fading_text.re_display_fading_text(item)
+
+                except Exception:  pass
                 return
 
         return
