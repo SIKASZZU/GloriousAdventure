@@ -3,6 +3,9 @@
 import pygame
 import sys
 import os
+import jurigged
+
+jurigged.watch()  # hot reload
 
 # Import other modules
 import vision
