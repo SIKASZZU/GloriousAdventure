@@ -197,24 +197,4 @@ def draw_light_source_and_rays(self, screen, position):
         return visible_points
     
     visible_points = calculate_angle(main_angles, opposite_angles)
-    
-    if UniversalVariables.player_infected == True:  visible_points = infected_vision(visible_points, position)
-    
     if len(visible_points) > 2:  draw_shadows(self, screen, visible_points)
-
-
-def infected_vision(vision_points: list, player_position):
-    import random
-    
-    list_length = len(vision_points)
-    
-    for item in range(0, list_length - 1):
-        index_to_pop = random.randint(0, list_length - 1)  # index on 0 kuni list_length
-        try:
-            vision_points.pop(index_to_pop)
-            if random.randint(1,7) < 3:
-                vision_points.insert(index_to_pop, player_position)
-        except IndexError:
-            pass
-        
-    return vision_points

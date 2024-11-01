@@ -150,6 +150,7 @@ class UniversalVariables():
     player_bleeding    = False
     serum_active       = False
     player_sprinting   = False
+    player_sneaking    = False
     attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
     allow_movement = True
 
@@ -222,7 +223,6 @@ class UniversalVariables():
 
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
-    enemy_detection_range = block_size * 20
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
     enemy_path_update_tick = 5 + random.randint(15, 20)

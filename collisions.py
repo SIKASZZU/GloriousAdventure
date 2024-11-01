@@ -6,7 +6,7 @@ from inventory import Inventory
 from render import RenderPictures
 from update import EssentialsUpdate
 from objects import ObjectManagement
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 from HUD import HUD_class
 from mazecalculation import AddingMazeAtPosition
 from camera import Camera
@@ -311,41 +311,51 @@ class Collisions:
     def collison_terrain_types(self) -> None:
         keys = pygame.key.get_pressed()
 
+        sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
+                    keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
+                    keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
+                    keys[pygame.K_LSHIFT] and keys[pygame.K_s]
+
+        sneaking = keys[pygame.K_LCTRL] and keys[pygame.K_d] or \
+                    keys[pygame.K_LCTRL] and keys[pygame.K_a] or \
+                    keys[pygame.K_LCTRL] and keys[pygame.K_w] or \
+                    keys[pygame.K_LCTRL] and keys[pygame.K_s]
+
         player_grid_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
-        # Vaatab terraini mida ta renerib ja selle järgi kontrollib collisoneid
+        # Siin peavad need for loopid olema, sest muidu tekib mingisugune offset tiks ja for loopid sunnivad asju windowi j2rgi tegema.
         for row in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
             for col in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
 
                 terrain_rect = pygame.Rect(col * UniversalVariables.block_size, row * UniversalVariables.block_size,
                                            UniversalVariables.block_size, UniversalVariables.block_size)
                 
-                # Vaatab terrain recti ja playeri collisoneid
+                # see asi somehow ei lase staminal instantly tyhjaks joosta? Kas player ei ole mitte kogu eag terrainrectiga collisionis??
                 if not self.player_rect.colliderect(terrain_rect):
                     continue
 
-                ### FIXME: Sul on vaja terrain rect v22rtuse asemel collison boxi v22rtusi just row,col koordinaatidel.
-
                 try:
-                    collision_items = {item[4] for item in UniversalVariables.collision_boxes}  # teeb id seti.
-
-                    if self.terrain_data[row][col] in collision_items:
+                    if self.terrain_data[row][col] in GameConfig.COLLISION_ITEMS.value:
                         Collisions.player_hit_collision(self, terrain_rect)
 
                     else:
-                        sprinting = keys[pygame.K_LSHIFT] and keys[pygame.K_d] or \
-                                    keys[pygame.K_LSHIFT] and keys[pygame.K_a] or \
-                                    keys[pygame.K_LSHIFT] and keys[pygame.K_w] or \
-                                    keys[pygame.K_LSHIFT] and keys[pygame.K_s]
                         # Kontrollib kas terrain block jääb faili terrain_data piiridesse
 
-                        if sprinting: UniversalVariables.player_sprinting = True
-                        else: UniversalVariables.player_sprinting = False
+                        if sprinting: 
+                            UniversalVariables.player_sprinting = True
 
+                        elif sneaking:
+                            UniversalVariables.player_sneaking  = True 
+
+                        else: 
+                            UniversalVariables.player_sprinting = False
+                            UniversalVariables.player_sneaking  = False
+                        
                         if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
                             in_water = self.terrain_data[row][col] == 0
 
+                            # kui player on haige, infected, ss selle jaoks k2rbib teatud v22rtusi
                             stamina_cost = 0.05
                             stamina_regen = 0.05
                             if UniversalVariables.player_infected == True:
@@ -356,19 +366,26 @@ class Collisions:
                             if UniversalVariables.player_bleeding == True:
                                 run_speed_multiplier = 1.2
 
-                            if in_water != True:
+                            if in_water == False:
                                 if sprinting:  # Player asub maal
                                     # stamina = 0 - playeri speed = base speed
                                     if self.player.stamina.current_stamina == 0:
                                         self.player.stamina.stamina_regenerate(stamina_regen)
                                         self.player.speed.current_speed = self.player.speed.base_speed
+
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
                                         HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                         self.player.stamina.use_stamina(stamina_cost)
-                                else:
+                                
+                                elif sneaking:
+                                    self.player.speed.current_speed = self.player.speed.base_speed // 2
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
+
+                                else:  # tavaline kondimine
                                     self.player.speed.current_speed = self.player.speed.base_speed
                                     self.player.stamina.stamina_regenerate(stamina_regen)
+                                
 
                             else:  # Player asub vees
                                 if sprinting:
@@ -376,10 +393,12 @@ class Collisions:
                                     if self.player.stamina.current_stamina == 0:
                                         self.player.stamina.stamina_regenerate(stamina_regen)
                                         self.player.speed.current_speed = self.player.speed.base_speed / 2
+
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed
                                         HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                         self.player.stamina.use_stamina(stamina_cost)
+
                                 else:
                                     self.player.speed.current_speed = self.player.speed.base_speed / 2
                                     self.player.stamina.stamina_regenerate(stamina_regen)

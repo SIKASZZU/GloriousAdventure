@@ -237,6 +237,19 @@ class PlayerUpdate:
         scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
         UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
 
+        # Player's audio icons
+        audio_icon_position = (800 , 715)
+        audio_icon          = None
+
+        if UniversalVariables.player_sneaking:
+            audio_icon = ImageLoader.load_gui_image("sound_low")
+        elif UniversalVariables.player_sprinting:
+            audio_icon = ImageLoader.load_gui_image("sound_high")
+        else:
+            audio_icon = ImageLoader.load_gui_image("sound_average")
+        audio_icon = pygame.transform.scale(audio_icon, (50, 50))
+        UniversalVariables.screen.blit(audio_icon, audio_icon_position) 
+        
 class EssentialsUpdate:
         
     game_start_clock = (9, 0)

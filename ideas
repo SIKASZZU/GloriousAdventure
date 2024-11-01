@@ -1,13 +1,9 @@
 ideas:
 	water canteen - refill in glade water
-	old glade (abandoned) - greenish water, terrrain fucked, creepy, broken trees, rocks, oil lakes or sm shit
 
 	vine blockid on lambist mazeis mille taha mangija saab ennast peita.
 
 	teha random movement enemyle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
-
-	m2ngija teeb h22lt ning enemyl on selle j2rgi detection range.
-		n2iteks k6ndimine pole nii vali kui jooksmine. Sneakimine?? Ss peaksid olema soundid ka enemy poolt kogu aeg..et mangija kuuleks sneakida.
 
 	dead people
 	gas zones (fucked system zones, mazes)- gas mask item - filters (barrel loot) / gas causes bleeding
@@ -78,14 +74,14 @@ ideas:
 
 	See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
 	
-	keyholderitel on topelt pildid. Yks renderib object_renderis, teine renderib map_renderis. Sellep keyholderil pilt ei flikeri. Good bug!
-
 	kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
 
 	need wallid, mis muutuvad v6iksid n2ha teistsugused v2lja. n2itkes rohelist on v2hem
 
 	inv lahti player ei liigu inv kinni player liigub *********************
 
-	hiirega v6iks ka olla v6imalik attackiga. Rect v6ib sama olla. Peab vaatama kuhu see click j22b v6rreldes playeriga. Siis saab attack_recti ehitada.
+	m2ngija teeb h22lt ning enemyl on selle j2rgi detection range.
+		n2iteks k6ndimine pole nii vali kui jooksmine. Sneakimine?? Ss peaksid olema soundid ka enemy poolt kogu aeg..et mangija kuuleks sneakida.
 
-	lisada attack indikaator nagu minecraftis vmdgi, et n2idata attacki cooldowni visuaalselt.
+
+	footstep icon!  Low, medium, high ICOON
