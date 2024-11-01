@@ -7,7 +7,7 @@ from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
 from tile_set import TileSet
-
+from farmables import farming
 
 class RenderPictures:
     render_range: int = 0
@@ -169,8 +169,7 @@ class RenderPictures:
             terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
             terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-            object_id = grid_ids[
-                0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
+            object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
 
             if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
                 image_name = 'Water'
@@ -185,85 +184,9 @@ class RenderPictures:
                 object_id = 98
 
             elif object_id in GameConfig.FARMLAND_IMAGE.value:
-                # Check if the wheat stage should be updated
-                object_id = self.terrain_data[y][x]
+                image_name, object_id, surrounding_values = farming(self, x, y, grid)  # See on farming failist
 
-                @staticmethod
-                def remove_items_by_pos(pos_to_remove):
-                    UniversalVariables.farmable_stage_list[:] = [item for item in UniversalVariables.farmable_stage_list
-                                                                 if item[0] != pos_to_remove]
-
-                if object_id in GameConfig.FARMABLE_STAGES.value:
-                    found = False
-
-                    if object_id in GameConfig.WHEAT_STAGES.value:
-                        random_a, random_b = UniversalVariables.wheat_minus_random_range
-                        stage_growth_time = UniversalVariables.wheat_stage_growth_time
-
-                    if object_id in GameConfig.CARROT_STAGES.value:
-                        random_a, random_b = UniversalVariables.carrot_minus_random_range
-                        stage_growth_time = UniversalVariables.carrot_stage_growth_time
-
-                    if object_id in GameConfig.CORN_STAGES.value:
-                        random_a, random_b = UniversalVariables.corn_minus_random_range
-                        stage_growth_time = UniversalVariables.corn_stage_growth_time
-
-                    if object_id in GameConfig.POTATO_STAGES.value:
-                        random_a, random_b = UniversalVariables.potato_minus_random_range
-                        stage_growth_time = UniversalVariables.potato_stage_growth_time
-
-                    for index, (pos, current_object_id, timer) in enumerate(UniversalVariables.farmable_stage_list):
-                        if pos == grid:
-                            found = True
-
-                            if timer > 0:
-                                timer -= 1
-
-                            if timer == 0:
-                                if current_object_id == 69:
-                                    current_object_id = 70
-
-                                elif current_object_id == 72:
-                                    current_object_id = 73
-
-                                elif current_object_id == 75:
-                                    current_object_id = 76
-
-                                elif current_object_id == 78:
-                                    current_object_id = 79
-
-                                elif current_object_id == 70:
-                                    current_object_id = 7
-
-                                elif current_object_id == 73:
-                                    current_object_id = 71
-
-                                elif current_object_id == 76:
-                                    current_object_id = 74
-
-                                elif current_object_id == 79:
-                                    current_object_id = 77
-
-                                timer = stage_growth_time - random.randint(int(random_a), int(random_b))
-                                self.terrain_data[y][x] = current_object_id
-
-                            UniversalVariables.farmable_stage_list[index] = (
-                            pos, current_object_id, timer)  # Uuendab valuet
-                            if current_object_id in GameConfig.FARMABLES.value:
-                                remove_items_by_pos(pos)
-                            break
-
-                    if not found:
-                        growth_time = stage_growth_time - random.randint(int(random_a), int(random_b))
-                        UniversalVariables.farmable_stage_list.append((grid, object_id, growth_time))
-
-                        print(growth_time)
-
-                image_name = 'Farmland'
-                object_id = 107
-                surrounding_values = GameConfig.GROUND_IMAGE.value
-
-            ### FIXME: STRING ???
+            ### FIXME: STRING, Tileset on broken ???
             if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
             if image_name:
                 if object_id in many_choices:
