@@ -170,9 +170,11 @@ class Inventory:
 
 
         if Inventory.render_inv:
+            # UniversalVariables.allow_movement = False
             Inventory.render(self)  # Render inventory
             UniversalVariables.allow_building = False
         else:
+            # UniversalVariables.allow_movement = True
             Inventory.render(self, update_white_text=True)  # Kui sulgeb invi white text itemitega, ss j2rgmine kord ei ole neid itemid enam valged
             UniversalVariables.allow_building = True
 
