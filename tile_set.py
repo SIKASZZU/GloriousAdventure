@@ -110,43 +110,29 @@ class TileSet:
         # else:
         #     return 'Ground_' + str(random.randint(0, 18))
 
-
-
     def determine_farmland_image_name(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
 
-        if bottom_empty and top_empty and left_empty and right_empty:
-            return "Farmland_Stand_Alone"
-        if right_empty and left_empty and bottom_empty:
-            return "Farmland_Straight_Down"
-        if right_empty and left_empty and top_empty:
-            return "Farmland_Straight_Up"
-        if right_empty and top_empty and bottom_empty:
-            return "Farmland_Straight_Right"
-        if left_empty and top_empty and bottom_empty:
-            return "Farmland_Straight_Left"
+        conditions = [
+            (bottom_empty and top_empty and left_empty and right_empty, "Farmland_Stand_Alone"),
+            (right_empty and left_empty and bottom_empty, "Farmland_Straight_Down"),
+            (right_empty and left_empty and top_empty, "Farmland_Straight_Up"),
+            (right_empty and top_empty and bottom_empty, "Farmland_Straight_Right"),
+            (left_empty and top_empty and bottom_empty, "Farmland_Straight_Left"),
+            (right_empty and left_empty, "Farmland_Top_To_Bottom"),
+            (top_empty and bottom_empty, "Farmland_Left_To_Right"),
+            (right_empty and bottom_empty, 'Farmland_Inside_Top_Left'),
+            (left_empty and bottom_empty, 'Farmland_Inside_Top_Right'),
+            (left_empty and top_empty, 'Farmland_Inside_Bottom_Right'),
+            (right_empty and top_empty, 'Farmland_Inside_Bottom_Left'),
+            (right_empty, 'Farmland_Inside_Left'),
+            (left_empty, 'Farmland_Inside_Right'),
+            (bottom_empty, 'Farmland_Inside_Top'),
+            (top_empty, 'Farmland_Inside_Bottom')
+        ]
 
-        if right_empty and left_empty:
-            return "Farmland_Top_To_Bottom"
-        if top_empty and bottom_empty:
-            return "Farmland_Left_To_Right"
-
-        if right_empty and bottom_empty:
-            return 'Farmland_Inside_Top_Left'
-        if left_empty and bottom_empty:
-            return 'Farmland_Inside_Top_Right'
-        if left_empty and top_empty:
-            return 'Farmland_Inside_Bottom_Right'
-        if right_empty and top_empty:
-            return 'Farmland_Inside_Bottom_Left'
-
-        if right_empty:
-            return 'Farmland_Inside_Left'
-        if left_empty:
-            return 'Farmland_Inside_Right'
-        if bottom_empty:
-            return 'Farmland_Inside_Top'
-        if top_empty:
-            return 'Farmland_Inside_Bottom'
+        for condition, image_name in conditions:
+            if condition:
+                return image_name
 
         return 'Farmland_Full'
