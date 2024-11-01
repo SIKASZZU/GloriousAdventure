@@ -7,15 +7,7 @@ import os
 from variables import UniversalVariables
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-        #print('try', base_path)
-    except AttributeError:
-        base_path = os.path.abspath(".")
-        #print('base', base_path)
-
-        #print('returns', os.path.join(base_path, relative_path))
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
     return os.path.join(base_path, relative_path)
 
 class ImageLoader:
@@ -24,34 +16,36 @@ class ImageLoader:
 
     @staticmethod
     def load_gui_image(image_name: str) -> Optional[pygame.Surface]:
-        """ Renderib Gui pildid """
-        try:
-            if image_name not in ImageLoader.loaded_item_images:
-                ImageLoader.loaded_item_images[image_name] = pygame.image.load(f"images/Hud/{image_name}.png")
-                # print(f"images/Gui/{image_name}.png pre-loaded successfully.")
-
-            return ImageLoader.loaded_item_images[image_name]
-        except FileNotFoundError:
-            # print(f"Error: '{image_name.capitalize()}' image not found.")
-            return None
+        """ Renders GUI images and caches them for future use. """
+        if image_name not in ImageLoader.loaded_item_images:
+            image_path = f"images/Hud/{image_name}.png"
+            if os.path.isfile(image_path):
+                loaded_image = pygame.image.load(image_path)
+                converted_image = loaded_image.convert_alpha()
+                ImageLoader.loaded_item_images[image_name] = converted_image
+                # print(f"{image_path} pre-loaded successfully.")
+            else:
+                # print(f"Error: '{image_name.capitalize()}' image not found.")
+                return None
+        return ImageLoader.loaded_item_images[image_name]
 
     @staticmethod
     def load_sprite_image(sprite: str) -> Optional[pygame.Surface]:
-        """Salvestab pildid vahemällu. SEE FUNC EI VISUALISEERI PILTE!"""
-        image_path = None
-        # Vaatab kas pilt on juba ära laetud
+        """ Caches sprite images for future use. THIS FUNC DOES NOT RENDER IMAGES! """
+        image_path = resource_path(f"images/Sprites/{sprite}.png")
+
+        # Check if the sprite image is already loaded
         if sprite in ImageLoader.loaded_sprite_images:
             return ImageLoader.loaded_sprite_images[sprite]
 
-        try:
-            image_path = resource_path(f"images/Sprites/{sprite}.png")
+        if os.path.isfile(image_path):
             loaded_image = pygame.image.load(image_path)
             converted_image = loaded_image.convert_alpha()
             ImageLoader.loaded_sprite_images[sprite] = converted_image
             # print(f"{sprite} image ({image_path}) pre-loaded successfully.")
             return converted_image
-        except FileNotFoundError:
-            # print(f"Error: '{image_path}' image not found.")
+        else:
+            # print(f"Error: '{sprite}' image not found.")
             return None
 
     @staticmethod
@@ -108,10 +102,7 @@ class ImageLoader:
 
         # Kui on path siis returnib pildi
         if image_path:
-            loaded_image = pygame.image.load(resource_path(image_path))
-            converted_image = loaded_image.convert_alpha()
-            ImageLoader.loaded_item_images[image_name] = converted_image
-            return converted_image
+            return ImageLoader._load_and_convert_image(image_path, image_name)
 
         for item in items_list:
             name = item.name
@@ -126,14 +117,21 @@ class ImageLoader:
 
             if image_path:
                 if os.path.isfile(image_path):
-                    loaded_image = pygame.image.load(image_path)
-                    converted_image = loaded_image.convert_alpha()
-                    ImageLoader.loaded_item_images[image_name] = converted_image
-
-                    return converted_image
+                    return ImageLoader._load_and_convert_image(image_path, image_name)
 
                 # Kui ei leia pilti
                 return None
 
         # Kui ei leia pilti
         return None
+
+    @staticmethod
+    def _load_and_convert_image(image_path: str, image_name: str) -> Optional[pygame.Surface]:
+        """Utility method to load and convert images."""
+        try:
+            loaded_image = pygame.image.load(image_path)
+            converted_image = loaded_image.convert_alpha()
+            ImageLoader.loaded_item_images[image_name] = converted_image
+            return converted_image
+        except pygame.error:
+            return None
