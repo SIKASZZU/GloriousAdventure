@@ -6,7 +6,8 @@ from entity import Enemy
 from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
 from objects import ObjectManagement
-
+import math
+import time
 
 class Attack:
     last_attack_cooldown_max = 100
@@ -147,6 +148,7 @@ class AttackEnemy:
 
 
 class AttackObject:
+    wobble_state = {}
 
     def find_object(self, click: tuple[int, int]) -> bool:
         for object_info in list(UniversalVariables.object_list):
@@ -178,7 +180,8 @@ class AttackObject:
             else:
                 UniversalVariables.object_hp_dict[rect_key]['timer'] = UniversalVariables.object_reset_timer
 
-            AttackObject.deal_damage(self, rect_key)
+            new_hp = AttackObject.deal_damage(self, rect_key)
+            if new_hp > 0:  AttackObject.trigger_wobble_animation(self, x, y)
 
             if UniversalVariables.debug_mode:
                 item_name = item.name if item and hasattr(item, 'name') else 'Unknown'
@@ -213,7 +216,15 @@ class AttackObject:
                 new_hp = 1
                 object_data['hp'] = new_hp
 
-        print('New HP:', new_hp)
+        return new_hp
+
+    def trigger_wobble_animation(self, x, y: tuple[float, float]) -> None:
+        for i, item in enumerate(UniversalVariables.object_list):
+            item_x, item_y, width, height, surface, id = item
+            if item_x == x and item_y == y:
+                new_tuple = (item_x, item_y - 5, width, height, surface, id)
+                UniversalVariables.object_list[i] = new_tuple
+                break
 
     def update_timers(self) -> None:
         for rect_key in list(UniversalVariables.object_hp_dict.keys()):
@@ -227,5 +238,4 @@ class AttackObject:
         valid: bool = AttackObject.find_object(self, click)
         if valid:
             ...
-
-        # Animatsiooni vaja teha
+            # Wobbled attacked object
