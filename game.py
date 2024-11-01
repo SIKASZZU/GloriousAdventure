@@ -134,6 +134,8 @@ class Game:
 
     def call_visuals(self):
         RenderPictures.map_render(self)
+        Attack.update(self)
+
         if Collisions.render_after:
             RenderPictures.object_render()
             PlayerUpdate.render_player(self)
@@ -154,7 +156,6 @@ class Game:
                 Inventory.crafting_menu_open = False
 
         vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
-        Attack.update(self)
 
         PlayerUpdate.render_HUD(self)  # Render HUD
         Drop.open_pouch(Drop.pouch_position)
