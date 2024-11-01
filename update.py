@@ -3,6 +3,8 @@ import math
 import os
 import sys
 
+from sympy.codegen.cnodes import static
+
 import vision
 from images import ImageLoader
 from HUD import HUD_class
@@ -64,22 +66,16 @@ class PlayerUpdate:
     swimming_animation_manager = AnimationManager(sprite_sheets_swimming, animations, animation_speeds)
     idle_swimming_animation_manager = AnimationManager(sprite_sheets_idle_swimming, animations_idle,
                                                     animation_speeds)
+    @staticmethod
+    def disable_movement() -> tuple[int, int]:
+        return 0, 0
 
     def update_player(self) -> None:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
-        if UniversalVariables.cutscene:  # Check if cutscene is active
-            keys = pygame.key.get_pressed()  # Track keyboard inputs
-            UniversalVariables.last_input = 'w'
+        keys = pygame.key.get_pressed()  # Track keyboard inputs
 
-            x = 0 * int(keys[pygame.K_a]) + 0 * int(keys[pygame.K_d])
-            y = 0 * int(keys[pygame.K_w]) + 0 * int(keys[pygame.K_s])
-
-
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    # Handle pressing Escape during cutscene
-                    UniversalVariables.cutscene = False  # Deactivate cutscene
-
+        if not UniversalVariables.allow_movement:  # Check if cutscene is active
+            x, y = PlayerUpdate.disable_movement()
 
         else:
             keys = pygame.key.get_pressed()  # Track keyboard inputs
@@ -88,29 +84,32 @@ class PlayerUpdate:
             new_player_x: int = UniversalVariables.player_x
             new_player_y: int = UniversalVariables.player_y
 
+            # fixme mis see self.frame delayu on ??
+
             if keys[pygame.K_LSHIFT]:
-                self.frame_delay = 10  # Adjust running speed
                 if keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] or keys[pygame.K_w]:
                     if self.player.stamina.current_stamina >= 2:
                         HungerComponent.hunger_timer += 2
-            else:
-                self.frame_delay = 7  # Default walking speed
-            if keys[pygame.K_d]:
-                UniversalVariables.animation_index = 1  # Right animation
-                UniversalVariables.last_input = 'd'
-            if keys[pygame.K_a]:
-                UniversalVariables.animation_index = 0  # Left animation
-                UniversalVariables.last_input = 'a'
-            if keys[pygame.K_s]:
-                UniversalVariables.animation_index = 3  # Down animation
-                UniversalVariables.last_input = 's'
-                if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
-                if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
-            if keys[pygame.K_w]:
-                UniversalVariables.animation_index = 2  # Up animation
-                UniversalVariables.last_input = 'w'
-                if keys[pygame.K_a]: UniversalVariables.last_input += 'a'
-                if keys[pygame.K_d]: UniversalVariables.last_input += 'd'
+
+            key_animation_map = {
+                pygame.K_d: 1,  # Right animation
+                pygame.K_a: 0,  # Left animation
+                pygame.K_s: 3,  # Down animation
+                pygame.K_w: 2  # Up animation
+            }
+
+            # initial animations
+            for key, anim_index in key_animation_map.items():
+                if keys[key]:
+                    UniversalVariables.animation_index = anim_index
+                    UniversalVariables.last_input = pygame.key.name(key)
+
+            # combined animations
+            if keys[pygame.K_s] or keys[pygame.K_w]:
+                if keys[pygame.K_a]:
+                    UniversalVariables.last_input += 'a'
+                if keys[pygame.K_d]:
+                    UniversalVariables.last_input += 'd'
 
             x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
             y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
@@ -203,26 +202,18 @@ class PlayerUpdate:
             heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint, \
             hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint,\
             hydration_h_midpoint, stamina_w_midpoint, stamina_h_midpoint = HUD_class.bar_visualization(self)
-        
-        # Renderib stamina-bari
-        pygame.draw.rect(UniversalVariables.screen, '#FFBB70', stamina_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#FFEC9E', stamina_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', stamina_bar_border, 3, 7)
 
-        # Renderib health-bari
-        pygame.draw.rect(UniversalVariables.screen, '#662828', health_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#FF6666', health_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', health_bar_border, 3, 7)
-        
-        # Renderib food-bari
-        pygame.draw.rect(UniversalVariables.screen, '#78684B', food_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#C8AE7D', food_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', food_bar_border, 3, 7)
+        def draw_bar(screen, bg_color, bar_rect, fg_color, border_rect, border_width=3, border_radius=7):
+            """Helper function to draw a bar with a background, foreground, and border."""
+            pygame.draw.rect(screen, bg_color, bar_rect, 0, border_radius)
+            pygame.draw.rect(screen, fg_color, bar_rect, 0, border_radius)
+            pygame.draw.rect(screen, 'black', border_rect, border_width, border_radius)
 
-        # Renderib hydration-bari
-        pygame.draw.rect(UniversalVariables.screen, '#273F87', hydration_bar_bg, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, '#4169E1', hydration_rect, 0, 7)
-        pygame.draw.rect(UniversalVariables.screen, 'black', hydration_bar_border, 3, 7)
+        # Drawing all bars using the helper function
+        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_bar_bg, '#FFEC9E', stamina_bar_border)
+        draw_bar(UniversalVariables.screen, '#662828', health_bar_bg, '#FF6666', health_bar_border)
+        draw_bar(UniversalVariables.screen, '#78684B', food_bar_bg, '#C8AE7D', food_bar_border)
+        draw_bar(UniversalVariables.screen, '#273F87', hydration_bar_bg, '#4169E1', hydration_bar_border)
 
         if HUD_class.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
                 
