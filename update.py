@@ -3,9 +3,6 @@ import math
 import os
 import sys
 
-from sympy.codegen.cnodes import static
-
-import vision
 from images import ImageLoader
 from HUD import HUD_class
 from sprite import AnimationManager
@@ -64,8 +61,8 @@ class PlayerUpdate:
 
     # *** swimming *** #
     swimming_animation_manager = AnimationManager(sprite_sheets_swimming, animations, animation_speeds)
-    idle_swimming_animation_manager = AnimationManager(sprite_sheets_idle_swimming, animations_idle,
-                                                    animation_speeds)
+    idle_swimming_animation_manager = AnimationManager(sprite_sheets_idle_swimming, animations_idle, animation_speeds)
+    
     @staticmethod
     def disable_movement() -> tuple[int, int]:
         return 0, 0
@@ -207,7 +204,17 @@ class PlayerUpdate:
             """Helper function to draw a bar with a background, foreground, and border."""
             pygame.draw.rect(screen, bg_color, bar_rect, 0, border_radius)
             pygame.draw.rect(screen, fg_color, bar_rect, 0, border_radius)
-            pygame.draw.rect(screen, 'black', border_rect, border_width, border_radius)
+
+            color = 'black'
+            if bar_rect != stamina_rect:
+            
+                # Y coord mille yletamisel muutub v2rv black to red
+                critical_point = ((border_rect[1] + border_rect[3]) + border_rect[1]) / 2
+
+                if bar_rect[1] >= critical_point:
+                    color = 'red'
+
+            pygame.draw.rect(screen, color, border_rect, border_width, border_radius)
 
         # Drawing all bars using the helper function
         draw_bar(UniversalVariables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
