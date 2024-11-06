@@ -210,10 +210,10 @@ class PlayerUpdate:
             pygame.draw.rect(screen, 'black', border_rect, border_width, border_radius)
 
         # Drawing all bars using the helper function
-        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_bar_bg, '#FFEC9E', stamina_bar_border)
-        draw_bar(UniversalVariables.screen, '#662828', health_bar_bg, '#FF6666', health_bar_border)
-        draw_bar(UniversalVariables.screen, '#78684B', food_bar_bg, '#C8AE7D', food_bar_border)
-        draw_bar(UniversalVariables.screen, '#273F87', hydration_bar_bg, '#4169E1', hydration_bar_border)
+        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
+        draw_bar(UniversalVariables.screen, '#662828', health_rect, '#FF6666', health_bar_border)
+        draw_bar(UniversalVariables.screen, '#78684B', food_rect, '#C8AE7D', food_bar_border)
+        draw_bar(UniversalVariables.screen, '#273F87', hydration_rect, '#4169E1', hydration_bar_border)
 
         if HUD_class.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
                 
