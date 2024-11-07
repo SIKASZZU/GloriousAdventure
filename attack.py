@@ -108,6 +108,9 @@ class AttackEnemy:
         new_HP = HP - UniversalVariables.player_damage
 
         if new_HP <= 0:
+            
+            # add enemy to dead enemy list
+            Enemy.dead_enemy_list[enemy_name] = (y, x)
             del Enemy.path[enemy_name]
             del Enemy.spawned_enemy_dict[enemy_name]
             Player_audio.ghost_died_audio(self)

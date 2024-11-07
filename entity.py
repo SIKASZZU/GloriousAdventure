@@ -9,17 +9,15 @@ from variables import UniversalVariables, GameConfig
 from status import PlayerStatus
 import random
 
-
-### TODO:
-# ghost collision
-# kui ghost on samal gridil mis player, v6i selle k6rval, ss hakkab koordinaatidega arvutama.
-
-
 class Enemy:
-    ghost_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
-                                         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_image      = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
+        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_dead_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead"),
+        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (Enemy_image, y, x, HP)
     enemy_in_range: set[tuple[str, str]] = set()
+    dead_enemy_list: dict[str] = {}
 
     damage_delay: int = 50  # esimese hiti jaoks, et esimene hit oleks kiirem kui teised
     path_ticks = {}
@@ -66,11 +64,18 @@ class Enemy:
                     if spawned_enemy_count >= max_enenmy:
                         break
 
+        # spawn alive enemies
         enemy_blits_list = []
         for enemy in Enemy.spawned_enemy_dict.values():
             enemy_x = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_x
             enemy_y = enemy[2] * UniversalVariables.block_size + UniversalVariables.offset_y
             enemy_blits_list.append((enemy[0], (enemy_x, enemy_y)))
+
+        # spawn dead enemies
+        for enemy in Enemy.dead_enemy_list.values():
+            enemy_x = enemy[0] * UniversalVariables.block_size + UniversalVariables.offset_x
+            enemy_y = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_y
+            enemy_blits_list.append((Enemy.ghost_dead_image, (enemy_x, enemy_y)))
 
         UniversalVariables.screen.blits(enemy_blits_list, doreturn=False)
 
