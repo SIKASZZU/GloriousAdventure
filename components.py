@@ -16,6 +16,11 @@ class HealthComponent:
         self.previous_health = self.current_health
         self.player_dead_flag = False
         self.hunger = None
+
+    def update(self):
+        self.player.health.check_health(self.player.hunger.current_hunger)
+
+
     def print_health(self):
         """ Print out player's current health. """
 
@@ -289,6 +294,13 @@ class Player:
         self.thirst = ThirstComponent(base_thirst=base_thirst, 
                                       max_thirst=max_thirst,
                                       min_thirst=min_thirst)
+
+    def update(self):
+        """ Update player components: health, hunger, thirst. """
+
+        HealthComponent.update(self)
+        HungerComponent.update(self)
+        ThirstComponent.update(self)
 
     def apply_knockback(self, dx, dy):
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...

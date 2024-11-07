@@ -70,9 +70,12 @@ class UniversalVariables():
     screen = pygame.display.set_mode((screen_x, screen_y))
 
     # Effectide suurused
-
     icon_width: int = 60
     icon_height: int = 60
+
+    fps_list = []
+    fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
+
 
     # Block size muutmiseks kui zoomitakse sisse või välja
     prev_block_size: int = 0
@@ -152,7 +155,9 @@ class UniversalVariables():
     player_sprinting   = False
     player_sneaking    = False
     attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
-    allow_movement = True
+    allow_movement     = True
+    render_after       = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
+
 
     player_damage: float = 2
 

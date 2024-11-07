@@ -335,7 +335,7 @@ class EssentialsUpdate:
 
     def render_general(self):
         ui_elements = [
-            (f"{Framerate.display_fps_statistics(self)}", (5, 5)),  # FPS display
+            (f"{Framerate.display_fps_statistics()}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
 
@@ -357,19 +357,19 @@ class EssentialsUpdate:
                 EssentialsUpdate.render_gui_text(self, text, position=position, color=color)
 
 class Framerate:
-    def get_fps_statistics(self):
-        if not self.fps_list:
+    def get_fps_statistics():
+        if not UniversalVariables.fps_list:
             return 0.0, 0.0, 0.0
 
-        avg_fps = sum(self.fps_list) / len(self.fps_list)
-        min_fps = min(self.fps_list)
-        max_fps = max(self.fps_list)
+        avg_fps = sum(UniversalVariables.fps_list) / len(UniversalVariables.fps_list)
+        min_fps = min(UniversalVariables.fps_list)
+        max_fps = max(UniversalVariables.fps_list)
         return int(avg_fps), int(min_fps), int(max_fps)
 
 
-    def display_fps_statistics(self):
-        avg_fps, min_fps, max_fps = Framerate.get_fps_statistics(self)
-        try:  current_fps = int(self.fps_list[-1])
+    def display_fps_statistics():
+        avg_fps, min_fps, max_fps = Framerate.get_fps_statistics()
+        try:  current_fps = int(UniversalVariables.fps_list[-1])
         except IndexError: current_fps = 0
         fps_text = f"FPS {current_fps} [Avg: {avg_fps}, Min: {min_fps}, Max: {max_fps}]"  # avg, min, max, last value of the fps num list >:)
         return fps_text

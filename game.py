@@ -20,7 +20,7 @@ from update import EssentialsUpdate, PlayerUpdate
 from inventory import Inventory  # handle_mouse_click, render_craftable_items
 from collisions import Collisions  # check_collisions, collision_terrain, collision_hitbox
 from audio import Player_audio  # player_audio_update
-from components import Player, HungerComponent, ThirstComponent
+from components import Player
 from blade import change_blades
 from final_maze import Final_Maze
 from text import Fading_text
@@ -90,12 +90,6 @@ class Game:
                 if self.terrain_data[i][j] == 933:
                     self.terrain_data[i - 1][j] = 98
 
-        self.fading_text = Fading_text()
-
-        # FPS tracking
-        self.fps_list = []
-        self.fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
-
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -128,7 +122,6 @@ class Game:
 
         vision.find_boxes_in_window()
 
-        self.player.health.check_health(self.player.hunger.current_hunger)
         Enemy.update(self)
         Player_audio.player_audio_update(self)
         change_blades(self)
@@ -137,13 +130,7 @@ class Game:
 
     def call_visuals(self):
         RenderPictures.map_render(self)
-
-        if Collisions.render_after:
-            RenderPictures.object_render()
-            PlayerUpdate.render_player(self)
-        else:
-            PlayerUpdate.render_player(self)
-            RenderPictures.object_render()
+        RenderPictures.object_render(self)
 
         Drop.update(self)
         Game.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
@@ -180,23 +167,19 @@ class Game:
 
     def refresh_loop(self):
         Collisions.keylock = 0
-        self.screen.blits(UniversalVariables.text_sequence)
-        pygame.display.update()
+        Game.add_counts()  # lisa countid juure uue loopi alguse puhul
+
         current_fps = self.clock.get_fps()
         if current_fps > 0:  # To avoid adding 0 FPS values
-            self.fps_list.append(current_fps)
-            if len(self.fps_list) > self.fps_list_max_size:
-                self.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
+            UniversalVariables.fps_list.append(current_fps)
+            if len(UniversalVariables.fps_list) > UniversalVariables.fps_list_max_size:
+                UniversalVariables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
         self.clock.tick(UniversalVariables.FPS)
 
     @staticmethod
     def add_counts():
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:  UniversalVariables.interaction_delay += 1
         UniversalVariables.interaction_delay += 1
-
-    def printing(self):
-        Camera.print_clicks(self)
-        print(self.player)
 
     def custom_addition(self):
         if UniversalVariables.debug_mode:
@@ -209,22 +192,20 @@ class Game:
         self.reset_lists()
         self.call_technical()
         self.call_visuals()
+        self.refresh_loop()
 
         Inventory.call(self)
 
-        Final_Maze.final_maze_update(self)
-        Fading_text.render_general(self)
-        Fading_text.handle_fading_texts(self)  # Render fading text after everything else
-
+        Final_Maze.update(self)
+        Fading_text.update(self)
         Cooking.update(self)
-
-        self.refresh_loop()
-        HungerComponent.update(self)
-        ThirstComponent.update(self)
-        Game.add_counts()
+        Player.update(self)
 
         self.check_keys()  # Toggle hitbox / vision
         self.custom_addition()
+
+        self.click_position = ()
+        pygame.display.update()
 
         # ******************** DEBUG MODE ******************** #
         if UniversalVariables.debug_mode:
@@ -234,27 +215,24 @@ class Game:
             # UniversalVariables.player_x, UniversalVariables.player_y = 2800, 8600  # FPS'side testimiseks
             # print(self.player)
 
-        self.click_position = ()
 
 
     def run(self):
         self.load_variables()
         while True:
             self.events()
+            
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
                 Menu.main_menu(self)
+                continue
+            
+            # Vaatab kas mäng on pausi peale pandud või mitte
+            if PauseMenu.game_paused:
+                PauseMenu.settings_menu(self)
+                continue
 
-            # Kui mäng pandakse tööle
-            if not Menu.game_state:
-
-                # Vaatab kas mäng on pausi peale pandud või mitte
-                if not PauseMenu.game_paused:
-                    self.game_logic()
-                else:
-                    PauseMenu.settings_menu(self)
-
-                pygame.display.update()
+            self.game_logic()
 
 if __name__ == "__main__":
     game = Game()

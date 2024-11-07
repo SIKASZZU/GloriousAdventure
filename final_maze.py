@@ -103,7 +103,7 @@ class Final_Maze:
 
         return map_grid
 
-    def final_maze_update(self) -> None:
+    def update(self) -> None:
         """Update final maze state."""
         Final_Maze.handle_portal_interaction(self)
         if UniversalVariables.cutscene:

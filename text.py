@@ -8,6 +8,11 @@ class Fading_text:
     text_fade_duration = 700  # Duration of each fade in milliseconds
     text_elements = []  # Store text elements with their fade state
 
+    def update(self):
+        Fading_text.render_general(self)
+        Fading_text.handle_fading_texts(self)
+        UniversalVariables.screen.blits(UniversalVariables.text_sequence)
+
     def render_general(self):
         for text in UniversalVariables.ui_elements:
             if text not in Fading_text.shown_texts:

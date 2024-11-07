@@ -4,10 +4,11 @@ import random
 from camera import Camera
 from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
 from images import ImageLoader
-from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
 from tile_set import TileSet
 from farmables import farming
+from update import PlayerUpdate
+
 
 class RenderPictures:
     render_range: int = 0
@@ -205,7 +206,10 @@ class RenderPictures:
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
     # See func renderib objecteid
-    def object_render():
+    def object_render(self):
+        if not UniversalVariables.render_after:
+            PlayerUpdate.render_player(self)
+
         desired_order = GameConfig.OBJECT_RENDER_ORDER.value
 
         def sort_key(item):
@@ -231,7 +235,8 @@ class RenderPictures:
                 UniversalVariables.blits_sequence_objects.append([scaled_object_image, position])
 
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
-
+        if UniversalVariables.render_after:
+            PlayerUpdate.render_player(self)
 
 class ObjectCreation:
     random_offsets = {}

@@ -295,3 +295,5 @@ class PauseMenu:
 
             if PauseMenu.pause_controls[0].draw(self.screen):  # Settings
                 self.pause_menu_state = "settings"
+
+        pygame.display.update()
