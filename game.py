@@ -183,8 +183,6 @@ class Game:
         else: FPS = UniversalVariables.FPS 
         self.clock.tick(FPS)
 
-        print(FPS)
-
     @staticmethod
     def add_counts():
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:  UniversalVariables.interaction_delay += 1
