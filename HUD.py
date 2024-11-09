@@ -111,10 +111,10 @@ class HUD_class:
         hydration_bar_size_border: int = 50
         hydration_bar_size: int = 50
 
-        hydration_rect_bg = pygame.Rect(half_w + 52, HUD_class.screen_y - 50,
+        hydration_rect_bg = pygame.Rect(half_w + 60, HUD_class.screen_y - 50,
                                         hydration_bar_size_bg, 45)
 
-        hydration_rect_border = pygame.Rect(half_w + 52, HUD_class.screen_y - 50,
+        hydration_rect_border = pygame.Rect(half_w + 60, HUD_class.screen_y - 50,
                                             hydration_bar_size_border, 45)
 
         player_current_thirst = self.player.thirst.get_thirst()
@@ -122,7 +122,7 @@ class HUD_class:
 
         val = player_current_thirst / player_max_thirst
 
-        hydration_rect = pygame.Rect(half_w + 54, (HUD_class.screen_y - 5) - (45 * val),
+        hydration_rect = pygame.Rect(half_w + 62, (HUD_class.screen_y - 5) - (45 * val),
                                      hydration_bar_size - 4, 45 * val)
 
         # Iconi paigutamiseks bari keskkoha leidmine
