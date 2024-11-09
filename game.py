@@ -55,8 +55,8 @@ class Game:
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
-                             base_hunger=20, max_hunger=20, min_hunger=0,
-                             base_thirst=20, max_thirst=20, min_thirst=0)
+                             base_hunger=8, max_hunger=20, min_hunger=0,
+                             base_thirst=12, max_thirst=20, min_thirst=0)
 
         self.player_rect = None  # Player rect to be set in the game
 
@@ -89,6 +89,9 @@ class Game:
             for j in range(len(self.terrain_data[i])):
                 if self.terrain_data[i][j] == 933:
                     self.terrain_data[i - 1][j] = 98
+
+        # keys
+        self.g_pressed = bool  # fps lock
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
@@ -174,7 +177,13 @@ class Game:
             UniversalVariables.fps_list.append(current_fps)
             if len(UniversalVariables.fps_list) > UniversalVariables.fps_list_max_size:
                 UniversalVariables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
-        self.clock.tick(UniversalVariables.FPS)
+        
+        if UniversalVariables.fps_lock == True: 
+            FPS = 60
+        else: FPS = UniversalVariables.FPS 
+        self.clock.tick(FPS)
+
+        print(FPS)
 
     @staticmethod
     def add_counts():

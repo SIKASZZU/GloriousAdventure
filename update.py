@@ -336,13 +336,17 @@ class EssentialsUpdate:
 
 
     def render_general(self):
+        fps_text = 'FPS unlocked'
+        if UniversalVariables.fps_lock: fps_text = 'FPS locked'
+
         ui_elements = [
             (f"{Framerate.display_fps_statistics()}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
             (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
 
             ("H - Show hitboxes", (UniversalVariables.screen_x / 2, 5), "orange", True),  # Example with specified position and color
-            ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "orange", True)   # Example with specified position and color
+            ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "orange", True),   # Example with specified position and color
+            (f"G - {fps_text}", (UniversalVariables.screen_x / 2, 65), "orange", True)   # Example with specified position and color
 
         ]
 

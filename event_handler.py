@@ -79,6 +79,12 @@ class Event_handler:
                 self.j_pressed = True
                 vision.vision_count += 1
             elif not keys[pygame.K_j]: self.j_pressed = False
+            
+            # G KEY, LIGHT ON/OFF
+            if keys[pygame.K_g] and not self.g_pressed:
+                self.g_pressed = True
+                UniversalVariables.fps_lock = not UniversalVariables.fps_lock
+            elif not keys[pygame.K_g]: self.g_pressed = False
 
         # ARROW KEYS (ATTACK KEYS)
 
