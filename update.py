@@ -190,6 +190,8 @@ class PlayerUpdate:
             if UniversalVariables.portal_list != []:
                 pygame.draw.rect(UniversalVariables.screen, "orange", UniversalVariables.portal_frame_rect, 2)
 
+        UniversalVariables.player_width  = UniversalVariables.player_width_factor  * UniversalVariables.block_size
+        UniversalVariables.player_height = UniversalVariables.player_height_factor * UniversalVariables.block_size
 
     def render_HUD(self) -> None:
         """ Renderib HUDi (Stamina-, food- ja healthbari). """

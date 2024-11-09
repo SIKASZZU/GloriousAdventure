@@ -134,8 +134,11 @@ class UniversalVariables():
     interaction_delay = 100  # Delay tegevuse vahel, näiteks söömine, ehitamine, asjade ülesse võtmine
     interaction_delay_max = interaction_delay
 
-    player_height: int = block_size * 0.45
-    player_width: int = block_size * 0.45
+
+    player_height_factor  = 0.45
+    player_width_factor   = 0.45
+    player_height: int = block_size * player_height_factor
+    player_width:  int = block_size * player_width_factor
 
     player_hitbox_offset_x: float = 0.29 * player_width
     player_hitbox_offset_y: float = 0.22 * player_height
