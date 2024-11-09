@@ -10,11 +10,12 @@ from components import Player
 
 def update_object_dimensions():
     for item in items.items_list:
-        if "Object_width" in item:
-            item["Object_width"] = int(item["Object_width"] * UniversalVariables.block_size / items.block_size)
-        if "Object_height" in item:
-            item["Object_height"] = int(item["Object_height"] * UniversalVariables.block_size / items.block_size)
-
+        try:
+            if item.width == True:
+                item.width = int(item.width * UniversalVariables.block_size / items.block_size)
+            if item.height:
+                item.height = int(item.height * UniversalVariables.block_size / items.block_size)
+        except Exception as e: print(e)
     items.block_size = UniversalVariables.block_size
 
 
