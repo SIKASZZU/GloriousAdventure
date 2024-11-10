@@ -86,7 +86,6 @@ class Enemy:
 
         if EssentialsUpdate.day_night_text == 'Day':
             detected_enemies = {enemy_name for enemy_name, _ in Enemy.enemy_in_range}
-
             enemies_to_remove = set()
 
             for enemy_name, _ in Enemy.spawned_enemy_dict.items():
@@ -94,10 +93,8 @@ class Enemy:
                     enemies_to_remove.add(enemy_name)  # Add to the list of enemies to remove
 
             for enemy_name in list(enemies_to_remove):
-                if enemy_name not in Enemy.path:
-                    continue
-
-                del Enemy.path[enemy_name]
+                if enemy_name in Enemy.path:
+                    del Enemy.path[enemy_name]
                 del Enemy.spawned_enemy_dict[enemy_name]
             
 
