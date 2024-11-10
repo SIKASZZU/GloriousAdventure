@@ -275,6 +275,7 @@ class UniversalVariables():
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
+        UniversalVariables.enemy_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
         if terrain_data is not None:
             spawnpoints = set()
             for row in range(len(terrain_data)):
