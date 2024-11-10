@@ -32,9 +32,6 @@ ideas:
 		# ja siis kui maze ocunter on mingi 3 vmdgi, ss lambised end side uksed on teissugused, ehk sinna saab panna final key ja final maze tuleks sinna. 
 
 
-		geiger? Ss kui final door on spawninud sisse (random maze end uks, mis juba on, muutub final dooriks) ss j2rgmine item barrelis vmdgi on geiger
-			geiger vaatab pathi lenghti doorini ning piiksub v6i helendab siis vastavalt. Punane - kaugel, aeglane piiks, roheline vastupid.
-
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
 
 	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas, yle seinte saab naha
@@ -84,4 +81,10 @@ ideas:
 		n2iteks k6ndimine pole nii vali kui jooksmine. Sneakimine?? Ss peaksid olema soundid ka enemy poolt kogu aeg..et mangija kuuleks sneakida.
 
 
-	footstep icon!  Low, medium, high ICOON
+	enemy dead body saab lootida, ehk sealt pealt saab votta geigeri.
+		geiger vaatab pathi lenghti doorini ning piiksub v6i helendab siis vastavalt. Punane - kaugel, aeglane piiks, roheline vastupid.
+		Kui piisavalt palju maze'e on avatud, siis hakkab geiger toole. Geiger valib yhe random ukse, pref kaugeim ning tollest uksest avaneb blade maze
+			blade maze on enne final mazei. Final mazei avamiseks on vaja mingit erilist kombinatsiooni
+			Mazeides voiks olla mingi nummerdamine, kas siis t2hed v6i numbrid
+				Section 1 -> esimene maze, kombinatsoon ntks on nr 5 ning numberi markeerinug on wallidel
+
