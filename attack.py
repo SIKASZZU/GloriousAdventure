@@ -54,7 +54,7 @@ class Attack:
         progress_to_width = (Attack.last_attack_cooldown / Attack.last_attack_cooldown_max) * (self.player_rect[2] + 50)
         filler_rect   = pygame.Rect(left, top, progress_to_width, 30)
 
-        pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2)
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2, 5)
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), filler_rect)
 
 class AttackEnemy:
@@ -62,7 +62,6 @@ class AttackEnemy:
         for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
             enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
                                      enemy_info[2] * UniversalVariables.block_size, 73, 73)
-
             
             if click:
                 if not enemy_rect.collidepoint(click):
@@ -82,35 +81,49 @@ class AttackEnemy:
                 else:
                     continue
 
-    def calculate_enemy_knockback(self, y,x):
+    def calculate_enemy_knockback(self, x, y):
         player_grid_y = UniversalVariables.player_y // UniversalVariables.block_size
         player_grid_x = UniversalVariables.player_x // UniversalVariables.block_size
-        xdx, ydx = x, y
-        knockback_stenght = 0.55
+        xdx, ydx = int(x), int(y)
+        knockback_stenght = 2
+        attack_key_tuple = UniversalVariables.attack_key_pressed[1]
 
-        # if enemy is to the left
-        if x < player_grid_x:
-            xdx -= knockback_stenght
-        # if enemy is on top
-        if y < player_grid_y:
-            ydx -= knockback_stenght
-        # if enemy is to the right
-        if x > player_grid_x:
-            xdx += knockback_stenght
-        # if enemy is below
-        if y > player_grid_y:
-            ydx += knockback_stenght
+        direction_of_attack = str
+        if attack_key_tuple[1] == True:    direction_of_attack = 'down'
+        elif attack_key_tuple[2] == True:  direction_of_attack = 'left'
+        elif attack_key_tuple[3] == True:  direction_of_attack = 'right'
+        else:                              direction_of_attack = 'above'
 
-        return ydx, xdx
+        if direction_of_attack == 'left' or direction_of_attack == 'right':
+
+            # if enemy is to the left
+            if xdx < player_grid_x:
+                xdx -= knockback_stenght
+            
+            # if enemy is to the right
+            elif xdx > player_grid_x:
+                xdx += knockback_stenght
+            
+        else:  # dir of attack > above and down
+
+            # if enemy is on top
+            if ydx < player_grid_y:
+                ydx -= knockback_stenght
+
+            # if enemy is below
+            elif ydx > player_grid_y:
+                ydx += knockback_stenght
+
+        return xdx, ydx
 
     def damage_enemy(self, enemy_name, enemy_info):
-        enemy_image, y, x, HP = enemy_info
+        enemy_image, x, y, HP = enemy_info
         new_HP = HP - UniversalVariables.player_damage
 
         if new_HP <= 0:
             
             # add enemy to dead enemy list
-            Enemy.dead_enemy_list[enemy_name] = (y, x)
+            Enemy.dead_enemy_list[enemy_name] = (x, y)
             del Enemy.path[enemy_name]
             del Enemy.spawned_enemy_dict[enemy_name]
             Player_audio.ghost_died_audio(self)
@@ -122,8 +135,8 @@ class AttackEnemy:
             return
 
         # # Add knockback to enemy
-        y, x = AttackEnemy.calculate_enemy_knockback(self, y,x)
-        Enemy.spawned_enemy_dict[enemy_name] = enemy_image, y, x, new_HP
+        x, y = AttackEnemy.calculate_enemy_knockback(self, x, y)
+        Enemy.spawned_enemy_dict[enemy_name] = enemy_image, x, y, new_HP
         Player_audio.ghost_hurt_audio(self)
 
         if UniversalVariables.debug_mode:
@@ -138,8 +151,6 @@ class AttackEnemy:
             enemy_data = AttackEnemy.find_enemy(self, click=click)
             if enemy_data:
                 enemy_name, enemy_info = enemy_data
-                _, y, x, _ = enemy_info
-                # AttackEnemy.saved_enemy_x, AttackEnemy.saved_enemy_y = y
                 AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
                 Attack.last_attack_cooldown = 0
         
