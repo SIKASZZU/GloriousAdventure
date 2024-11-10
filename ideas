@@ -1,7 +1,46 @@
+Legend:
+	ADD>     voiks addida et gameplay lahedam tunduks
+	FEATURE> pole nii tahtis aga teeb lahendamaks
+	MAYBE>   maybe dont fucking add?
+	FIX>     Asi on juba programeeritud aga see on katki.
+
+
 ideas:
 	water canteen - refill in glade water
 
-	vine blockid on lambist mazeis mille taha mangija saab ennast peita.
+	ADD> vine blockid on lambist mazeis mille taha mangija saab ennast peita.
+	ADD> erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
+	ADD>Vihm (erinevad tasemed, n6rk, tugev, vmdgi)
+		Lombid
+
+	ADD>random object placement. et alati ei oleks ruudu yleval vasakul objekt.
+
+	ADD>enemy dead body saab lootida, ehk sealt pealt saab votta geigeri.
+		geiger vaatab pathi lenghti doorini ning piiksub v6i helendab siis vastavalt. Punane - kaugel, aeglane piiks, roheline vastupid.
+		Kui piisavalt palju maze'e on avatud, siis hakkab geiger toole. Geiger valib yhe random ukse, pref kaugeim ning tollest uksest avaneb blade maze
+			blade maze on enne final mazei. Final mazei avamiseks on vaja mingit erilist kombinatsiooni
+			Mazeides voiks olla mingi nummerdamine, kas siis t2hed v6i numbrid
+				Section 1 -> esimene maze, kombinatsoon ntks on nr 5 ning numberi markeerinug on wallidel
+
+	ADD> Audio. Kui wallid muutuvad oosel ss voiks olla mingi audio
+		
+
+	FIX> praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
+		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
+
+	FIX>See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
+	
+	FIX?>kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
+
+	FIX > see wallide muutumine voiks kesta terve oo.
+		hetkel lihtsalt 150 korda muudab ning iga frame muudab yhe (tegelt 2)
+		see 150 v6iks jaotuda ilusti terve oo peale 2ra.
+
+	MAYBE?>playeril on sleepida vaja. nagu forestis on. Ja kui ta magab, ss on ta unenäos ja mängija saab mängida unenäos midagi, mingit teist storit edasi.
+	see unenägu peaks olema rõõmus ja tore võrreldes labürindiga. Kui ta ärkab üles, võib teha mingi rõõmu näidiku, ehk ss on ta motiveeritud tegelema ja pääsema välja.
+	Unenägu ei pea olema see sama iga öö vaid paar erinevat tsenaariumi, mis võivad erineda iga kord.
+
+	FEATURE>need wallid, mis muutuvad v6iksid n2ha teistsugused v2lja. n2itkes rohelist on v2hem
 
 	teha random movement enemyle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
 
@@ -46,45 +85,9 @@ ideas:
 			debug m6ttega noh.
 			Teine v6imalus on lihtsalt print mode
 
-
-	praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
-		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
-	
-	limit fps key
-
-	erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
-
 	Tripwires
 	Jalaluumurd
 
-	Vihm (erinevad tasemed, n6rk, tugev, vmdgi)
-		Lombid
-
 	Player eisaa mitte surma, vaid laheb unconni, aeg laheb mooda, arkab yles ning infected ja food health koik pekkis
-
-	random object placement. et alati ei oleks ruudu yleval vasakul objekt.
-
-	playeril on sleepida vaja. nagu forestis on. Ja kui ta magab, ss on ta unenäos ja mängija saab mängida unenäos midagi, mingit teist storit edasi.
-		see unenägu peaks olema rõõmus ja tore võrreldes labürindiga. Kui ta ärkab üles, võib teha mingi rõõmu näidiku, ehk ss on ta motiveeritud tegelema ja pääsema välja.
-		Unenägu ei pea olema see sama iga öö vaid paar erinevat tsenaariumi, mis võivad erineda iga kord.
-
-
-	See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
 	
-	kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
-
-	need wallid, mis muutuvad v6iksid n2ha teistsugused v2lja. n2itkes rohelist on v2hem
-
 	inv lahti player ei liigu inv kinni player liigub *********************
-
-	m2ngija teeb h22lt ning enemyl on selle j2rgi detection range.
-		n2iteks k6ndimine pole nii vali kui jooksmine. Sneakimine?? Ss peaksid olema soundid ka enemy poolt kogu aeg..et mangija kuuleks sneakida.
-
-
-	enemy dead body saab lootida, ehk sealt pealt saab votta geigeri.
-		geiger vaatab pathi lenghti doorini ning piiksub v6i helendab siis vastavalt. Punane - kaugel, aeglane piiks, roheline vastupid.
-		Kui piisavalt palju maze'e on avatud, siis hakkab geiger toole. Geiger valib yhe random ukse, pref kaugeim ning tollest uksest avaneb blade maze
-			blade maze on enne final mazei. Final mazei avamiseks on vaja mingit erilist kombinatsiooni
-			Mazeides voiks olla mingi nummerdamine, kas siis t2hed v6i numbrid
-				Section 1 -> esimene maze, kombinatsoon ntks on nr 5 ning numberi markeerinug on wallidel
-
