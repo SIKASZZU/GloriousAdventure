@@ -20,10 +20,11 @@ ideas:
 		Kui piisavalt palju maze'e on avatud, siis hakkab geiger toole. Geiger valib yhe random ukse, pref kaugeim ning tollest uksest avaneb blade maze
 			blade maze on enne final mazei. Final mazei avamiseks on vaja mingit erilist kombinatsiooni
 			Mazeides voiks olla mingi nummerdamine, kas siis t2hed v6i numbrid
-				Section 1 -> esimene maze, kombinatsoon ntks on nr 5 ning numberi markeerinug on wallidel
+				Section 1 -> esimene maze, kombinatsoon ntks on nr 5 ning numbri markeering on maze keyde all. Maze Ground 'nr5' 
 
 	ADD> Audio. Kui wallid muutuvad oosel ss voiks olla mingi audio
-		
+
+	ADD> ATTACK FUCKING ANIMATISIOON OLARIIII DAVAIII TEE ARA DAVAIIII
 
 	FIX> praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
 		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
