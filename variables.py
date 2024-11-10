@@ -75,7 +75,7 @@ class UniversalVariables():
 
     fps_list = []
     fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
-    fps_lock = bool
+    fps_lock = False
 
     # Block size muutmiseks kui zoomitakse sisse või välja
     prev_block_size: int = 0
