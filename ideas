@@ -72,7 +72,7 @@ ideas:
 		# ja siis kui maze ocunter on mingi 3 vmdgi, ss lambised end side uksed on teissugused, ehk sinna saab panna final key ja final maze tuleks sinna. 
 
 
-	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin
+	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin   - > DEBUG MODE võtab helid nulli
 
 	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas, yle seinte saab naha
 	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
@@ -89,6 +89,10 @@ ideas:
 	Tripwires
 	Jalaluumurd
 
-	Player eisaa mitte surma, vaid laheb unconni, aeg laheb mooda, arkab yles ning infected ja food health koik pekkis
+	Player eisaa mitte surma, vaid laheb unconni, aeg laheb mooda, arkab yles ning infected ja food health koik pekkis mingi pilt läheb mustaks korraks ja ss tleb tagasi mingiae.
 	
 	inv lahti player ei liigu inv kinni player liigub *********************
+
+	Kui hiirega hoverid mingi objecti peal siis näitab selle hitboxxi naq mc on... Hitboxi WIDTH sõltub Hp'st -> nt kui full hp ss 4 ja kui pooled ss 2 ja kui pmst surnud ss 1 jne... you get the point..
+	'
+'	Terrain in view uuesti teha... Loopib liiga palju seals
