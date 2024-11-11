@@ -319,6 +319,11 @@ items_list = [
     ),
 
     ToolItem(
+        name="Geiger",
+        id=29,
+    ),
+
+    ToolItem(
         name="Fishing_Rod",
         id=43,
         recipe=[

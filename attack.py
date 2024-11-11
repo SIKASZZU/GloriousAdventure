@@ -1,13 +1,12 @@
 import pygame
 
-from variables import UniversalVariables, GameConfig
+from variables import UniversalVariables
 from camera import Camera
 from entity import Enemy
 from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
 from objects import ObjectManagement
-import math
-import time
+import random
 
 class Attack:
     last_attack_cooldown_max = 100
@@ -123,7 +122,11 @@ class AttackEnemy:
         if new_HP <= 0:
             
             # add enemy to dead enemy list
-            Enemy.dead_enemy_list[enemy_name] = (x, y)
+            Enemy.dead_enemy_list[enemy_name] = (x, y, False)
+            if UniversalVariables.debug_mode == True: user_input = input('Want a geiger to spawn? Y/n ')
+            if random.random() < 0.05 or UniversalVariables.debug_mode and user_input == 'Y':  # 5% chance
+                Enemy.dead_enemy_list[enemy_name] = (x, y, True)
+            
             del Enemy.path[enemy_name]
             del Enemy.spawned_enemy_dict[enemy_name]
             Player_audio.ghost_died_audio(self)

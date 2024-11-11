@@ -7,12 +7,15 @@ from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
 from status import PlayerStatus
+from objects import ObjectManagement
 import random
 
 class Enemy:
     ghost_image      = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
     ghost_dead_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead"),
+        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    ghost_dead_geiger_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead_Geiger"),
         (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
 
     spawned_enemy_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (Enemy_image, y, x, HP)
@@ -75,7 +78,10 @@ class Enemy:
         for enemy in Enemy.dead_enemy_list.values():
             enemy_x = enemy[0] * UniversalVariables.block_size + UniversalVariables.offset_x
             enemy_y = enemy[1] * UniversalVariables.block_size + UniversalVariables.offset_y
-            enemy_blits_list.append((Enemy.ghost_dead_image, (enemy_x, enemy_y)))
+            
+            image = Enemy.ghost_dead_image
+            if enemy[2] == True:  image = Enemy.ghost_dead_geiger_image
+            enemy_blits_list.append((image, (enemy_x, enemy_y)))
 
         UniversalVariables.screen.blits(enemy_blits_list, doreturn=False)
 
@@ -286,14 +292,6 @@ class Enemy:
             Enemy.damage_delay = 0
         Enemy.damage_delay += 1
 
-    def health(self):
-        """ Has health """
-        pass
-
-    def damage_taken(self):
-        """ Takes damage. Can die. """
-        pass
-
     @staticmethod
     def collision_with_entities(self):
         for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
@@ -333,8 +331,47 @@ class Enemy:
                         # update position
                         Enemy.spawned_enemy_dict[enemy_name] = (enemy_info[0], enemy_x, enemy_y, enemy_info[3])
 
+    def loot(self):
+        """ Loot geiger from ghost! Nothing else atm. """
+
+        def collect_geiger(click=False, press=False):
+            for enemy_name, enemy_info in Enemy.dead_enemy_list.items():
+                if_geiger = enemy_info[2]
+                print(enemy_info, if_geiger)
+                if not if_geiger:
+                    continue
+
+                enemy_dead_grid = (int(enemy_info[0]), int(enemy_info[1]))
+                print('g', if_geiger)
+                
+                # vaatab self.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
+                if click and if_geiger:
+                    grid = Camera.click_on_screen_to_grid(Camera.click_x, Camera.click_y)
+                    print(grid, enemy_dead_grid)
+                    if grid != enemy_dead_grid:
+                        continue  # GOOD
+
+                elif press and if_geiger:
+                    print(press, enemy_dead_grid)
+                    if press != enemy_dead_grid:
+                        continue  # GOOD
+                            
+                Enemy.dead_enemy_list[enemy_name] = (x, y, False)
+                ObjectManagement.add_object_from_inv("Geiger", 1)
+        # spacebar
+        keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
+        if keys[pygame.K_SPACE]:
+            x = UniversalVariables.player_x // UniversalVariables.block_size
+            y = UniversalVariables.player_y // UniversalVariables.block_size
+            collect_geiger(press=(x, y))
+
+        # click
+        if self.click_position:
+            collect_geiger(click=self.click_position)
+
     def update(self):
         Enemy.detection(self)
         Enemy.move(self)
         Enemy.collision_with_entities(self)
+        Enemy.loot(self)
         Enemy.despawn()
