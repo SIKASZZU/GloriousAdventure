@@ -337,27 +337,25 @@ class Enemy:
         def collect_geiger(click=False, press=False):
             for enemy_name, enemy_info in Enemy.dead_enemy_list.items():
                 if_geiger = enemy_info[2]
-                print(enemy_info, if_geiger)
                 if not if_geiger:
                     continue
 
                 enemy_dead_grid = (int(enemy_info[0]), int(enemy_info[1]))
-                print('g', if_geiger)
                 
                 # vaatab self.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
                 if click and if_geiger:
                     grid = Camera.click_on_screen_to_grid(Camera.click_x, Camera.click_y)
-                    print(grid, enemy_dead_grid)
+                    grid = (grid[1], grid[0])  # p66ran ymber need v22rtused sest mdea watafak :D
                     if grid != enemy_dead_grid:
                         continue  # GOOD
 
                 elif press and if_geiger:
-                    print(press, enemy_dead_grid)
                     if press != enemy_dead_grid:
                         continue  # GOOD
                             
-                Enemy.dead_enemy_list[enemy_name] = (x, y, False)
+                Enemy.dead_enemy_list[enemy_name] = (enemy_info[0], enemy_info[1], False)
                 ObjectManagement.add_object_from_inv("Geiger", 1)
+
         # spacebar
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         if keys[pygame.K_SPACE]:
