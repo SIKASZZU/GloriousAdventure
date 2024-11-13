@@ -1,9 +1,9 @@
 import random
 
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 from objects import ObjectManagement
+from entity import Enemy
 from audio import Player_audio
-import items
 from items import search_item_from_items, ConsumableItem
 from text import Fading_text
 
@@ -28,14 +28,77 @@ def is_click_inside_player_rect(self):
 def probably(chance):
     return random.random() < chance
 
+
+def find_number_in_list_of_lists(list_of_lists):
+
+    choices = []
+    #FIXME: 96,7 on broken millegi parast.
+    chosen_id = random.choice([door_id for door_id in GameConfig.CLOSED_DOOR_IDS.value if door_id != 977])
+    print('chosen id', chosen_id)
+    for row_index, sublist in enumerate(list_of_lists):
+        for col_index, element in enumerate(sublist):
+            if element == chosen_id:
+                grid = row_index, col_index
+                if grid not in choices:
+                    choices.append(grid)  # Number found, add to all possible choices
+            
+    if choices:
+        UniversalVariables.geiger_chosen_grid = random.choice(choices)
+        print('choices', choices, 'chose, ', UniversalVariables.geiger_chosen_grid)
+        return UniversalVariables.geiger_chosen_grid  # Return grid
+    
+    return None  # Number not found, return None
+
+
 class ItemFunctionality:
 
     def update(self):
         ItemFunctionality.current_equipped(self)
 
+    def find_signal_strength(self):
+        """ Vaatab pathi yhe random ukseni ning selle jargi returnib. """
+
+        # FIND GRID
+        if UniversalVariables.geiger_chosen_grid == None:
+            find_number_in_list_of_lists(self.terrain_data)
+
+        if UniversalVariables.geiger_chosen_grid == None:
+            return
+                    
+        # FIND PATH TO GRID
+        grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
+        grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        
+        # FIXME: hetkel otsib alati uuesti pathi!!
+        # pathfind player -> random chosen door        
+        player_grid = (grid_y, grid_x)
+        path = Enemy.find_path_bfs(self, UniversalVariables.geiger_chosen_grid, player_grid)
+        if path is None:
+            return False
+        
+        # RETURN SIGNAL STRENGTH
+        if len(path) >= 50:        return 'low'     # long path
+        elif 50 > len(path) >= 10: return 'medium'  
+        elif 10 > len(path) >= 1:  return 'high'    # short path
+
     def current_equipped(self):
         """ Argument on item, mille funktsiooni kutsutakse. """
 
+        equiped_item = UniversalVariables.current_equipped_item
+        if equiped_item == 'Geiger':
+            strength = ItemFunctionality.find_signal_strength(self)
+
+            if strength == 'low':
+                print('geiger signal strength', strength)
+                # audio
+            elif strength == 'medium':
+                print('geiger signal strength', strength)
+                # audio
+            elif strength == 'high':
+                print('geiger signal strength', strength)
+                # audio
+
+        # nyyd tulevad itemid, mis aktiveeruvad, kui vajutad playeri peale
         if not is_click_inside_player_rect(self):
             return
 
@@ -46,7 +109,6 @@ class ItemFunctionality:
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
-        equiped_item = UniversalVariables.current_equipped_item
         cure = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="cure")
         poisonous = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="poisonous")
         healing_amount = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="healing_amount")

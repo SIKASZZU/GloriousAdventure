@@ -254,6 +254,8 @@ class UniversalVariables():
     # ******************** Farming ******************** #
     farmable_stage_list = []
 
+    # ******************** Items ******************** #
+    geiger_chosen_grid = None
 
     # Avg Growth Time
     avg_growth_time_wheat   = 105  # (real - time)
