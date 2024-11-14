@@ -43,7 +43,7 @@ class RenderPictures:
     def get_render_ranges(player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         # TODO: fix this
 
-        # # Determine the render range based on terrain type
+         # Determine the render range based on terrain type
         if terrain_type in GameConfig.RENDER_RANGE_SMALL.value:
 
             RenderPictures.render_range = 2
@@ -78,7 +78,6 @@ class RenderPictures:
 
     def find_terrain_in_view(self) -> None:
         RenderPictures.terrain_in_view.clear()
-        UniversalVariables.screen.fill('black')
 
         camera_grid_row = int(
             (Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
@@ -203,7 +202,8 @@ class RenderPictures:
 
                 image = ImageLoader.load_image(image_name)
                 RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
-        UniversalVariables.screen.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+
+        UniversalVariables.buffer_collision.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
     # See func renderib objecteid
     def object_render(self):

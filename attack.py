@@ -15,8 +15,9 @@ class Attack:
     def update(self):
 
         ### FIXME: Miks on cooldown kui ta ei attacki mitte midagi naq?? peale igat clicki tleb cooldown nahuii????????
-
         AttackObject.update_timers(self)
+        AttackObject.draw_hover_rect(self)
+
         enemy_pressed = UniversalVariables.attack_key_pressed
 
         if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
@@ -165,7 +166,8 @@ class AttackEnemy:
                 Attack.last_attack_cooldown = 0
 
 class AttackObject:
-    wobble_state = {}
+    default_color = 255, 120, 20, 150
+    click_color = 255, 0, 0, 255
 
     def find_object(self, click: tuple[int, int]) -> bool:
         for object_info in list(UniversalVariables.object_list):
@@ -197,16 +199,11 @@ class AttackObject:
             else:
                 UniversalVariables.object_hp_dict[rect_key]['timer'] = UniversalVariables.object_reset_timer
 
-            new_hp = AttackObject.deal_damage(self, rect_key)
-            if new_hp > 0:  AttackObject.trigger_wobble_animation(self, x, y)
-
-            if UniversalVariables.debug_mode:
-                item_name = item.name if item and hasattr(item, 'name') else 'Unknown'
-                return True
+            AttackObject.deal_damage(self, rect_key, object_rect)
 
             return True
 
-    def deal_damage(self, rect_key: tuple[float, float, int, int]) -> None:
+    def deal_damage(self, rect_key: tuple[float, float, int, int], object_rect: tuple[float, float, float, float]) -> None:
         object_data: dict[str, any] = UniversalVariables.object_hp_dict.get(rect_key)
 
         if not object_data:
@@ -233,15 +230,12 @@ class AttackObject:
                 new_hp = 1
                 object_data['hp'] = new_hp
 
-        return new_hp
+        transparent_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA)
+        pygame.draw.rect(transparent_surface, AttackObject.click_color, object_rect, 3)
 
-    def trigger_wobble_animation(self, x, y: tuple[float, float]) -> None:
-        for i, item in enumerate(UniversalVariables.object_list):
-            item_x, item_y, width, height, surface, id = item
-            if item_x == x and item_y == y:
-                new_tuple = (item_x, item_y - 5, width, height, surface, id)
-                UniversalVariables.object_list[i] = new_tuple
-                break
+        UniversalVariables.screen.blit(transparent_surface, (0, 0))
+
+        UniversalVariables.interaction_delay = 0
 
     def update_timers(self) -> None:
         for rect_key in list(UniversalVariables.object_hp_dict.keys()):
@@ -251,8 +245,30 @@ class AttackObject:
             if object_data['timer'] <= 0:
                 del UniversalVariables.object_hp_dict[rect_key]
 
+    def draw_hover_rect(self) -> None:
+        mouse_pos = pygame.mouse.get_pos()
+
+        transparent_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA)
+
+        for object_info in list(UniversalVariables.object_list):
+            object_id: int = object_info[5]
+            is_valid_object: bool = search_item_from_items(type=ObjectItem, item_name_or_id=object_id,
+                                                           target_attribute="Breakable")
+
+            if not is_valid_object:
+                continue
+
+            x, y, width, height = object_info[:4]
+            object_rect = pygame.Rect(x, y, width, height)
+
+            if object_rect.collidepoint(mouse_pos):
+                pygame.draw.rect(transparent_surface, AttackObject.default_color, object_rect, 2)
+
+                UniversalVariables.screen.blit(transparent_surface, (0, 0))
+                return
+
+        return
+
     def update(self, click: tuple[int, int]) -> None:
-        valid: bool = AttackObject.find_object(self, click)
-        if valid:
-            ...
-            # Wobbled attacked object
+        if UniversalVariables.interaction_delay >= UniversalVariables.interaction_delay_max:
+            AttackObject.find_object(self, click)

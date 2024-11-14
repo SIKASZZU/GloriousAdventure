@@ -133,6 +133,8 @@ class Game:
 
     def call_visuals(self):
         RenderPictures.map_render(self)
+        UniversalVariables.screen.blit(UniversalVariables.buffer_collision, (0, 0))
+
         RenderPictures.object_render(self)
 
         Drop.update(self)
@@ -141,13 +143,19 @@ class Game:
         Enemy.spawn(self)
 
         EssentialsUpdate.calculate_daylight_strength(self)
+
+        # ******************** # ↑ Kõik, mis on  visioni all ↑ # ******************** #
+
+        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
+
+        # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
+
         if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
             Inventory.render_craftable_items(self)
             if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
                 Fading_text.re_display_fading_text("Nothing to craft.")
                 Inventory.crafting_menu_open = False
 
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
         Attack.update(self)
 
         PlayerUpdate.render_HUD(self)  # Render HUD
@@ -177,16 +185,16 @@ class Game:
             UniversalVariables.fps_list.append(current_fps)
             if len(UniversalVariables.fps_list) > UniversalVariables.fps_list_max_size:
                 UniversalVariables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
-        
-        if UniversalVariables.fps_lock == True: 
+
+        if UniversalVariables.fps_lock == True:
             FPS = 60
-        else: FPS = UniversalVariables.FPS 
+        else: FPS = UniversalVariables.FPS
         self.clock.tick(FPS)
 
     @staticmethod
     def add_counts():
-        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:  UniversalVariables.interaction_delay += 1
-        UniversalVariables.interaction_delay += 1
+        if UniversalVariables.interaction_delay <= UniversalVariables.interaction_delay_max:
+            UniversalVariables.interaction_delay += 1
 
     def custom_addition(self):
         if UniversalVariables.debug_mode:
@@ -228,12 +236,12 @@ class Game:
         self.load_variables()
         while True:
             self.events()
-            
+
             # Vaatab kas mäng on tööle pandud või mitte
             if Menu.game_state:
                 Menu.main_menu(self)
                 continue
-            
+
             # Vaatab kas mäng on pausi peale pandud või mitte
             if PauseMenu.game_paused:
                 PauseMenu.settings_menu(self)

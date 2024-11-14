@@ -69,6 +69,13 @@ class UniversalVariables():
     # ******************** Screen ******************** #
     screen = pygame.display.set_mode((screen_x, screen_y))
 
+    # Double buffering, flickerimise fiximiseks
+    buffer_collision = pygame.Surface(screen.get_size())
+    buffer_collision = buffer_collision.convert()
+
+    buffer_objects = pygame.Surface(screen.get_size())
+    buffer_objects = buffer_objects.convert()
+
     # Effectide suurused
     icon_width: int = 60
     icon_height: int = 60
