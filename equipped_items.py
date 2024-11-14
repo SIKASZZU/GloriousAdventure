@@ -51,6 +51,7 @@ def find_number_in_list_of_lists(list_of_lists):
 
 
 class ItemFunctionality:
+    last_strength_read = str
 
     def update(self):
         ItemFunctionality.current_equipped(self)
@@ -84,19 +85,30 @@ class ItemFunctionality:
     def current_equipped(self):
         """ Argument on item, mille funktsiooni kutsutakse. """
 
-        equiped_item = UniversalVariables.current_equipped_item
-        if equiped_item == 'Geiger':
+        equipped_item = UniversalVariables.current_equipped_item
+        if equipped_item == 'Geiger':
             strength = ItemFunctionality.find_signal_strength(self)
 
+            # heli, kui strength tase muutub
+            if strength != ItemFunctionality.last_strength_read:
+                ItemFunctionality.last_strength_read = strength
+                ... # audio
+
+            # peamine heli pathi pikkuse tottu
             if strength == 'low':
-                print('geiger signal strength', strength)
-                # audio
+                ... # audio
+                
             elif strength == 'medium':
-                print('geiger signal strength', strength)
-                # audio
+                ... # audio
             elif strength == 'high':
-                print('geiger signal strength', strength)
-                # audio
+                ... # audio
+
+            # heli, mis on alati
+                ... # audio
+
+            # lambine heli (segaja), random funci jargi aktiveerub yheks loopiks
+            if random.random() > 0.1:
+                ... # audio
 
         # nyyd tulevad itemid, mis aktiveeruvad, kui vajutad playeri peale
         if not is_click_inside_player_rect(self):
@@ -109,19 +121,19 @@ class ItemFunctionality:
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
-        cure = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="cure")
-        poisonous = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="poisonous")
-        healing_amount = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="healing_amount")
-        satisfaction_gain = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="satisfaction_gain")
-        thirst_resistance = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="thirst_resistance")
-        hunger_resistance = search_item_from_items(type=ConsumableItem, item_name_or_id=equiped_item, target_attribute="hunger_resistance")
+        cure = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="cure")
+        poisonous = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="poisonous")
+        healing_amount = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="healing_amount")
+        satisfaction_gain = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="satisfaction_gain")
+        thirst_resistance = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="thirst_resistance")
+        hunger_resistance = search_item_from_items(type=ConsumableItem, item_name_or_id=equipped_item, target_attribute="hunger_resistance")
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         if cure:
             UniversalVariables.interaction_delay = 0
             UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
-            ObjectManagement.remove_object_from_inv(equiped_item)
+            ObjectManagement.remove_object_from_inv(equipped_item)
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
@@ -137,7 +149,7 @@ class ItemFunctionality:
             UniversalVariables.interaction_delay = 0
 
             player_healed = self.player.health.heal(healing_amount)
-            if player_healed:  ObjectManagement.remove_object_from_inv(equiped_item)
+            if player_healed:  ObjectManagement.remove_object_from_inv(equipped_item)
             if UniversalVariables.player_bleeding == True:
                 if probably(35 / 100):
                     UniversalVariables.player_bleeding = False
@@ -146,7 +158,7 @@ class ItemFunctionality:
 
         if thirst_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(equiped_item)  # v6tab joodud itemi 2ra
+            ObjectManagement.remove_object_from_inv(equipped_item)  # v6tab joodud itemi 2ra
 
             if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and UniversalVariables.thirst_resistance > 0:
                 Fading_text.re_display_fading_text("If you drink too much you might get sick!")
@@ -179,7 +191,7 @@ class ItemFunctionality:
 
         elif hunger_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(equiped_item)  # v6tab s66dud itemi 2ra
+            ObjectManagement.remove_object_from_inv(equipped_item)  # v6tab s66dud itemi 2ra
 
             if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and UniversalVariables.hunger_resistance > 0:
                 Fading_text.re_display_fading_text("If you eat too much you might get sick!")
