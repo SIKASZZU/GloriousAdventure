@@ -49,6 +49,7 @@ class MazeChanges:
 
     times_changed: int = 0
     max_amount_of_changes = 150
+    loop_counter: int = 0
 
     def change_maze(self):
         """ Muudab random maze pathwayisid (id 98) maze blockideks (id 99) ja vastupidi. """
@@ -56,10 +57,15 @@ class MazeChanges:
         if EssentialsUpdate.day_night_text == 'Day':
             MazeChanges.times_changed = 0
             global already_changed
-            already_changed = set()
+            already_changed = set()            
             return
 
-        if not MazeChanges.times_changed > MazeChanges.max_amount_of_changes:
+        # iga nelja framei tagant muuta seina ja groundi. Night on 599 framei pikk ehk.. 599/150(muudatuste arv) ning saad framei kuna peab muutma
+        if MazeChanges.loop_counter < 4:  MazeChanges.loop_counter += 1
+
+        elif not MazeChanges.times_changed > MazeChanges.max_amount_of_changes:
+            MazeChanges.loop_counter = 0  # uue seina ja groundi valja vahetamine
+
             index_of_wall = find_random_index_in_list_of_lists(self.terrain_data, 99)
             self.terrain_data[index_of_wall[1]][index_of_wall[0]] = 98
 
