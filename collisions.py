@@ -371,6 +371,7 @@ class Collisions:
                                     if self.player.stamina.current_stamina == 0:
                                         self.player.stamina.stamina_regenerate(stamina_regen)
                                         self.player.speed.current_speed = self.player.speed.base_speed
+                                        UniversalVariables.player_sprinting = False  # stamina on otsas // et ei displayiks high volumeit
 
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
@@ -392,6 +393,7 @@ class Collisions:
                                     if self.player.stamina.current_stamina == 0:
                                         self.player.stamina.stamina_regenerate(stamina_regen)
                                         self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                        UniversalVariables.player_sprinting = False  # stamina on otsas // et ei displayks high volumit
 
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed
