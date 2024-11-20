@@ -46,6 +46,7 @@ class AnimationManager:
 
     def update_animation(self, keys, is_idle):
         # Update animation index based on keys
+
         if not is_idle:
             if keys[pygame.K_a]:
                 self.animation_index = 0  # Left animation
@@ -64,7 +65,8 @@ class AnimationManager:
                 self.animation_index = 2  # Up animation
             elif UniversalVariables.last_input == "s":
                 self.animation_index = 3  # Down animation
-                
+            UniversalVariables.last_input = 'None'  # resetin selle 2ra, sest niisama tra. lheb vist vaja. fuck you 20.11.24
+
         # Update animation frame based on animation_timer and animation_speed
         self.animation_timer += 1
         sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index])
