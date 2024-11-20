@@ -155,55 +155,56 @@ class RenderPictures:
 
     # renderib k6ik objektide all, backgroundi,terraini, seinad
     def map_render(self):
-        RenderPictures.find_terrain_in_view(self)
+        if UniversalVariables.last_input != 'None':  # liikumine on toimunud ehk tuleb updateida terraininviewi..
+            RenderPictures.find_terrain_in_view(self)
 
-        many_choices = [0, 1, 107, 98, 99]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
+            many_choices = [0, 1, 107, 98, 99]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
 
-        for grid_info in RenderPictures.terrain_in_view.items():
+            for grid_info in RenderPictures.terrain_in_view.items():
 
-            surrounding_values = (None,)  # Valued mille järgi valib vajalikud tile-set'i pildid
-            image_name = None  # reset
-            grid, grid_ids = grid_info
+                surrounding_values = (None,)  # Valued mille järgi valib vajalikud tile-set'i pildid
+                image_name = None  # reset
+                grid, grid_ids = grid_info
 
-            x, y = grid
-            terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
-            terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
+                x, y = grid
+                terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
+                terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
 
-            object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
+                object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
 
-            if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
-                image_name = 'Water'
+                if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
+                    image_name = 'Water'
 
-            elif object_id in GameConfig.GROUND_IMAGE.value:
-                image_name = 'Ground'
-                object_id = 1
-                surrounding_values = (0,)
+                elif object_id in GameConfig.GROUND_IMAGE.value:
+                    image_name = 'Ground'
+                    object_id = 1
+                    surrounding_values = (0,)
 
-            elif object_id in GameConfig.MAZE_GROUND_IMAGE.value:
-                image_name = 'Maze_Ground'
-                object_id = 98
+                elif object_id in GameConfig.MAZE_GROUND_IMAGE.value:
+                    image_name = 'Maze_Ground'
+                    object_id = 98
 
-            elif object_id in GameConfig.FARMLAND_IMAGE.value:
-                image_name, object_id, surrounding_values = farming(self, x, y, grid)  # See on farming failist
+                elif object_id in GameConfig.FARMLAND_IMAGE.value:
+                    image_name, object_id, surrounding_values = farming(self, x, y, grid)  # See on farming failist
 
-            ### FIXME: STRING, Tileset on broken ???
-            if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
-            if image_name:
-                if object_id in many_choices:
-                    surroundings = TileSet.check_surroundings(self, y, x, surrounding_values)
-                    image_name = RenderPictures.select_choice(self, image_name,
-                                                              surroundings)  # m6nel asjal on mitu varianti.
+                ### FIXME: STRING, Tileset on broken ???
+                if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
+                if image_name:
+                    if object_id in many_choices:
+                        surroundings = TileSet.check_surroundings(self, y, x, surrounding_values)
+                        image_name = RenderPictures.select_choice(self, image_name,
+                                                                surroundings)  # m6nel asjal on mitu varianti.
 
-                # FIXME mdv, see see Tileset.determine ground image name returnib mingi surfaci kogu aeg...
-                # insane hack
-                if type(image_name) == pygame.surface.Surface:
-                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image_name, object_id)
-                    continue
+                    # FIXME mdv, see see Tileset.determine ground image name returnib mingi surfaci kogu aeg...
+                    # insane hack
+                    if type(image_name) == pygame.surface.Surface:
+                        RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image_name, object_id)
+                        continue
 
-                image = ImageLoader.load_image(image_name)
-                RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
+                    image = ImageLoader.load_image(image_name)
+                    RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
 
-        UniversalVariables.buffer_collision.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+            UniversalVariables.buffer_collision.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
 
     # See func renderib objecteid
     def object_render(self):
