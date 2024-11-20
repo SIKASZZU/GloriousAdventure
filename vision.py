@@ -112,7 +112,14 @@ def draw_ray(screen, ray, color, width):
     pygame.draw.line(screen, color, ray[0], ray[1], width)
 
 
+
+main_global     = None
+opposite_global = None
 def draw_light_source_and_rays(self, screen, position):
+    global opposite_global
+    global main_global
+
+    # funci sisesed variables
     light_source = position
     visible_points = []
     vision_step = 5
@@ -126,9 +133,13 @@ def draw_light_source_and_rays(self, screen, position):
         elif attack_key_tuple[3] == True:  UniversalVariables.last_input = 'd'
         else:                            UniversalVariables.last_input = 'w'
 
-    if len(UniversalVariables.last_input) == 3:
+    if len(UniversalVariables.last_input) >= 3 and main_global == None:
         main_angles = range(0, 360 + vision_step)
         opposite_angles = range(0, 0)
+
+    elif main_global != None and UniversalVariables.last_input == "None":
+        main_angles = main_global
+        opposite_angles = opposite_global
     
     elif UniversalVariables.last_input == 'wa':
         main_angles = range(135, 315)
@@ -155,9 +166,9 @@ def draw_light_source_and_rays(self, screen, position):
     elif UniversalVariables.last_input == 'd':
         main_angles = range(295, 415)
         opposite_angles = range(415, 656)
-    else:
-        main_angles = range(0, 360 + vision_step)
-        opposite_angles = range(0, 0)
+
+    opposite_global = opposite_angles
+    main_global = main_angles
 
     def calculate_angle(main_angles, opposite_angles):
         #TODO: fix this lag please lord help 
