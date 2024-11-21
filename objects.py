@@ -116,7 +116,9 @@ class ObjectManagement:
             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: amount
             Inventory.inventory[item] = amount
 
-        else: return
+        else: 
+            print(f'Item name: {item} not found and not added to inv!')
+            return
 
     @staticmethod
     def remove_object_from_inv(item):
