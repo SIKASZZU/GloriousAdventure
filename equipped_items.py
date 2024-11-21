@@ -52,6 +52,7 @@ def find_number_in_list_of_lists(list_of_lists):
 
 class ItemFunctionality:
     last_strength_read = str
+    maze_counter       = 0
 
     def update(self):
         ItemFunctionality.current_equipped(self)
@@ -87,6 +88,11 @@ class ItemFunctionality:
 
         equipped_item = UniversalVariables.current_equipped_item
         if equipped_item == 'Geiger':
+
+            if UniversalVariables.maze_counter != ItemFunctionality.maze_counter:
+                UniversalVariables.geiger_chosen_grid = None
+                ItemFunctionality.maze_counter = UniversalVariables.maze_counter
+
             strength = ItemFunctionality.find_signal_strength(self)
 
             # heli, kui strength tase muutub
