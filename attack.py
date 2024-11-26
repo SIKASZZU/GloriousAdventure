@@ -5,6 +5,7 @@ from camera import Camera
 from entity import Enemy
 from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
+from inventory import Inventory
 from objects import ObjectManagement
 import random
 
@@ -124,8 +125,8 @@ class AttackEnemy:
             
             # add enemy to dead enemy list
             Enemy.dead_enemy_list[enemy_name] = (x, y, False)
-            if UniversalVariables.debug_mode == True: user_input = input('Want a geiger to spawn? Y/n ')
-            if random.random() < 0.05 or UniversalVariables.debug_mode and user_input == 'Y':  # 5% chance
+            have_geiger = 'Geiger' in Inventory.inventory
+            if random.random() < 0.05 or have_geiger == False:  # 5% chance
                 Enemy.dead_enemy_list[enemy_name] = (x, y, True)
             
             del Enemy.path[enemy_name]
