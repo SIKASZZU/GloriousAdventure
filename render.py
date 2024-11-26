@@ -155,7 +155,8 @@ class RenderPictures:
 
     # renderib k6ik objektide all, backgroundi,terraini, seinad
     def map_render(self):
-        if UniversalVariables.last_input != 'None':  # liikumine on toimunud ehk tuleb updateida terraininviewi..
+        attacked_detected = UniversalVariables.attack_key_pressed[0]
+        if UniversalVariables.last_input != 'None' or attacked_detected == True:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
             RenderPictures.find_terrain_in_view(self)
 
             many_choices = [0, 1, 107, 98, 99]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
