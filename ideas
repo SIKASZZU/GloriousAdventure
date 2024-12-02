@@ -8,6 +8,16 @@ Legend:
 ideas:
 	water canteen - refill in glade water
 
+	ADD> enemy animations, spider like 
+	ADD> enemy movement ei oleks parim path vaid rohkem random. Random koordinaat (mitte grid) liitmised lahutamised.
+	Kui enemy on playeri peal ss liigub tema pealt eemale voi votab kinni
+			Kui enemy on playeri peal ss saab playerist kinni votta
+			player kui on kinni voetud ss laheb kauem aega ara jooksmisega
+
+	ADD> kui on vigastatud, ss jookseb aeglasemini.
+
+	ADD> doorid ei ole mitte hard coded vaid random.
+
 	ADD> vine blockid on lambist mazeis mille taha mangija saab ennast peita.
 	ADD> erinevad barreli tyybid // medical barrel (valge, punane rist), food barrel (praegune sobib ig), tool barrel (must, metalli v2rvi).
 	ADD>Vihm (erinevad tasemed, n6rk, tugev, vmdgi)
@@ -32,10 +42,6 @@ ideas:
 	FIX>See cooldown shadow tootab veidralt. Keyga playeri peale vajutades cooldown shadow on olemas, aga kui panna key slotti ss see cooldown shadow ei aktiveeru.
 	
 	FIX?>kui on itemid naug n2iteks doorid, ss v6iks olla mitu id'd yhe pildi kohta. ss ei pea tegema mitu erinevat itemit selle yhe pildi p2rast.
-
-	FIX > see wallide muutumine voiks kesta terve oo.
-		hetkel lihtsalt 150 korda muudab ning iga frame muudab yhe (tegelt 2)
-		see 150 v6iks jaotuda ilusti terve oo peale 2ra.
 
 	MAYBE?>playeril on sleepida vaja. nagu forestis on. Ja kui ta magab, ss on ta unenäos ja mängija saab mängida unenäos midagi, mingit teist storit edasi.
 	see unenägu peaks olema rõõmus ja tore võrreldes labürindiga. Kui ta ärkab üles, võib teha mingi rõõmu näidiku, ehk ss on ta motiveeritud tegelema ja pääsema välja.
