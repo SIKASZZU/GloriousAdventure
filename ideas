@@ -17,6 +17,7 @@ ideas:
 	ADD> kui on vigastatud, ss jookseb aeglasemini.
 
 	ADD> doorid ei ole mitte hard coded vaid random.
+
 	ADD> dooridel voiksid olla animatsioonid.
 
 	ADD> vine blockid on lambist mazeis mille taha mangija saab ennast peita.
@@ -36,6 +37,8 @@ ideas:
 	ADD> Audio. Kui wallid muutuvad oosel ss voiks olla mingi audio
 
 	ADD> ATTACK FUCKING ANIMATISIOON OLARIIII DAVAIII TEE ARA DAVAIIII
+
+	FIX> doore peaks olema rohkem kui ainult yks vmdgi. Hetkel kui avab doori juba olevasse mazei ss kaputt
 
 	FIX> praegu kood teeb object_listi ja collision_box_listi kogu aeg uuesti. Aga see loopib l2bi k6ikide itemite ning ei muutu.
 		V6iks teha, et korra alguses lihtsalt teeb need itemid 2ra ja ongi k6ik. Mis on ekraanil ja mis seal v6ib olla // selle m6tleb k6ik v2lja juba teiste listidega.
