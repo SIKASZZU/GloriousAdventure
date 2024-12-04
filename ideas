@@ -106,3 +106,4 @@ ideas:
 	Kui hiirega hoverid mingi objecti peal siis näitab selle hitboxxi naq mc on... Hitboxi WIDTH sõltub Hp'st -> nt kui full hp ss 4 ja kui pooled ss 2 ja kui pmst surnud ss 1 jne... you get the point..
 	'
 '	Terrain in view uuesti teha... Loopib liiga palju seals
+		kui map updateib ennast ss terraininview uuesti callida. 
