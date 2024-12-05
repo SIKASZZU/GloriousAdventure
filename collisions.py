@@ -194,53 +194,52 @@ class Collisions:
                                     Camera.reset_clicks(self)
                                     return
 
-                                else:
-                                    if Collisions.keylock == 0:
-                                        Collisions.keylock += 1
+                                if Collisions.keylock == 0:
+                                    Collisions.keylock += 1
 
-                                        # Sellega saab suuna kätte, '94: 3' - vasakule
-                                        locations = {95: 1, 97: 2, 94: 3,
-                                                        96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
-                                        location = locations[object_id]
+                                    # Sellega saab suuna kätte, '94: 3' - vasakule
+                                    locations = {95: 1, 97: 2, 94: 3,
+                                                    96: 4}  # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
+                                    location = locations[object_id]
 
-                                        grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+                                    grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
 
-                                        if UniversalVariables.first_time:
-                                            for _ in range(2):
+                                    if UniversalVariables.first_time:
+                                        for _ in range(2):
 
-                                                new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
-                                                UniversalVariables.map_list.insert(0, new_row)
+                                            new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
+                                            UniversalVariables.map_list.insert(0, new_row)
 
-                                                for row in range(39):
-                                                    self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
+                                            for row in range(39):
+                                                self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
 
-                                                for row in UniversalVariables.map_list:
-                                                    row.insert(0, 'place')
+                                            for row in UniversalVariables.map_list:
+                                                row.insert(0, 'place')
 
-                                                for row in self.terrain_data:
-                                                    for row_len in range(39):
-                                                        row.insert(0, None)
+                                            for row in self.terrain_data:
+                                                for row_len in range(39):
+                                                    row.insert(0, None)
 
-                                                # teleb playeri ja camera 6igesse kohta
-                                                UniversalVariables.player_x += 39 * UniversalVariables.block_size
-                                                UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                                                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
-                                                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
+                                            # teleb playeri ja camera 6igesse kohta
+                                            UniversalVariables.player_x += 39 * UniversalVariables.block_size
+                                            UniversalVariables.player_y += 39 * UniversalVariables.block_size
+                                            Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
+                                            Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
 
-                                            UniversalVariables.first_time = False
-                                            grid_x, grid_y = grid_x + 80, grid_y + 80
+                                        UniversalVariables.first_time = False
+                                        grid_x, grid_y = grid_x + 80, grid_y + 80
 
 
-                                        j = (grid_y // 39) * 39  # Y koordinaat
-                                        i = (grid_x // 39) * 39  # X kooridnaat
+                                    j = (grid_y // 39) * 39  # Y koordinaat
+                                    i = (grid_x // 39) * 39  # X kooridnaat
 
-                                        if location == 1 or location == 2:
-                                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id,
-                                                                                grid_y)  # Vaatab x coordinaati
-                                        else:  # 3, 4
-                                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
-                                                                                grid_y)  # Vaatab y coordinaati
-                                        Camera.reset_clicks(self)
+                                    if location == 1 or location == 2:  # top and bottom
+                                        AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id,
+                                                                            grid_y)  # Vaatab x coordinaati
+                                    else:  # left and right
+                                        AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
+                                                                            grid_y)  # Vaatab y coordinaati
+                                    Camera.reset_clicks(self)
 
                         if UniversalVariables.final_maze == True:
                             if UniversalVariables.portal_frames > 0:
