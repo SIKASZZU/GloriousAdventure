@@ -16,8 +16,6 @@ ideas:
 
 	ADD> kui on vigastatud, ss jookseb aeglasemini.
 
-	ADD> doorid ei ole mitte hard coded vaid random.
-
 	ADD> dooridel voiksid olla animatsioonid.
 
 	ADD> vine blockid on lambist mazeis mille taha mangija saab ennast peita.
@@ -107,3 +105,4 @@ ideas:
 	'
 '	Terrain in view uuesti teha... Loopib liiga palju seals
 		kui map updateib ennast ss terraininview uuesti callida. 
+	freeze time key
