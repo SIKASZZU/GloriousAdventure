@@ -415,9 +415,8 @@ class MapData:
         
         # func dfs teeb pathi, 98, mazei
         def dfs(row, col):
-            current_grid = maze[row, col] = 98
-            if current_grid not in GameConfig.CLOSED_DOOR_IDS.value or current_grid not in GameConfig.OPEN_DOOR_IDS.value:
-                current_grid = 98
+            if maze[row, col] not in GameConfig.CLOSED_DOOR_IDS.value and maze[row, col] not in GameConfig.OPEN_DOOR_IDS.value:
+                maze[row, col] = 98
 
             directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
             random.shuffle(directions)
@@ -437,15 +436,12 @@ class MapData:
         for i in range(1, size - 1):
             choice = random.choices([98, 99])[0]
             maze[size - 2, i] = choice
-        
 
-        current_id_of_door = maze[x[0]][x[1]]
         maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
 
         # FIXME: fix this shit variable x dogass
         x = start_door_grid[0]
         dfs(x[0], x[1])
-        maze[x[0]][x[1]] = current_id_of_door
 
         # Enne ust teeb pathway et see blocked ei oleks. FIXME: see ei ole reliable solution
         maze[size // 2, 1]            = 98
