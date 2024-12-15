@@ -254,9 +254,8 @@ class AddingMazeAtPosition:
             probabilities = [0.23, 0.43, 0.20, 0.10, 0.04]  # 100 % alati olema
 
         maze_type = np.random.choice(choices, p=probabilities)
-        maze_type = 'labyrinth_maze'
+        print("Next maze", maze_type, 'Kui maze ei tekkinud, ss map.pys vaadata maze_type functioni. Ilmselt listi, numpyarray kyhvel.')
 
-        print("Next maze", maze_type)
         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:  # left
             gridx, gridy = grid_main, grid_other

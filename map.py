@@ -49,7 +49,7 @@ class MapData:
         """ Creates start door using cursor grid data. """
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
-        print("Maze in createstartdoors, \n", maze)
+        print("Maze in createstartdoors, \n", maze, type(maze))
 
         size = MapData.maze_size
         door_tuple = Camera.left_click_on_screen(self)
@@ -286,9 +286,10 @@ class MapData:
                      for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
         size = len(maze)
+        maze = np.array(maze, dtype=object)  # Use dtype=object to handle None values # Teeb listi -> numpy arrayks.
 
-        maze = MapData.create_start_doors(self, maze, side)
-
+        print(type(maze), 'filetomaze')
+        maze, start_door_grid = MapData.create_start_doors(self, maze, side)
         # compiler bitching
         if side == None:
             pass
@@ -368,39 +369,45 @@ class MapData:
             row[0] = 99
             row[-1] = 99
 
-        maze = MapData.create_start_doors(self, maze, start_side)
+        print('before', type(maze))
+
+        maze = np.array(maze, dtype=object)
+        maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
+
+        print('after', type(maze))
+
 
         # Set the end points on the remaining three sides
-        sides = ['top', 'bottom', 'left', 'right']
-        sides.remove(start_side)
-        for side in sides:
+        exit_side = ['top', 'bottom', 'left', 'right']
+        exit_side.remove(start_side)
+        for side in exit_side:
             if side == 'left':
-                maze[size // 2][0] = "94"
-                maze[(size // 2) - 1][0] = "94"
+                maze[size // 2][0] = 94
+                maze[(size // 2) - 1][0] = 94
 
-                maze[size // 2][1] = "1"
-                maze[(size // 2) - 1][1] = "1"
+                maze[size // 2][1] = 1
+                maze[(size // 2) - 1][1] = 1
 
             elif side == 'top':
-                maze[0][size // 2] = "95"
-                maze[0][(size // 2) - 1] = "95"
+                maze[0][size // 2] = 95
+                maze[0][(size // 2) - 1] = 95
 
-                maze[1][size // 2] = "1"
-                maze[1][(size // 2) - 1] = "1"
+                maze[1][size // 2] = 1
+                maze[1][(size // 2) - 1] = 1
 
             elif side == 'right':
-                maze[size // 2][size - 1] = "96"
-                maze[(size // 2) - 1][size - 1] = "96"
+                maze[size // 2][size - 1] = 96
+                maze[(size // 2) - 1][size - 1] = 96
 
-                maze[size // 2][size - 2] = "1"
-                maze[(size // 2) - 1][size - 2] = "1"
+                maze[size // 2][size - 2] = 1
+                maze[(size // 2) - 1][size - 2] = 1
 
             elif side == 'bottom':
-                maze[size - 1][size // 2] = "97"
-                maze[size - 1][(size // 2) - 1] = "97"
+                maze[size - 1][size // 2] = 97
+                maze[size - 1][(size // 2) - 1] = 97
 
-                maze[size - 2][size // 2] = "1"
-                maze[size - 2][(size // 2) - 1] = "1"
+                maze[size - 2][size // 2] = 1
+                maze[size - 2][(size // 2) - 1] = 1
 
         # Convert string to integers and lists
         MapData.converted_maze = []
@@ -582,7 +589,7 @@ class MapData:
 
 
         elif item == 'abandoned_glade':
-            return MapData.abandoned_glade_generation(start_side)
+            return MapData.abandoned_glade_generation(self, start_side)
 
         elif item == 'glade':
             # Glade'il pole start side
