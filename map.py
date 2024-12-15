@@ -222,16 +222,24 @@ class MapData:
         return None
 
 
-    def search_paths(self, maze, type_of_maze, start_side, start_door_grid):
+    def search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point=None):
         """ maze is list numpy.ndarray . type_of_maze is block_maze, labyrinth_maze, final_maze, blade_maze etc. """
 
+        if exit_point != None:
+            end_positions = [
+                (exit_point[0]), (exit_point[1])
+            ]
+            
+        else:
+            end_positions = [
+                (19, 38), (20, 38),
+                (1, 19), (1, 20),
+                (19, 1), (20, 1),
+                (38, 19), (38, 20)
+            ]
+            
         special_positions = []
-        start_positions = [(38, 19), (38, 20)]  # y, x
-        end_positions = [(19, 38), (20, 38),
-                         (1, 19), (1, 20),
-                         (19, 1), (20, 1),
-                         (38, 19), (38, 20)]
-        
+        start_positions = [start_door_grid[0], start_door_grid[1]]  # y, x
         # Check paths from each start to each end and special positions
         for start in start_positions:
             for end in end_positions + special_positions:
@@ -244,8 +252,8 @@ class MapData:
                     MapData.create_save_puzzle = True
                     
                     # check visually, kas path on valid v6i mitte.
-                    for tuple in path:
-                        maze[tuple[0]][tuple[1]] = 2
+                    # for tuple in path:
+                    #     maze[tuple[0]][tuple[1]] = 2
         
         if MapData.create_save_puzzle == False:
             if type_of_maze == 'block_maze':
@@ -473,9 +481,6 @@ class MapData:
                 maze[size - 1, size // 2] = 97
                 maze[size - 1, size // 2 - 1] = 97
 
-        for r in maze:
-            print(r)
-
         MapData.create_maze_items(maze, size)
         MapData.search_paths(self, maze, type_maze, start_side, start_door_grid)
 
@@ -535,6 +540,7 @@ class MapData:
             end_0 = (size - 1, random_position    )
             end_1 = (size - 1, random_position + 1)
             maze[end_0], maze[end_1] = 97, 97
+        exit_point = (end_0, end_1)
 
         # muudab maze datat, et string -> int -> list
         MapData.converted_maze = []
@@ -546,7 +552,7 @@ class MapData:
         maze = MapData.converted_maze
 
         MapData.create_maze_items(maze, size)
-        MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid)
+        MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
 
         if MapData.create_save_puzzle:
             MapData.create_save_puzzle = False
