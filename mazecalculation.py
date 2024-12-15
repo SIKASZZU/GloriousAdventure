@@ -48,7 +48,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(maze_type, 'bottom')  # uks läheb alla - maze ülesse
+            new_maze = MapData.get_data(self, maze_type, 'bottom')  # uks läheb alla - maze ülesse
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -107,7 +107,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(maze_type, 'top')
+            new_maze = MapData.get_data(self, maze_type, 'top')
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -155,7 +155,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(maze_type, 'right')  # uks tuleb paremale - maze tuleb vasakule
+            new_maze = MapData.get_data(self, maze_type, 'right')  # uks tuleb paremale - maze tuleb vasakule
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -211,7 +211,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(maze_type, 'left')  # uks tuleb vasakule - maze paremale
+            new_maze = MapData.get_data(self, maze_type, 'left')  # uks tuleb vasakule - maze paremale
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -241,7 +241,7 @@ class AddingMazeAtPosition:
         if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
             # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
             choices = ['labyrinth_maze', 'block_maze', 'abandoned_glade']
-            probabilities = [0.09, 0.08, 0.83]  # 100 % alati olema
+            probabilities = [0.09, 0.83, 0.08]  # 100 % alati olema
 
         elif UniversalVariables.final_maze:
             # 30 % 'labyrinth_maze' ja 60 % 'block_maze' ja 10 % 'blade_maze'
@@ -254,7 +254,9 @@ class AddingMazeAtPosition:
             probabilities = [0.23, 0.43, 0.20, 0.10, 0.04]  # 100 % alati olema
 
         maze_type = np.random.choice(choices, p=probabilities)
+        maze_type = 'labyrinth_maze'
 
+        print("Next maze", maze_type)
         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
         if location == 3:  # left
             gridx, gridy = grid_main, grid_other
