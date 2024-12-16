@@ -167,6 +167,9 @@ def draw_light_source_and_rays(self, screen, position):
         main_angles = range(295, 415)
         opposite_angles = range(415, 656)
 
+    # Kui hoiad kõiki key'si all
+    else: opposite_angles, main_angles = range(0, 360), range(0, 360)
+
     opposite_global = opposite_angles
     main_global = main_angles
 
