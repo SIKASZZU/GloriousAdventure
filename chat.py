@@ -15,6 +15,7 @@ BG_COLOR = (30, 30, 30)
 TEXT_COLOR = (255, 255, 255)
 ACTIVE_TEXT_COLOR = (0, 255, 0)  # Active suggestion color (e.g., bright green)
 SHADOW_TEXT_COLOR = (100, 100, 100)  # Shadow suggestion color (e.g., gray)
+SHADOW_SUGGESTION_COLOR = (50, 50, 50)  # Shadow suggestion color (e.g., gray)
 INPUT_COLOR = (50, 50, 50)
 INPUT_TEXT_COLOR = (255, 255, 255)
 CHAT_BG_COLOR = (40, 40, 40)
@@ -219,16 +220,16 @@ while True:
                     draw_text(screen, suggestions[suggestion_index], (CHAT_X + 10, start_y),
                               SHADOW_TEXT_COLOR)  # Active suggestion in GRAY
                     draw_text(screen, suggestions[(suggestion_index + 1) % num_suggestions],
-                              (CHAT_X + 10, start_y + FONT_SIZE + 5), TEXT_COLOR)
+                              (CHAT_X + 10, start_y + FONT_SIZE + 5), SHADOW_SUGGESTION_COLOR)
 
                 else:
                     # When there are 3 or more suggestions, show them all without shifting
                     draw_text(screen, suggestions[suggestion_index], (CHAT_X + 10, start_y),
                               SHADOW_TEXT_COLOR)  # Active suggestion in GRAY
                     draw_text(screen, suggestions[(suggestion_index + 1) % num_suggestions],
-                              (CHAT_X + 10, start_y + FONT_SIZE + 5), TEXT_COLOR)
+                              (CHAT_X + 10, start_y + FONT_SIZE + 5), SHADOW_SUGGESTION_COLOR)
                     draw_text(screen, suggestions[(suggestion_index + 2) % num_suggestions],
-                              (CHAT_X + 10, start_y + 2 * (FONT_SIZE + 5)), TEXT_COLOR)
+                              (CHAT_X + 10, start_y + 2 * (FONT_SIZE + 5)), SHADOW_SUGGESTION_COLOR)
 
             # Input text
             draw_text(screen, input_text, (CHAT_X + 10, CHAT_Y + CHAT_HEIGHT + 10), text_color)
