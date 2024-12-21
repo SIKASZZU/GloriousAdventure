@@ -124,35 +124,55 @@ class Enemy:
             return True
             
     def find_path_bfs(self, start, end):
-        """ Breadth-First Search algorithm to find a path from start to end in the maze. """
+        """ Breadth-First Search algorithm with randomness to create more natural AI movement. """
 
         try:
+            # Check if the player is in a restricted area
             if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in Enemy.combined_restricted_areas:
                 return None
             else:
                 queue = deque([(start, [])])
                 visited = set()
-                directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+                # Define primary directions and shuffle them for randomness
+                base_directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+                directions = base_directions.copy()
+                random.shuffle(directions)
 
                 while queue:
                     (x, y), path = queue.popleft()
+
+                    # If the current position is the target, return the path
                     if (x, y) == end:
                         return path
 
                     if (x, y) not in visited:
                         visited.add((x, y))
+
+                        # Randomly shuffle directions at each step for less predictability
+                        random.shuffle(directions)
+
                         for dx, dy in directions:
                             new_x, new_y = x + dx, y + dy
                             if Enemy.is_valid(self, new_x, new_y):
                                 new_path = path + [(new_x, new_y)]
-                                queue.append(((new_x, new_y), new_path))
+
+                                # Add randomness to enqueue order
+                                if random.random() > 0.3:  # 70% chance to follow this path
+                                    queue.append(((new_x, new_y), new_path))
+                                else:
+                                    queue.appendleft(((new_x, new_y), new_path))
 
                 return None
-        except IndexError: pass
+        except IndexError:
+            pass
 
     @staticmethod
     def move(self):
         """ Move enemies based on their individual decisions."""
+
+        enemy_speed = UniversalVariables.enemy_speed
+
         for enemy_name, enemy_info in Enemy.spawned_enemy_dict.items():
             image, x, y, HP = enemy_info
             direction = None
@@ -187,19 +207,19 @@ class Enemy:
                         next_grid = ((Enemy.path[enemy_name][0][1] - enemy_grid[1]), (Enemy.path[enemy_name][0][0] - enemy_grid[0]))
 
                         # Move enemy based on the next grid
-                        next_x += (next_grid[0] * UniversalVariables.enemy_speed)
-                        next_y += (next_grid[1] * UniversalVariables.enemy_speed)
+                        next_x += (next_grid[0] * enemy_speed)
+                        next_y += (next_grid[1] * enemy_speed)
                 
                 elif enemy_grid == player_grid:  # playeri ja mangija grid on smad
                     # Otsib playerit koordinaatidega
                     if direction == 'right':
-                        next_x += UniversalVariables.enemy_speed
+                        next_x += enemy_speed
                     elif direction == 'left':
-                        next_x -= UniversalVariables.enemy_speed
+                        next_x -= enemy_speed
                     elif direction == 'down':
-                        next_y += UniversalVariables.enemy_speed
+                        next_y += enemy_speed
                     elif direction == 'up':
-                        next_y -= UniversalVariables.enemy_speed
+                        next_y -= enemy_speed
 
                 next_x, next_y = round(next_x, 3), round(next_y, 3)  # performance gain
             
