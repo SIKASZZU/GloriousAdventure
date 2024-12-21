@@ -4,6 +4,8 @@ import pygame
 import sys
 import os
 import jurigged
+import hashlib
+
 
 jurigged.watch()  # hot reload
 
@@ -72,6 +74,7 @@ class Game:
         self.restrict_looping = False
 
         self.terrain_data = None
+        self.old_terrain_data = None
         self.click_position = ()
         self.click_window_x = None
         self.click_window_y = None
@@ -113,6 +116,15 @@ class Game:
             ObjectManagement.render_collision_box()
             Drop.display_all_floating_pouch_hitboxes()
 
+    def check_for_update(self):
+
+        def hash_matrix(matrix):
+            return hashlib.md5(str(matrix).encode()).hexdigest()
+
+        if hash_matrix(self.terrain_data) != hash_matrix(self.old_terrain_data):
+            UniversalVariables.update_view = True
+            self.old_terrain_data = [row[:] for row in self.terrain_data]
+    
     def call_technical(self):
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
@@ -132,6 +144,7 @@ class Game:
         ItemFunctionality.update(self)
 
     def call_visuals(self):
+        Game.check_for_update(self)
         RenderPictures.map_render(self)
         UniversalVariables.screen.blit(UniversalVariables.buffer_collision, (0, 0))
 

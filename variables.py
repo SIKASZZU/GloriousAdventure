@@ -235,7 +235,8 @@ class UniversalVariables():
 
     offset_x: int = 0
     offset_y: int = 0
-
+    update_view = True
+    
     # ******************** Enemy ******************** #
     enemy_spawnpoint_list = set()
 
