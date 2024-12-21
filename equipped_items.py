@@ -53,9 +53,16 @@ def find_number_in_list_of_lists(list_of_lists):
 class ItemFunctionality:
     last_strength_read = str
     maze_counter       = 0
+    strength_counter   = 0
 
     def update(self):
+        if ItemFunctionality.strength_counter > 0:
+            ItemFunctionality.strength_counter -= 1
+            return
+
         ItemFunctionality.current_equipped(self)
+        return
+
 
     def find_signal_strength(self):
         """ Vaatab pathi yhe random ukseni ning selle jargi returnib. """
@@ -71,14 +78,14 @@ class ItemFunctionality:
         grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
         
-        # FIXME: hetkel otsib alati uuesti pathi!!
-        # pathfind player -> random chosen door        
+        # pathfind player -> random chosen door
         player_grid = (grid_y, grid_x)
         path = Enemy.find_path_bfs(self, UniversalVariables.geiger_chosen_grid, player_grid)
-        if path is None:
-            return False
-        
+
         # RETURN SIGNAL STRENGTH
+        if not path:
+            return None    # Path doesn't exist
+
         if len(path) >= 50:        return 'low'     # long path
         elif 50 > len(path) >= 10: return 'medium'  
         elif 10 > len(path) >= 1:  return 'high'    # short path
@@ -101,12 +108,21 @@ class ItemFunctionality:
                 ... # audio
 
             # peamine heli pathi pikkuse tottu
+            if not strength:
+                UniversalVariables.print_debug_text('None')
+                ItemFunctionality.strength_counter = 500
+                ... # Ootab 5 sekki - teeb resa vms
+
             if strength == 'low':
+                UniversalVariables.print_debug_text('low')
                 ... # audio
                 
             elif strength == 'medium':
+                UniversalVariables.print_debug_text('low')
                 ... # audio
+
             elif strength == 'high':
+                UniversalVariables.print_debug_text('low')
                 ... # audio
 
             # heli, mis on alati
