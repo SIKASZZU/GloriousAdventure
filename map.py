@@ -54,7 +54,7 @@ class MapData:
         door_grid_map  = Camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:
-            door_grid = (size // 2, size // 2)
+            door_grid = (size // 2 - 1, size // 2 - 1)
 
         else:
             door_grid = (door_grid_map[0] % 39, door_grid_map[1] % 39)  # kuna siin on 40x40 ala ss door grid arvutatakse just 40x40 ala sisse
