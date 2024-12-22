@@ -1,8 +1,10 @@
 import pygame
 
 from variables import UniversalVariables
-from collisions import find_number_in_list_of_lists
 from render import RenderPictures
+from functions import UniversalFunctions
+from audio import Tile_Sounds
+from text import Fading_text
 
 
 class Final_Maze:
@@ -29,7 +31,7 @@ class Final_Maze:
     def change_ground(self) -> None:
         """Muudab groundi None'iks"""
         
-        original_x, original_y = find_number_in_list_of_lists(self.terrain_data, 1000)
+        original_x, original_y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 1000)
         
         UniversalVariables.ui_elements.append("""   Thanks for playing.   """)
 
@@ -103,8 +105,49 @@ class Final_Maze:
 
         return map_grid
 
+    def portal(self):
+
+        if UniversalVariables.final_maze == False:
+            return
+        if UniversalVariables.portal_frames > 0:
+            _ = UniversalVariables.portal_frames
+            for i in range(_):
+                UniversalFunctions.gray_yellow(self, 'yellow')
+                UniversalVariables.portal_frames -= 1
+
+                if i == 7:
+                    UniversalVariables.portal_frames = 0
+                    break
+
+        # Teeb portali valmis
+        if not UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data, 982) >= 8:
+            return
+        if UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data, 555):
+            return
+
+        else:
+            text = (
+                    "As the final key slides into place, the portal shimmers open, "
+                    "revealing its arcane depths. A resounding hum fills the air, "
+                    "echoing through the labyrinth as the portal's magic pulses with newfound life."
+                )
+            if text not in Fading_text.shown_texts:
+                UniversalVariables.ui_elements.append(text)
+
+            UniversalVariables.portal_list = []
+            Tile_Sounds.portal_open_audio(self)
+            UniversalFunctions.yellow_green(self, 'green')
+            x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 555)
+            self.terrain_data[x+1][y] = 1000
+            portal_y, portal_x =\
+                ((x+1) * UniversalVariables.block_size) + UniversalVariables.block_size / 2,\
+                (y * UniversalVariables.block_size) + UniversalVariables.block_size / 2
+
+            UniversalVariables.portal_list.append((portal_x, portal_y))
+
     def update(self) -> None:
         """Update final maze state."""
+        
         Final_Maze.handle_portal_interaction(self)
         if UniversalVariables.cutscene:
             Final_Maze.change_ground(self)

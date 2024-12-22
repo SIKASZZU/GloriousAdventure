@@ -1,27 +1,25 @@
 # when my code is returning values I can't even explain (theory can only take you so far) - Robert Oppenheimer
 
+# Built-in, downloaded modules
 import pygame
 import sys
 import os
 import jurigged
 import hashlib
 
-
-jurigged.watch()  # hot reload
-
-# Import other modules
+# Other modules
 import vision
 from entity import Enemy
 from variables import UniversalVariables
-from camera import Camera  # box_target_camera
-from render import RenderPictures, ObjectCreation  # render, creating_lists
+from camera import Camera
+from render import RenderPictures, ObjectCreation
 from event_handler import Event_handler
-from map import MapData  # glade_creation, map_list_to_map
-from objects import ObjectManagement  # place_and_render_object
+from map import MapData
+from objects import ObjectManagement
 from update import EssentialsUpdate, PlayerUpdate
-from inventory import Inventory  # handle_mouse_click, render_craftable_items
-from collisions import Collisions  # check_collisions, collision_terrain, collision_hitbox
-from audio import Player_audio  # player_audio_update
+from inventory import Inventory
+from collisions import Collisions
+from audio import Player_audio
 from components import Player
 from blade import change_blades
 from final_maze import Final_Maze
@@ -35,6 +33,10 @@ from cooking import Cooking
 from maze_changes import MazeChanges
 from attack import Attack
 from dropping import Drop
+from interactions import Interaction
+
+
+jurigged.watch()  # hot reload
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -132,7 +134,7 @@ class Game:
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
-        Collisions.change_map_data(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         MazeChanges.change_maze(self)
 
         vision.find_boxes_in_window()
@@ -190,7 +192,7 @@ class Game:
         UniversalVariables.blits_sequence_objects = []
 
     def refresh_loop(self):
-        Collisions.keylock = 0
+        Interaction.keylock = 0
         Game.add_counts()  # lisa countid juure uue loopi alguse puhul
 
         current_fps = self.clock.get_fps()
@@ -216,7 +218,7 @@ class Game:
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
 
-    def game_logic(self):
+    def logic(self):
         self.reset_lists()
         self.call_technical()
         self.call_visuals()
@@ -244,24 +246,26 @@ class Game:
             # print(self.player)
 
 
+    def state(self):
+
+        # Vaatab kas mäng on tööle pandud või mitte
+        if Menu.game_state:
+            Menu.main_menu(self)
+            return True
+
+        # Vaatab kas mäng on pausi peale pandud või mitte
+        if PauseMenu.game_paused:
+            PauseMenu.settings_menu(self)
+            return True
+        
+        return False
+
 
     def run(self):
         self.load_variables()
         while True:
             self.events()
 
-            # Vaatab kas mäng on tööle pandud või mitte
-            if Menu.game_state:
-                Menu.main_menu(self)
-                continue
+            if self.state() == True:  continue
 
-            # Vaatab kas mäng on pausi peale pandud või mitte
-            if PauseMenu.game_paused:
-                PauseMenu.settings_menu(self)
-                continue
-
-            self.game_logic()
-
-if __name__ == "__main__":
-    game = Game()
-    game.run()
+            self.logic()
