@@ -49,24 +49,19 @@ class MapData:
         """ Creates start door using cursor grid data. """
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
-        print("Maze in createstartdoors, \n", maze, type(maze))
-
         size = MapData.maze_size
         door_tuple = Camera.left_click_on_screen(self)
         door_grid_map  = Camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
-        print(door_tuple, door_grid_map, size, start_side)
-        # FIXME: millegi hiinlase pepu parast see click doorile 2 blocki vahem kui peab olema.
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:
             door_grid = (size // 2, size // 2)
 
         else:
             door_grid = (door_grid_map[0] % 39, door_grid_map[1] % 39)  # kuna siin on 40x40 ala ss door grid arvutatakse just 40x40 ala sisse
-            print('door', door_grid)
+
         # Kui player vajutab parempoolsele uksele, ss addition fixib selle, et uue ukse location jaaks samaks!
         addition = MapData.check_for_door(self, start_side, door_grid_map)
         if addition == None:  addition = 1
-        print(addition)
 
         # Set the start point
         if start_side == 'left':
@@ -288,7 +283,6 @@ class MapData:
         size = len(maze)
         maze = np.array(maze, dtype=object)  # Use dtype=object to handle None values # Teeb listi -> numpy arrayks.
 
-        print(type(maze), 'filetomaze')
         maze, start_door_grid = MapData.create_start_doors(self, maze, side)
         # compiler bitching
         if side == None:
@@ -368,14 +362,8 @@ class MapData:
         for row in maze:
             row[0] = 99
             row[-1] = 99
-
-        print('before', type(maze))
-
         maze = np.array(maze, dtype=object)
         maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
-
-        print('after', type(maze))
-
 
         # Set the end points on the remaining three sides
         exit_side = ['top', 'bottom', 'left', 'right']
