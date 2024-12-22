@@ -151,3 +151,5 @@ class Final_Maze:
         Final_Maze.handle_portal_interaction(self)
         if UniversalVariables.cutscene:
             Final_Maze.change_ground(self)
+
+        Final_Maze.portal(self)

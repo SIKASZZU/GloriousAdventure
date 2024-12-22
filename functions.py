@@ -44,7 +44,7 @@ class UniversalFunctions:
 
         elif color == 'green':
             for i in range(8):
-                x, y = self.find_number_in_list_of_lists(self.terrain_data, 550)
+                x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 550)
 
-                UniversalFunctions.terrain_data[x][y] = 555
+                self.terrain_data[x][y] = 555
                 Camera.reset_clicks(self)
