@@ -198,8 +198,12 @@ class UniversalVariables():
     object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
 
     # ******************** VISION ******************** #
+    base_light_range: int = 420
+    base_opposite_light_range: int = player_width
+
     light_range: int = 420
-    opposite_light_range: int = player_width // 1.5  # vision.py overwritib selle. Line 51 vmdgi
+    opposite_light_range: int = player_width
+
     walls: list = []  # Collision boxide seinad
     last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
