@@ -113,7 +113,7 @@ class Game:
         UniversalVariables()
 
     def render_boxes():
-        if (UniversalVariables.render_boxes_counter % 2) != 0:
+        if UniversalVariables.render_boxes_counter == True:
             ObjectManagement.render_interaction_box()
             ObjectManagement.render_collision_box()
             Drop.display_all_floating_pouch_hitboxes()

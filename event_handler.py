@@ -62,35 +62,27 @@ class Event_handler:
                     
     def check_pressed_keys(self):
         keys = pygame.key.get_pressed()
-
         arrow_keys = (keys[pygame.K_UP], keys[pygame.K_DOWN], keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
 
-        if UniversalVariables.debug_mode == True:
+        keybinds = {
+            pygame.K_h: lambda: setattr(UniversalVariables, 'render_boxes_counter',
+                                        not UniversalVariables.render_boxes_counter),
+            pygame.K_j: lambda: setattr(vision, 'vision_count', not vision.vision_count),
+            pygame.K_g: lambda: setattr(UniversalVariables, 'fps_lock', not UniversalVariables.fps_lock),
+        }
 
-
-            # H key, HITBOX SHOW
-            if keys[pygame.K_h] and not self.h_pressed:
-                self.h_pressed = True
-                UniversalVariables.render_boxes_counter += 1
-            elif not keys[pygame.K_h]: self.h_pressed = False
-
-            # J KEY, LIGHT ON/OFF
-            if keys[pygame.K_j] and not self.j_pressed:
-                self.j_pressed = True
-                vision.vision_count += 1
-            elif not keys[pygame.K_j]: self.j_pressed = False
-            
-            # G KEY, LIGHT ON/OFF
-            if keys[pygame.K_g] and not self.g_pressed:
-                self.g_pressed = True
-                UniversalVariables.fps_lock = not UniversalVariables.fps_lock
-            elif not keys[pygame.K_g]: self.g_pressed = False
-
-        # ARROW KEYS (ATTACK KEYS)
+        if UniversalVariables.debug_mode:
+            for key, action in keybinds.items():
+                key_pressed_attr = f'{key}_pressed'
+                if keys[key] and not getattr(self, key_pressed_attr, False):
+                    setattr(self, key_pressed_attr, True)
+                    action()
+                elif not keys[key]:
+                    setattr(self, key_pressed_attr, False)
 
         if any(arrow_keys):
-            UniversalVariables.attack_key_pressed = (True, (arrow_keys))
-            
+            UniversalVariables.attack_key_pressed = (True, arrow_keys)
+
             if keys[pygame.K_UP]:
                 Player.attack(self, 'up')
             elif keys[pygame.K_DOWN]:

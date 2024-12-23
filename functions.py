@@ -1,14 +1,29 @@
 from camera import Camera
+import random
 
 
 class UniversalFunctions:
-    def find_number_in_list_of_lists(list_of_lists, number):
-        for row_index, sublist in enumerate(list_of_lists):
-            for col_index, element in enumerate(sublist):
-                if element == number:
-                    return row_index, col_index  # Number found, return its coordinates
-        return None, None  # Number not found, return None
+    def find_number_in_list_of_lists(list_of_lists, number, random_indexes=False):
+        " Arg random on selleks, kui tahta listist leida suvalisi number indexeid. "
 
+        if random_indexes == False:
+            for row_index, sublist in enumerate(list_of_lists):
+                for col_index, element in enumerate(sublist):
+                    if element == number:
+                        return row_index, col_index  # Number found, return its coordinates
+            return None, None  # Number not found, return None
+        
+        else:
+            # Collect all coordinates where the element matches the target number
+            coordinates = [
+                (row_index, col_index)
+                for row_index, sublist in enumerate(list_of_lists)
+                for col_index, element in enumerate(sublist)
+                if element == number
+                ]
+            print(coordinates)
+            # Return a random coordinate if the list is not empty
+            return random.choice(coordinates) if coordinates else (None, None)
 
     def count_occurrences_in_list_of_lists(list_of_lists, number):
         count = 0

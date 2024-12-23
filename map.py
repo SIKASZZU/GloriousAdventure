@@ -9,6 +9,7 @@ import copy
 from variables import UniversalVariables
 from variables import GameConfig
 from camera import Camera
+from functions import UniversalFunctions
 
 
 def resource_path(relative_path):
@@ -256,10 +257,37 @@ class MapData:
                 
             elif type_of_maze == 'labyrinth_maze':
                 maze = MapData.labyrinth_maze_generation(self, start_side)
-            MapData.search_paths(self, maze)
+            MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
 
 
-    ### SIIT ALGAB MAZEIDE LOOMISE FUNCID
+    def buffer_doors(maze, first_door=None, second_door=None, start_side=None):
+        if first_door[0] % 39 == 0 and start_side == 'bottom':
+            maze[first_door[0] - 2, first_door[1]    ] = 2
+            maze[first_door[0] - 1, first_door[1]    ] = 2
+            maze[first_door[0] - 2, second_door[1]   ] = 2
+            maze[first_door[0] - 1, second_door[1]   ] = 2
+
+        elif first_door[0] % 39 == 0 and start_side == 'top':
+            maze[first_door[0] + 2, first_door[1]    ] = 2
+            maze[first_door[0] + 1, first_door[1]    ] = 2
+            maze[first_door[0] + 2, second_door[1]   ] = 2
+            maze[first_door[0] + 1, second_door[1]   ] = 2
+
+
+        elif first_door[1] % 39 == 0 and start_side == 'right':
+            maze[first_door[0]     , first_door[1] - 2] = 2
+            maze[first_door[0]     , first_door[1] - 1] = 2
+            maze[second_door[0]    , first_door[1] - 2] = 2
+            maze[second_door[0]    , first_door[1] - 1] = 2
+
+        elif first_door[1] % 39 == 0 and start_side == 'left':
+            maze[first_door[0]     , first_door[1] + 2] = 2
+            maze[first_door[0]     , first_door[1] + 1] = 2
+            maze[second_door[0]    , first_door[1] + 2] = 2
+            maze[second_door[0]    , first_door[1] + 1] = 2
+
+
+    ### SIIT ALGAB MAZEIDE LOOMISE FUNCID  ###
 
     def glade_creation():
         glade_file_path = resource_path('glade.txt')
@@ -491,29 +519,21 @@ class MapData:
         noise = MapData.block_maze_noise((size, size), resolution)
         noise = MapData.block_maze_noise((size, size), resolution)
         noise_resized = resize(noise, (size, size), mode='reflect')
-        maze = np.where(noise_resized > np.percentile(noise_resized, 75), 99,
-                        98)  # threshold adjusted to create more walls
-
-        # outer walls one block in must be pathway, value 98.
-        for row in range(size):
-            maze[row][1] = 98
-            maze[row][size - 2] = 98
-
-        for col in range(size):
-            maze[1][col] = 98
-            maze[size - 2][col] = 98
+        maze = np.where(noise_resized > np.percentile(noise_resized, 75), 99, 98)
 
         maze[0, :] = maze[-1, :] = 99
         maze[:, 0] = maze[:, -1] = 99
 
         maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
 
+        first_door, second_door = start_door_grid[0], start_door_grid[1]
+        MapData.buffer_doors(maze, first_door, second_door, start_side)
+
         # Set the exit for random side
         sides = ['top', 'bottom', 'left', 'right']
         sides.remove(start_side)
         exit_side = random.choice(sides)
         random_position = random.randint(2, size-3) # 0 kuni 39 on tegelikult, size on 40 ehk 40-3 peaks olema solid failsafe 
-        print('Exit door at', random_position, exit_side)
 
         # Set the exit point
         if exit_side == 'left':
@@ -535,8 +555,13 @@ class MapData:
             end_0 = (size - 1, random_position    )
             end_1 = (size - 1, random_position + 1)
             maze[end_0], maze[end_1] = 97, 97
+        
         exit_point = (end_0, end_1)
+        print('Exit at', exit_point, exit_side)
 
+        first_exit_door, second_exit_door = exit_point[0], exit_point[1]
+        MapData.buffer_doors(maze, first_exit_door, second_exit_door, exit_side)
+        
         # muudab maze datat, et string -> int -> list
         MapData.converted_maze = []
         for row in maze:

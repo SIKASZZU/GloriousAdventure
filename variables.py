@@ -246,7 +246,7 @@ class UniversalVariables():
     ghost_hp = 8
 
     # ******************** Counters ******************** #
-    render_boxes_counter: int = 0
+    render_boxes_counter: bool = True
 
     # ******************** Cooking ******************** #
     station_capacity = 24  # Max raw ja cooked item'ite kogus cooking station'is

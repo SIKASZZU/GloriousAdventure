@@ -2,7 +2,7 @@ from variables import UniversalVariables, GameConfig
 import pygame
 import math
 
-vision_count = 0
+vision_count: bool = True
 
 def find_boxes_in_window():
     UniversalVariables.walls = []
@@ -39,7 +39,7 @@ def get_line_segment_intersection(p0, p1, p2, p3):
     return None  # No collision
 
 def draw_shadows(self, screen, visible_points):
-    shadow_color = 0 if UniversalVariables.debug_mode and (vision_count % 2) == 0 else 255
+    shadow_color = 0 if UniversalVariables.debug_mode and vision_count == True else 255
 
     self.shadow_mask = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     self.shadow_mask.fill((0, 0, 0, shadow_color))

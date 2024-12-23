@@ -106,3 +106,5 @@ ideas:
 '	Terrain in view uuesti teha... Loopib liiga palju seals
 		kui map updateib ennast ss terraininview uuesti callida. 
 	freeze time key
+
+	kui jaab mazei sisse, ss ilmsetl knockouti ara ja arkab infected yles

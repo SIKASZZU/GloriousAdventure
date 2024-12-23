@@ -184,7 +184,7 @@ class PlayerUpdate:
                                                            UniversalVariables.block_size, UniversalVariables.block_size)
 
         # renderib playeri hitboxi
-        if (UniversalVariables.render_boxes_counter % 2) != 0 and UniversalVariables.debug_mode:
+        if UniversalVariables.render_boxes_counter == True and UniversalVariables.debug_mode:
             pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
