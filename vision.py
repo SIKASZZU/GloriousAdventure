@@ -47,8 +47,8 @@ def draw_shadows(self, screen, visible_points):
     player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
     player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
-    UniversalVariables.light_range = 420
-    UniversalVariables.opposite_light_range = UniversalVariables.player_width
+    UniversalVariables.light_range = UniversalVariables.base_light_range
+    UniversalVariables.opposite_light_range = UniversalVariables.base_opposite_light_range
     player_cone_light_strenght = self.daylight_strength
 
     try:
@@ -176,7 +176,7 @@ def draw_light_source_and_rays(self, screen, position):
     def calculate_angle(main_angles, opposite_angles):
         #TODO: fix this lag please lord help 
         light_range = UniversalVariables.light_range
-        lowest_angle  = min(main_angles.start, opposite_angles.start)
+        lowest_angle = min(main_angles.start, opposite_angles.start)
         biggest_angle = max(main_angles.stop, opposite_angles.stop)
         
         for angle in range(lowest_angle, biggest_angle, vision_step):
