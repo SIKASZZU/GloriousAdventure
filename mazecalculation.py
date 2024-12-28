@@ -65,7 +65,7 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
+            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
             Inventory.calculate(self, calc_slots_only=True)
             return
@@ -123,7 +123,7 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
+            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
             Inventory.calculate(self, calc_slots_only=True)
             return
@@ -172,7 +172,7 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
+            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
             Inventory.calculate(self, calc_slots_only=True)
             return
@@ -228,7 +228,7 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             ObjectManagement.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra enemy spawns
+            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
             Inventory.calculate(self, calc_slots_only=True)
             return

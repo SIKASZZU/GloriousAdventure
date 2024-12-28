@@ -8,10 +8,10 @@ Legend:
 ideas:
 	water canteen - refill in glade water
 
-	ADD> enemy animations, spider like 
-	ADD> enemy movement ei oleks parim path vaid rohkem random. Random koordinaat (mitte grid) liitmised lahutamised.
-	Kui enemy on playeri peal ss liigub tema pealt eemale voi votab kinni
-			Kui enemy on playeri peal ss saab playerist kinni votta
+	ADD> entity animations, spider like 
+	ADD> entity movement ei oleks parim path vaid rohkem random. Random koordinaat (mitte grid) liitmised lahutamised.
+	Kui entity on playeri peal ss liigub tema pealt eemale voi votab kinni
+			Kui entity on playeri peal ss saab playerist kinni votta
 			player kui on kinni voetud ss laheb kauem aega ara jooksmisega
 
 	ADD> kui on vigastatud, ss jookseb aeglasemini.
@@ -25,7 +25,7 @@ ideas:
 
 	ADD>random object placement. et alati ei oleks ruudu yleval vasakul objekt.
 
-	ADD>enemy dead body saab lootida, ehk sealt pealt saab votta geigeri.
+	ADD>entity dead body saab lootida, ehk sealt pealt saab votta geigeri.
 		geiger vaatab pathi lenghti doorini ning piiksub v6i helendab siis vastavalt. Punane - kaugel, aeglane piiks, roheline vastupid.
 		Kui piisavalt palju maze'e on avatud, siis hakkab geiger toole. Geiger valib yhe random ukse, pref kaugeim ning tollest uksest avaneb blade maze
 			blade maze on enne final mazei. Final mazei avamiseks on vaja mingit erilist kombinatsiooni
@@ -51,7 +51,7 @@ ideas:
 
 	FEATURE>need wallid, mis muutuvad v6iksid n2ha teistsugused v2lja. n2itkes rohelist on v2hem
 
-	teha random movement enemyle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
+	teha random movement entityle, et kui player on vine blocki sees, ss ta ns ei seisaks yhe kha peal.
 
 	dead people
 	gas zones (fucked system zones, mazes)- gas mask item - filters (barrel loot) / gas causes bleeding
@@ -83,7 +83,7 @@ ideas:
 	mute button /// ma ei taha kuulata kuidas ma suren v6i n2lgin   - > DEBUG MODE võtab helid nulli
 
 	render range vaja 2ra fixida - seda on vaja suuremaks teha igas suunas, yle seinte saab naha
-	max 3 4 enemyit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
+	max 3 4 entityit saab korraga playerit detectida? teised enemid kas mingi istuvad yhes kohas vmdgi
 	kui player on hungry v6i thirsty, ss jookseb aeglasemini, stamina kulub kiiremini ja taastub aeglasemini
 
 	visionit saab glitchida, hoides k6ike all v6i lihtsalt A ja D´d spammides, n2eb yle seinte. Lahendus: render shit in view. amigo

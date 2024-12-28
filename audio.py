@@ -81,7 +81,7 @@ class Player_audio:
         water_sound, maze_ground_sound,
         grass_sounds,
 
-        # Enemy
+        # entity
         ghost_hurt, ghost_died,
     ]
 

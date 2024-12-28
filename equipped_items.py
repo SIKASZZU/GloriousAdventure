@@ -2,7 +2,7 @@ import random
 
 from variables import UniversalVariables, GameConfig
 from objects import ObjectManagement
-from entity import Enemy
+from entity import Entity
 from audio import Player_audio
 from items import search_item_from_items, ConsumableItem
 from text import Fading_text
@@ -80,7 +80,7 @@ class ItemFunctionality:
         
         # pathfind player -> random chosen door
         player_grid = (grid_y, grid_x)
-        path = Enemy.find_path_bfs(self, UniversalVariables.geiger_chosen_grid, player_grid)
+        path = Entity.find_path_bfs(self, UniversalVariables.geiger_chosen_grid, player_grid)
 
         # RETURN SIGNAL STRENGTH
         if not path:

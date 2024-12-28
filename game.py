@@ -9,7 +9,7 @@ import hashlib
 
 # Other modules
 import vision
-from entity import Enemy
+from entity import Entity
 from variables import UniversalVariables
 from camera import Camera
 from render import RenderPictures, ObjectCreation
@@ -154,7 +154,7 @@ class Game:
 
         vision.find_boxes_in_window()
 
-        Enemy.update(self)
+        Entity.update(self)
         Player_audio.player_audio_update(self)
         change_blades(self)
         PlayerStatus.update(self)
@@ -170,7 +170,7 @@ class Game:
         Drop.update(self)
         Game.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
-        Enemy.spawn(self)
+        Entity.spawn(self)
 
         EssentialsUpdate.calculate_daylight_strength(self)
 
