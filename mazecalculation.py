@@ -50,6 +50,12 @@ class AddingMazeAtPosition:
 
             new_maze = MapData.get_data(self, maze_type, 'bottom')  # uks läheb alla - maze ülesse
 
+            # Kui teed esimese maze siis muudab selle ukse 933'ks,
+            # et need hakkaksid öö/päeva vältel kinni/lahti käima
+            if UniversalVariables.maze_counter == 0:
+                for row in new_maze:
+                    row[:] = [933 if value == 93 else value for value in row]
+
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
             start_col = col_index * 39
@@ -238,7 +244,11 @@ class AddingMazeAtPosition:
             #     self.terrain_data[start_row][start_col] = 933
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
+        if UniversalVariables.maze_counter == 0:  # Kõige esimene maze on alati 'block_maze'
+            choices = ['block_maze']
+            probabilities = [1]  # 100 % alati olema
+
+        elif AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
             # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
             choices = ['labyrinth_maze', 'block_maze', 'abandoned_glade']
             probabilities = [0.09, 0.83, 0.08]  # 100 % alati olema
