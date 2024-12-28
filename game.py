@@ -71,11 +71,12 @@ class Game:
         self.initialize_camera()
         self.initialize_map()
         self.initialize_player()
-        
+
         self.initialize_attack()
         self.initialize_audio()
         self.initialize_collisons()
         self.initialize_inventory()
+        self.initialize_building()
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -93,7 +94,7 @@ class Game:
         self.camera = Camera(self.screen)
 
     def initialize_map(self):
-        # fixme: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
+        # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
 
         self.terrain_data = glade_creation()
         self.map_data = MapData(self.terrain_data, self.click_position)
@@ -101,7 +102,7 @@ class Game:
         # Blade maze
         self.maze_blades = Blades(self.terrain_data)
 
-        # Fixme: Day/Night - Uksed lahti/kinni
+        # FIXME: Day/Night - Uksed lahti/kinni
 
         # for i in range(len(self.terrain_data)):
         #    for j in range(len(self.terrain_data[i])):
@@ -119,8 +120,10 @@ class Game:
         
     def initialize_player(self):
         self.player_update = PlayerUpdate()
-        self.player_rect = self.player_update.player_rect
-     
+        self.player_rect = self.player_update.get_player_rect()
+
+        print(self.player_rect)
+
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
@@ -131,6 +134,9 @@ class Game:
 
     def initialize_collisons(self):
         self.collisions = Collisions(self.player, self.player_rect)
+
+    def initialize_building(self):
+        self.building = Building
 
     def initialize_inventory(self):
         self.inv = Inventory()
@@ -168,7 +174,7 @@ class Game:
     def call_technical(self):
 
         PlayerUpdate.update_player(self)  # Update player position and attributes
-        Camera.box_target_camera(self)  # Camera follow
+        self.camera.box_target_camera(self.player_rect)  # Camera follow
 
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
@@ -220,7 +226,7 @@ class Game:
 
         Inventory.render_equipped_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
 
-        Building.update(self)
+        self.building.update(self)
 
     def check_keys(self):
         Event_handler.check_pressed_keys(self)  # Check pressed keys

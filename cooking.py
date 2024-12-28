@@ -110,7 +110,7 @@ class Cooking:
 
         current_time = time.time()
 
-        inventory = Inventory.inventory
+        inventory = self.inv.inventory
         selected_station_key = None
 
         # Võtab õige station key, et muudaks ainult ühe stationit
@@ -185,7 +185,7 @@ class Cooking:
                             raw_item_quantity -= 1
                             Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
-                        if self.inv.total_slots > len(Inventory.inventory) or raw_item in Inventory.inventory:
+                        if self.inv.total_slots > len(self.inv.inventory) or raw_item in self.inv.inventory:
 
                             if raw_item in inventory:
                                 inventory[raw_item] += quantity
@@ -217,7 +217,7 @@ class Cooking:
                         # Kui shift'i all hoida eemaldab max koguse mis võimalik, kas kõik mis on või max station capacity
                         quantity = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else cooked_item_quantity
 
-                        if self.inv.total_slots > len(Inventory.inventory) or item in Inventory.inventory:
+                        if self.inv.total_slots > len(self.inv.inventory) or item in self.inv.inventory:
 
                             # Paneb item'i invi
                             if item in inventory:

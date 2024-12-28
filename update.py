@@ -159,6 +159,23 @@ class PlayerUpdate:
             else:  pass
         except Exception as e: print(f'Error @ update.py: {e}')
 
+    @classmethod
+    def get_player_rect(cls):
+        # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
+        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x,
+                                                     UniversalVariables.player_y + UniversalVariables.offset_y)
+
+
+
+        player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
+                                  player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
+                                  UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
+
+        cls.player_rect = player_rect
+
+        return player_rect
+
+
 
     def render_player(self) -> None:
         """ Renderib ainult playeri. """

@@ -155,7 +155,14 @@ class RenderPictures:
     # renderib k6ik objektide all, backgroundi,terraini, seinad
     def map_render(self):
         attacked_detected = UniversalVariables.attack_key_pressed[0]
-        if UniversalVariables.last_input != 'None' or attacked_detected == True or UniversalVariables.update_view == True:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
+
+        # Click
+        # Update view
+        # Attacked -> kas sai dammi
+        # Input
+        # Playeri asukoht muutus
+
+        if UniversalVariables.last_input != 'None' or attacked_detected or UniversalVariables.update_view or self.right_click_position or self.click_position:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
             UniversalVariables.update_view = False
             RenderPictures.find_terrain_in_view(self)
 

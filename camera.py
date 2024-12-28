@@ -26,26 +26,26 @@ class Camera:
         self.right_click_y: int = None
         self.right_click_info_available = False  # for printing func
 
-    def box_target_camera(self):
+    def box_target_camera(self, player_rect):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
 
-        if self.player_rect.left < self.camera.camera_rect.left:
-            self.camera.camera_rect.left = self.player_rect.left
+        if player_rect.left < self.camera_rect.left:
+            self.camera_rect.left = player_rect.left
 
-        if self.player_rect.right > self.camera.camera_rect.right:
-            self.camera.camera_rect.right = self.player_rect.right
+        if player_rect.right > self.camera_rect.right:
+            self.camera_rect.right = player_rect.right
 
-        if self.player_rect.top < self.camera.camera_rect.top:
-            self.camera.camera_rect.top = self.player_rect.top
+        if player_rect.top < self.camera_rect.top:
+            self.camera_rect.top = player_rect.top
 
-        if self.player_rect.bottom > self.camera.camera_rect.bottom:
-            self.camera.camera_rect.bottom = self.player_rect.bottom
+        if player_rect.bottom > self.camera_rect.bottom:
+            self.camera_rect.bottom = player_rect.bottom
 
-        UniversalVariables.offset_x = self.camera.camera_borders['left'] - self.camera.camera_rect.left
-        UniversalVariables.offset_y = self.camera.camera_borders['top'] - self.camera.camera_rect.top
+        UniversalVariables.offset_x = self.camera_borders['left'] - self.camera_rect.left
+        UniversalVariables.offset_y = self.camera_borders['top'] - self.camera_rect.top
 
-        self.camera.player_window_x = self.player_rect.left - self.camera.camera_rect.left + self.camera.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
-        self.camera.player_window_y = self.player_rect.top - self.camera.camera_rect.top + self.camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
+        self.player_window_x = player_rect.left - self.camera_rect.left + self.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
+        self.player_window_y = player_rect.top - self.camera_rect.top + self.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
     @staticmethod
     def is_click_within_player_range(click_window_x, click_window_y) -> bool:

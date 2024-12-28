@@ -4,6 +4,7 @@ from audio import Player_audio
 from camera import Camera
 from items import items_list, ObjectItem
 
+
 class Building:
     def is_valid_item(self) -> tuple:
         """
@@ -50,7 +51,6 @@ class Building:
             ]
             if all(value not in {4, 5} for value in neighbors):  # Et puude ja tüvede peale ei saaks midagi ehitada
                 return grid_x, grid_y
-
 
     def change_terrain_value(self, name: str, id: int, grid_x: int, grid_y: int) -> bool:
         """
