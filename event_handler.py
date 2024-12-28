@@ -49,7 +49,7 @@ class Event_handler:
     def handle_keyboard_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_c:
-                Inventory.crafting_menu_open = not Inventory.crafting_menu_open
+                self.inv.crafting_menu_open = not self.inv.crafting_menu_open
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 if PauseMenu.game_paused == False:

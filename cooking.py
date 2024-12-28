@@ -185,7 +185,7 @@ class Cooking:
                             raw_item_quantity -= 1
                             Cooking.stations[selected_station_key]["station_raw_item"] = raw_item, raw_item_quantity
 
-                        if Inventory.total_slots > len(Inventory.inventory) or raw_item in Inventory.inventory:
+                        if self.inv.total_slots > len(Inventory.inventory) or raw_item in Inventory.inventory:
 
                             if raw_item in inventory:
                                 inventory[raw_item] += quantity
@@ -217,7 +217,7 @@ class Cooking:
                         # Kui shift'i all hoida eemaldab max koguse mis võimalik, kas kõik mis on või max station capacity
                         quantity = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else cooked_item_quantity
 
-                        if Inventory.total_slots > len(Inventory.inventory) or item in Inventory.inventory:
+                        if self.inv.total_slots > len(Inventory.inventory) or item in Inventory.inventory:
 
                             # Paneb item'i invi
                             if item in inventory:
@@ -277,15 +277,15 @@ class Cooking:
                             UniversalVariables.cooking_menu = False
                         else:
                             # Kui vajutad cooking station'i peale siis avab cooking menu ja salvestab selle kordinaadid
-                            Inventory.crafting_menu_open = False
+                            self.inv.crafting_menu_open = False
                             Cooking.station_coordinates = (click_x, click_y)
                             UniversalVariables.cooking_menu = True
 
                         # Kui cooking menu ei ole nähtav või player ei ole cooking_range'is siis suletakse inventory
                         if not UniversalVariables.cooking_menu or not Cooking.player_in_range(click_x, click_y):
-                            Inventory.inv_count = 0
-                            Inventory.render_inv = False
-                            Inventory.crafting_menu_open = False
+                            self.inv.inv_count = 0
+                            self.inv.render_inv = False
+                            self.inv.crafting_menu_open = False
                             UniversalVariables.is_cooking = False
                 except IndexError: pass
 
@@ -297,9 +297,9 @@ class Cooking:
 
             # Kontrollib, et cooking station oleks endiselt olemas, kui ei ole siis ei render'i cooking menu'd
             if not self.terrain_data[station_y][station_x] in GameConfig.COOKING_STATIONS.value:
-                Inventory.inv_count = 0
-                Inventory.render_inv = False
-                Inventory.crafting_menu_open = False
+                self.inv.inv_count = 0
+                self.inv.render_inv = False
+                self.inv.crafting_menu_open = False
                 UniversalVariables.is_cooking = False
 
                 raw_item, cooked_item = None, None
@@ -308,9 +308,9 @@ class Cooking:
                 UniversalVariables.cooking_menu = False
 
             elif Cooking.player_in_range(station_x, station_y):
-                Inventory.inv_count = 1
-                Inventory.render_inv = True
-                Inventory.crafting_menu_open = False
+                self.inv.inv_count = 1
+                self.inv.render_inv = True
+                self.inv.crafting_menu_open = False
                 UniversalVariables.is_cooking = True
 
                 # Load'ib ja resize'ib pildid
@@ -403,9 +403,9 @@ class Cooking:
 
             else:
                 UniversalVariables.cooking_menu = False
-                Inventory.inv_count = 0
-                Inventory.render_inv = False
-                Inventory.crafting_menu_open = False
+                self.inv.inv_count = 0
+                self.inv.render_inv = False
+                self.inv.crafting_menu_open = False
                 UniversalVariables.is_cooking = False
 
     def update(self):

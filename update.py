@@ -64,7 +64,9 @@ class PlayerUpdate:
         # *** swimming *** #
         self.swimming_animation_manager = AnimationManager(self.sprite_sheets_swimming, self.animations, self.animation_speeds)
         self.idle_swimming_animation_manager = AnimationManager(self.sprite_sheets_idle_swimming, self.animations_idle, self.animation_speeds)
-    
+
+        self.player_rect = None
+
     @staticmethod
     def disable_movement() -> tuple[int, int]:
         return 0, 0
@@ -176,8 +178,7 @@ class PlayerUpdate:
         player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
                                   player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
                                   UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
-        self.player_rect = player_rect
-
+        self.player_update.player_rect = player_rect
 
         if UniversalVariables.portal_list != []:
             x, y = int(UniversalVariables.portal_list[0][0]), int(UniversalVariables.portal_list[0][1])
@@ -187,7 +188,7 @@ class PlayerUpdate:
 
         # renderib playeri hitboxi
         if UniversalVariables.render_boxes_counter == True and UniversalVariables.debug_mode:
-            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
+            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_update.player_rect, 2)
 
             if UniversalVariables.portal_list != []:
                 pygame.draw.rect(UniversalVariables.screen, "orange", UniversalVariables.portal_frame_rect, 2)

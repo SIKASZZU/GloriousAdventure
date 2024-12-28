@@ -59,7 +59,7 @@ class Building:
         try:
             if 0 <= grid_y < len(self.terrain_data) and 0 <= grid_x < len(self.terrain_data[0]):
                 self.terrain_data[grid_y][grid_x] = id
-                ObjectManagement.remove_object_from_inv(name)
+                ObjectManagement.remove_object_from_inv(self, name)
                 Player_audio.player_item_audio(self)
                 return True
             else:

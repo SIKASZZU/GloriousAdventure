@@ -84,7 +84,7 @@ class Interaction:
                     else:
                         if UniversalVariables.final_maze != True:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                            ObjectManagement.remove_object_from_inv('Maze_Key')
+                            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
                             UniversalVariables.portal_frames += 1
 
                             Tile_Sounds.insert_key_audio(self)
@@ -93,7 +93,7 @@ class Interaction:
                         # Kui clickid tühja keysloti peale ja key on invis
                         else:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                            ObjectManagement.remove_object_from_inv('Maze_Key')
+                            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
 
                             Tile_Sounds.insert_key_audio(self)
                             UniversalFunctions.gray_yellow(self, 'yellow')
@@ -118,7 +118,7 @@ class Interaction:
                             "sealing away the mysteries of the sanctum."
                         )
 
-                        ObjectManagement.add_object_from_inv('Maze_Key')
+                        ObjectManagement.add_object_from_inv(self, 'Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
                         Tile_Sounds.portal_close_audio(self)
@@ -131,7 +131,7 @@ class Interaction:
                         UniversalVariables.portal_frame_rect = None
 
                     else:  # Kui slotist võtad key ära
-                        ObjectManagement.add_object_from_inv('Maze_Key')
+                        ObjectManagement.add_object_from_inv(self, 'Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
                         Tile_Sounds.pop_key_audio(self)

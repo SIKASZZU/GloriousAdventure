@@ -36,13 +36,13 @@ class Loot:
             barrel_y = int(barrel_y // UniversalVariables.block_size)
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
 
-                if self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots >= len(Inventory.inventory) + count:
+                if self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots >= len(Inventory.inventory) + inv_count or self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots >= len(Inventory.inventory) + count:
                     self.terrain_data[barrel_y][barrel_x] = 1002
                     Loot.gather_loot(self, count)
                     Player_audio.opening_a_barrel_audio(self)
 
 
-                elif self.terrain_data[barrel_y][barrel_x] == 1001 and Inventory.total_slots < len(Inventory.inventory) + inv_count:
+                elif self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots < len(Inventory.inventory) + inv_count:
                     Player_audio.opening_a_barrel_audio(self, False)
 
                     Fading_text.re_display_fading_text("Not enough space in Inventory.")
@@ -68,7 +68,7 @@ class Loot:
         while count > 0:
             obtained_loot, obtained_count = Loot.get_random_loot(self)
             count -= 1
-            ObjectManagement.add_object_from_inv(obtained_loot, obtained_count)
+            ObjectManagement.add_object_from_inv(self, obtained_loot, obtained_count)
 
     def loot_update(self, player_pressed_pick_up=False):
         Loot.toggle_loot_barrel(self, player_pressed_pick_up)

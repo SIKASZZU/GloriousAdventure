@@ -13,49 +13,51 @@ def craftable_items_manager(func):
     return wrapper
 
 class Inventory:
-    slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
-    position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
-    resized_slot_image = pygame.transform.scale(slot_image,
-                                                (slot_image.get_width() * 0.9, slot_image.get_height() * 0.9))
+    def __init__(self, player_rect):
+        self.player_rect = player_rect
+        
+
+        self.slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
+        self.position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
+        self.resized_slot_image = pygame.transform.scale(self.slot_image,
+                                                    (self.slot_image.get_width() * 0.9, self.slot_image.get_height() * 0.9))
 
 
-    inventory_display_rects = []
-    craftable_items_display_rects = []
+        self.inventory_display_rects = []
+        self.craftable_items_display_rects = []
 
-    inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
-    old_inventory = {}  # track varasemat inv white texti jaoks
-    inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
-    white_text = False
-    white_colored_items = set()
-    white_text_counters = {}
+        self.inventory = {}  # Terve inv (prindi seda ja saad teada mis invis on)
+        self.old_inventory = {}  # track varasemat inv white texti jaoks
+        self.inv_count: int = 0  # Otsustab, kas renderida inv v6i mitte
+        self.white_text = False
+        self.white_colored_items = set()
+        self.white_text_counters = {}
 
-    render_inv: bool = False  # Inventory renderminmine
-    tab_pressed: bool = False  # Keep track of whether Tab was pressed
-    crafting_menu_open: bool = False
-    check_slot_delay: int = 0
-    craftable_items = {}
+        self.render_inv: bool = False  # Inventory renderminmine
+        self.tab_pressed: bool = False  # Keep track of whether Tab was pressed
+        self.crafting_menu_open: bool = False
+        self.check_slot_delay: int = 0
+        self.craftable_items = {}
 
-    previous_inv = None  # printimise jaoks
-    text_cache = {}  # Cache rendered text surfaces
-    message_to_user = False
-    first_time_click = False
-    total_slots:int = 4
+        self.previous_inv = None  # printimise jaoks
+        self.text_cache = {}  # Cache rendered text surfaces
+        self.message_to_user = False
+        self.first_time_click = False
+        self.total_slots:int = 4
 
-    total_rows = 0
-    total_cols = 0
-    old_x = 500
+        self.total_rows = 0
+        self.total_cols = 0
+        self.old_x = 500
 
-    craftable_items = {}
-    previous_inventory = None  # Track the previous state of the inventory
+        self.previous_inventory = None  # Track the previous state of the inventory
 
 
-    @staticmethod
-    def print_inventory() -> None:
+    def print_inventory(self) -> None:
         """ Prints out the contents of the inventory."""
 
-        if Inventory.inventory != Inventory.previous_inv:
-            print('Inventory contains:\n   ', Inventory.inventory)
-            Inventory.previous_inv = Inventory.inventory.copy()
+        if self.inv.inventory != self.inv.previous_inv:
+            print('Inventory contains:\n   ', self.inv.inventory)
+            self.inv.previous_inv = self.inv.inventory.copy()
 
 
     def handle_mouse_click(self) -> None:
@@ -63,16 +65,16 @@ class Inventory:
         ja lisab ka viite CHECK_DELAY_THRESHOLD  """
 
         CHECK_DELAY_THRESHOLD = 200  # Threshold slotide clickimiseks
-        if (Inventory.inv_count % 2) != 0 or Inventory.crafting_menu_open:
+        if (self.inv.inv_count % 2) != 0 or self.inv.crafting_menu_open:
             mouse_state: tuple[bool, bool, bool] = pygame.mouse.get_pressed()
             if mouse_state[0] or mouse_state[2]:  # Left click ja right click
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 current_time = pygame.time.get_ticks()
 
-                if current_time - Inventory.check_slot_delay >= CHECK_DELAY_THRESHOLD:
-                    Inventory.check_slot_delay = current_time  # Uuendab viimast check_slot_delay
+                if current_time - self.inv.check_slot_delay >= CHECK_DELAY_THRESHOLD:
+                    self.inv.check_slot_delay = current_time  # Uuendab viimast check_slot_delay
 
-                    if Inventory.crafting_menu_open:
+                    if self.inv.crafting_menu_open:
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
                     Inventory.is_click_in_inventory(self, mouse_x, mouse_y, mouse_state)
@@ -81,11 +83,11 @@ class Inventory:
         """ Kas click on invi sees ja siis displayb itemi nime mida invis klikkis"""
 
         # Vaatab kas click oli invis sees või mitte
-        for index, rect in enumerate(Inventory.inventory_display_rects):
+        for index, rect in enumerate(self.inv.inventory_display_rects):
             if rect.collidepoint(mouse_x, mouse_y):
                 Inventory.check_slot(self, index, mouse_state[2])
                 try:
-                    item = list(Inventory.inventory.keys())[index]
+                    item = list(self.inv.inventory.keys())[index]
                     item = str(item).replace('_', ' ')
                     Fading_text.re_display_fading_text(item)
 
@@ -97,11 +99,11 @@ class Inventory:
     def handle_crafting_click(self, x: int, y: int) -> None:
         """ Lubab hiit kasutades craftida """
         try:
-            for name, rect in Inventory.craftable_items_display_rects.items():
+            for name, rect in self.inv.craftable_items_display_rects.items():
                 if not rect.collidepoint(x, y):
                     continue
 
-                if name not in Inventory.inventory and Inventory.total_slots <= len(Inventory.inventory):
+                if name not in self.inv.inventory and self.inv.total_slots <= len(self.inv.inventory):
                     Player_audio.error_audio(self)
                     Fading_text.re_display_fading_text("Not enough space in Inventory.")
                     return
@@ -116,22 +118,22 @@ class Inventory:
 
         try:
             if delete_boolean == False:
-                item = list(Inventory.inventory.keys())[index]
-                value = list(Inventory.inventory.values())[index]
+                item = list(self.inv.inventory.keys())[index]
+                value = list(self.inv.inventory.values())[index]
                 UniversalVariables.current_equipped_item = item
 
             else:
-                item = list(Inventory.inventory.keys())[index]
-                value = list(Inventory.inventory.values())[index]
+                item = list(self.inv.inventory.keys())[index]
+                value = list(self.inv.inventory.values())[index]
 
                 # Kui hoiad Shift'i all siis drop'id max amount'i
-                amount = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else Inventory.inventory[item]
+                amount = 1 if not pygame.key.get_mods() & pygame.KMOD_SHIFT else self.inv.inventory[item]
 
-                Inventory.inventory[item] -= amount
+                self.inv.inventory[item] -= amount
 
                 # Võtab itemi invist ära kui on <= 0
-                if Inventory.inventory[item] <= 0:
-                    del Inventory.inventory[item]
+                if self.inv.inventory[item] <= 0:
+                    del self.inv.inventory[item]
                     UniversalVariables.current_equipped_item = None
 
                 # Lisab itemi `Floating Pouch`i
@@ -150,31 +152,31 @@ class Inventory:
     def call(self) -> None:
         """ Inventory kutsumiseks on see func. """
 
-        if len(Inventory.inventory.items()) != 0 and Inventory.message_to_user == False and Inventory.first_time_click != True:
+        if len(self.inv.inventory.items()) != 0 and self.inv.message_to_user == False and self.inv.first_time_click != True:
             UniversalVariables.ui_elements.append(
                 """ Press TAB to open inventory. """)
-            Inventory.message_to_user = True
+            self.inv.message_to_user = True
 
         Inventory.handle_mouse_click(self)
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_TAB] and not Inventory.tab_pressed:  # double locked, yks alati true aga teine mitte
-            Inventory.tab_pressed = True
-            Inventory.inv_count += 1
+        if keys[pygame.K_TAB] and not self.inv.tab_pressed:  # double locked, yks alati true aga teine mitte
+            self.inv.tab_pressed = True
+            self.inv.inv_count += 1
 
-            if not Inventory.first_time_click:
-                Inventory.first_time_click = True
+            if not self.inv.first_time_click:
+                self.inv.first_time_click = True
                 UniversalVariables.ui_elements.append('Select items with left click. Remove items with right click.')
 
-            Inventory.render_inv = (Inventory.inv_count % 2 != 0)
+            self.inv.render_inv = (self.inv.inv_count % 2 != 0)
             UniversalVariables.cooking_menu = False
 
         elif not keys[pygame.K_TAB]:
-            Inventory.tab_pressed = False
+            self.inv.tab_pressed = False
 
 
-        if Inventory.render_inv:
+        if self.inv.render_inv:
             # UniversalVariables.allow_movement = False
             Inventory.render(self)  # Render inventory
             UniversalVariables.allow_building = False
@@ -189,34 +191,34 @@ class Inventory:
         vastavalt playeri asukohale """
 
         if UniversalVariables.maze_counter <= 5:
-            Inventory.total_rows = UniversalVariables.maze_counter + 1 if UniversalVariables.maze_counter < 5 else UniversalVariables.maze_counter
-            Inventory.total_cols = 3 if UniversalVariables.maze_counter == 5 else 2
+            self.inv.total_rows = UniversalVariables.maze_counter + 1 if UniversalVariables.maze_counter < 5 else UniversalVariables.maze_counter
+            self.inv.total_cols = 3 if UniversalVariables.maze_counter == 5 else 2
 
         if UniversalVariables.maze_counter <= 5:
-            Inventory.total_rows = UniversalVariables.maze_counter + 1
-            if Inventory.total_rows > 5:
-                Inventory.total_rows = 5
+            self.inv.total_rows = UniversalVariables.maze_counter + 1
+            if self.inv.total_rows > 5:
+                self.inv.total_rows = 5
 
             if UniversalVariables.maze_counter == 5:
-                Inventory.total_cols = 3
+                self.inv.total_cols = 3
             else:
-                Inventory.total_cols = 2
+                self.inv.total_cols = 2
 
-        total_rows = Inventory.total_rows
-        total_cols = Inventory.total_cols
+        total_rows = self.inv.total_rows
+        total_cols = self.inv.total_cols
 
-        Inventory.total_slots = total_rows * total_cols
+        self.inv.total_slots = total_rows * total_cols
 
         if calc_slots_only:
             return
 
-        if not Inventory.old_x:
-            Inventory.old_x = UniversalVariables.player_x
+        if not self.inv.old_x:
+            self.inv.old_x = UniversalVariables.player_x
 
-        if Inventory.old_x == UniversalVariables.player_x:
+        if self.inv.old_x == UniversalVariables.player_x:
             return
 
-        Inventory.inventory_display_rects = []
+        self.inv.inventory_display_rects = []
         rect_width: int = UniversalVariables.block_size / 2
         rect_height: int = UniversalVariables.block_size / 2
 
@@ -237,15 +239,15 @@ class Inventory:
         for rows in range(total_rows):
             for cols in range(total_cols):
                 rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
-                Inventory.inventory_display_rects.append(rect)
+                self.inv.inventory_display_rects.append(rect)
 
     def render(self, update_white_text=None) -> None:
         """ Callib calculate_inventory, renderib invi, invis olevad itemid ja nende kogused """
 
         # Clear the white text items and counters if rendering inventory is false
         if update_white_text == True:
-            Inventory.white_colored_items.clear()
-            Inventory.white_text_counters.clear()
+            self.inv.white_colored_items.clear()
+            self.inv.white_text_counters.clear()
             return
 
         Inventory.calculate(self)
@@ -255,7 +257,7 @@ class Inventory:
         overlay.set_alpha(180)
     
         # Draw item slots with borders
-        for rect in Inventory.inventory_display_rects:
+        for rect in self.inv.inventory_display_rects:
             pygame.draw.rect(overlay, (177, 177, 177), rect, border_radius=5)  # Gray background
             pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)  # Black border
     
@@ -263,7 +265,7 @@ class Inventory:
         UniversalVariables.screen.blit(overlay, (0, 0))
     
         new_white_items = set()
-        for rect, (name, count) in zip(Inventory.inventory_display_rects, Inventory.inventory.items()):
+        for rect, (name, count) in zip(self.inv.inventory_display_rects, self.inv.inventory.items()):
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
     
             if count < 0:
@@ -279,16 +281,16 @@ class Inventory:
             font = pygame.font.Font(None, 20)
 
             # Check if the item is new or its count has changed
-            if (name not in Inventory.old_inventory or
-                (name in Inventory.old_inventory and Inventory.inventory[name] != Inventory.old_inventory[name])):
-                Inventory.white_text = True
+            if (name not in self.inv.old_inventory or
+                (name in self.inv.old_inventory and self.inv.inventory[name] != self.inv.old_inventory[name])):
+                self.inv.white_text = True
                 new_white_items.add(name)
-                Inventory.white_text_counters[name] = 0  # Initialize the counter for the new item
+                self.inv.white_text_counters[name] = 0  # Initialize the counter for the new item
     
             text_color = 'black'
-            if name in Inventory.white_colored_items:
+            if name in self.inv.white_colored_items:
                 text_color = 'white'  # color for item change
-                Inventory.white_text_counters[name] += 1  # Increment the counter for the item
+                self.inv.white_text_counters[name] += 1  # Increment the counter for the item
     
             text = font.render(str(count), True, text_color)
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
@@ -296,27 +298,27 @@ class Inventory:
             blit_operations = [(item_image, item_image_rect.topleft), (text, text_rect.topleft)]
             UniversalVariables.screen.blits(blit_operations, False)
 
-        items_to_remove = [item for item, counter in Inventory.white_text_counters.items() if counter >= 120]
+        items_to_remove = [item for item, counter in self.inv.white_text_counters.items() if counter >= 120]
         for item in items_to_remove:
-            Inventory.white_colored_items.remove(item)
-            del Inventory.white_text_counters[item]
+            self.inv.white_colored_items.remove(item)
+            del self.inv.white_text_counters[item]
     
-        Inventory.white_colored_items.update(new_white_items)
-        Inventory.old_inventory = Inventory.inventory.copy()
+        self.inv.white_colored_items.update(new_white_items)
+        self.inv.old_inventory = self.inv.inventory.copy()
 
 
     def has_inventory_changed(self) -> bool:
         """Check if the inventory has changed since the last calculation."""
-        current_inventory = Inventory.inventory
+        current_inventory = self.inv.inventory
 
         # If previous_inventory is None, it means we haven't calculated yet
-        if Inventory.previous_inventory is None:
-            Inventory.previous_inventory = current_inventory.copy()
+        if self.inv.previous_inventory is None:
+            self.inv.previous_inventory = current_inventory.copy()
             return True  # Recalculate on first run
 
         # Check if the current inventory is different from the previous one
-        if current_inventory != Inventory.previous_inventory:
-            Inventory.previous_inventory = current_inventory.copy()
+        if current_inventory != self.inv.previous_inventory:
+            self.inv.previous_inventory = current_inventory.copy()
             return True
 
         return False
@@ -328,7 +330,7 @@ class Inventory:
         if not Inventory.has_inventory_changed(self):
             return  # Skip calculation if inventory has not changed
 
-        Inventory.craftable_items = {}
+        self.inv.craftable_items = {}
 
         for item_list in [object_items, mineral_items, tool_items]:
             for item in item_list:
@@ -343,13 +345,13 @@ class Inventory:
 
                     # Check if all required items are available
                     can_craft = all(
-                        Inventory.inventory.get(required_item, 0) >= required_amount
+                        self.inv.inventory.get(required_item, 0) >= required_amount
                         for required_item, required_amount in required_items.items()
                     )
 
                     if can_craft:
                         # Use dot notation to access item attributes
-                        Inventory.craftable_items[item.name] = recipe.get("Amount",
+                        self.inv.craftable_items[item.name] = recipe.get("Amount",
                                                                      1)  # Use item.name instead of item["Name"]
 
         Inventory.update_craftable_items_display(self)
@@ -357,7 +359,7 @@ class Inventory:
     def update_craftable_items_display(self):
         """Update the display for craftable items."""
 
-        Inventory.craftable_items_display_rects = {}
+        self.inv.craftable_items_display_rects = {}
 
         rect_width: int = UniversalVariables.block_size / 2
         rect_height: int = UniversalVariables.block_size / 2
@@ -367,7 +369,7 @@ class Inventory:
         rect_x: int = 50
         rect_y: int = 50
 
-        craftable_items = list(Inventory.craftable_items.keys())  # Extract craftable item names
+        craftable_items = list(self.inv.craftable_items.keys())  # Extract craftable item names
 
         for index, craftable_item in enumerate(craftable_items):
             rows = index // max_cols
@@ -375,14 +377,14 @@ class Inventory:
 
             # Create a rectangle for displaying the craftable item
             rect = pygame.Rect(rect_x + cols * rect_width, rect_y + rows * rect_height, rect_width, rect_height)
-            Inventory.craftable_items_display_rects[craftable_item] = rect
+            self.inv.craftable_items_display_rects[craftable_item] = rect
 
     @craftable_items_manager
     def render_craftable_items(self):
         """ Render craftable items and respond to clicks """
 
         # Exit function if there are no craftable items
-        if not Inventory.craftable_items_display_rects:
+        if not self.inv.craftable_items_display_rects:
             return
 
         screen_width = UniversalVariables.screen.get_width()
@@ -397,7 +399,7 @@ class Inventory:
 
         # Pre-load images and resize them
         resized_images = {}
-        for name, rect in Inventory.craftable_items_display_rects.items():
+        for name, rect in self.inv.craftable_items_display_rects.items():
             object_image = ImageLoader.load_image(name)
             if object_image is not None:
                 object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
@@ -407,7 +409,7 @@ class Inventory:
         blit_operations = []
 
         # Draw the background and items on the overlay
-        for name, rect in Inventory.craftable_items_display_rects.items():
+        for name, rect in self.inv.craftable_items_display_rects.items():
             pygame.draw.rect(overlay, (177, 177, 177), rect)  # Draw semi-transparent background
             pygame.draw.rect(overlay, 'black', rect, 2)  # Draw black border
 
@@ -421,7 +423,7 @@ class Inventory:
                 blit_operations.append((object_image, item_image_rect.topleft))
 
             # Render the amount of craftable items
-            text = font.render(str(Inventory.craftable_items[name]), True, 'Black')
+            text = font.render(str(self.inv.craftable_items[name]), True, 'Black')
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
             blit_operations.append((text, text_rect))
 
@@ -445,64 +447,64 @@ class Inventory:
             for recipe in recipes:
                 required_items = recipe.get("Recipe", {})
                 can_craft = all(
-                    Inventory.inventory.get(required_item, 0) >= required_amount
+                    self.inv.inventory.get(required_item, 0) >= required_amount
                     for required_item, required_amount in required_items.items()
                 )
 
                 if can_craft:
                     # Remove used items from the inventory
                     for required_item, required_amount in required_items.items():
-                        Inventory.inventory[required_item] -= required_amount
+                        self.inv.inventory[required_item] -= required_amount
 
                     # Calculate the amount crafted based on the recipe
                     amount += recipe.get("Amount", 1)
 
             # Add the crafted item to the inventory
-            Inventory.inventory[name] = Inventory.inventory.get(name, 0) + amount
+            self.inv.inventory[name] = self.inv.inventory.get(name, 0) + amount
 
             # Remove items with a count of zero from the inventory
-            Inventory.inventory = {k: v for k, v in Inventory.inventory.items() if v > 0}
+            self.inv.inventory = {k: v for k, v in self.inv.inventory.items() if v > 0}
 
     def render_equipped_slot(self, name):
         # Initialize blit operations list
-        blit_operations = [(Inventory.resized_slot_image, Inventory.position)]
+        blit_operations = [(self.inv.resized_slot_image, self.inv.position)]
 
         # Check if the item name is valid
-        if name is None or name not in Inventory.inventory:
+        if name is None or name not in self.inv.inventory:
             UniversalVariables.screen.blits(blit_operations)
             UniversalVariables.current_equipped_item = None
             return
 
         # Load and resize item image
         item_image = ImageLoader.load_image(name)
-        slot_width, slot_height = Inventory.resized_slot_image.get_size()
+        slot_width, slot_height = self.inv.resized_slot_image.get_size()
         max_item_size = (slot_width - 15, slot_height - 15)
         resized_item_image = pygame.transform.scale(item_image, max_item_size)
 
         # Calculate position to center item image within the slot
-        item_x = Inventory.position[0] + (slot_width - resized_item_image.get_width()) // 2
-        item_y = Inventory.position[1] + (slot_height - resized_item_image.get_height()) // 2
+        item_x = self.inv.position[0] + (slot_width - resized_item_image.get_width()) // 2
+        item_y = self.inv.position[1] + (slot_height - resized_item_image.get_height()) // 2
 
         # Add item image to blit operations
         blit_operations.append((resized_item_image, (item_x, item_y)))
 
         # Render item count if greater than 1
-        item_count = Inventory.inventory.get(name, 0)
+        item_count = self.inv.inventory.get(name, 0)
         if item_count > 1:
             count_text = str(item_count)
             if count_text not in Inventory.text_cache:
                 font = pygame.font.Font(None, 20)
-                Inventory.text_cache[count_text] = font.render(count_text, True, (0, 0, 0))
+                self.inv.text_cache[count_text] = font.render(count_text, True, (0, 0, 0))
 
-            text_surface = Inventory.text_cache[count_text]
-            text_rect = text_surface.get_rect(topleft=(Inventory.position[0] + 5, Inventory.position[1] + 5))
+            text_surface = self.inv.text_cache[count_text]
+            text_rect = text_surface.get_rect(topleft=(self.inv.position[0] + 5, self.inv.position[1] + 5))
             blit_operations.append((text_surface, text_rect.topleft))
 
         # Perform all blit operations
         UniversalVariables.screen.blits(blit_operations)
 
         # Call item delay bar rendering function
-        Inventory.item_delay_bar(self, Inventory.resized_slot_image, Inventory.position)
+        Inventory.item_delay_bar(self, self.inv.resized_slot_image, self.inv.position)
 
     def item_delay_bar(self, slot_image, position):
         """ See func on inventory all, sest slot_image andmed asuvad siin ja eksportimine on keerukas. """

@@ -155,7 +155,7 @@ class ItemFunctionality:
         if cure:
             UniversalVariables.interaction_delay = 0
             UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
-            ObjectManagement.remove_object_from_inv(equipped_item)
+            ObjectManagement.remove_object_from_inv(self, equipped_item)
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
@@ -171,7 +171,7 @@ class ItemFunctionality:
             UniversalVariables.interaction_delay = 0
 
             player_healed = self.player.health.heal(healing_amount)
-            if player_healed:  ObjectManagement.remove_object_from_inv(equipped_item)
+            if player_healed:  ObjectManagement.remove_object_from_inv(self, equipped_item)
             if UniversalVariables.player_bleeding == True:
                 if probably(35 / 100):
                     UniversalVariables.player_bleeding = False
@@ -180,7 +180,7 @@ class ItemFunctionality:
 
         if thirst_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(equipped_item)  # v6tab joodud itemi 2ra
+            ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab joodud itemi 2ra
 
             if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and UniversalVariables.thirst_resistance > 0:
                 Fading_text.re_display_fading_text("If you drink too much you might get sick!")
@@ -213,7 +213,7 @@ class ItemFunctionality:
 
         elif hunger_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(equipped_item)  # v6tab s66dud itemi 2ra
+            ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab s66dud itemi 2ra
 
             if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and UniversalVariables.hunger_resistance > 0:
                 Fading_text.re_display_fading_text("If you eat too much you might get sick!")

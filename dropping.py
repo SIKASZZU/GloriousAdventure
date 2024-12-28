@@ -176,7 +176,7 @@ class Drop:
     def remove_item_from_pouch(self, position: tuple[int, int], name: str) -> None:
         # Check if the position exists in dropped_items
         # TODO: Reset timer to default
-        if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+        if self.inv.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
             if position in UniversalVariables.dropped_items:
                 item_data = UniversalVariables.dropped_items[position].get(name)
 
@@ -186,7 +186,7 @@ class Drop:
 
                     # Decrement the quantity
                     item_data["quantity"] -= amount
-                    ObjectManagement.add_object_from_inv(name, amount)
+                    ObjectManagement.add_object_from_inv(self, name, amount)
 
                     # If quantity reaches zero, remove the item from the dictionary
                     if item_data["quantity"] <= 0:

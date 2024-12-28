@@ -37,24 +37,11 @@ from interactions import Interaction
 
 jurigged.watch()  # hot reload
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except AttributeError:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
 
 class Game:
     def __init__(self):
-        self.initialize_pygame()
 
-
-
-        self.player_rect = None  # Player rect to be set in the game
+        # self.player_rect = None  # Player rect to be set in the game
 
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
@@ -78,12 +65,16 @@ class Game:
         self.player_attack_rect = None
 
         # initialize #
+        self.initialize_pygame()
+
         self.initialize_camera()
         self.initialize_map()
         self.initialize_player()
         
         self.initialize_attack()
         self.initialize_audio()
+        self.initialize_collisons()
+        self.initialize_inventory()
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -123,7 +114,8 @@ class Game:
         
     def initialize_player(self):
         self.player_update = PlayerUpdate()
-        
+        self.player_rect = self.player_update.player_rect
+     
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
@@ -134,6 +126,12 @@ class Game:
     
     def initialize_blades(self):
         self.maze_blades = Blades()
+
+    def initialize_collisons(self):
+        self.collisions = Collisions(self.player, self.player_rect)
+
+    def initialize_inventory(self):
+        self.inv = Inventory(self.player_rect)
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
@@ -150,6 +148,7 @@ class Game:
         UniversalVariables()
 
     def render_boxes():
+
         if UniversalVariables.render_boxes_counter == True:
             ObjectManagement.render_interaction_box()
             ObjectManagement.render_collision_box()
@@ -203,11 +202,11 @@ class Game:
 
         # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
 
-        if Inventory.crafting_menu_open and not UniversalVariables.cooking_menu:
+        if self.inv.crafting_menu_open and not UniversalVariables.cooking_menu:
             Inventory.render_craftable_items(self)
-            if not Inventory.craftable_items_display_rects and Inventory.crafting_menu_open:
+            if not self.inv.craftable_items_display_rects and self.inv.crafting_menu_open:
                 Fading_text.re_display_fading_text("Nothing to craft.")
-                Inventory.crafting_menu_open = False
+                self.inv.crafting_menu_open = False
 
         Attack.update(self)
 
@@ -252,7 +251,7 @@ class Game:
     def custom_addition(self):
         if UniversalVariables.debug_mode:
             if not self.restrict_looping:
-                ObjectManagement.add_object_from_inv("Maze_Key", 30)
+                ObjectManagement.add_object_from_inv(self, "Maze_Key", 30)
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
 

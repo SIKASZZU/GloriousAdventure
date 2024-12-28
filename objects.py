@@ -62,14 +62,14 @@ class ObjectManagement:
             # Check inventory space for the dropped items
             choice_len = sum(1 for drop_item in choice if drop_item not in Inventory.inventory)
 
-            if Inventory.total_slots >= len(Inventory.inventory) + choice_len:
+            if self.inv.total_slots >= len(Inventory.inventory) + choice_len:
                 ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
                 return True
             else:
                 Inventory.inventory_full_error(self)
             return False
 
-        if Inventory.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+        if self.inv.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
             ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
             return True
         else:
@@ -101,32 +101,31 @@ class ObjectManagement:
         }
         self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
-        ObjectManagement.add_object_from_inv(name, amount)
+        ObjectManagement.add_object_from_inv(self, name, amount)
         Player_audio.player_item_audio(self)
         UniversalVariables.interaction_delay = 0
         return True
 
-    @staticmethod
-    def add_object_from_inv(item, amount=1):
-        if item in Inventory.inventory:
+    def add_object_from_inv(self, item, amount=1):
+        if item in self.inv.inventory:
             # Kui ese on juba inventoris, suurendab eseme kogust
-            Inventory.inventory[item] += amount
+            self.inv.inventory[item] += amount
 
-        elif Inventory.total_slots > len(Inventory.inventory):
+        elif self.inv.total_slots > len(self.inv.inventory):
             # Kui tegemist on uue esemega, lisab selle inventori ja annab talle koguse: amount
-            Inventory.inventory[item] = amount
+            self.inv.inventory[item] = amount
 
         else: 
             print(f'Item name: {item} not found and not added to inv!')
             return
 
-    @staticmethod
-    def remove_object_from_inv(item):
-        if Inventory.inventory[item] > 0 :
-            Inventory.inventory[item] -= 1
+
+    def remove_object_from_inv(self, item):
+        if self.inv.inventory[item] > 0 :
+            self.inv.inventory[item] -= 1
         
-        if Inventory.inventory[item] == 0:
-            del Inventory.inventory[item]
+        if self.inv.inventory[item] == 0:
+            del self.inv.inventory[item]
 
 
     def render_collision_box() -> None:

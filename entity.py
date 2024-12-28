@@ -374,7 +374,7 @@ class Entity:
                         continue  # GOOD
                             
                 Entity.dead_entity_list[entity_name] = (entity_info[0], entity_info[1], False)
-                ObjectManagement.add_object_from_inv("Geiger", 1)
+                ObjectManagement.add_object_from_inv(self, "Geiger", 1)
 
         # spacebar
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
