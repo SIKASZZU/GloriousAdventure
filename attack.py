@@ -58,7 +58,7 @@ class Attack:
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2, 5)
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), filler_rect)
 
-class Attackentity:
+class AttackEntity:
     def find_entity(self, click=False, pressed=False):
         for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
             entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
