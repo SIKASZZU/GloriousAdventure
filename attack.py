@@ -10,8 +10,9 @@ from objects import ObjectManagement
 import random
 
 class Attack:
-    last_attack_cooldown_max = 100
-    last_attack_cooldown = last_attack_cooldown_max
+    def __init__(self):
+        self.last_attack_cooldown_max = 100
+        self.last_attack_cooldown = self.last_attack_cooldown_max
 
     def update(self):
 
@@ -21,8 +22,8 @@ class Attack:
 
         entity_pressed = UniversalVariables.attack_key_pressed
 
-        if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
-            Attack.last_attack_cooldown += 1
+        if self.attack.last_attack_cooldown < self.attack.last_attack_cooldown_max:
+            self.attack.last_attack_cooldown += 1
             entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
             Attack.display_attack_cd_timer(self)
@@ -52,7 +53,7 @@ class Attack:
         top  = self.player_rect[1] - 50
 
         cooldown_rect = pygame.Rect(left, top, 50 + self.player_rect[2], 30)
-        progress_to_width = (Attack.last_attack_cooldown / Attack.last_attack_cooldown_max) * (self.player_rect[2] + 50)
+        progress_to_width = (self.attack.last_attack_cooldown / self.attack.last_attack_cooldown_max) * (self.player_rect[2] + 50)
         filler_rect   = pygame.Rect(left, top, progress_to_width, 30)
 
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2, 5)
@@ -157,18 +158,21 @@ class AttackEntity:
             if entity_data:
                 entity_name, entity_info = entity_data
                 AttackEntity.damage_entity(self, entity_name, entity_info)
-                Attack.last_attack_cooldown = 0
+                self.attack.last_attack_cooldown = 0
         
         if pressed:
             entity_data = AttackEntity.find_entity(self, pressed=pressed)
             if entity_data:
                 entity_name, entity_info = entity_data
                 AttackEntity.damage_entity(self, entity_name, entity_info)
-                Attack.last_attack_cooldown = 0
+                self.attack.last_attack_cooldown = 0
 
 class AttackObject:
-    default_color = 255, 120, 20, 150
-    click_color = 255, 0, 0, 255
+    def __init__(self, terrain_data):
+        self.terrain_data = terrain_data
+            
+        self.default_color = 255, 120, 20, 150
+        self.click_color = 255, 0, 0, 255
 
     def find_object(self, click: tuple[int, int]) -> bool:
         for object_info in list(UniversalVariables.object_list):
@@ -232,7 +236,7 @@ class AttackObject:
                 object_data['hp'] = new_hp
 
         transparent_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA)
-        pygame.draw.rect(transparent_surface, AttackObject.click_color, object_rect, 3)
+        pygame.draw.rect(transparent_surface, self.attack_object.click_color, object_rect, 3)
 
         UniversalVariables.screen.blit(transparent_surface, (0, 0))
 
@@ -263,7 +267,7 @@ class AttackObject:
             object_rect = pygame.Rect(x, y, width, height)
 
             if object_rect.collidepoint(mouse_pos):
-                pygame.draw.rect(transparent_surface, AttackObject.default_color, object_rect, 2)
+                pygame.draw.rect(transparent_surface, self.attack_object.default_color, object_rect, 2)
 
                 UniversalVariables.screen.blit(transparent_surface, (0, 0))
                 return

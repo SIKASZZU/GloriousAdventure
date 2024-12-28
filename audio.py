@@ -19,91 +19,91 @@ def resource_path(relative_path):
 
 
 class Player_audio:
-    # Initialize pygame
-    pygame.mixer.init()
 
-    previous_ground_sound = None
+    def __init__(self, terrain_data, player, py_mixer):
+        self.terrain_data = terrain_data
+        self.player = player
+        self.py_mixer = py_mixer
+        self.mixer = pygame.mixer
 
-    # Load sounds with resource_path
-    player_hit_sound = pygame.mixer.Sound(resource_path('audio/Player_Sounds/Player_Got_Hurt.wav'))
-    player_death_sound = pygame.mixer.Sound(resource_path('audio/Player_Sounds/Player_Died.wav'))
+        self.previous_ground_sound = None
 
-    maze_ground_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Maze_Ground_Sound.wav'))
-    water_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Water_Sound.mp3'))
+        # Load sounds with resource_path
+        self.player_hit_sound = self.mixer.Sound(resource_path('audio/Player_Sounds/Player_Got_Hurt.wav'))
+        self.player_death_sound = self.mixer.Sound(resource_path('audio/Player_Sounds/Player_Died.wav'))
 
-    in_range_click_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/In_Range_Click_Sound.mp3'))
-    out_of_range_click_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Out_Of_Range_Click_Sound.mp3'))
-    item_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Item_Sound.mp3'))
-    error_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Error_Sound.mp3'))
-    cant_open_a_barrel_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Cant_Open_A_Barrel.mp3'))
-    eating_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Eating_Sound.mp3'))
-    drinking_sound = pygame.mixer.Sound(resource_path('audio/Event_Sounds/Drinking_Sound.mp3'))
-    ghost_hurt = pygame.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Hurt.mp3'))
-    ghost_died = pygame.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Died.mp3'))
+        self.maze_ground_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Maze_Ground_Sound.wav'))
+        self.water_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Water_Sound.mp3'))
 
-    opening_a_barrel_sounds = [
-        pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_0.mp3')),
-        pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_1.mp3')),
-        pygame.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_2.mp3')),
+        self.in_range_click_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/In_Range_Click_Sound.mp3'))
+        self.out_of_range_click_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Out_Of_Range_Click_Sound.mp3'))
+        self.item_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Item_Sound.mp3'))
+        self.error_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Error_Sound.mp3'))
+        self.cant_open_a_barrel_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Cant_Open_A_Barrel.mp3'))
+        self.eating_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Eating_Sound.mp3'))
+        self.drinking_sound = self.mixer.Sound(resource_path('audio/Event_Sounds/Drinking_Sound.mp3'))
+        self.ghost_hurt = self.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Hurt.mp3'))
+        self.ghost_died = self.mixer.Sound(resource_path('audio/Ghost_Sounds/Ghost_Died.mp3'))
 
-    ]
+        self.opening_a_barrel_sounds = [
+            self.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_0.mp3')),
+            self.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_1.mp3')),
+            self.mixer.Sound(resource_path('audio/Event_Sounds/Opening_A_Barrel_2.mp3')),
+
+        ]
 
 
-    # Preload sounds for ground, trees, rocks, etc.
-    grass_sounds = [
-        pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Left_Foot_Sound.mp3')),
-        pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Right_Foot_Sound.mp3')),
-    ]
-    current_grass_sound_index = 0
+        # Preload sounds for ground, trees, rocks, etc.
+        self.grass_sounds = [
+            self.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Left_Foot_Sound.mp3')),
+            self.mixer.Sound(resource_path('audio/Tile_Sounds/Grass_Right_Foot_Sound.mp3')),
+        ]
+        self.current_grass_sound_index = 0
 
-    grass_channel = pygame.mixer.Channel(1)  # Seob 1. channeli groundiga
-    water_channel = pygame.mixer.Channel(2)  # Seob 2. channeli veega
-    maze_channel = pygame.mixer.Channel(3)  # Seob 3. channeli maze'iga
+        self.grass_channel = self.mixer.Channel(1)  # Seob 1. channeli groundiga
+        self.water_channel = self.mixer.Channel(2)  # Seob 2. channeli veega
+        self.maze_channel = self.mixer.Channel(3)  # Seob 3. channeli maze'iga
 
-    player_channel = pygame.mixer.Channel(4)  # Seob 4. channeli playeriga
-    event_channel = pygame.mixer.Channel(5)  # Seob 3. channeli maze'iga
+        self.player_channel = self.mixer.Channel(4)  # Seob 4. channeli playeriga
+        self.event_channel = self.mixer.Channel(5)  # Seob 3. channeli maze'iga
 
-    death_counter = 0
-    current_health: int = None
+        self.death_counter = 0
+        self.current_health: int = None
 
-    water_sound_list: list[int, ...] = [0]
-    ground_sound_list: list[int, ...] = [1, 2, 4, 7, 107]
-    maze_ground_list: list[int, ...] = [11, 89, 90, 91, 92, 93, 933, 94, 95, 96, 97, 977, 98, 988, 99]
-    audio_list: list[str, ...] = [
-        # Player
-        player_death_sound, player_hit_sound,
+        self.water_sound_list: list[int, ...] = [0]
+        self.ground_sound_list: list[int, ...] = [1, 2, 4, 7, 107]
+        self.maze_ground_list: list[int, ...] = [11, 89, 90, 91, 92, 93, 933, 94, 95, 96, 97, 977, 98, 988, 99]
+        self.audio_list: list[str, ...] = [
+            # Player
+            self.player_death_sound, self.player_hit_sound,
 
-        # Events
-        in_range_click_sound, out_of_range_click_sound, item_sound, error_sound,
-        opening_a_barrel_sounds, cant_open_a_barrel_sound, eating_sound,
+            # Events
+            self.in_range_click_sound, self.out_of_range_click_sound, self.item_sound, self.error_sound,
+            self.opening_a_barrel_sounds, self.cant_open_a_barrel_sound, self.eating_sound,
 
-        # Tiles
-        water_sound, maze_ground_sound,
-        grass_sounds,
+            # Tiles
+            self.water_sound, self.maze_ground_sound,
+            self.grass_sounds,
 
-        # entity
-        ghost_hurt, ghost_died,
-    ]
+            # entity
+            self.ghost_hurt, self.ghost_died,
+        ]
 
-    for audio_name in audio_list:
-        if type(audio_name) == list:
-            for sound in audio_name:
-                sound.set_volume(0.0)
-                sound.play()
-                sound.stop()
-                sound.set_volume(UniversalVariables.sound_volume)
+        for audio_name in self.audio_list:
+            if type(audio_name) == list:
+                for sound in audio_name:
+                    sound.set_volume(0.0)
+                    sound.play()
+                    sound.stop()
+                    sound.set_volume(UniversalVariables.sound_volume)
 
-        else:
-            audio_name.set_volume(0.0)
-            audio_name.play()
-            audio_name.stop()
+            else:
+                audio_name.set_volume(0.0)
+                audio_name.play()
+                audio_name.stop()
 
-            # Muudab kogu mängu audio ära vastavalt sound_volume'ile
-            audio_name.set_volume(UniversalVariables.sound_volume)
-
-    def __init__(self):
-        self.terrain_data = None
-        self.player = None
+                # Muudab kogu mängu audio ära vastavalt sound_volume'ile
+                audio_name.set_volume(UniversalVariables.sound_volume)
 
     def player_movement_audio(self) -> None:
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
@@ -112,143 +112,143 @@ class Player_audio:
         try:
 
             if keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] or keys[pygame.K_w]:
-                if self.terrain_data[player_grid_y][player_grid_x] in Player_audio.ground_sound_list:
-                    if not Player_audio.grass_channel.get_busy():
-                        Player_audio.grass_channel.play(
-                            Player_audio.grass_sounds[Player_audio.current_grass_sound_index])
-                        Player_audio.current_grass_sound_index = (Player_audio.current_grass_sound_index + 1) % len(
-                            Player_audio.grass_sounds)
+                if self.terrain_data[player_grid_y][player_grid_x] in self.player_audio.ground_sound_list:
+                    if not self.player_audio.grass_channel.get_busy():
+                        self.player_audio.grass_channel.play(
+                            self.player_audio.grass_sounds[self.player_audio.current_grass_sound_index])
+                        self.player_audio.current_grass_sound_index = (self.player_audio.current_grass_sound_index + 1) % len(
+                            self.player_audio.grass_sounds)
 
                     # Kaotab muud liikumise helid ära, mis seonduvad player'iga
-                    if Player_audio.water_channel.get_busy():
-                        Player_audio.water_channel.stop()
-                    if Player_audio.maze_channel.get_busy():
-                        Player_audio.maze_channel.stop()
+                    if self.player_audio.water_channel.get_busy():
+                        self.player_audio.water_channel.stop()
+                    if self.player_audio.maze_channel.get_busy():
+                        self.player_audio.maze_channel.stop()
 
-                elif self.terrain_data[player_grid_y][player_grid_x] in Player_audio.water_sound_list:
-                    if not Player_audio.water_channel.get_busy():
-                        Player_audio.water_channel.play(Player_audio.water_sound)
-
-                    # Kaotab muud liikumise helid ära, mis seonduvad player'iga
-                    if Player_audio.grass_channel.get_busy():
-                        Player_audio.grass_channel.stop()
-                    if Player_audio.maze_channel.get_busy():
-                        Player_audio.maze_channel.stop()
-
-                elif self.terrain_data[player_grid_y][player_grid_x] in Player_audio.maze_ground_list:
-                    if not Player_audio.maze_channel.get_busy():
-                        Player_audio.maze_channel.play(Player_audio.maze_ground_sound)
+                elif self.terrain_data[player_grid_y][player_grid_x] in self.player_audio.water_sound_list:
+                    if not self.player_audio.water_channel.get_busy():
+                        self.player_audio.water_channel.play(self.player_audio.water_sound)
 
                     # Kaotab muud liikumise helid ära, mis seonduvad player'iga
-                    if Player_audio.grass_channel.get_busy():
-                        Player_audio.grass_channel.stop()
-                    if Player_audio.water_channel.get_busy():
-                        Player_audio.water_channel.stop()
+                    if self.player_audio.grass_channel.get_busy():
+                        self.player_audio.grass_channel.stop()
+                    if self.player_audio.maze_channel.get_busy():
+                        self.player_audio.maze_channel.stop()
+
+                elif self.terrain_data[player_grid_y][player_grid_x] in self.player_audio.maze_ground_list:
+                    if not self.player_audio.maze_channel.get_busy():
+                        self.player_audio.maze_channel.play(self.player_audio.maze_ground_sound)
+
+                    # Kaotab muud liikumise helid ära, mis seonduvad player'iga
+                    if self.player_audio.grass_channel.get_busy():
+                        self.player_audio.grass_channel.stop()
+                    if self.player_audio.water_channel.get_busy():
+                        self.player_audio.water_channel.stop()
 
                 else:
                     # Kaotab kõik liikumisega seonduvad helid ära kui player ei liigu
-                    if Player_audio.grass_channel.get_busy():
-                        Player_audio.grass_channel.stop()
-                    if Player_audio.water_channel.get_busy():
-                        Player_audio.water_channel.stop()
-                    if Player_audio.maze_channel.get_busy():
-                        Player_audio.maze_channel.stop()
+                    if self.player_audio.grass_channel.get_busy():
+                        self.player_audio.grass_channel.stop()
+                    if self.player_audio.water_channel.get_busy():
+                        self.player_audio.water_channel.stop()
+                    if self.player_audio.maze_channel.get_busy():
+                        self.player_audio.maze_channel.stop()
 
             else:
                 # Kaotab kõik liikumisega seonduvad helid ära kui player ei liigu
-                if Player_audio.grass_channel.get_busy():
-                    Player_audio.grass_channel.stop()
-                if Player_audio.water_channel.get_busy():
-                    Player_audio.water_channel.stop()
-                if Player_audio.maze_channel.get_busy():
-                    Player_audio.maze_channel.stop()
+                if self.player_audio.grass_channel.get_busy():
+                    self.player_audio.grass_channel.stop()
+                if self.player_audio.water_channel.get_busy():
+                    self.player_audio.water_channel.stop()
+                if self.player_audio.maze_channel.get_busy():
+                    self.player_audio.maze_channel.stop()
 
         except IndexError or TypeError:
 
             # Kaotab kõik liikumisega seonduvad helid ära kui tuleb error
-            if Player_audio.grass_channel.get_busy():
-                Player_audio.grass_channel.stop()
-            if Player_audio.water_channel.get_busy():
-                Player_audio.water_channel.stop()
-            if Player_audio.maze_channel.get_busy():
-                Player_audio.maze_channel.stop()
+            if self.player_audio.grass_channel.get_busy():
+                self.player_audio.grass_channel.stop()
+            if self.player_audio.water_channel.get_busy():
+                self.player_audio.water_channel.stop()
+            if self.player_audio.maze_channel.get_busy():
+                self.player_audio.maze_channel.stop()
 
             return
 
     def player_hurt_audio(self) -> None:
         # Kui current health puudub siis muudab selle playeri eludeks, mis tal hetkel oli
-        if Player_audio.current_health is None:
-            Player_audio.current_health = self.player.health.get_health()
+        if self.player_audio.current_health is None:
+            self.player_audio.current_health = self.player.health.get_health()
 
         # Kui playeri kaotab elusi siis käid 'Player_hit' heli
-        if Player_audio.current_health > self.player.health.get_health() > 0:
+        if self.player_audio.current_health > self.player.health.get_health() > 0:
 
-            Player_audio.player_channel.play(Player_audio.player_hit_sound)
-            Player_audio.current_health = self.player.health.get_health()
+            self.player_audio.player_channel.play(self.player_audio.player_hit_sound)
+            self.player_audio.current_health = self.player.health.get_health()
 
         else:
             return
 
     def player_death_audio(self) -> None:
-        if self.player.health.get_health() <= 0 and Player_audio.death_counter == 0:
+        if self.player.health.get_health() <= 0 and self.player_audio.death_counter == 0:
 
-            if Player_audio.player_channel.get_busy():
-                Player_audio.player_channel.stop()
+            if self.player_audio.player_channel.get_busy():
+                self.player_audio.player_channel.stop()
 
-            Player_audio.player_channel.play(Player_audio.player_death_sound)
-            Player_audio.death_counter += 1
+            self.player_audio.player_channel.play(self.player_audio.player_death_sound)
+            self.player_audio.death_counter += 1
 
         else:
             return
 
     def player_click_audio(self, range) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
 
         if range:
-            Player_audio.event_channel.play(Player_audio.in_range_click_sound)
+            self.player_audio.event_channel.play(self.player_audio.in_range_click_sound)
         else:
-            Player_audio.event_channel.play(Player_audio.out_of_range_click_sound)
+            self.player_audio.event_channel.play(self.player_audio.out_of_range_click_sound)
 
     def player_item_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.item_sound)
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.item_sound)
 
     def error_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.error_sound)
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.error_sound)
 
     def opening_a_barrel_audio(self, able=True):
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
 
         if able:
-            Player_audio.event_channel.play(random.choice(Player_audio.opening_a_barrel_sounds))
+            self.player_audio.event_channel.play(random.choice(self.player_audio.opening_a_barrel_sounds))
         else:
-            Player_audio.event_channel.play(Player_audio.cant_open_a_barrel_sound)
+            self.player_audio.event_channel.play(self.player_audio.cant_open_a_barrel_sound)
 
     def eating_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.eating_sound)
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.eating_sound)
 
     def drinking_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.drinking_sound)
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.drinking_sound)
 
     def ghost_hurt_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.ghost_hurt)
-
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.ghost_hurt)
 
     def ghost_died_audio(self) -> None:
-        if Player_audio.event_channel.get_busy():
-            Player_audio.event_channel.stop()
-        Player_audio.event_channel.play(Player_audio.ghost_died)
+        if self.player_audio.event_channel.get_busy():
+            self.player_audio.event_channel.stop()
+        self.player_audio.event_channel.play(self.player_audio.ghost_died)
+    
     def player_audio_update(self) -> None:
         Player_audio.player_movement_audio(self)
         Player_audio.player_hurt_audio(self)
@@ -256,46 +256,48 @@ class Player_audio:
 
 
 class Tile_Sounds:
-    pygame.mixer.init()
+    def __init__(self, py_mixer):
+        self.py_mixer = py_mixer
+        self.mixer    = pygame.mixer
 
-    insert_key_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Key_To_Slot.mp3'))
-    pop_key_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Key_From_Slot.mp3'))
-    portal_open_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Open_Sound.mp3'))
-    portal_close_sound = pygame.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Close_Sound.mp3'))
+        self.insert_key_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Key_To_Slot.mp3'))
+        self.pop_key_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Key_From_Slot.mp3'))
+        self.portal_open_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Open_Sound.mp3'))
+        self.portal_close_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Portal_Close_Sound.mp3'))
 
-    key_channel = pygame.mixer.Channel(6)
-    portal_channel = pygame.mixer.Channel(7)
+        self.key_channel = self.mixer.Channel(6)
+        self.portal_channel = self.mixer.Channel(7)
 
-    audio_list = [insert_key_sound, pop_key_sound, portal_open_sound, portal_close_sound]
+        self.audio_list = [self.insert_key_sound, self.pop_key_sound, self.portal_open_sound, self.portal_close_sound]
 
-    for audio_name in audio_list:
-        audio_name.set_volume(0.0)
-        audio_name.play()
-        audio_name.stop()
+        for audio_name in self.audio_list:
+            audio_name.set_volume(0.0)
+            audio_name.play()
+            audio_name.stop()
 
-        # Muudab kogu mängu audio ära vastavalt sound_volume'ile
-        audio_name.set_volume(UniversalVariables.sound_volume)
+            # Muudab kogu mängu audio ära vastavalt sound_volume'ile
+            audio_name.set_volume(UniversalVariables.sound_volume)
 
     def portal_open_audio(self) -> None:
-        if Tile_Sounds.portal_channel.get_busy():
-            Tile_Sounds.portal_channel.stop()
+        if self.tile_sounds.portal_channel.get_busy():
+            self.tile_sounds.portal_channel.stop()
 
-        Tile_Sounds.portal_channel.play(Tile_Sounds.portal_open_sound)
+        self.tile_sounds.portal_channel.play(self.tile_sounds.portal_open_sound)
 
     def portal_close_audio(self) -> None:
-        if Tile_Sounds.portal_channel.get_busy():
-            Tile_Sounds.portal_channel.stop()
+        if self.tile_sounds.portal_channel.get_busy():
+            self.tile_sounds.portal_channel.stop()
 
-        Tile_Sounds.portal_channel.play(Tile_Sounds.portal_close_sound)
+        self.tile_sounds.portal_channel.play(self.tile_sounds.portal_close_sound)
 
     def insert_key_audio(self) -> None:
-        if Tile_Sounds.key_channel.get_busy():
-            Tile_Sounds.key_channel.stop()
+        if self.tile_sounds.key_channel.get_busy():
+            self.tile_sounds.key_channel.stop()
 
-        Tile_Sounds.key_channel.play(Tile_Sounds.insert_key_sound)
+        self.tile_sounds.key_channel.play(self.tile_sounds.insert_key_sound)
 
     def pop_key_audio(self) -> None:
-        if Tile_Sounds.key_channel.get_busy():
-            Tile_Sounds.key_channel.stop()
+        if self.tile_sounds.key_channel.get_busy():
+            self.tile_sounds.key_channel.stop()
 
-        Tile_Sounds.key_channel.play(Tile_Sounds.pop_key_sound)
+        self.tile_sounds.key_channel.play(self.tile_sounds.pop_key_sound)

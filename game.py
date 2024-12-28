@@ -19,7 +19,7 @@ from objects import ObjectManagement
 from update import EssentialsUpdate, PlayerUpdate
 from inventory import Inventory
 from collisions import Collisions
-from audio import Player_audio
+from audio import Player_audio, Tile_Sounds
 from components import Player
 from blade import change_blades
 from final_maze import Final_Maze
@@ -31,10 +31,9 @@ from equipped_items import ItemFunctionality
 from building import Building
 from cooking import Cooking
 from maze_changes import MazeChanges
-from attack import Attack
+from attack import Attack, AttackEntity, AttackObject
 from dropping import Drop
 from interactions import Interaction
-
 
 jurigged.watch()  # hot reload
 
@@ -88,8 +87,9 @@ class Game:
 
 
         self.initialize_map()
-
         self.initialize_camera()
+        self.initialize_attack()
+        self.initialize_audio()
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -99,6 +99,12 @@ class Game:
         self.font = pygame.font.SysFont("Verdana", 20)
         self.screen = UniversalVariables.screen
         self.clock = pygame.time.Clock()  # FPS
+
+        # audio #
+        self.py_mixer = pygame.mixer.init()
+
+    def initialize_camera(self):
+        self.camera = Camera(self.screen)
 
     def initialize_map(self):
         self.terrain_data = glade_creation()
@@ -112,9 +118,15 @@ class Game:
         #        if self.terrain_data[i][j] == 933:
         #            self.terrain_data[i - 1][j] = 98
 
-    def initialize_camera(self):
-        self.camera = Camera(self.screen)
+    def initialize_attack(self):
+        self.attack = Attack()
+        self.attack_entity = AttackEntity()
+        self.attack_object = AttackObject(self.terrain_data)
 
+    def initialize_audio(self):
+        self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
+        self.tile_sounds = Tile_Sounds(self.py_mixer)
+    
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
