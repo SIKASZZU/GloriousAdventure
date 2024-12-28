@@ -14,7 +14,7 @@ from variables import UniversalVariables
 from camera import Camera
 from render import RenderPictures, ObjectCreation
 from event_handler import Event_handler
-from map import MapData
+from map import MapData, glade_creation
 from objects import ObjectManagement
 from update import EssentialsUpdate, PlayerUpdate
 from inventory import Inventory
@@ -51,10 +51,8 @@ def resource_path(relative_path):
 
 class Game:
     def __init__(self):
-        pygame.init()
-        pygame.display.set_caption("Glorious Adventure - BETA")
-        self.clock = pygame.time.Clock()  # FPS
-        self.font = pygame.font.SysFont("Verdana", 20)  # Font
+        self.initialize_pygame()
+
 
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
@@ -64,7 +62,6 @@ class Game:
 
         self.player_rect = None  # Player rect to be set in the game
 
-        self.screen = UniversalVariables.screen
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
@@ -75,7 +72,6 @@ class Game:
         self.print_hp = 0
         self.restrict_looping = False
 
-        self.terrain_data = None
         self.old_terrain_data = None
         self.click_position = ()
         self.click_window_x = None
@@ -87,16 +83,35 @@ class Game:
 
         self.player_attack_rect = None
 
-        if not self.terrain_data:
-            self.terrain_data = MapData.map_list_to_map(self)
-
-        for i in range(len(self.terrain_data)):
-            for j in range(len(self.terrain_data[i])):
-                if self.terrain_data[i][j] == 933:
-                    self.terrain_data[i - 1][j] = 98
-
         # keys
         self.g_pressed = bool  # fps lock
+
+
+        self.initialize_map()
+
+
+        # TODO: Camera järgmisena
+
+    def initialize_pygame(self):
+        pygame.display.set_caption("Glorious Adventure - BETA")
+        pygame.font.init()
+        pygame.init()
+
+        self.font = pygame.font.SysFont("Verdana", 20)
+        self.screen = UniversalVariables.screen
+        self.clock = pygame.time.Clock()  # FPS
+
+    def initialize_map(self):
+        self.terrain_data = glade_creation()
+        self.map_data = MapData(self.terrain_data, self.click_position)
+
+
+        # Fixme: Day/Night - Uksed lahti/kinni
+
+        # for i in range(len(self.terrain_data)):
+        #    for j in range(len(self.terrain_data[i])):
+        #        if self.terrain_data[i][j] == 933:
+        #            self.terrain_data[i - 1][j] = 98
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
@@ -135,7 +150,7 @@ class Game:
 
         Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
-        MazeChanges.change_maze(self)
+        # MazeChanges.change_maze(self)
 
         vision.find_boxes_in_window()
 

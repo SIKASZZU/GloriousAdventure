@@ -14,6 +14,7 @@ from loot import Loot
 from final_maze import Final_Maze
 from functions import UniversalFunctions
 
+
 class Interaction:
     keylock: int = 0
     first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -44,28 +45,29 @@ class Interaction:
 
             if render_when != None:
                 point_of_render_after = collision_object_rect[1] + render_when
-                if point_of_render_after <= self.player_rect[1]:  UniversalVariables.render_after = True
-                else:  UniversalVariables.render_after = False
-
+                if point_of_render_after <= self.player_rect[1]:
+                    UniversalVariables.render_after = True
+                else:
+                    UniversalVariables.render_after = False
 
     def objects(self) -> None:
         """ Playeri interactionid objektidega. Ntks keyholderid, doors. """
-        
-        collision_object_rect = pygame.Rect(0,0,0,0)
+
+        collision_object_rect = pygame.Rect(0, 0, 0, 0)
 
         for terrain_x, terrain_y, object_width, object_height, _, object_id in UniversalVariables.object_list:
             terrain_x: int = terrain_x - UniversalVariables.offset_x
             terrain_y: int = terrain_y - UniversalVariables.offset_y
-                    
+
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             Interaction.colliderect(self, collision_object_rect, object_id, terrain_x, terrain_y)
 
             if not self.click_window_x and not self.click_window_y:
                 continue
-            
+
             # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
             if terrain_x < Camera.click_x < terrain_x + object_width and terrain_y < Camera.click_y < terrain_y + object_height:
-                
+
                 terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                 terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
@@ -107,7 +109,9 @@ class Interaction:
                         Camera.reset_clicks(self)
 
                     # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
-                    if UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data, 555) and UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data, 982) <= 8:
+                    if UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data,
+                                                                             555) and UniversalFunctions.count_occurrences_in_list_of_lists(
+                            self.terrain_data, 982) <= 8:
 
                         UniversalVariables.ui_elements.append(
                             "Yet, with every passing moment, the portal's brilliance wanes, "
@@ -151,7 +155,7 @@ class Interaction:
                         if not 'Maze_Key' in Inventory.inventory:
                             Player_audio.error_audio(self)
 
-                            text =  ("No available Maze key in inventory.")
+                            text = ("No available Maze key in inventory.")
                             if text in Fading_text.shown_texts:
                                 Fading_text.shown_texts.remove(text)
                             UniversalVariables.ui_elements.append(text)
@@ -161,7 +165,7 @@ class Interaction:
 
                         if Interaction.keylock != 0:
                             continue
-                        
+
                         Interaction.keylock += 1
 
                         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
@@ -195,7 +199,6 @@ class Interaction:
 
                             UniversalVariables.first_time = False
                             grid_x, grid_y = grid_x + 80, grid_y + 80
-
 
                         j = (grid_y // 39) * 39  # Y koordinaat
                         i = (grid_x // 39) * 39  # X kooridnaat

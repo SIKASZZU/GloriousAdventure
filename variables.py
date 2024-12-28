@@ -153,7 +153,7 @@ class UniversalVariables():
     # Playeri koordinaatide arvutamine
     # Player_x/_y ei ole offsetti lisatud
     player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
-    player_y: int = 10100 # random.randint(40 * block_size, 77 * block_size)
+    player_y: int = 1010 # random.randint(40 * block_size, 77 * block_size)
 
     health_status      = None
     hunger_resistance  = 0
@@ -210,7 +210,7 @@ class UniversalVariables():
     # ******************** MAZE ******************** #
 
     # General
-    maze_counter: int = 1
+    maze_counter: int = 0
     enemy_counter: int = 0
 
     # 0 col / row maze fix
@@ -231,7 +231,7 @@ class UniversalVariables():
     already_looped_blades = None
 
     # ******************** Render ******************** #
-    map_list: list = [['block_maze'], ['glade']]
+    map_list: list = [['glade']]
 
     blits_sequence_collision: list = []
     blits_sequence_objects: list = []

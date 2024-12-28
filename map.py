@@ -23,39 +23,38 @@ def resource_path(relative_path):
 
 
 class MapData:
-    ### FIXME: See peab olema [[None] * 39 for _ in range(40)]
-    placeholder = [[None] * 39 for _ in range(40)]
+    def __init__(self, terrain_data, click_position):
+        # Initilazitud asjad
+        self.click_position = click_position
+        self.terrain_data = terrain_data
 
-    maze_size = 40
-    resolution = (maze_size, maze_size)  # Adjusted resolution of Perlin noise for more distributed walls
+        # MapData asjad
+        self.placeholder = [[None] * 40 for _ in range(40)]
+        self.maze_size = 40
+        self.resolution = (self.maze_size, self.maze_size)  # Adjusted resolution of Perlin noise for more distributed walls
 
-    old = copy.deepcopy(UniversalVariables.map_list)  # Use deepcopy to avoid reference issues
+        self.create_save_puzzle = None
+        self.converted_maze = []
 
-    create_save_puzzle = None
-    converted_maze = []
+        if UniversalVariables.debug_mode:
+            self._puzzle_pieces = 20
+            self._keyholders = 20
+            self._loot = 20
+        else:
+            self._puzzle_pieces = 6  # on vaja kindlasti rohkem, kui kaheksa
+            self._keyholders = 4     # on vaja kaheksa
+            self._loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
 
-    if UniversalVariables.debug_mode:
-        _puzzle_pieces = 20
-        _keyholders = 20
-        _loot = 20
-    else:
-        _puzzle_pieces = 6  # on vaja kindlasti rohkem, kui kaheksa
-        _keyholders = 4     # on vaja kaheksa
-        _loot = random.randint(3, 5)  # _loot = random.randint(3, 5)
-
-
-    ### MAZEIDE LOOMISEKS VAJALIKUD FUNCID ###
 
     def create_start_doors(self, maze, start_side):
         """ Creates start door using cursor grid data. """
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
-        size = MapData.maze_size
         door_tuple = Camera.left_click_on_screen(self)
         door_grid_map  = Camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:
-            door_grid = (size // 2 - 1, size // 2 - 1)
+            door_grid = (self.map_data.maze_size // 2 - 1, self.map_data.maze_size // 2 - 1)
 
         else:
             door_grid = (door_grid_map[0] % 39, door_grid_map[1] % 39)  # kuna siin on 40x40 ala ss door grid arvutatakse just 40x40 ala sisse
@@ -78,14 +77,14 @@ class MapData:
             maze[start_1] = 91
 
         elif start_side == 'right':
-            start_0 = (door_grid[0], size - 1)
-            start_1 = (door_grid[0] + addition, size - 1)
+            start_0 = (door_grid[0], self.map_data.maze_size - 1)
+            start_1 = (door_grid[0] + addition, self.map_data.maze_size - 1)
             maze[start_0] = 92 
             maze[start_1] = 92
 
         elif start_side == 'bottom':
-            start_0 = (size - 1, door_grid[1])
-            start_1 = (size - 1, door_grid[1] + addition)
+            start_0 = (self.map_data.maze_size - 1, door_grid[1])
+            start_1 = (self.map_data.maze_size - 1, door_grid[1] + addition)
             maze[start_0] = 93 
             maze[start_1] = 93
 
@@ -109,49 +108,44 @@ class MapData:
         
         return None
 
+    def create_maze_items(self, maze):
 
-    def create_maze_items(maze, size):
+        def spawn_key(maze, x, y):
+            rand_val = random.random()
+            if rand_val < 0.1:
+                maze[x][y] = 10  # 10% full key
+            elif rand_val < 0.6:
+                maze[x][y] = 12  # 50% key top half
+            else:
+                maze[x][y] = 13  # 50% key bottom half
 
-        def spawn_key(maze, puzzle_x, puzzle_y):
-            if random.random() < 0.1: maze[puzzle_x][puzzle_y] = 10   # 10% full key
-            elif random.random() < 0.5: maze[puzzle_x][puzzle_y] = 12 # 50% key top half
-            else: maze[puzzle_x][puzzle_y] = 13                       # else, 50%, key bottom half
-        
-        # Maze puzzle pieces
-        for i in range(MapData._puzzle_pieces):
-            while True:
-                puzzle_x = random.randint(3, (size - 3))
-                puzzle_y = random.randint(3, (size - 3))
-                if maze[puzzle_x][puzzle_y] == 99:
-                    if not MapData.is_dead_end(maze, puzzle_x, puzzle_y):
-                        spawn_key(maze, puzzle_x, puzzle_y)
-                        break
-
-        # Maze keyholders
-        for i in range(MapData._keyholders):
-            while True:
-                keyholder_x = random.randint(3, (size - 3))
-                keyholder_y = random.randint(3, (size - 3))
-                if maze[keyholder_x][keyholder_y] == 99:
-                    if not MapData.is_dead_end(maze, keyholder_x, keyholder_y):
-                        maze[keyholder_x][keyholder_y] = 981
-                        break
-
-        # Maze loot barrels
-        if random.choice([True]):
-            for i in range(MapData._loot):
+        def place_item(maze, item_value, count):
+            for _ in range(count):
                 while True:
-                    loot_x = random.randint(3, (size - 3))
-                    loot_y = random.randint(3, (size - 3))
-                    if maze[loot_x][loot_y] == 99:
-                        if not MapData.is_dead_end(maze, loot_x, loot_y):
-                            maze[loot_x][loot_y] = 1001
-                            break
+                    x, y = random.randint(3, self.map_data.maze_size - 4), random.randint(3,
+                                                                                          self.map_data.maze_size - 4)
+                    if maze[x][y] == 99 and not self.map_data.is_dead_end(maze, x, y):
+                        maze[x][y] = item_value
+                        break
 
-        return maze      
+        # Place maze puzzle pieces
+        place_item(maze, None, self.map_data._puzzle_pieces)
+        for _ in range(self.map_data._puzzle_pieces):
+            while True:
+                x, y = random.randint(3, self.map_data.maze_size - 4), random.randint(3, self.map_data.maze_size - 4)
+                if maze[x][y] == 99 and not self.map_data.is_dead_end(maze, x, y):
+                    spawn_key(maze, x, y)
+                    break
 
+        # Place maze keyholders
+        place_item(maze, 981, self.map_data._keyholders)
 
-    def is_dead_end(maze, x, y):
+        # Place maze loot barrels
+        if random.choice([True]):
+            place_item(maze, 1001, self.map_data._loot)
+
+        return maze
+    def is_dead_end(self, maze, x, y):
         walls = 0
         if maze[x-1][y] == 99:
             walls += 1
@@ -259,7 +253,7 @@ class MapData:
                 maze = MapData.labyrinth_maze_generation(self, start_side)
             MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
 
-
+    @staticmethod
     def buffer_doors(maze, first_door=None, second_door=None, start_side=None):
         if first_door[0] % 39 == 0 and start_side == 'bottom':
             maze[first_door[0] - 2, first_door[1]    ] = 2
@@ -288,7 +282,7 @@ class MapData:
 
 
     ### SIIT ALGAB MAZEIDE LOOMISE FUNCID  ###
-
+    @staticmethod
     def glade_creation():
         glade_file_path = resource_path('glade.txt')
         with open(glade_file_path, 'r') as file:
@@ -296,7 +290,6 @@ class MapData:
                     for line in file if line.strip()]
 
 
-    @staticmethod
     def file_to_maze(self, file_name: str, side: str = None):
         if side is None:
             maze_file_path = resource_path('glade.txt')
@@ -308,7 +301,7 @@ class MapData:
             maze = [[int(x) if x.strip().lower() != 'none' else None
                      for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
-        size = len(maze)
+        self.map_data.maze_size = len(maze)
         maze = np.array(maze, dtype=object)  # Use dtype=object to handle None values # Teeb listi -> numpy arrayks.
 
         maze, start_door_grid = MapData.create_start_doors(self, maze, side)
@@ -321,23 +314,23 @@ class MapData:
             for side in sides:
 
                 if side == 'left':
-                    end_0 = ((size // 2), 0)
-                    end_1 = ((size // 2) - 1, 0)
+                    end_0 = ((self.map_data.maze_size // 2), 0)
+                    end_1 = ((self.map_data.maze_size // 2) - 1, 0)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 94, 94
 
                 elif side == 'top':
-                    end_0 = (0, (size // 2))
-                    end_1 = (0, (size // 2) - 1)
+                    end_0 = (0, (self.map_data.maze_size // 2))
+                    end_1 = (0, (self.map_data.maze_size // 2) - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
 
                 elif side == 'right':
-                    end_0 = ((size // 2), size - 1)
-                    end_1 = ((size // 2) - 1, size - 1)
+                    end_0 = ((self.map_data.maze_size // 2), self.map_data.maze_size - 1)
+                    end_1 = ((self.map_data.maze_size // 2) - 1, self.map_data.maze_size - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
 
                 elif side == 'bottom':
-                    end_0 = (size - 1, (size // 2))
-                    end_1 = (size - 1, (size // 2) - 1)
+                    end_0 = (self.map_data.maze_size - 1, (self.map_data.maze_size // 2))
+                    end_1 = (self.map_data.maze_size - 1, (self.map_data.maze_size // 2) - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97
 
             return maze
@@ -380,13 +373,13 @@ class MapData:
                 abandoned_glade_maze.append(glade_row)
             return abandoned_glade_maze
 
-        size = MapData.maze_size
-        noise = generate_glade_terrain(size, size)
+        self.map_data.maze_size = self.map_data.maze_size
+        noise = generate_glade_terrain(self.map_data.maze_size, self.map_data.maze_size)
         maze = render(noise)
 
         # Setting maze boundaries
-        maze[0] = [99] * size
-        maze[-1] = [99] * size
+        maze[0] = [99] * self.map_data.maze_size
+        maze[-1] = [99] * self.map_data.maze_size
         for row in maze:
             row[0] = 99
             row[-1] = 99
@@ -398,51 +391,51 @@ class MapData:
         exit_side.remove(start_side)
         for side in exit_side:
             if side == 'left':
-                maze[size // 2][0] = 94
-                maze[(size // 2) - 1][0] = 94
+                maze[self.map_data.maze_size // 2][0] = 94
+                maze[(self.map_data.maze_size // 2) - 1][0] = 94
 
-                maze[size // 2][1] = 1
-                maze[(size // 2) - 1][1] = 1
+                maze[self.map_data.maze_size // 2][1] = 1
+                maze[(self.map_data.maze_size // 2) - 1][1] = 1
 
             elif side == 'top':
-                maze[0][size // 2] = 95
-                maze[0][(size // 2) - 1] = 95
+                maze[0][self.map_data.maze_size // 2] = 95
+                maze[0][(self.map_data.maze_size // 2) - 1] = 95
 
-                maze[1][size // 2] = 1
-                maze[1][(size // 2) - 1] = 1
+                maze[1][self.map_data.maze_size // 2] = 1
+                maze[1][(self.map_data.maze_size // 2) - 1] = 1
 
             elif side == 'right':
-                maze[size // 2][size - 1] = 96
-                maze[(size // 2) - 1][size - 1] = 96
+                maze[self.map_data.maze_size // 2][self.map_data.maze_size - 1] = 96
+                maze[(self.map_data.maze_size // 2) - 1][self.map_data.maze_size - 1] = 96
 
-                maze[size // 2][size - 2] = 1
-                maze[(size // 2) - 1][size - 2] = 1
+                maze[self.map_data.maze_size // 2][self.map_data.maze_size - 2] = 1
+                maze[(self.map_data.maze_size // 2) - 1][self.map_data.maze_size - 2] = 1
 
             elif side == 'bottom':
-                maze[size - 1][size // 2] = 97
-                maze[size - 1][(size // 2) - 1] = 97
+                maze[self.map_data.maze_size - 1][self.map_data.maze_size // 2] = 97
+                maze[self.map_data.maze_size - 1][(self.map_data.maze_size // 2) - 1] = 97
 
-                maze[size - 2][size // 2] = 1
-                maze[size - 2][(size // 2) - 1] = 1
+                maze[self.map_data.maze_size - 2][self.map_data.maze_size // 2] = 1
+                maze[self.map_data.maze_size - 2][(self.map_data.maze_size // 2) - 1] = 1
 
         # Convert string to integers and lists
-        MapData.converted_maze = []
+        self.map_data.converted_maze = []
         for row in maze:
             row_integers = [
                 random.choice([1004, 1005, 1006, 1008, 1010, 1012]) if x == 1 and random.random() < 0.05 else int(x)
                 for x in row
             ]
-            MapData.converted_maze.append(row_integers)
+            self.map_data.converted_maze.append(row_integers)
 
-        return MapData.converted_maze
+        return self.map_data.converted_maze
 
 
     ### FIXME: labyrinth on vahel mingi topelt seinaga kui allapoole see avada
     def labyrinth_maze_generation(self, start_side):  # start_side - BOTTOM RIGHT LEFT TOP
         type_maze = 'labyrinth_maze'
 
-        size = MapData.maze_size
-        maze = np.full((size, size), 99)  # numpy ver, [[99] * size for _ in range(size)]
+        self.map_data.maze_size = self.map_data.maze_size
+        maze = np.full((self.map_data.maze_size, self.map_data.maze_size), 99)  # numpy ver, [[99] * self.map_data.maze_size for _ in range(self.map_data.maze_size)]
         
         # func dfs teeb pathi, 98, mazei
         def dfs(row, col):
@@ -454,19 +447,19 @@ class MapData:
 
             for dr, dc in directions:
                 new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
-                if 1 <= new_row < size - 1 and 1 <= new_col < size - 1 and maze[new_row, new_col] == 99:
+                if 1 <= new_row < self.map_data.maze_size - 1 and 1 <= new_col < self.map_data.maze_size - 1 and maze[new_row, new_col] == 99:
                     
                     maze[row + dr, col + dc] = 98  # Mark the cell between current and next cell as a pathway
                     dfs(new_row, new_col)
 
         # Muudab vasakpoolse ja alumise eelviimase seina random 98/99'ks
-        for i in range(1, size - 1):
+        for i in range(1, self.map_data.maze_size - 1):
             choice = random.choices([98, 99])[0]
             maze[i, 1] = choice
 
-        for i in range(1, size - 1):
+        for i in range(1, self.map_data.maze_size - 1):
             choice = random.choices([98, 99])[0]
-            maze[size - 2, i] = choice
+            maze[self.map_data.maze_size - 2, i] = choice
 
         maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
 
@@ -475,50 +468,46 @@ class MapData:
         dfs(x[0], x[1])
 
         # Enne ust teeb pathway et see blocked ei oleks. FIXME: see ei ole reliable solution
-        maze[size // 2, 1]            = 98
-        maze[size // 2 - 1, 1]        = 98
-        maze[1, size // 2]            = 98
-        maze[1, size // 2 - 1]        = 98
-        maze[size // 2, size - 2]     = 98
-        maze[size // 2 - 1, size - 2] = 98
-        maze[size - 2, size // 2]     = 98
-        maze[size - 2, size // 2 - 1] = 98
+        maze[self.map_data.maze_size // 2, 1]            = 98
+        maze[self.map_data.maze_size // 2 - 1, 1]        = 98
+        maze[1, self.map_data.maze_size // 2]            = 98
+        maze[1, self.map_data.maze_size // 2 - 1]        = 98
+        maze[self.map_data.maze_size // 2, self.map_data.maze_size - 2]     = 98
+        maze[self.map_data.maze_size // 2 - 1, self.map_data.maze_size - 2] = 98
+        maze[self.map_data.maze_size - 2, self.map_data.maze_size // 2]     = 98
+        maze[self.map_data.maze_size - 2, self.map_data.maze_size // 2 - 1] = 98
 
         exit_set = {'bottom', 'right', 'left', 'top'}
         exit_set.remove(start_side)
 
         for exit_side in exit_set:
             if exit_side == 'left':
-                maze[size // 2, 0] = 94
-                maze[size // 2 - 1, 0] = 94
+                maze[self.map_data.maze_size // 2, 0] = 94
+                maze[self.map_data.maze_size // 2 - 1, 0] = 94
 
             if exit_side == 'top':
-                maze[0, size // 2] = 95
-                maze[0, size // 2 - 1] = 95
+                maze[0, self.map_data.maze_size // 2] = 95
+                maze[0, self.map_data.maze_size // 2 - 1] = 95
 
             if exit_side == 'right':
-                maze[size // 2, size - 1] = 96
-                maze[size // 2 - 1, size - 1] = 96
+                maze[self.map_data.maze_size // 2, self.map_data.maze_size - 1] = 96
+                maze[self.map_data.maze_size // 2 - 1, self.map_data.maze_size - 1] = 96
 
             if exit_side == 'bottom':
-                maze[size - 1, size // 2] = 97
-                maze[size - 1, size // 2 - 1] = 97
+                maze[self.map_data.maze_size - 1, self.map_data.maze_size // 2] = 97
+                maze[self.map_data.maze_size - 1, self.map_data.maze_size // 2 - 1] = 97
 
-        MapData.create_maze_items(maze, size)
+        MapData.create_maze_items(self, maze)
         MapData.search_paths(self, maze, type_maze, start_side, start_door_grid)
 
         if MapData.create_save_puzzle == True:
             MapData.create_save_puzzle = False
             return maze
 
-    @staticmethod
     def block_maze_generation(self, start_side):
         type_of_maze = 'block_maze'
-        size = MapData.maze_size
-        resolution = MapData.resolution
-        noise = MapData.block_maze_noise((size, size), resolution)
-        noise = MapData.block_maze_noise((size, size), resolution)
-        noise_resized = resize(noise, (size, size), mode='reflect')
+        noise = MapData.block_maze_noise((self.map_data.maze_size, self.map_data.maze_size), self.map_data.resolution)
+        noise_resized = resize(noise, (self.map_data.maze_size, self.map_data.maze_size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), 99, 98)
 
         maze[0, :] = maze[-1, :] = 99
@@ -533,7 +522,7 @@ class MapData:
         sides = ['top', 'bottom', 'left', 'right']
         sides.remove(start_side)
         exit_side = random.choice(sides)
-        random_position = random.randint(2, size-3) # 0 kuni 39 on tegelikult, size on 40 ehk 40-3 peaks olema solid failsafe 
+        random_position = random.randint(2, self.map_data.maze_size-3) # 0 kuni 39 on tegelikult, self.map_data.maze_size on 40 ehk 40-3 peaks olema solid failsafe
 
         # Set the exit point
         if exit_side == 'left':
@@ -547,13 +536,13 @@ class MapData:
             maze[end_0], maze[end_1] = 95, 95
 
         elif exit_side == 'right':
-            end_0 = (random_position    , size - 1)
-            end_1 = (random_position + 1, size - 1)
+            end_0 = (random_position    , self.map_data.maze_size - 1)
+            end_1 = (random_position + 1, self.map_data.maze_size - 1)
             maze[end_0], maze[end_1] = 96, 96
 
         elif exit_side == 'bottom':
-            end_0 = (size - 1, random_position    )
-            end_1 = (size - 1, random_position + 1)
+            end_0 = (self.map_data.maze_size - 1, random_position    )
+            end_1 = (self.map_data.maze_size - 1, random_position + 1)
             maze[end_0], maze[end_1] = 97, 97
         
         exit_point = (end_0, end_1)
@@ -563,15 +552,15 @@ class MapData:
         MapData.buffer_doors(maze, first_exit_door, second_exit_door, exit_side)
         
         # muudab maze datat, et string -> int -> list
-        MapData.converted_maze = []
+        self.map_data.converted_maze = []
         for row in maze:
             row_integers = row.astype(int)  # muudab intis
             row_list = row_integers.tolist()  # muudab listiks
-            MapData.converted_maze.append(row_list)
+            self.map_data.converted_maze.append(row_list)
 
-        maze = MapData.converted_maze
+        maze = self.map_data.converted_maze
 
-        MapData.create_maze_items(maze, size)
+        MapData.create_maze_items(self, maze)
         MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
 
         if MapData.create_save_puzzle:
@@ -600,7 +589,6 @@ class MapData:
                         UniversalVariables.final_maze = True
                         return MapData.file_to_maze(self, file_name=f'{item}.txt', side=start_side)
 
-
         elif item == 'abandoned_glade':
             return MapData.abandoned_glade_generation(self, start_side)
 
@@ -609,52 +597,17 @@ class MapData:
             return MapData.file_to_maze(self, file_name=f'{item}.txt')
 
         elif item == 'place':
-            return MapData.placeholder
+            return self.placeholder
 
         else:
             # Handle other cases or raise an error
             raise ValueError(f"Unknown item type: {item}")
 
 
-    def map_list_to_map(self, start_side='bottom'):
-        difference = []
-        new = UniversalVariables.map_list
-
-        if MapData.old != []:
-            max_length = max(len(new), len(MapData.old))
-
-            for row_index in range(max_length):
-                if row_index >= len(MapData.old):
-                    for col_index, item in enumerate(new[row_index]):
-                        difference.append(item)
-                else:
-                    new_row = new[row_index]
-                    old_row = MapData.old[row_index] if row_index < len(MapData.old) else []
-
-                    for col_index, item in enumerate(new_row):
-                        if col_index >= len(old_row) or item not in old_row:
-                            difference.append(item)
-
-        if self.terrain_data is None:
-            # If there's no existing terrain_data, generate new map data from scratch
-            new_map_data = []
-            for sublist in UniversalVariables.map_list:
-                combined_rows = None
-                for item in sublist:
-                    if item == 'glade':
-                        current_data = MapData.glade_creation()
-                    else:
-                        current_data = MapData.get_data(self, item, start_side)
-
-                    if combined_rows is None:
-                        combined_rows = current_data
-                    else:
-                        combined_rows = [row1 + row2 for row1, row2 in zip(combined_rows, current_data)]
-                new_map_data.extend(combined_rows)
-            self.terrain_data = new_map_data
-            MapData.old = copy.deepcopy(UniversalVariables.map_list)  # Update MapData.old here if needed
-
-        return self.terrain_data
-
+def glade_creation():
+    glade_file_path = resource_path('glade.txt')
+    with open(glade_file_path, 'r') as file:
+        return [[int(x) for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
+                for line in file if line.strip()]
 
 if __name__ == "__main__": ...
