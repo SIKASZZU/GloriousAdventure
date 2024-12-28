@@ -211,7 +211,7 @@ class UniversalVariables():
 
     # General
     maze_counter: int = 0
-    enemy_counter: int = 0
+    entity_counter: int = 0
 
     # 0 col / row maze fix
     first_time = True
