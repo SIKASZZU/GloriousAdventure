@@ -2,7 +2,7 @@ import pygame
 
 from variables import UniversalVariables
 from camera import Camera
-from entity import Enemy
+from entity import Entity
 from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
 from inventory import Inventory
@@ -19,28 +19,28 @@ class Attack:
         AttackObject.update_timers(self)
         AttackObject.draw_hover_rect(self)
 
-        enemy_pressed = UniversalVariables.attack_key_pressed
+        entity_pressed = UniversalVariables.attack_key_pressed
 
         if Attack.last_attack_cooldown < Attack.last_attack_cooldown_max:
             Attack.last_attack_cooldown += 1
-            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
+            entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
             Attack.display_attack_cd_timer(self)
 
 
-        elif enemy_pressed[0] == True:  # arrow keydega hittisid enemyt
-            AttackEnemy.update(self, pressed=True)
-            enemy_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
+        elif entity_pressed[0] == True:  # arrow keydega hittisid entityt
+            AttackEntity.update(self, pressed=True)
+            entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
             
         else:
-            enemy_click = Camera.left_click_on_screen(self)  # x, y (Coords)
+            entity_click = Camera.left_click_on_screen(self)  # x, y (Coords)
             object_click = self.click_position  # x, y (Coords)
 
-            if not enemy_click and not object_click:
+            if not entity_click and not object_click:
                 return False
 
-            if enemy_click and None not in enemy_click:  # Check if enemy_click is valid
-                AttackEnemy.update(self, click=enemy_click)
+            if entity_click and None not in entity_click:  # Check if entity_click is valid
+                AttackEntity.update(self, click=entity_click)
 
             if object_click and None not in object_click:  # Check if object_click is valid
                 AttackObject.update(self, object_click)  # Offseti asi on perses kuna muutsime camerat
@@ -58,31 +58,31 @@ class Attack:
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2, 5)
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), filler_rect)
 
-class AttackEnemy:
-    def find_enemy(self, click=False, pressed=False):
-        for enemy_name, enemy_info in list(Enemy.spawned_enemy_dict.items()):
-            enemy_rect = pygame.Rect(enemy_info[1] * UniversalVariables.block_size,
-                                     enemy_info[2] * UniversalVariables.block_size, 73, 73)
+class Attackentity:
+    def find_entity(self, click=False, pressed=False):
+        for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
+            entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
+                                     entity_info[2] * UniversalVariables.block_size, 73, 73)
             
             if click:
-                if not enemy_rect.collidepoint(click):
+                if not entity_rect.collidepoint(click):
                     continue
 
-                return enemy_name, enemy_info
+                return entity_name, entity_info
 
             if pressed:
                 # converted to window size coord
-                enemy_rect_converted: pygame.Rect = pygame.Rect(
-                    enemy_rect[0] + UniversalVariables.offset_x, enemy_rect[1] + UniversalVariables.offset_y,
-                    enemy_rect[2], enemy_rect[3]
+                entity_rect_converted: pygame.Rect = pygame.Rect(
+                    entity_rect[0] + UniversalVariables.offset_x, entity_rect[1] + UniversalVariables.offset_y,
+                    entity_rect[2], entity_rect[3]
                 )
 
-                if self.player_attack_rect != None and self.player_attack_rect.colliderect(enemy_rect_converted):
-                    return enemy_name, enemy_info
+                if self.player_attack_rect != None and self.player_attack_rect.colliderect(entity_rect_converted):
+                    return entity_name, entity_info
                 else:
                     continue
 
-    def calculate_enemy_knockback(self, x, y):
+    def calculate_entity_knockback(self, x, y):
         player_grid_y = UniversalVariables.player_y // UniversalVariables.block_size
         player_grid_x = UniversalVariables.player_x // UniversalVariables.block_size
         xdx, ydx = int(x), int(y)
@@ -97,73 +97,73 @@ class AttackEnemy:
 
         if direction_of_attack == 'left' or direction_of_attack == 'right':
 
-            # if enemy is to the left
+            # if entity is to the left
             if xdx < player_grid_x:
                 xdx -= knockback_stenght
             
-            # if enemy is to the right
+            # if entity is to the right
             elif xdx > player_grid_x:
                 xdx += knockback_stenght
             
         else:  # dir of attack > above and down
 
-            # if enemy is on top
+            # if entity is on top
             if ydx < player_grid_y:
                 ydx -= knockback_stenght
 
-            # if enemy is below
+            # if entity is below
             elif ydx > player_grid_y:
                 ydx += knockback_stenght
 
         return xdx, ydx
 
-    def damage_enemy(self, enemy_name, enemy_info):
-        enemy_image, x, y, HP = enemy_info
+    def damage_entity(self, entity_name, entity_info):
+        entity_image, x, y, HP = entity_info
         new_HP = HP - UniversalVariables.player_damage
 
         if new_HP <= 0:
             
-            # add enemy to dead enemy list
-            Enemy.dead_enemy_list[enemy_name] = (x, y, False)
+            # add entity to dead entity list
+            Entity.dead_entity_list[entity_name] = (x, y, False)
             have_geiger = 'Geiger' in Inventory.inventory
             if random.random() < 0.05 or have_geiger == False:  # 5% chance
-                Enemy.dead_enemy_list[enemy_name] = (x, y, True)
+                Entity.dead_entity_list[entity_name] = (x, y, True)
             
-            del Enemy.path[enemy_name]
-            del Enemy.spawned_enemy_dict[enemy_name]
+            del Entity.path[entity_name]
+            del Entity.spawned_entity_dict[entity_name]
             Player_audio.ghost_died_audio(self)
 
             if UniversalVariables.debug_mode:
-                print(f"Killed {enemy_name}.")
+                print(f"Killed {entity_name}.")
                 return
 
             return
 
-        # # Add knockback to enemy
-        x, y = AttackEnemy.calculate_enemy_knockback(self, x, y)
-        Enemy.spawned_enemy_dict[enemy_name] = enemy_image, x, y, new_HP
+        # # Add knockback to entity
+        x, y = AttackEntity.calculate_entity_knockback(self, x, y)
+        Entity.spawned_entity_dict[entity_name] = entity_image, x, y, new_HP
         Player_audio.ghost_hurt_audio(self)
 
         if UniversalVariables.debug_mode:
             print(
-                f"Attacking: {enemy_name}. HP dropped from {enemy_info[-1]} to {enemy_info[-1] - UniversalVariables.player_damage}.")
+                f"Attacking: {entity_name}. HP dropped from {entity_info[-1]} to {entity_info[-1] - UniversalVariables.player_damage}.")
             return
         return
 
     def update(self, click=False, pressed=False):
 
         if click:
-            enemy_data = AttackEnemy.find_enemy(self, click=click)
-            if enemy_data:
-                enemy_name, enemy_info = enemy_data
-                AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+            entity_data = AttackEntity.find_entity(self, click=click)
+            if entity_data:
+                entity_name, entity_info = entity_data
+                AttackEntity.damage_entity(self, entity_name, entity_info)
                 Attack.last_attack_cooldown = 0
         
         if pressed:
-            enemy_data = AttackEnemy.find_enemy(self, pressed=pressed)
-            if enemy_data:
-                enemy_name, enemy_info = enemy_data
-                AttackEnemy.damage_enemy(self, enemy_name, enemy_info)
+            entity_data = AttackEntity.find_entity(self, pressed=pressed)
+            if entity_data:
+                entity_name, entity_info = entity_data
+                AttackEntity.damage_entity(self, entity_name, entity_info)
                 Attack.last_attack_cooldown = 0
 
 class AttackObject:

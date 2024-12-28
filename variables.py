@@ -101,7 +101,7 @@ class UniversalVariables():
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 15
 
-        enemy_speed: float = 0.05  # Enemy kiirus grid size'ina
+        entity_speed: float = 0.05  # entity kiirus grid size'ina
 
         cooking_range:int = 5  # Grid
 
@@ -120,7 +120,7 @@ class UniversalVariables():
         block_size: int = screen_x // jagatis
         player_range: int = block_size * 1.5
 
-        enemy_speed: float = 0.03  # Enemy kiirus grid size'ina
+        entity_speed: float = 0.03  # entity kiirus grid size'ina
 
         cooking_range:int = 2  # Grid
 
@@ -211,7 +211,7 @@ class UniversalVariables():
 
     # General
     maze_counter: int = 1
-    enemy_counter: int = 0
+    entity_counter: int = 0
 
     # 0 col / row maze fix
     first_time = True
@@ -241,11 +241,11 @@ class UniversalVariables():
     offset_y: int = 0
     update_view = True
     
-    # ******************** Enemy ******************** #
-    enemy_spawnpoint_list = set()
+    # ******************** entity ******************** #
+    entity_spawnpoint_list = set()
 
     # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-    enemy_path_update_tick = 5 + random.randint(15, 20)
+    entity_path_update_tick = 5 + random.randint(15, 20)
 
     ghost_hp = 8
 
@@ -289,7 +289,7 @@ class UniversalVariables():
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
-        UniversalVariables.enemy_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
+        UniversalVariables.entity_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
         if terrain_data is not None:
             spawnpoints = set()
             for row in range(len(terrain_data)):
@@ -300,8 +300,8 @@ class UniversalVariables():
             count = 0
             for spawnpoint in spawnpoints:
 
-                if count < 10 * UniversalVariables.maze_counter and spawnpoint not in UniversalVariables.enemy_spawnpoint_list:
-                    UniversalVariables.enemy_spawnpoint_list.add(spawnpoint)
+                if count < 10 * UniversalVariables.maze_counter and spawnpoint not in UniversalVariables.entity_spawnpoint_list:
+                    UniversalVariables.entity_spawnpoint_list.add(spawnpoint)
                     count += 1
                 else:
                     break
