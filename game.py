@@ -8,32 +8,33 @@ import jurigged
 import hashlib
 
 # Other modules
-import vision
-from entity import Entity
-from variables import UniversalVariables
-from camera import Camera
-from render import RenderPictures, ObjectCreation
-from event_handler import Event_handler
-from map import MapData, glade_creation
-from objects import ObjectManagement
-from update import EssentialsUpdate, PlayerUpdate
-from inventory import Inventory
-from collisions import Collisions
-from audio import Player_audio, Tile_Sounds
-from components import Player
-from blade import Blades
-from final_maze import Final_Maze
-from text import Fading_text
-from menu import Menu, PauseMenu
-from status import PlayerEffect
-from HUD import HUD_class
-from equipped_items import ItemFunctionality
-from building import Building
-from cooking import Cooking
-from maze_changes import MazeChanges
 from attack import Attack, AttackEntity, AttackObject
+from audio import Player_audio, Tile_Sounds
+from blade import Blades
+from building import Building
+from camera import Camera
+from collisions import Collisions
+from components import Player
+from cooking import Cooking
 from dropping import Drop
+from entity import Entity
+from equipped_items import ItemFunctionality
+from event_handler import Event_handler
+from final_maze import Final_Maze
+from HUD import HUD_class
 from interactions import Interaction
+from inventory import Inventory
+from map import MapData, glade_creation
+from maze_changes import MazeChanges
+from menu import Menu, PauseMenu
+from objects import ObjectManagement
+from render import RenderPictures, ObjectCreation
+from status import PlayerEffect
+from text import Fading_text
+from update import EssentialsUpdate, PlayerUpdate
+from variables import UniversalVariables
+import vision
+
 
 jurigged.watch()  # hot reload
 
@@ -92,9 +93,13 @@ class Game:
         self.camera = Camera(self.screen)
 
     def initialize_map(self):
+        # fixme: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
+
         self.terrain_data = glade_creation()
         self.map_data = MapData(self.terrain_data, self.click_position)
 
+        # Blade maze
+        self.maze_blades = Blades(self.terrain_data)
 
         # Fixme: Day/Night - Uksed lahti/kinni
 
@@ -123,15 +128,12 @@ class Game:
                              base_thirst=12, max_thirst=20, min_thirst=0)
         
         self.player_effect = PlayerEffect(self.player)
-    
-    def initialize_blades(self):
-        self.maze_blades = Blades()
 
     def initialize_collisons(self):
         self.collisions = Collisions(self.player, self.player_rect)
 
     def initialize_inventory(self):
-        self.inv = Inventory(self.player_rect)
+        self.inv = Inventory()
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:

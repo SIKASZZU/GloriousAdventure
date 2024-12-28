@@ -2,7 +2,6 @@ import pygame
 
 from text import Fading_text
 from items import items_list
-from inventory import Inventory
 from update import EssentialsUpdate
 from objects import ObjectManagement
 from variables import GameConfig
@@ -71,7 +70,7 @@ class Interaction:
                 terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
 
                 if object_id == 981:  # Paneb key
-                    if not 'Maze_Key' in Inventory.inventory or UniversalVariables.current_equipped_item != 'Maze_Key':  # and UniversalVariables.final_maze == True:
+                    if not 'Maze_Key' in self.inv.inventory or UniversalVariables.current_equipped_item != 'Maze_Key':  # and UniversalVariables.final_maze == True:
                         Player_audio.error_audio(self)
 
                         text = "Shouldn't we put something here?"
@@ -151,7 +150,7 @@ class Interaction:
 
                     # For opening the door remove one key from inventory
                     else:
-                        if not 'Maze_Key' in Inventory.inventory:
+                        if not 'Maze_Key' in self.inv.inventory:
                             Player_audio.error_audio(self)
 
                             text = ("No available Maze key in inventory.")

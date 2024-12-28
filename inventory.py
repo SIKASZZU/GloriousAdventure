@@ -6,22 +6,21 @@ from items import object_items, mineral_items, tool_items, ObjectItem, MineralIt
 from audio import Player_audio
 from text import Fading_text
 
+
 def craftable_items_manager(func):
     def wrapper(self, *args, **kwargs):
         Inventory.calculate_craftable_items(self)
         func(self, *args, **kwargs)
+
     return wrapper
 
-class Inventory:
-    def __init__(self, player_rect):
-        self.player_rect = player_rect
-        
 
+class Inventory:
+    def __init__(self):
         self.slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
         self.position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
-        self.resized_slot_image = pygame.transform.scale(self.slot_image,
-                                                    (self.slot_image.get_width() * 0.9, self.slot_image.get_height() * 0.9))
-
+        self.resized_slot_image = pygame.transform.scale(self.slot_image, (
+        self.slot_image.get_width() * 0.9, self.slot_image.get_height() * 0.9))
 
         self.inventory_display_rects = []
         self.craftable_items_display_rects = []
@@ -43,7 +42,7 @@ class Inventory:
         self.text_cache = {}  # Cache rendered text surfaces
         self.message_to_user = False
         self.first_time_click = False
-        self.total_slots:int = 4
+        self.total_slots: int = 4
 
         self.total_rows = 0
         self.total_cols = 0
@@ -51,14 +50,12 @@ class Inventory:
 
         self.previous_inventory = None  # Track the previous state of the inventory
 
-
     def print_inventory(self) -> None:
         """ Prints out the contents of the inventory."""
 
         if self.inv.inventory != self.inv.previous_inv:
             print('Inventory contains:\n   ', self.inv.inventory)
             self.inv.previous_inv = self.inv.inventory.copy()
-
 
     def handle_mouse_click(self) -> None:
         """ Lubab invis ja craftimises clicke kasutada
@@ -78,7 +75,7 @@ class Inventory:
                         Inventory.handle_crafting_click(self, mouse_x, mouse_y)
 
                     Inventory.is_click_in_inventory(self, mouse_x, mouse_y, mouse_state)
-                    
+
     def is_click_in_inventory(self, mouse_x, mouse_y, mouse_state):
         """ Kas click on invi sees ja siis displayb itemi nime mida invis klikkis"""
 
@@ -91,7 +88,8 @@ class Inventory:
                     item = str(item).replace('_', ' ')
                     Fading_text.re_display_fading_text(item)
 
-                except Exception:  pass
+                except Exception:
+                    pass
                 return
 
         return
@@ -117,7 +115,7 @@ class Inventory:
         """Checks what's in the inventory's selected slot."""
 
         try:
-            if delete_boolean == False:
+            if not delete_boolean:
                 item = list(self.inv.inventory.keys())[index]
                 value = list(self.inv.inventory.values())[index]
                 UniversalVariables.current_equipped_item = item
@@ -175,14 +173,14 @@ class Inventory:
         elif not keys[pygame.K_TAB]:
             self.inv.tab_pressed = False
 
-
         if self.inv.render_inv:
             # UniversalVariables.allow_movement = False
             Inventory.render(self)  # Render inventory
             UniversalVariables.allow_building = False
         else:
             # UniversalVariables.allow_movement = True
-            Inventory.render(self, update_white_text=True)  # Kui sulgeb invi white text itemitega, ss j2rgmine kord ei ole neid itemid enam valged
+            Inventory.render(self,
+                             update_white_text=True)  # Kui sulgeb invi white text itemitega, ss j2rgmine kord ei ole neid itemid enam valged
             UniversalVariables.allow_building = True
 
     # TODO : invi on vaja optimatiseerida
@@ -223,11 +221,11 @@ class Inventory:
         rect_height: int = UniversalVariables.block_size / 2
 
         # Calculate inventory position relative to player and screen size
-        rect_x: int = self.player_rect.centerx + total_cols + UniversalVariables.block_size / 2  # Siia ei tohi offsetti panna
-        rect_y: int = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4  # Siia ei tohi offsetti panna
+        rect_x: int = self.player_update.player_rect.centerx + total_cols + UniversalVariables.block_size / 2  # Siia ei tohi offsetti panna
+        rect_y: int = self.player_update.player_rect.centery - total_rows * UniversalVariables.block_size / 4  # Siia ei tohi offsetti panna
 
         right_side: int = UniversalVariables.screen.get_size()[0] - (
-                    self.camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
+                self.camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
         left_side: int = self.camera.camera_borders['left'] * 2
 
         if rect_x >= right_side:
@@ -245,29 +243,30 @@ class Inventory:
         """ Callib calculate_inventory, renderib invi, invis olevad itemid ja nende kogused """
 
         # Clear the white text items and counters if rendering inventory is false
-        if update_white_text == True:
+        if update_white_text:
             self.inv.white_colored_items.clear()
             self.inv.white_text_counters.clear()
             return
 
         Inventory.calculate(self)
-    
+
         # Create a semi-transparent overlay
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()), pygame.SRCALPHA)
+        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+                                 pygame.SRCALPHA)
         overlay.set_alpha(180)
-    
+
         # Draw item slots with borders
         for rect in self.inv.inventory_display_rects:
             pygame.draw.rect(overlay, (177, 177, 177), rect, border_radius=5)  # Gray background
             pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)  # Black border
-    
+
         # Blit the overlay onto the screen
         UniversalVariables.screen.blit(overlay, (0, 0))
-    
+
         new_white_items = set()
         for rect, (name, count) in zip(self.inv.inventory_display_rects, self.inv.inventory.items()):
             item_rect = pygame.Rect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6)
-    
+
             if count < 0:
                 continue
 
@@ -277,21 +276,21 @@ class Inventory:
 
             item_image = pygame.transform.scale(item_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
             item_image_rect = item_image.get_rect(center=item_rect.center)
-    
+
             font = pygame.font.Font(None, 20)
 
             # Check if the item is new or its count has changed
             if (name not in self.inv.old_inventory or
-                (name in self.inv.old_inventory and self.inv.inventory[name] != self.inv.old_inventory[name])):
+                    (name in self.inv.old_inventory and self.inv.inventory[name] != self.inv.old_inventory[name])):
                 self.inv.white_text = True
                 new_white_items.add(name)
                 self.inv.white_text_counters[name] = 0  # Initialize the counter for the new item
-    
+
             text_color = 'black'
             if name in self.inv.white_colored_items:
                 text_color = 'white'  # color for item change
                 self.inv.white_text_counters[name] += 1  # Increment the counter for the item
-    
+
             text = font.render(str(count), True, text_color)
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
 
@@ -302,10 +301,9 @@ class Inventory:
         for item in items_to_remove:
             self.inv.white_colored_items.remove(item)
             del self.inv.white_text_counters[item]
-    
+
         self.inv.white_colored_items.update(new_white_items)
         self.inv.old_inventory = self.inv.inventory.copy()
-
 
     def has_inventory_changed(self) -> bool:
         """Check if the inventory has changed since the last calculation."""
@@ -352,7 +350,7 @@ class Inventory:
                     if can_craft:
                         # Use dot notation to access item attributes
                         self.inv.craftable_items[item.name] = recipe.get("Amount",
-                                                                     1)  # Use item.name instead of item["Name"]
+                                                                         1)  # Use item.name instead of item["Name"]
 
         Inventory.update_craftable_items_display(self)
 
@@ -492,7 +490,7 @@ class Inventory:
         item_count = self.inv.inventory.get(name, 0)
         if item_count > 1:
             count_text = str(item_count)
-            if count_text not in Inventory.text_cache:
+            if count_text not in self.inv.text_cache:
                 font = pygame.font.Font(None, 20)
                 self.inv.text_cache[count_text] = font.render(count_text, True, (0, 0, 0))
 
@@ -509,7 +507,7 @@ class Inventory:
     def item_delay_bar(self, slot_image, position):
         """ See func on inventory all, sest slot_image andmed asuvad siin ja eksportimine on keerukas. """
 
-        width  = slot_image.get_width()
+        width = slot_image.get_width()
         height = slot_image.get_height()
 
         # Tekitab semi-transparent recti
@@ -520,12 +518,12 @@ class Inventory:
         if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
             tl_point = position[0]
             tr_point = position[1]
-            
+
             progress = int((UniversalVariables.interaction_delay / UniversalVariables.interaction_delay_max) * height)
 
-            loading_bar_border_rect = pygame.Rect(tl_point, tr_point + progress, width, height - progress,)
+            loading_bar_border_rect = pygame.Rect(tl_point, tr_point + progress, width, height - progress, )
             pygame.draw.rect(overlay, 'black', loading_bar_border_rect)
-            UniversalVariables.screen.blit(overlay, (0,0))
+            UniversalVariables.screen.blit(overlay, (0, 0))
 
     def inventory_full_error(self):
         Player_audio.error_audio(self)

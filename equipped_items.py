@@ -15,12 +15,12 @@ def is_click_inside_player_rect(self):
     if None in self.click_position:  # Return'ib kui click_position'is on None
         return False
 
-    player_x = self.player_rect[0] + UniversalVariables.offset_x
-    player_y = self.player_rect[1] + UniversalVariables.offset_y
+    player_x = self.player_update.player_rect[0] + UniversalVariables.offset_x
+    player_y = self.player_update.player_rect[1] + UniversalVariables.offset_y
 
     # Vaatab, kas click on player rect'i sees
-    click_within_x = player_x < self.click_position[0] < player_x + self.player_rect[2]
-    click_within_y = player_y < self.click_position[1] < player_y + self.player_rect[3]
+    click_within_x = player_x < self.click_position[0] < player_x + self.player_update.player_rect[2]
+    click_within_y = player_y < self.click_position[1] < player_y + self.player_update.player_rect[3]
 
     return click_within_x and click_within_y  # Return'ib tulemuse
 
@@ -32,7 +32,10 @@ def probably(chance):
 def find_number_in_list_of_lists(list_of_lists):
 
     choices = []
-    #FIXME: 96,7 on broken millegi parast.
+    # FIXME: 96,7 on broken millegi pärast.
+
+    # FIXME: Otsib doore, mida pole olemas veel
+
     chosen_id = random.choice([door_id for door_id in GameConfig.CLOSED_DOOR_IDS.value if door_id != 977])
     print('chosen id', chosen_id)
     for row_index, sublist in enumerate(list_of_lists):

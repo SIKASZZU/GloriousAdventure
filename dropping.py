@@ -50,7 +50,7 @@ class Drop:
                 if distance < Drop.drop_range:
                     return position
 
-        player_position = self.player_rect.center
+        player_position = self.player_update.player_rect.center
         player_x, player_y = \
             player_position[0] - UniversalVariables.offset_x - Drop.pouch_half_width, \
             player_position[1] - UniversalVariables.offset_y - Drop.pouch_half_height
@@ -176,7 +176,7 @@ class Drop:
     def remove_item_from_pouch(self, position: tuple[int, int], name: str) -> None:
         # Check if the position exists in dropped_items
         # TODO: Reset timer to default
-        if self.inv.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+        if self.inv.total_slots > len(self.inv.inventory) or name in self.inv.inventory:
             if position in UniversalVariables.dropped_items:
                 item_data = UniversalVariables.dropped_items[position].get(name)
 

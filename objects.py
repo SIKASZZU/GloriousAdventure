@@ -60,16 +60,16 @@ class ObjectManagement:
             name = np.random.choice(choice, p=probabilities)
 
             # Check inventory space for the dropped items
-            choice_len = sum(1 for drop_item in choice if drop_item not in Inventory.inventory)
+            choice_len = sum(1 for drop_item in choice if drop_item not in self.inv.inventory)
 
-            if self.inv.total_slots >= len(Inventory.inventory) + choice_len:
+            if self.inv.total_slots >= len(self.inv.inventory) + choice_len:
                 ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
                 return True
             else:
                 Inventory.inventory_full_error(self)
             return False
 
-        if self.inv.total_slots > len(Inventory.inventory) or name in Inventory.inventory:
+        if self.inv.total_slots > len(self.inv.inventory) or name in self.inv.inventory:
             ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
             return True
         else:
@@ -127,7 +127,7 @@ class ObjectManagement:
         if self.inv.inventory[item] == 0:
             del self.inv.inventory[item]
 
-
+    @staticmethod
     def render_collision_box() -> None:
         for box_item in UniversalVariables.collision_boxes:
             item_start_x, item_start_y  = box_item[0], box_item[1]
@@ -136,7 +136,7 @@ class ObjectManagement:
             collision_box_color = 'green'
             pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 3)
 
-
+    @staticmethod
     def render_interaction_box() -> None:
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
         for box_item in UniversalVariables.object_list:
@@ -144,7 +144,7 @@ class ObjectManagement:
             if box_item[5] in [981, 982]:
                 outline_thickness = 8
             
-            item_start_x, item_start_y  = box_item[0], box_item[1]
+            item_start_x, item_start_y = box_item[0], box_item[1]
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'pink'
