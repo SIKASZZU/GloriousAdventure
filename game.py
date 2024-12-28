@@ -21,11 +21,11 @@ from inventory import Inventory
 from collisions import Collisions
 from audio import Player_audio, Tile_Sounds
 from components import Player
-from blade import change_blades
+from blade import Blades
 from final_maze import Final_Maze
 from text import Fading_text
 from menu import Menu, PauseMenu
-from status import PlayerStatus
+from status import PlayerEffect
 from HUD import HUD_class
 from equipped_items import ItemFunctionality
 from building import Building
@@ -53,11 +53,6 @@ class Game:
         self.initialize_pygame()
 
 
-        self.player = Player(max_health=20, min_health=0,
-                             max_stamina=20, min_stamina=0,
-                             base_speed=6, max_speed=15, min_speed=1,
-                             base_hunger=8, max_hunger=20, min_hunger=0,
-                             base_thirst=12, max_thirst=20, min_thirst=0)
 
         self.player_rect = None  # Player rect to be set in the game
 
@@ -82,12 +77,11 @@ class Game:
 
         self.player_attack_rect = None
 
-        # keys
-        self.g_pressed = bool  # fps lock
-
-
-        self.initialize_map()
+        # initialize #
         self.initialize_camera()
+        self.initialize_map()
+        self.initialize_player()
+        
         self.initialize_attack()
         self.initialize_audio()
 
@@ -126,7 +120,21 @@ class Game:
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
         self.tile_sounds = Tile_Sounds(self.py_mixer)
+        
+    def initialize_player(self):
+        self.player_update = PlayerUpdate()
+        
+        self.player = Player(max_health=20, min_health=0,
+                             max_stamina=20, min_stamina=0,
+                             base_speed=6, max_speed=15, min_speed=1,
+                             base_hunger=8, max_hunger=20, min_hunger=0,
+                             base_thirst=12, max_thirst=20, min_thirst=0)
+        
+        self.player_effect = PlayerEffect(self.player)
     
+    def initialize_blades(self):
+        self.maze_blades = Blades()
+
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -171,8 +179,8 @@ class Game:
 
         Entity.update(self)
         Player_audio.player_audio_update(self)
-        change_blades(self)
-        PlayerStatus.update(self)
+        # change_blades(self)
+        PlayerEffect.update(self)
         ItemFunctionality.update(self)
 
     def call_visuals(self):

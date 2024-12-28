@@ -21,47 +21,49 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class PlayerUpdate:
-    # ******************** ANIMATION ******************** #
-    sprite_sheets, animations = load_sprite_sheets([
-        resource_path('images/Player/Left.png'), 
-        resource_path('images/Player/Right.png'), 
-        resource_path('images/Player/Up.png'), 
-        resource_path('images/Player/Down.png')
-    ])
+    def __init__(self):
+            
+        # ******************** ANIMATION ******************** #
+        self.sprite_sheets, self.animations = load_sprite_sheets([
+            resource_path('images/Player/Left.png'), 
+            resource_path('images/Player/Right.png'), 
+            resource_path('images/Player/Up.png'), 
+            resource_path('images/Player/Down.png')
+        ])
 
-    sprite_sheets_idle, animations_idle = load_sprite_sheets([
-        resource_path('images/Player/Idle_Left.png'), 
-        resource_path('images/Player/Idle_Right.png'), 
-        resource_path('images/Player/Idle_Up.png'), 
-        resource_path('images/Player/Idle_Down.png')
-    ])
+        self.sprite_sheets_idle, self.animations_idle = load_sprite_sheets([
+            resource_path('images/Player/Idle_Left.png'), 
+            resource_path('images/Player/Idle_Right.png'), 
+            resource_path('images/Player/Idle_Up.png'), 
+            resource_path('images/Player/Idle_Down.png')
+        ])
 
-    # *** swimming *** #
-    sprite_sheets_swimming, animations_swimming = load_sprite_sheets([
-        resource_path('images/Player/Swim/Left_swimming.png'), 
-        resource_path('images/Player/Swim/Right_swimming.png'), 
-        resource_path('images/Player/Swim/Up_swimming.png'), 
-        resource_path('images/Player/Swim/Down_swimming.png')
-    ])
+        # *** swimming *** #
+        self.sprite_sheets_swimming, self.animations_swimming = load_sprite_sheets([
+            resource_path('images/Player/Swim/Left_swimming.png'), 
+            resource_path('images/Player/Swim/Right_swimming.png'), 
+            resource_path('images/Player/Swim/Up_swimming.png'), 
+            resource_path('images/Player/Swim/Down_swimming.png')
+        ])
 
-    sprite_sheets_idle_swimming, animations_idle_swimming = load_sprite_sheets([
-        resource_path('images/Player/Swim/Idle_Left_swimming.png'), 
-        resource_path('images/Player/Swim/Idle_Right_swimming.png'), 
-        resource_path('images/Player/Swim/Idle_Up_swimming.png'), 
-        resource_path('images/Player/Swim/Idle_Down_swimming.png')
-    ])
+        self.sprite_sheets_idle_swimming, self.animations_idle_swimming = load_sprite_sheets([
+            resource_path('images/Player/Swim/Idle_Left_swimming.png'), 
+            resource_path('images/Player/Swim/Idle_Right_swimming.png'), 
+            resource_path('images/Player/Swim/Idle_Up_swimming.png'), 
+            resource_path('images/Player/Swim/Idle_Down_swimming.png')
+        ])
 
 
-    animation_speeds = [10, 10, 10, 10]
+        self.animation_speeds = [10, 10, 10, 10]
 
-    # Teeb idle ja mitte idle animatsioone
-    animation_manager = AnimationManager(sprite_sheets, animations, animation_speeds)
-    idle_animation_manager = AnimationManager(sprite_sheets_idle, animations_idle,
-                                                    animation_speeds)
+        # Teeb idle ja mitte idle animatsioone
+        self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds)
+        self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
+                                                        self.animation_speeds)
 
-    # *** swimming *** #
-    swimming_animation_manager = AnimationManager(sprite_sheets_swimming, animations, animation_speeds)
-    idle_swimming_animation_manager = AnimationManager(sprite_sheets_idle_swimming, animations_idle, animation_speeds)
+        # *** swimming *** #
+        self.swimming_animation_manager = AnimationManager(self.sprite_sheets_swimming, self.animations, self.animation_speeds)
+        self.idle_swimming_animation_manager = AnimationManager(self.sprite_sheets_idle_swimming, self.animations_idle, self.animation_speeds)
     
     @staticmethod
     def disable_movement() -> tuple[int, int]:
@@ -144,14 +146,14 @@ class PlayerUpdate:
             if UniversalVariables.last_input != 'None':
                 if top_left == 0 and top_right == 0 and bottom_left == 0 and bottom_right == 0:
                     if is_idle:
-                        self.frame = PlayerUpdate.idle_swimming_animation_manager.update_animation(keys, is_idle)
+                        self.frame = self.player_update.idle_swimming_animation_manager.update_animation(keys, is_idle)
                     else:
-                        self.frame = PlayerUpdate.swimming_animation_manager.update_animation(keys, is_idle)
+                        self.frame = self.player_update.swimming_animation_manager.update_animation(keys, is_idle)
                 else:
                     if is_idle:
-                        self.frame = PlayerUpdate.idle_animation_manager.update_animation(keys, is_idle)
+                        self.frame = self.player_update.idle_animation_manager.update_animation(keys, is_idle)
                     else:
-                        self.frame = PlayerUpdate.animation_manager.update_animation(keys, is_idle)
+                        self.frame = self.player_update.animation_manager.update_animation(keys, is_idle)
             else:  pass
         except Exception as e: print(f'Error @ update.py: {e}')
 

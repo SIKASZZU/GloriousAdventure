@@ -6,7 +6,7 @@ from camera import Camera
 from images import ImageLoader
 from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
-from status import PlayerStatus
+from status import PlayerEffect
 from objects import ObjectManagement
 import random
 
@@ -291,8 +291,8 @@ class Entity:
                 UniversalVariables.player_infected = True
 
             self.player.health.damage(damage)
-            PlayerStatus.infection(self)
-            PlayerStatus.bleed(self)
+            PlayerEffect.infection(self)
+            PlayerEffect.bleed(self)
 
 
             # Calculate knockback direction
