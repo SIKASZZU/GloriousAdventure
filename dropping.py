@@ -2,8 +2,6 @@ from variables import UniversalVariables
 from images import ImageLoader
 import pygame
 import math
-from camera import Camera
-from text import Fading_text
 from inventory import Inventory
 from objects import ObjectManagement
 

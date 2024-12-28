@@ -1,7 +1,6 @@
 from map import MapData
 from variables import UniversalVariables
 from objects import ObjectManagement
-from camera import Camera
 from text import Fading_text
 from inventory import Inventory
 
@@ -292,7 +291,7 @@ class AddingMazeAtPosition:
 
                 # teleb playeri ja camera 6igesse kohta
                 UniversalVariables.player_x += 39 * UniversalVariables.block_size
-                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
+                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * UniversalVariables.block_size
 
                 # Kuna lisas uue placei listi algusesse siis peab ka indexi lisama
                 col_index += 1
@@ -336,7 +335,7 @@ class AddingMazeAtPosition:
 
                 # teleb playeri ja camera 6igesse kohta
                 UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
+                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * UniversalVariables.block_size
 
                 # Kuna lisas uue placei listi algusesse siis peab ka indexi lisama
                 row_index += 1

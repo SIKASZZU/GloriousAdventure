@@ -11,7 +11,6 @@ from mazecalculation import AddingMazeAtPosition
 from camera import Camera
 from audio import Tile_Sounds, Player_audio
 from loot import Loot
-from final_maze import Final_Maze
 from functions import UniversalFunctions
 
 
@@ -66,7 +65,7 @@ class Interaction:
                 continue
 
             # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
-            if terrain_x < Camera.click_x < terrain_x + object_width and terrain_y < Camera.click_y < terrain_y + object_height:
+            if terrain_x < self.camera.click_x < terrain_x + object_width and terrain_y < self.camera.click_y < terrain_y + object_height:
 
                 terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
                 terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
@@ -194,8 +193,8 @@ class Interaction:
                                 # teleb playeri ja camera 6igesse kohta
                                 UniversalVariables.player_x += 39 * UniversalVariables.block_size
                                 UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                                Camera.camera_rect.left = Camera.camera_rect.left + 39 * UniversalVariables.block_size
-                                Camera.camera_rect.top = Camera.camera_rect.top + 39 * UniversalVariables.block_size
+                                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * UniversalVariables.block_size
+                                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * UniversalVariables.block_size
 
                             UniversalVariables.first_time = False
                             grid_x, grid_y = grid_x + 80, grid_y + 80

@@ -236,8 +236,8 @@ class Entity:
                     Entity.path_ticks[entity_name] += 1
 
     def detection(self):
-        player_window_x = Camera.player_window_x
-        player_window_y = Camera.player_window_y
+        player_window_x = self.camera.player_window_x
+        player_window_y = self.camera.player_window_y
 
         if UniversalVariables.player_sprinting: detect_range = 25 * UniversalVariables.block_size
         elif UniversalVariables.player_sneaking:  detect_range = 5 * UniversalVariables.block_size
@@ -296,8 +296,8 @@ class Entity:
 
 
             # Calculate knockback direction
-            dx = Camera.player_window_x - Entity.save_entity_direction_x
-            dy = Camera.player_window_y - Entity.save_entity_direction_y
+            dx = self.camera.player_window_x - Entity.save_entity_direction_x
+            dy = self.camera.player_window_y - Entity.save_entity_direction_y
 
             if dx == 0 and dy == 0:
                 dx = random.uniform(-1, 1)
@@ -364,7 +364,7 @@ class Entity:
                 
                 # vaatab self.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
                 if click and if_geiger:
-                    grid = Camera.click_on_screen_to_grid(Camera.click_x, Camera.click_y)
+                    grid = Camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
                     grid = (grid[1], grid[0])  # p66ran ymber need v22rtused sest mdea watafak :D
                     if grid != entity_dead_grid:
                         continue  # GOOD

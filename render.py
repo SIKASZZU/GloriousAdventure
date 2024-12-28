@@ -1,7 +1,6 @@
 import pygame
 import random
 
-from camera import Camera
 from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
 from images import ImageLoader
 from variables import UniversalVariables, GameConfig
@@ -80,9 +79,9 @@ class RenderPictures:
         RenderPictures.terrain_in_view.clear()
 
         camera_grid_row = int(
-            (Camera.camera_rect.left + Camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
+            (self.camera.camera_rect.left + self.camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
         camera_grid_col = int(
-            (Camera.camera_rect.top + Camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
+            (self.camera.camera_rect.top + self.camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
 
         player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
         player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)

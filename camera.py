@@ -4,46 +4,48 @@ from text import Fading_text
 
 class Camera:
 
-    screen = UniversalVariables.screen
-    camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
-    l: int = camera_borders['left']
-    t: int = camera_borders['top']
-    w: int = screen.get_size()[0] - (camera_borders['left'] + camera_borders['right'])
-    h: int = screen.get_size()[1] - (camera_borders['top'] + camera_borders['bottom'])
-    camera_rect = pygame.Rect(l, t, w, h)
-
-    player_window_x: int = None
-    player_window_y: int = None
-    click_x: int = None
-    click_y: int = None
-    click_info_available = False  # for printing func
-
-    right_player_window_x: int = None
-    right_player_window_y: int = None
-    right_click_x: int = None
-    right_click_y: int = None
-    right_click_info_available = False  # for printing func
+    def __init__(self, screen):
+        self.screen = screen
+        self.camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
+        
+        self.l: int = self.camera_borders['left']
+        self.t: int = self.camera_borders['top']
+        self.w: int = self.screen.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        self.h: int = self.screen.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        
+        self.camera_rect = pygame.Rect(self.l, self.t, self.w, self.h)
+        self.player_window_x: int = None
+        self.player_window_y: int = None
+        self.click_x: int = None
+        self.click_y: int = None
+        
+        self.click_info_available = False  # for printing func
+        self.right_player_window_x: int = None
+        self.right_player_window_y: int = None
+        self.right_click_x: int = None
+        self.right_click_y: int = None
+        self.right_click_info_available = False  # for printing func
 
     def box_target_camera(self):
         '''Teeb boxi, kui minna sellele vastu, siis liigub kaamera'''
 
-        if self.player_rect.left < Camera.camera_rect.left:
-            Camera.camera_rect.left = self.player_rect.left
+        if self.player_rect.left < self.camera.camera_rect.left:
+            self.camera.camera_rect.left = self.player_rect.left
 
-        if self.player_rect.right > Camera.camera_rect.right:
-            Camera.camera_rect.right = self.player_rect.right
+        if self.player_rect.right > self.camera.camera_rect.right:
+            self.camera.camera_rect.right = self.player_rect.right
 
-        if self.player_rect.top < Camera.camera_rect.top:
-            Camera.camera_rect.top = self.player_rect.top
+        if self.player_rect.top < self.camera.camera_rect.top:
+            self.camera.camera_rect.top = self.player_rect.top
 
-        if self.player_rect.bottom > Camera.camera_rect.bottom:
-            Camera.camera_rect.bottom = self.player_rect.bottom
+        if self.player_rect.bottom > self.camera.camera_rect.bottom:
+            self.camera.camera_rect.bottom = self.player_rect.bottom
 
-        UniversalVariables.offset_x = Camera.camera_borders['left'] - Camera.camera_rect.left
-        UniversalVariables.offset_y = Camera.camera_borders['top'] - Camera.camera_rect.top
+        UniversalVariables.offset_x = self.camera.camera_borders['left'] - self.camera.camera_rect.left
+        UniversalVariables.offset_y = self.camera.camera_borders['top'] - self.camera.camera_rect.top
 
-        Camera.player_window_x = self.player_rect.left - Camera.camera_rect.left + Camera.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
-        Camera.player_window_y = self.player_rect.top - Camera.camera_rect.top + Camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
+        self.camera.player_window_x = self.player_rect.left - self.camera.camera_rect.left + self.camera.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x  # Playeri x koordinaat windowi järgi
+        self.camera.player_window_y = self.player_rect.top - self.camera.camera_rect.top + self.camera.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y  # Playeri y koordinaat windowi järgi
 
     @staticmethod
     def is_click_within_player_range(click_window_x, click_window_y) -> bool:
@@ -73,45 +75,45 @@ class Camera:
             UniversalVariables.print_debug_text('Click_position ---> is None')
             return None, None
 
-        if not Camera.player_window_x or not Camera.player_window_y:
-            UniversalVariables.print_debug_text('Camera.player_window_x or Camera.player_window_y ---> is None')
+        if not self.camera.player_window_x or not self.camera.player_window_y:
+            UniversalVariables.print_debug_text('self.camera.player_window_x or self.camera.player_window_y ---> is None')
             return None, None
 
-        self.click_window_x = self.click_position[0] - Camera.player_window_x  # Click relative to player (window)
-        self.click_window_y = self.click_position[1] - Camera.player_window_y  # Click relative to player (window)
+        self.click_window_x = self.click_position[0] - self.camera.player_window_x  # Click relative to player (window)
+        self.click_window_y = self.click_position[1] - self.camera.player_window_y  # Click relative to player (window)
 
         if Camera.is_click_within_player_range(self.click_window_x, self.click_window_y):
-            Camera.click_x, Camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
-            Camera.click_info_available = True
+            self.camera.click_x, self.camera.click_y = round(UniversalVariables.player_x + self.click_window_x), round(UniversalVariables.player_y + self.click_window_y)
+            self.camera.click_info_available = True
         else:
-            Camera.click_x, Camera.click_y = None, None
+            self.camera.click_x, self.camera.click_y = None, None
 
         if UniversalVariables.debug_mode:
-            grid_click = Camera.click_on_screen_to_grid(Camera.click_x, Camera.click_y)
+            grid_click = Camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
             Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
-        return Camera.click_x, Camera.click_y
+        return self.camera.click_x, self.camera.click_y
 
     ### FIXME: Camera.click_x ja Camera.click_y ei tohiks läbi invi saada
     def right_click_on_screen(self):
         if not self.right_click_position:
             return None, None
 
-        self.right_click_window_x = self.right_click_position[0] - Camera.player_window_x
-        self.right_click_window_y = self.right_click_position[1] - Camera.player_window_y
+        self.right_click_window_x = self.right_click_position[0] - self.camera.player_window_x
+        self.right_click_window_y = self.right_click_position[1] - self.camera.player_window_y
 
         if Camera.is_click_within_player_range(self.right_click_window_x, self.right_click_window_y):
-            Camera.right_click_x = round(UniversalVariables.player_x + self.right_click_window_x)
-            Camera.right_click_y = round(UniversalVariables.player_y + self.right_click_window_y)
-            Camera.right_click_info_available = True
+            self.camera.right_click_x = round(UniversalVariables.player_x + self.right_click_window_x)
+            self.camera.right_click_y = round(UniversalVariables.player_y + self.right_click_window_y)
+            self.camera.right_click_info_available = True
         else:
-            Camera.right_click_x, Camera.right_click_y = None, None
+            self.camera.right_click_x, self.camera.right_click_y = None, None
 
         if UniversalVariables.debug_mode:
-            grid_click = Camera.click_on_screen_to_grid(Camera.right_click_x, Camera.right_click_y)
+            grid_click = Camera.click_on_screen_to_grid(self.camera.right_click_x, self.camera.right_click_y)
             Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
-        return Camera.right_click_x, Camera.right_click_y
+        return self.camera.right_click_x, self.camera.right_click_y
 
 
     def reset_clicks(self):
@@ -124,6 +126,6 @@ class Camera:
     def print_clicks(self):
         """ Prints out the user's click information relative to terrain coordinates and screen."""
 
-        if Camera.click_info_available:
-            print(f"Click is within player's reach. \n   Click terrain x,y: ({Camera.click_x, Camera.click_y}) \n   Click window x,y: {self.click_position}")
-            Camera.click_info_available = False  # reset loop
+        if self.camera.click_info_available:
+            print(f"Click is within player's reach. \n   Click terrain x,y: ({self.camera.click_x, self.camera.click_y}) \n   Click window x,y: {self.click_position}")
+            self.camera.click_info_available = False  # reset loop

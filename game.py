@@ -89,8 +89,7 @@ class Game:
 
         self.initialize_map()
 
-
-        # TODO: Camera järgmisena
+        self.initialize_camera()
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -112,6 +111,9 @@ class Game:
         #    for j in range(len(self.terrain_data[i])):
         #        if self.terrain_data[i][j] == 933:
         #            self.terrain_data[i - 1][j] = 98
+
+    def initialize_camera(self):
+        self.camera = Camera(self.screen)
 
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
@@ -143,6 +145,7 @@ class Game:
             self.old_terrain_data = [row[:] for row in self.terrain_data]
     
     def call_technical(self):
+
         PlayerUpdate.update_player(self)  # Update player position and attributes
         Camera.box_target_camera(self)  # Camera follow
 

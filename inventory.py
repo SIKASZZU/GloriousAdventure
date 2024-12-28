@@ -1,10 +1,8 @@
 import pygame
 
-import items
 from images import ImageLoader
-from camera import Camera
 from variables import UniversalVariables
-from items import items_list, object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
+from items import object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
 from audio import Player_audio
 from text import Fading_text
 
@@ -227,8 +225,8 @@ class Inventory:
         rect_y: int = self.player_rect.centery - total_rows * UniversalVariables.block_size / 4  # Siia ei tohi offsetti panna
 
         right_side: int = UniversalVariables.screen.get_size()[0] - (
-                    Camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
-        left_side: int = Camera.camera_borders['left'] * 2
+                    self.camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
+        left_side: int = self.camera.camera_borders['left'] * 2
 
         if rect_x >= right_side:
             rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + UniversalVariables.offset_x

@@ -9,7 +9,6 @@ import copy
 from variables import UniversalVariables
 from variables import GameConfig
 from camera import Camera
-from functions import UniversalFunctions
 
 
 def resource_path(relative_path):

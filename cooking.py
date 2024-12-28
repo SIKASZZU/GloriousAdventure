@@ -2,7 +2,6 @@ import pygame
 import time  # Import time module for cooldown functionality
 from images import ImageLoader
 from variables import UniversalVariables, GameConfig
-from camera import Camera
 from items import items_list, MineralItem
 from inventory import Inventory
 
@@ -256,7 +255,7 @@ class Cooking:
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         if mouse_buttons[2]:  # Right click
-            click_x, click_y = Camera.right_click_x, Camera.right_click_y
+            click_x, click_y = self.camera.right_click_x, self.camera.right_click_y
             if click_x and click_y:
                 click_x //= UniversalVariables.block_size
                 click_y //= UniversalVariables.block_size
@@ -290,7 +289,7 @@ class Cooking:
                             UniversalVariables.is_cooking = False
                 except IndexError: pass
 
-            Camera.right_click_x, Camera.right_click_y = None, None
+            self.camera.right_click_x, self.camera.right_click_y = None, None
 
         # Renderib'b cooking menu kui UniversalVariables.cooking_menu on True ja player on läheduses
         if UniversalVariables.cooking_menu == True and Cooking.station_coordinates:
