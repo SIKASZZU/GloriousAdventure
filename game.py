@@ -130,7 +130,7 @@ class Game:
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
                              base_thirst=12, max_thirst=20, min_thirst=0)
-        
+
         self.player_effect = PlayerEffect(self.player)
 
     def initialize_collisons(self):
@@ -279,7 +279,7 @@ class Game:
         Final_Maze.update(self)
         Fading_text.update(self)
         Cooking.update(self)
-        Player.update(self)
+        self.player.update()
 
         self.check_keys()  # Toggle hitbox / vision
         self.custom_addition()

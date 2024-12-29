@@ -9,14 +9,15 @@ from text import Fading_text
 
 
 def is_click_inside_player_rect(self):
+
     if not self.click_position:  # Return'ib kui click_position on tühi
         return False
 
     if None in self.click_position:  # Return'ib kui click_position'is on None
         return False
 
-    player_x = self.player_update.player_rect[0] + UniversalVariables.offset_x
-    player_y = self.player_update.player_rect[1] + UniversalVariables.offset_y
+    player_x = self.player_update.player_rect[0]
+    player_y = self.player_update.player_rect[1]
 
     # Vaatab, kas click on player rect'i sees
     click_within_x = player_x < self.click_position[0] < player_x + self.player_update.player_rect[2]
@@ -135,7 +136,7 @@ class ItemFunctionality:
             if random.random() > 0.1:
                 ... # audio
 
-        # nyyd tulevad itemid, mis aktiveeruvad, kui vajutad playeri peale
+        #********* ITEMS < CLICK PLAYER TO USE *********#
         if not is_click_inside_player_rect(self):
             return
 
