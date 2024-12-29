@@ -3,9 +3,7 @@ from variables import UniversalVariables
 from camera import Camera
 import items
 from loot import Loot
-from inventory import Inventory
 from menu import PauseMenu
-import vision
 from components import Player
 
 def update_object_dimensions():
@@ -63,11 +61,10 @@ class Event_handler:
     def check_pressed_keys(self):
         keys = pygame.key.get_pressed()
         arrow_keys = (keys[pygame.K_UP], keys[pygame.K_DOWN], keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
-
         keybinds = {
             pygame.K_h: lambda: setattr(UniversalVariables, 'render_boxes_counter',
                                         not UniversalVariables.render_boxes_counter),
-            pygame.K_j: lambda: setattr(vision, 'vision_count', not vision.vision_count),
+            pygame.K_j: lambda: setattr(self.vision, 'vision_count', not self.vision.vision_count),
             pygame.K_g: lambda: setattr(UniversalVariables, 'fps_lock', not UniversalVariables.fps_lock),
         }
 

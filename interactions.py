@@ -137,7 +137,7 @@ class Interaction:
                         UniversalFunctions.gray_yellow(self, 'gray')
 
                 if object_id in GameConfig.CLOSED_DOOR_IDS.value:  # Kinniste uste ID'd. Clickides saab avada ukse - uue maze
-                    if EssentialsUpdate.day_night_text != 'Day':
+                    if self.essentials.day_night_text != 'Day':
                         Player_audio.error_audio(self)
 
                         text = ("Can't open new maze during night.")

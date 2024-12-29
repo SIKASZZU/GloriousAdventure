@@ -33,7 +33,7 @@ from status import PlayerEffect
 from text import Fading_text
 from update import EssentialsUpdate, PlayerUpdate
 from variables import UniversalVariables
-import vision
+from vision import Vision
 
 
 jurigged.watch()  # hot reload
@@ -47,7 +47,6 @@ class Game:
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
-        self.daylight_strength = 0
         self.dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA,
                                           32)
 
@@ -77,6 +76,8 @@ class Game:
         self.initialize_collisons()
         self.initialize_inventory()
         self.initialize_building()
+        self.initialize_essentials()
+        self.initialize_vision()
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -141,6 +142,12 @@ class Game:
     def initialize_inventory(self):
         self.inv = Inventory()
 
+    def initialize_essentials(self):
+        self.essentials = EssentialsUpdate()
+
+    def initialize_vision(self):
+        self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength)
+
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -182,8 +189,6 @@ class Game:
         Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         # MazeChanges.change_maze(self)
 
-        vision.find_boxes_in_window()
-
         Entity.update(self)
         Player_audio.player_audio_update(self)
         # change_blades(self)
@@ -206,7 +211,7 @@ class Game:
 
         # ******************** # ↑ Kõik, mis on  visioni all ↑ # ******************** #
 
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
+        self.vision.update(self.player_update.player_rect.center)
 
         # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
 

@@ -54,7 +54,7 @@ class MazeChanges:
     def change_maze(self):
         """ Muudab random maze pathwayisid (id 98) maze blockideks (id 99) ja vastupidi. """
 
-        if EssentialsUpdate.day_night_text == 'Day':
+        if self.essentials.day_night_text == 'Day':
             MazeChanges.times_changed = 0
             global already_changed
             already_changed = set()            

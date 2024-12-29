@@ -11,7 +11,7 @@ class Blades:
         if not UniversalVariables.blades_spawned:
             return
 
-        if EssentialsUpdate.day_night_text != UniversalVariables.already_looped_blades:
+        if self.essentials.day_night_text != UniversalVariables.already_looped_blades:
 
             # Open #
             open_horizon_door_count = UniversalFunctions.count_occurrences_in_list_of_lists(
@@ -34,7 +34,7 @@ class Blades:
             # 'closed_vertical_door_count 9099',    closed_vertical_door_count
             # )
 
-            if EssentialsUpdate.day_night_text == 'Night':
+            if self.essentials.day_night_text == 'Night':
                 UniversalVariables.already_looped_blades = 'Night'
 
                 # Muudab horisontaalsed usked maze groundiks.
@@ -47,7 +47,7 @@ class Blades:
                     row, col = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 9099_98)
                     self.terrain_data[row][col] = 9099
 
-            elif EssentialsUpdate.day_night_text == 'Day':
+            elif self.essentials.day_night_text == 'Day':
                 UniversalVariables.already_looped_blades = 'Day'
 
                 # Muudab vertikaalsed usked maze groundiks.

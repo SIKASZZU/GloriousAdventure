@@ -36,7 +36,7 @@ class Entity:
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
-        if not Entity.spawned_entity_dict and EssentialsUpdate.day_night_text == 'Night':
+        if not Entity.spawned_entity_dict and self.essentials.day_night_text == 'Night':
             UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
 
             # Player grid calculation
@@ -86,11 +86,11 @@ class Entity:
         UniversalVariables.screen.blits(entity_blits_list, doreturn=False)
 
     @staticmethod
-    def despawn():
+    def despawn(self):
         """ Despawns enemies during the day.  """
         """ Doesn't despawn detected enemies. """
 
-        if EssentialsUpdate.day_night_text == 'Day':
+        if self.essentials.day_night_text == 'Day':
             detected_enemies = {entity_name for entity_name, _ in Entity.entity_in_range}
             enemies_to_remove = set()
 
@@ -392,4 +392,4 @@ class Entity:
         Entity.move(self)
         Entity.collision_with_entities(self)
         Entity.loot(self)
-        Entity.despawn()
+        Entity.despawn(self)

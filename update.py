@@ -280,25 +280,28 @@ class PlayerUpdate:
         UniversalVariables.screen.blit(audio_icon, audio_icon_position) 
         
 class EssentialsUpdate:
-        
-    game_start_clock = (9, 0)
-    time_update: int = 0
-    game_day_count = 0
-    day_night_text = 'Day'
+    
+    def __init__(self):
+            
+        self.game_start_clock = (9, 0)
+        self.time_update: int = 0
+        self.game_day_count = 0
+        self.day_night_text = 'Day'
+        self.daylight_strength = 0
 
     # Function to calculate in-game time
     def calculate_time(self):
-        day_night_text = EssentialsUpdate.day_night_text
+        day_night_text = self.essentials.day_night_text
 
-        time = EssentialsUpdate.game_start_clock  # (9, 0)
-        days = EssentialsUpdate.game_day_count
+        time = self.essentials.game_start_clock  # (9, 0)
+        days = self.essentials.game_day_count
         hours = time[0]
         minutes = time[1]
 
         # Check if new minute should be added to game's time
-        if UniversalVariables.game_minute_lenght <= EssentialsUpdate.time_update:
+        if UniversalVariables.game_minute_lenght <= self.essentials.time_update:
             minutes += 1
-            EssentialsUpdate.time_update = 0
+            self.essentials.time_update = 0
         
         # Update minutes -> hours, hours -> reset hours, minutes & add days
         if 60 <= minutes:
@@ -310,9 +313,9 @@ class EssentialsUpdate:
             days += 1
 
         # Update variables
-        EssentialsUpdate.time_update += 1
-        EssentialsUpdate.game_day_count = days
-        EssentialsUpdate.game_start_clock = (hours, minutes)
+        self.essentials.time_update += 1
+        self.essentials.game_day_count = days
+        self.essentials.game_start_clock = (hours, minutes)
 
         # Update day, night text next to game_day_count
         
@@ -320,7 +323,7 @@ class EssentialsUpdate:
             day_night_text = 'Night'
         else: 
             day_night_text = 'Day'
-        EssentialsUpdate.day_night_text = day_night_text
+        self.essentials.day_night_text = day_night_text
 
         if len(str(minutes)) == 1: minutes = f'0{minutes}'  # alati 2 nubrit minutite kohal
         return hours, minutes, days
@@ -331,7 +334,7 @@ class EssentialsUpdate:
         """ Draw_shadowis player_vision_conei valgustugevus self.daylight_strengthist """
 
         if UniversalVariables.debug_mode == False:
-            hours = EssentialsUpdate.game_start_clock[0]  # Get current time
+            hours = self.essentials.game_start_clock[0]  # Get current time
 
             # calculate daylight strength every interval
             if 20 <= hours < 21: self.daylight_strength = 90  # Evening (20 PM to 20:59 PM)
@@ -362,7 +365,7 @@ class EssentialsUpdate:
         ui_elements = [
             (f"{Framerate.display_fps_statistics()}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),  # Time display
-            (f"{EssentialsUpdate.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
+            (f"{self.essentials.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),  # Time display
 
             ("H - Show hitboxes", (UniversalVariables.screen_x / 2, 5), "orange", True),  # Example with specified position and color
             ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "orange", True),   # Example with specified position and color
