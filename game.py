@@ -206,7 +206,7 @@ class Game:
 
         # ******************** # ↑ Kõik, mis on  visioni all ↑ # ******************** #
 
-        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_rect.center)
+        vision.draw_light_source_and_rays(self, UniversalVariables.screen, self.player_update.player_rect.center)
 
         # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
 
