@@ -90,6 +90,7 @@ class Camera:
 
         if UniversalVariables.debug_mode:
             grid_click = Camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
+            UniversalVariables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
             Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
         return self.camera.click_x, self.camera.click_y
