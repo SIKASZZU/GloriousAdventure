@@ -47,7 +47,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(self, maze_type, 'bottom')  # uks läheb alla - maze ülesse
+            new_maze = self.map_data.get_data(maze_type, 'bottom')  # uks läheb alla - maze ülesse
 
             # Kui teed esimese maze siis muudab selle ukse 933'ks,
             # et need hakkaksid öö/päeva vältel kinni/lahti käima
@@ -112,7 +112,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(self, maze_type, 'top')
+            new_maze = self.map_data.get_data(maze_type, 'top')
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -160,7 +160,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(self, maze_type, 'right')  # uks tuleb paremale - maze tuleb vasakule
+            new_maze = self.map_data.get_data(maze_type, 'right')  # uks tuleb paremale - maze tuleb vasakule
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39
@@ -216,7 +216,7 @@ class AddingMazeAtPosition:
         if map_list[row_index][col_index] == 'place':
             map_list[row_index][col_index] = maze_type
 
-            new_maze = MapData.get_data(self, maze_type, 'left')  # uks tuleb vasakule - maze paremale
+            new_maze = self.map_data.get_data(maze_type, 'left')  # uks tuleb vasakule - maze paremale
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             start_row = row_index * 39

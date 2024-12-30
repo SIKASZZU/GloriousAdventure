@@ -4,11 +4,9 @@ import numpy as np
 from skimage.transform import resize
 from collections import deque
 import random
-import copy
 
 from variables import UniversalVariables
 from variables import GameConfig
-from camera import Camera
 
 
 def resource_path(relative_path):
@@ -50,17 +48,17 @@ class MapData:
         """ Creates start door using cursor grid data. """
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
-        door_tuple = self.camera.left_click_on_screen(self.click_position)
+        door_tuple = self.camera.left_click_on_screen(self.camera.click_position)
         door_grid_map = self.camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:
-            door_grid = (self.map_data.maze_size // 2 - 1, self.map_data.maze_size // 2 - 1)
+            door_grid = (self.maze_size // 2 - 1, self.maze_size // 2 - 1)
 
         else:
             door_grid = (door_grid_map[0] % 39, door_grid_map[1] % 39)  # kuna siin on 40x40 ala ss door grid arvutatakse just 40x40 ala sisse
 
         # Kui player vajutab parempoolsele uksele, ss addition fixib selle, et uue ukse location jaaks samaks!
-        addition = MapData.check_for_door(self, start_side, door_grid_map)
+        addition = self.check_for_door(start_side, door_grid_map)
         if addition == None:  addition = 1
 
         # Set the start point
@@ -77,14 +75,14 @@ class MapData:
             maze[start_1] = 91
 
         elif start_side == 'right':
-            start_0 = (door_grid[0], self.map_data.maze_size - 1)
-            start_1 = (door_grid[0] + addition, self.map_data.maze_size - 1)
+            start_0 = (door_grid[0], self.maze_size - 1)
+            start_1 = (door_grid[0] + addition, self.maze_size - 1)
             maze[start_0] = 92 
             maze[start_1] = 92
 
         elif start_side == 'bottom':
-            start_0 = (self.map_data.maze_size - 1, door_grid[1])
-            start_1 = (self.map_data.maze_size - 1, door_grid[1] + addition)
+            start_0 = (self.maze_size - 1, door_grid[1])
+            start_1 = (self.maze_size - 1, door_grid[1] + addition)
             maze[start_0] = 93 
             maze[start_1] = 93
 
@@ -122,27 +120,27 @@ class MapData:
         def place_item(maze, item_value, count):
             for _ in range(count):
                 while True:
-                    x, y = random.randint(3, self.map_data.maze_size - 4), random.randint(3,
-                                                                                          self.map_data.maze_size - 4)
-                    if maze[x][y] == 99 and not self.map_data.is_dead_end(maze, x, y):
+                    x, y = random.randint(3, self.maze_size - 4), random.randint(3,
+                                                                                          self.maze_size - 4)
+                    if maze[x][y] == 99 and not self.is_dead_end(maze, x, y):
                         maze[x][y] = item_value
                         break
 
         # Place maze puzzle pieces
-        place_item(maze, None, self.map_data._puzzle_pieces)
-        for _ in range(self.map_data._puzzle_pieces):
+        place_item(maze, None, self._puzzle_pieces)
+        for _ in range(self._puzzle_pieces):
             while True:
-                x, y = random.randint(3, self.map_data.maze_size - 4), random.randint(3, self.map_data.maze_size - 4)
-                if maze[x][y] == 99 and not self.map_data.is_dead_end(maze, x, y):
+                x, y = random.randint(3, self.maze_size - 4), random.randint(3, self.maze_size - 4)
+                if maze[x][y] == 99 and not self.is_dead_end(maze, x, y):
                     spawn_key(maze, x, y)
                     break
 
         # Place maze keyholders
-        place_item(maze, 981, self.map_data._keyholders)
+        place_item(maze, 981, self._keyholders)
 
         # Place maze loot barrels
         if random.choice([True]):
-            place_item(maze, 1001, self.map_data._loot)
+            place_item(maze, 1001, self._loot)
 
         return maze
     def is_dead_end(self, maze, x, y):
@@ -157,7 +155,7 @@ class MapData:
             walls += 1
         return walls >= 3  # kui on 3 v6i rohkem ss on True ja pekkis
 
-
+    @staticmethod
     def block_maze_noise(shape, res):
         def f(t):
             # return 1*t**7 - 5*t**0 + 1*t**1
@@ -188,10 +186,11 @@ class MapData:
         noise = np.sqrt(2) * (n0 * (1 - fade_t[:,:,1]) + n1 * fade_t[:,:,1])
         return noise
 
+    @staticmethod
     def is_valid(x, y, maze):
         return 0 <= x < len(maze) and 0 <= y < len(maze[x]) and maze[x][y] != 99
-
-    def find_path_bfs(maze, start, end):
+    
+    def find_path_bfs(self, maze, start, end):
         queue = deque([(start, [])])
         visited = set()
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
@@ -205,7 +204,7 @@ class MapData:
                 visited.add((x, y))
                 for dx, dy in directions:
                     new_x, new_y = x + dx, y + dy
-                    if MapData.is_valid(new_x, new_y, maze):
+                    if self.is_valid(new_x, new_y, maze):
                         new_path = path + [(new_x, new_y)]
                         queue.append(((new_x, new_y), new_path))
 
@@ -233,25 +232,25 @@ class MapData:
         # Check paths from each start to each end and special positions
         for start in start_positions:
             for end in end_positions + special_positions:
-                path = MapData.find_path_bfs(maze, start, end)
+                path = self.find_path_bfs(maze, start, end)
                 if path is None:
                     print(f"No path found from {start} to {end}")
-                    MapData.create_save_puzzle = False
+                    self.create_save_puzzle = False
 
                 else:
-                    MapData.create_save_puzzle = True
+                    self.create_save_puzzle = True
                     
                     # check visually, kas path on valid v6i mitte.
                     # for tuple in path:
                     #     maze[tuple[0]][tuple[1]] = 2
         
-        if MapData.create_save_puzzle == False:
+        if self.create_save_puzzle == False:
             if type_of_maze == 'block_maze':
-                maze = MapData.block_maze_generation(self, start_side)
+                maze = self.block_maze_generation(start_side)
                 
             elif type_of_maze == 'labyrinth_maze':
-                maze = MapData.labyrinth_maze_generation(self, start_side)
-            MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
+                maze = self.labyrinth_maze_generation(start_side)
+            self.search_paths(maze, type_of_maze, start_side, start_door_grid, exit_point)
 
     @staticmethod
     def buffer_doors(maze, first_door=None, second_door=None, start_side=None):
@@ -301,10 +300,10 @@ class MapData:
             maze = [[int(x) if x.strip().lower() != 'none' else None
                      for x in line.strip().replace('[', '').replace(']', '').split(',') if x.strip()]
                     for line in file if line.strip()]
-        self.map_data.maze_size = len(maze)
+        self.maze_size = len(maze)
         maze = np.array(maze, dtype=object)  # Use dtype=object to handle None values # Teeb listi -> numpy arrayks.
 
-        maze, start_door_grid = MapData.create_start_doors(self, maze, side)
+        maze, start_door_grid = self.create_start_doors(maze, side)
         # compiler bitching
         if side == None:
             pass
@@ -314,23 +313,23 @@ class MapData:
             for side in sides:
 
                 if side == 'left':
-                    end_0 = ((self.map_data.maze_size // 2), 0)
-                    end_1 = ((self.map_data.maze_size // 2) - 1, 0)
+                    end_0 = ((self.maze_size // 2), 0)
+                    end_1 = ((self.maze_size // 2) - 1, 0)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 94, 94
 
                 elif side == 'top':
-                    end_0 = (0, (self.map_data.maze_size // 2))
-                    end_1 = (0, (self.map_data.maze_size // 2) - 1)
+                    end_0 = (0, (self.maze_size // 2))
+                    end_1 = (0, (self.maze_size // 2) - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 95, 95
 
                 elif side == 'right':
-                    end_0 = ((self.map_data.maze_size // 2), self.map_data.maze_size - 1)
-                    end_1 = ((self.map_data.maze_size // 2) - 1, self.map_data.maze_size - 1)
+                    end_0 = ((self.maze_size // 2), self.maze_size - 1)
+                    end_1 = ((self.maze_size // 2) - 1, self.maze_size - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 96, 96
 
                 elif side == 'bottom':
-                    end_0 = (self.map_data.maze_size - 1, (self.map_data.maze_size // 2))
-                    end_1 = (self.map_data.maze_size - 1, (self.map_data.maze_size // 2) - 1)
+                    end_0 = (self.maze_size - 1, (self.maze_size // 2))
+                    end_1 = (self.maze_size - 1, (self.maze_size // 2) - 1)
                     maze[end_0[0]][end_0[1]], maze[end_1[0]][end_1[1]] = 97, 97
 
             return maze
@@ -338,12 +337,12 @@ class MapData:
 
     def final_maze_generation(self, start_side):
         UniversalVariables.final_maze = True
-        return MapData.file_to_maze(self, file_name='final_maze.txt', side=start_side)
+        return self.file_to_maze(file_name='final_maze.txt', side=start_side)
 
 
     def blade_maze_generation(self, start_side):
         UniversalVariables.blades_spawned = True
-        return MapData.file_to_maze(self, file_name='blade_maze.txt', side=start_side)
+        return self.file_to_maze(file_name='blade_maze.txt', side=start_side)
 
     def abandoned_glade_generation(self, start_side):
         type_maze = 'abandoned_glade'
@@ -373,69 +372,69 @@ class MapData:
                 abandoned_glade_maze.append(glade_row)
             return abandoned_glade_maze
 
-        self.map_data.maze_size = self.map_data.maze_size
-        noise = generate_glade_terrain(self.map_data.maze_size, self.map_data.maze_size)
+        self.maze_size = self.maze_size
+        noise = generate_glade_terrain(self.maze_size, self.maze_size)
         maze = render(noise)
 
         # Setting maze boundaries
-        maze[0] = [99] * self.map_data.maze_size
-        maze[-1] = [99] * self.map_data.maze_size
+        maze[0] = [99] * self.maze_size
+        maze[-1] = [99] * self.maze_size
         for row in maze:
             row[0] = 99
             row[-1] = 99
         maze = np.array(maze, dtype=object)
-        maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
+        maze, start_door_grid = self.create_start_doors(maze, start_side)
 
         # Set the end points on the remaining three sides
         exit_side = ['top', 'bottom', 'left', 'right']
         exit_side.remove(start_side)
         for side in exit_side:
             if side == 'left':
-                maze[self.map_data.maze_size // 2][0] = 94
-                maze[(self.map_data.maze_size // 2) - 1][0] = 94
+                maze[self.maze_size // 2][0] = 94
+                maze[(self.maze_size // 2) - 1][0] = 94
 
-                maze[self.map_data.maze_size // 2][1] = 1
-                maze[(self.map_data.maze_size // 2) - 1][1] = 1
+                maze[self.maze_size // 2][1] = 1
+                maze[(self.maze_size // 2) - 1][1] = 1
 
             elif side == 'top':
-                maze[0][self.map_data.maze_size // 2] = 95
-                maze[0][(self.map_data.maze_size // 2) - 1] = 95
+                maze[0][self.maze_size // 2] = 95
+                maze[0][(self.maze_size // 2) - 1] = 95
 
-                maze[1][self.map_data.maze_size // 2] = 1
-                maze[1][(self.map_data.maze_size // 2) - 1] = 1
+                maze[1][self.maze_size // 2] = 1
+                maze[1][(self.maze_size // 2) - 1] = 1
 
             elif side == 'right':
-                maze[self.map_data.maze_size // 2][self.map_data.maze_size - 1] = 96
-                maze[(self.map_data.maze_size // 2) - 1][self.map_data.maze_size - 1] = 96
+                maze[self.maze_size // 2][self.maze_size - 1] = 96
+                maze[(self.maze_size // 2) - 1][self.maze_size - 1] = 96
 
-                maze[self.map_data.maze_size // 2][self.map_data.maze_size - 2] = 1
-                maze[(self.map_data.maze_size // 2) - 1][self.map_data.maze_size - 2] = 1
+                maze[self.maze_size // 2][self.maze_size - 2] = 1
+                maze[(self.maze_size // 2) - 1][self.maze_size - 2] = 1
 
             elif side == 'bottom':
-                maze[self.map_data.maze_size - 1][self.map_data.maze_size // 2] = 97
-                maze[self.map_data.maze_size - 1][(self.map_data.maze_size // 2) - 1] = 97
+                maze[self.maze_size - 1][self.maze_size // 2] = 97
+                maze[self.maze_size - 1][(self.maze_size // 2) - 1] = 97
 
-                maze[self.map_data.maze_size - 2][self.map_data.maze_size // 2] = 1
-                maze[self.map_data.maze_size - 2][(self.map_data.maze_size // 2) - 1] = 1
+                maze[self.maze_size - 2][self.maze_size // 2] = 1
+                maze[self.maze_size - 2][(self.maze_size // 2) - 1] = 1
 
         # Convert string to integers and lists
-        self.map_data.converted_maze = []
+        self.converted_maze = []
         for row in maze:
             row_integers = [
                 random.choice([1004, 1005, 1006, 1008, 1010, 1012]) if x == 1 and random.random() < 0.05 else int(x)
                 for x in row
             ]
-            self.map_data.converted_maze.append(row_integers)
+            self.converted_maze.append(row_integers)
 
-        return self.map_data.converted_maze
+        return self.converted_maze
 
 
     ### FIXME: labyrinth on vahel mingi topelt seinaga kui allapoole see avada
     def labyrinth_maze_generation(self, start_side):  # start_side - BOTTOM RIGHT LEFT TOP
         type_maze = 'labyrinth_maze'
 
-        self.map_data.maze_size = self.map_data.maze_size
-        maze = np.full((self.map_data.maze_size, self.map_data.maze_size), 99)  # numpy ver, [[99] * self.map_data.maze_size for _ in range(self.map_data.maze_size)]
+        self.maze_size = self.maze_size
+        maze = np.full((self.maze_size, self.maze_size), 99)  # numpy ver, [[99] * self.maze_size for _ in range(self.maze_size)]
         
         # func dfs teeb pathi, 98, mazei
         def dfs(row, col):
@@ -447,82 +446,82 @@ class MapData:
 
             for dr, dc in directions:
                 new_row, new_col = row + 2 * dr, col + 2 * dc  # Move two steps in the chosen direction
-                if 1 <= new_row < self.map_data.maze_size - 1 and 1 <= new_col < self.map_data.maze_size - 1 and maze[new_row, new_col] == 99:
+                if 1 <= new_row < self.maze_size - 1 and 1 <= new_col < self.maze_size - 1 and maze[new_row, new_col] == 99:
                     
                     maze[row + dr, col + dc] = 98  # Mark the cell between current and next cell as a pathway
                     dfs(new_row, new_col)
 
         # Muudab vasakpoolse ja alumise eelviimase seina random 98/99'ks
-        for i in range(1, self.map_data.maze_size - 1):
+        for i in range(1, self.maze_size - 1):
             choice = random.choices([98, 99])[0]
             maze[i, 1] = choice
 
-        for i in range(1, self.map_data.maze_size - 1):
+        for i in range(1, self.maze_size - 1):
             choice = random.choices([98, 99])[0]
-            maze[self.map_data.maze_size - 2, i] = choice
+            maze[self.maze_size - 2, i] = choice
 
-        maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
+        maze, start_door_grid = self.create_start_doors(maze, start_side)
 
         # FIXME: fix this shit variable x dogass
         x = start_door_grid[0]
         dfs(x[0], x[1])
 
         # Enne ust teeb pathway et see blocked ei oleks. FIXME: see ei ole reliable solution
-        maze[self.map_data.maze_size // 2, 1]            = 98
-        maze[self.map_data.maze_size // 2 - 1, 1]        = 98
-        maze[1, self.map_data.maze_size // 2]            = 98
-        maze[1, self.map_data.maze_size // 2 - 1]        = 98
-        maze[self.map_data.maze_size // 2, self.map_data.maze_size - 2]     = 98
-        maze[self.map_data.maze_size // 2 - 1, self.map_data.maze_size - 2] = 98
-        maze[self.map_data.maze_size - 2, self.map_data.maze_size // 2]     = 98
-        maze[self.map_data.maze_size - 2, self.map_data.maze_size // 2 - 1] = 98
+        maze[self.maze_size // 2, 1]            = 98
+        maze[self.maze_size // 2 - 1, 1]        = 98
+        maze[1, self.maze_size // 2]            = 98
+        maze[1, self.maze_size // 2 - 1]        = 98
+        maze[self.maze_size // 2, self.maze_size - 2]     = 98
+        maze[self.maze_size // 2 - 1, self.maze_size - 2] = 98
+        maze[self.maze_size - 2, self.maze_size // 2]     = 98
+        maze[self.maze_size - 2, self.maze_size // 2 - 1] = 98
 
         exit_set = {'bottom', 'right', 'left', 'top'}
         exit_set.remove(start_side)
 
         for exit_side in exit_set:
             if exit_side == 'left':
-                maze[self.map_data.maze_size // 2, 0] = 94
-                maze[self.map_data.maze_size // 2 - 1, 0] = 94
+                maze[self.maze_size // 2, 0] = 94
+                maze[self.maze_size // 2 - 1, 0] = 94
 
             if exit_side == 'top':
-                maze[0, self.map_data.maze_size // 2] = 95
-                maze[0, self.map_data.maze_size // 2 - 1] = 95
+                maze[0, self.maze_size // 2] = 95
+                maze[0, self.maze_size // 2 - 1] = 95
 
             if exit_side == 'right':
-                maze[self.map_data.maze_size // 2, self.map_data.maze_size - 1] = 96
-                maze[self.map_data.maze_size // 2 - 1, self.map_data.maze_size - 1] = 96
+                maze[self.maze_size // 2, self.maze_size - 1] = 96
+                maze[self.maze_size // 2 - 1, self.maze_size - 1] = 96
 
             if exit_side == 'bottom':
-                maze[self.map_data.maze_size - 1, self.map_data.maze_size // 2] = 97
-                maze[self.map_data.maze_size - 1, self.map_data.maze_size // 2 - 1] = 97
+                maze[self.maze_size - 1, self.maze_size // 2] = 97
+                maze[self.maze_size - 1, self.maze_size // 2 - 1] = 97
 
-        MapData.create_maze_items(self, maze)
-        MapData.search_paths(self, maze, type_maze, start_side, start_door_grid)
+        self.create_maze_items(maze)
+        self.search_paths(maze, type_maze, start_side, start_door_grid)
 
-        if MapData.create_save_puzzle == True:
-            MapData.create_save_puzzle = False
+        if self.create_save_puzzle == True:
+            self.create_save_puzzle = False
             return maze
 
     def block_maze_generation(self, start_side):
         type_of_maze = 'block_maze'
-        noise = MapData.block_maze_noise((self.map_data.maze_size, self.map_data.maze_size), self.map_data.resolution)
-        noise_resized = resize(noise, (self.map_data.maze_size, self.map_data.maze_size), mode='reflect')
+        noise = self.block_maze_noise((self.maze_size, self.maze_size), self.resolution)
+        noise_resized = resize(noise, (self.maze_size, self.maze_size), mode='reflect')
         maze = np.where(noise_resized > np.percentile(noise_resized, 75), 99, 98)
 
         maze[0, :] = maze[-1, :] = 99
         maze[:, 0] = maze[:, -1] = 99
 
-        maze, start_door_grid = MapData.create_start_doors(self, maze, start_side)
+        maze, start_door_grid = self.create_start_doors(maze, start_side)
 
         first_door, second_door = start_door_grid[0], start_door_grid[1]
-        MapData.buffer_doors(maze, first_door, second_door, start_side)
+        self.buffer_doors(maze, first_door, second_door, start_side)
 
         # Set the exit for random side
         sides = ['top', 'bottom', 'left', 'right']
         sides.remove(start_side)
         exit_side = random.choice(sides)
-        random_position = random.randint(2, self.map_data.maze_size-3) # 0 kuni 39 on tegelikult, self.map_data.maze_size on 40 ehk 40-3 peaks olema solid failsafe
+        random_position = random.randint(2, self.maze_size-3) # 0 kuni 39 on tegelikult, self.maze_size on 40 ehk 40-3 peaks olema solid failsafe
 
         # Set the exit point
         if exit_side == 'left':
@@ -536,65 +535,64 @@ class MapData:
             maze[end_0], maze[end_1] = 95, 95
 
         elif exit_side == 'right':
-            end_0 = (random_position    , self.map_data.maze_size - 1)
-            end_1 = (random_position + 1, self.map_data.maze_size - 1)
+            end_0 = (random_position    , self.maze_size - 1)
+            end_1 = (random_position + 1, self.maze_size - 1)
             maze[end_0], maze[end_1] = 96, 96
 
         elif exit_side == 'bottom':
-            end_0 = (self.map_data.maze_size - 1, random_position    )
-            end_1 = (self.map_data.maze_size - 1, random_position + 1)
+            end_0 = (self.maze_size - 1, random_position    )
+            end_1 = (self.maze_size - 1, random_position + 1)
             maze[end_0], maze[end_1] = 97, 97
         
         exit_point = (end_0, end_1)
         print('Exit at', exit_point, exit_side)
 
         first_exit_door, second_exit_door = exit_point[0], exit_point[1]
-        MapData.buffer_doors(maze, first_exit_door, second_exit_door, exit_side)
+        self.buffer_doors(maze, first_exit_door, second_exit_door, exit_side)
         
         # muudab maze datat, et string -> int -> list
-        self.map_data.converted_maze = []
+        self.converted_maze = []
         for row in maze:
             row_integers = row.astype(int)  # muudab intis
             row_list = row_integers.tolist()  # muudab listiks
-            self.map_data.converted_maze.append(row_list)
+            self.converted_maze.append(row_list)
 
-        maze = self.map_data.converted_maze
+        maze = self.converted_maze
 
-        MapData.create_maze_items(self, maze)
-        MapData.search_paths(self, maze, type_of_maze, start_side, start_door_grid, exit_point)
+        self.create_maze_items(maze)
+        self.search_paths(maze, type_of_maze, start_side, start_door_grid, exit_point)
 
-        if MapData.create_save_puzzle:
-            MapData.create_save_puzzle = False
+        if self.create_save_puzzle:
+            self.create_save_puzzle = False
             return maze
 
 
-    @staticmethod
     def get_data(self, item, start_side):
 
         # 'labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade'
         if item.endswith('maze'):
             if item == 'block_maze':
-                return MapData.block_maze_generation(self, start_side)
+                return self.block_maze_generation(start_side)
 
             elif item == 'labyrinth_maze':
-                return MapData.labyrinth_maze_generation(self, start_side)
+                return self.labyrinth_maze_generation(start_side)
 
             elif item == 'blade_maze':
                 UniversalVariables.blades_spawned = True
-                return MapData.file_to_maze(self, file_name=f'{item}.txt', side=start_side)
+                return self.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
             elif item == 'final_maze':
                 for row in UniversalVariables.map_list:
                     if 'final_maze' in row:
                         UniversalVariables.final_maze = True
-                        return MapData.file_to_maze(self, file_name=f'{item}.txt', side=start_side)
+                        return self.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
         elif item == 'abandoned_glade':
-            return MapData.abandoned_glade_generation(self, start_side)
+            return self.abandoned_glade_generation(start_side)
 
         elif item == 'glade':
             # Glade'il pole start side
-            return MapData.file_to_maze(self, file_name=f'{item}.txt')
+            return self.file_to_maze(file_name=f'{item}.txt')
 
         elif item == 'place':
             return self.placeholder

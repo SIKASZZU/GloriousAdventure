@@ -77,12 +77,12 @@ class Game:
         self.initialize_pygame()  # Alati 1.
         self.terrain_data = glade_creation()
 
-        self.initialize_map()
         self.initialize_player()
         self.initialize_inventory()
         self.initialize_building()
         self.initialize_essentials()
         self.initialize_camera()
+        self.initialize_map()
 
         self.initialize_audio()
         self.initialize_collisons()

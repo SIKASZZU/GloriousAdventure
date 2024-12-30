@@ -162,7 +162,6 @@ class PlayerUpdate:
                     else:
                         self.frame = self.animation_manager.update_animation(keys, is_idle)
 
-                print(self.frame)
             else:
                 pass
         except Exception as e: print(f'Error @ update.py: {e}')
