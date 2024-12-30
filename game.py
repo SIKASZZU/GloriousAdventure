@@ -48,6 +48,8 @@ class Game:
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
+        self.menu_states_tuple = (self.game_menu_state, self.pause_menu_state)
+
         self.dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA,
                                           32)
 
@@ -127,7 +129,7 @@ class Game:
     # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
 
     def initialize_event_handler(self):
-        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot)
+        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
