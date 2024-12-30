@@ -83,7 +83,8 @@ class Loot:
             # TODO: ObjectManagement -> self.object_management.add_object_from_inv(obtained_loot, obtained_count)
             ObjectManagement.add_object_from_inv(self, obtained_loot, obtained_count)
 
-    def loot_update(self, right_click_x, right_click_y, player_pressed_pick_up=False):
+    def loot_update(self, right_click_pos, player_pressed_pick_up=False):
+        right_click_x, right_click_y = right_click_pos
         if right_click_x is None or right_click_y is None and player_pressed_pick_up == False:
             return
 
