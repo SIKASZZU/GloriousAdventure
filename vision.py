@@ -169,9 +169,9 @@ class Vision:
     
 
     def draw_shadows(self):
-        if len(self.visible_points) < 2:
+        if len(self.visible_points) < 3:
             return
-        
+
         shadow_color = 0 if UniversalVariables.debug_mode and self.vision_count == True else 255
         self.shadow_mask = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         self.shadow_mask.fill((0, 0, 0, shadow_color))

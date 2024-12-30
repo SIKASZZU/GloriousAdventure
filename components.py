@@ -6,9 +6,8 @@ from inventory import Inventory
 from text import Fading_text
 
 class HealthComponent:
-    death_exit_timer = 0
-    death_start_time = None
     def __init__(self, max_health, min_health):
+        self.death_start_time = None
         self.max_health = max_health
         self.min_health = min_health
         self.current_health = max(min_health, min(max_health, max_health))
@@ -16,9 +15,10 @@ class HealthComponent:
         self.previous_health = self.current_health
         self.player_dead_flag = False
         self.hunger = None
+        self.health_timer = 150
 
     def update(self):
-        self.player.health.check_health(self.player.hunger.current_hunger)
+        self.health.check_health(self.hunger.current_hunger)
 
 
     def print_health(self):
@@ -79,10 +79,10 @@ class HealthComponent:
         if UniversalVariables.debug_mode == True:
             UniversalVariables.ui_elements.append("""Debug mode, not closing the game.""")
         else:
-            if HealthComponent.death_start_time is None:
-                HealthComponent.death_start_time = time.perf_counter()
+            if self.death_start_time is None:
+                self.death_start_time = time.perf_counter()
 
-            elapsed_time = time.perf_counter() - HealthComponent.death_start_time
+            elapsed_time = time.perf_counter() - self.death_start_time
             remaining_time = 5 - int(elapsed_time)
 
             if remaining_time >= 0:
@@ -165,9 +165,9 @@ class SpeedComponent:
 
 
 class HungerComponent:
-    hunger_timer = 100
-    health_timer = 300
     def __init__(self, base_hunger, max_hunger, min_hunger):
+        self.hunger_timer = 100
+        self.health_timer = 300
         self.base_hunger = base_hunger
         self.max_hunger = max_hunger
         self.min_hunger = min_hunger
@@ -189,26 +189,26 @@ class HungerComponent:
             UniversalVariables.hunger_resistance -= hunger_resist
             if UniversalVariables.hunger_resistance <= 0:
                 UniversalVariables.hunger_resistance = 0
-                HungerComponent.hunger_timer = 100
+                self.hunger.hunger_timer = 100
             return
 
-        elif self.player.hunger.current_hunger <= 0:
+        elif self.hunger.current_hunger <= 0:
 
-            if HungerComponent.health_timer <= 0:
-                if self.player.health.current_health > 0:
+            if self.health.health_timer <= 0:
+                if self.health.current_health > 0:
                     Fading_text.re_display_fading_text("Starving")
 
-                self.player.health.damage(0.5)
-                HungerComponent.health_timer = 300
-            HungerComponent.health_timer -= 1
+                self.health.damage(0.5)
+                self.health.health_timer = 300
+            self.health.health_timer -= 1
         else:
-            if HungerComponent.hunger_timer <= 0:
-                self.player.hunger.current_hunger = max(self.player.hunger.min_hunger, self.player.hunger.current_hunger - hunger_decrease)
-                HungerComponent.hunger_timer = 100
+            if self.hunger.hunger_timer <= 0:
+                self.hunger.current_hunger = max(self.hunger.min_hunger, self.hunger.current_hunger - hunger_decrease)
+                self.hunger.hunger_timer = 100
 
-            HungerComponent.hunger_timer -= 1
-            if HungerComponent.health_timer < 300:
-                HungerComponent.health_timer = 300
+            self.hunger.hunger_timer -= 1
+            if self.health.health_timer < 300:
+                self.health.health_timer = 300
 
 
     def __str__(self):
@@ -219,13 +219,12 @@ class HungerComponent:
             if UniversalVariables.hunger_resistance != 0:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
             else:
-                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {HungerComponent.hunger_timer} ticks"
+                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {self.hunger_timer} ticks"
 
 
 class ThirstComponent:
-    thirst_timer = 100
-    health_timer = 150
     def __init__(self, base_thirst, max_thirst, min_thirst):
+        self.thirst_timer = 100
         self.base_thirst = base_thirst
         self.max_thirst = max_thirst
         self.min_thirst = min_thirst
@@ -248,26 +247,26 @@ class ThirstComponent:
             UniversalVariables.thirst_resistance -= thirst_resist
             if UniversalVariables.thirst_resistance <= 0:
                 UniversalVariables.thirst_resistance = 0
-                ThirstComponent.thirst_timer = 100
+                self.thirst.thirst_timer = 100
             return
 
-        elif self.player.thirst.current_thirst <= 0:
-            if ThirstComponent.health_timer <= 0:
-                if self.player.health.current_health > 0:
+        elif self.thirst.current_thirst <= 0:
+            if self.health.health_timer <= 0:
+                if self.health.current_health > 0:
                     Fading_text.re_display_fading_text("Dying from hydration.")
 
-                self.player.health.damage(0.5)
-                ThirstComponent.health_timer = 150
-            ThirstComponent.health_timer -= 1
+                self.health.damage(0.5)
+                self.health.health_timer = 150
+            self.health.health_timer -= 1
 
         else:
-            if ThirstComponent.thirst_timer <= 0:
-                self.player.thirst.current_thirst = max(self.player.thirst.min_thirst, self.player.thirst.current_thirst - thirst_decrease)
-                ThirstComponent.thirst_timer = 100
+            if self.thirst.thirst_timer <= 0:
+                self.thirst.current_thirst = max(self.thirst.min_thirst, self.thirst.current_thirst - thirst_decrease)
+                self.thirst.thirst_timer = 100
 
-            ThirstComponent.thirst_timer -= 1
-            if ThirstComponent.health_timer < 150:
-                ThirstComponent.health_timer = 150        
+            self.thirst.thirst_timer -= 1
+            if self.health.health_timer < 150:
+                self.health.health_timer = 150        
     
     def __str__(self):
         rounded_hunger = round(self.current_thirst, 3)
@@ -283,6 +282,8 @@ class Player:
                  player_rect
 
                  ):
+        
+        # playeri componentid on siin initialized, ei pea main game failis tegema!
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
         self.stamina = StaminaComponent(max_stamina=max_stamina,

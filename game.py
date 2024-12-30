@@ -318,7 +318,7 @@ class Game:
         Final_Maze.update(self)
         Fading_text.update(self)
         Cooking.update(self)
-        Player.update(self)
+        self.player.update()
 
         self.check_keys()  # Toggle hitbox / vision
         self.custom_addition()

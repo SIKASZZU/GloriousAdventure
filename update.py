@@ -90,7 +90,7 @@ class PlayerUpdate:
             if keys[pygame.K_LSHIFT]:
                 if keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] or keys[pygame.K_w]:
                     if self.player.stamina.current_stamina >= 2:
-                        HungerComponent.hunger_timer += 2
+                        self.player.hunger.hunger_timer += 2
 
             key_animation_map = {
                 pygame.K_d: 1,  # Right animation
