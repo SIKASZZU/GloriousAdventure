@@ -236,14 +236,14 @@ class Game:
         ItemFunctionality.update(self)
 
     def call_visuals(self):
-        Game.check_for_update(self)
+        self.check_for_update()
         RenderPictures.map_render(self)
         UniversalVariables.screen.blit(UniversalVariables.buffer_collision, (0, 0))
 
         RenderPictures.object_render(self)
 
         Drop.update(self)
-        Game.render_boxes(self)  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
+        self.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Entity.spawn(self)
 
@@ -285,7 +285,7 @@ class Game:
 
     def refresh_loop(self):
         Interaction.keylock = 0
-        Game.add_counts()  # lisa countid juure uue loopi alguse puhul
+        self.add_counts()  # lisa countid juure uue loopi alguse puhul
 
         current_fps = self.clock.get_fps()
         if current_fps > 0:  # To avoid adding 0 FPS values
