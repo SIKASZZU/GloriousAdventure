@@ -10,19 +10,19 @@ from text import Fading_text
 
 def is_click_inside_player_rect(self):
 
-    if not self.click_position:  # Return'ib kui click_position on tühi
+    if not self.camera.click_position:  # Return'ib kui click_position on tühi
         return False
 
-    if None in self.click_position:  # Return'ib kui click_position'is on None
+    if None in self.camera.click_position:  # Return'ib kui click_position'is on None
         return False
 
-    player_x = self.player_update.player_rect[0]
-    player_y = self.player_update.player_rect[1]
+    player_x = self.player_update.player_rect[0] + UniversalVariables.offset_x
+    player_y = self.player_update.player_rect[1] + UniversalVariables.offset_y
 
     # Vaatab, kas click on player rect'i sees
-    click_within_x = player_x < self.click_position[0] < player_x + self.player_update.player_rect[2]
-    click_within_y = player_y < self.click_position[1] < player_y + self.player_update.player_rect[3]
-    print(click_within_x, click_within_y)
+    click_within_x = player_x < self.camera.click_position[0] < player_x + self.player_update.player_rect[2]
+    click_within_y = player_y < self.camera.click_position[1] < player_y + self.player_update.player_rect[3]
+
     return click_within_x and click_within_y  # Return'ib tulemuse
 
 
