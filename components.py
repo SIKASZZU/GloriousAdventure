@@ -278,9 +278,7 @@ class Player:
                  max_stamina, min_stamina,
                  base_speed, max_speed, min_speed,
                  base_hunger, max_hunger, min_hunger,
-                 base_thirst, max_thirst, min_thirst,
-                 player_rect
-
+                 base_thirst, max_thirst, min_thirst
                  ):
         
         # playeri componentid on siin initialized, ei pea main game failis tegema!
@@ -298,8 +296,6 @@ class Player:
                                       max_thirst=max_thirst,
                                       min_thirst=min_thirst)
 
-        self.player_rect = player_rect
-
     def update(self):
         """ Update player components: health, hunger, thirst. """
 
@@ -311,32 +307,6 @@ class Player:
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...
         UniversalVariables.player_x += dx * knockback_force
         UniversalVariables.player_y += dy * knockback_force
-
-    def attack(self, direction):
-        """ Return player's attack rect. """
-
-
-        len_of_attack_box = 3 * self.player_rect[2]  # self.player_rect[2] LAIUS, self.player_rect[3] K6RGUS
-        
-
-        if direction == 'up':
-            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box * 1.5
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
-
-        elif direction == 'down':
-            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] + self.player_rect[3]
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
-
-        elif direction == 'right':
-            start_x, start_y = self.player_rect[0] + self.player_rect[2], self.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
-
-        elif direction == 'left':
-            start_x, start_y = self.player_rect[0] - len_of_attack_box * 1.5, self.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
-
-        self.player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
-        pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), self.player_attack_rect, 6)  # visuaal
 
     def __str__(self):
         return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"

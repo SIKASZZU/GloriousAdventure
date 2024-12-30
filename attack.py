@@ -10,16 +10,14 @@ import random
 
 
 class Attack:
-    def __init__(self, camera, attack_entity, attack_object, event_handler, player_rect):
+    def __init__(self, camera, attack_entity, attack_object, player_update):
         self.camera = camera
         self.attack_entity = attack_entity
         self.attack_object = attack_object
-        self.event_handler = event_handler
-        self.player_rect = player_rect
+        self.player_update = player_update
 
         self.last_attack_cooldown_max = 100
         self.last_attack_cooldown = self.last_attack_cooldown_max
-
 
     def update(self):
 
@@ -34,7 +32,8 @@ class Attack:
             entity_pressed = UniversalVariables.attack_key_pressed = (
             False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
-            Attack.display_attack_cd_timer(self)
+
+            self.display_attack_cd_timer()
 
 
         elif entity_pressed[0]:  # arrow keydega hittisid entityt
@@ -54,16 +53,15 @@ class Attack:
             if object_click and None not in object_click:  # Check if object_click is valid
                 self.attack_object.update(object_click)  # Offseti asi on perses kuna muutsime camerat
 
-        # FIXME: Ei reseti clicki
         self.camera.reset_clicks()
 
     def display_attack_cd_timer(self):
-        left = self.player_rect[0] - 25
-        top = self.player_rect[1] - 50
+        left = self.player_update.player_rect[0] - 25
+        top = self.player_update.player_rect[1] - 50
 
-        cooldown_rect = pygame.Rect(left, top, 50 + self.player_rect[2], 30)
+        cooldown_rect = pygame.Rect(left, top, 50 + self.player_update.player_rect[2], 30)
         progress_to_width = (self.last_attack_cooldown / self.last_attack_cooldown_max) * (
-                    self.player_rect[2] + 50)
+                    self.player_update.player_rect[2] + 50)
         filler_rect = pygame.Rect(left, top, progress_to_width, 30)
 
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 255), cooldown_rect, 2, 5)
@@ -71,9 +69,10 @@ class Attack:
 
 
 class AttackEntity:
-    def __init__(self, inv):
+    def __init__(self, inv, player_update):
         self.inv = inv
-        self.player_attack_rect = None
+        self.player_update = player_update
+        self.player_attack_rect = pygame.rect
 
     def find_entity(self, click=None, pressed=False):
         for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
@@ -92,11 +91,38 @@ class AttackEntity:
                     entity_rect[0] + UniversalVariables.offset_x, entity_rect[1] + UniversalVariables.offset_y,
                     entity_rect[2], entity_rect[3]
                 )
-
+                
                 if self.player_attack_rect is not None and self.player_attack_rect.colliderect(entity_rect_converted):
                     return entity_name, entity_info
                 else:
                     continue
+
+    def attack_rect(self, direction):
+        """ Return player's attack rect. """
+
+        len_of_attack_box = 3 * self.player_update.player_rect[2]  # self.player_update.player_rect[2] LAIUS, self.player_update.player_rect[3] K6RGUS
+        
+        if direction == 'up':
+            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] - len_of_attack_box * 1.5
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
+
+        elif direction == 'down':
+            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] + self.player_update.player_rect[3]
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
+
+        elif direction == 'right':
+            start_x, start_y = self.player_update.player_rect[0] + self.player_update.player_rect[2], self.player_update.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
+
+        elif direction == 'left':
+            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box * 1.5, self.player_update.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
+
+        self.player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
+        pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), self.player_attack_rect, 6)  # visuaal
+        
+        return self.player_attack_rect  # return player_attack_rect
+        
 
     def calculate_entity_knockback(self, x, y):
         player_grid_y = UniversalVariables.player_y // UniversalVariables.block_size
@@ -173,22 +199,21 @@ class AttackEntity:
             return
         return
 
-    def update(self, attack, click=False, pressed=False):
-        self.attack = attack
+    def update(self, atk_cls, click=False, pressed=False):
         if click:
             entity_data = self.find_entity(click=click)
             if entity_data:
                 print(entity_data)
                 entity_name, entity_info = entity_data
                 self.damage_entity(entity_name, entity_info)
-                self.attack.last_attack_cooldown = 0
+                atk_cls.last_attack_cooldown = 0
 
         if pressed:
             entity_data = self.find_entity(pressed=pressed)
             if entity_data:
                 entity_name, entity_info = entity_data
                 self.damage_entity(entity_name, entity_info)
-                self.attack.last_attack_cooldown = 0
+                atk_cls.last_attack_cooldown = 0
 
 
 class AttackObject:

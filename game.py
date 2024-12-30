@@ -144,9 +144,9 @@ class Game:
         #            self.terrain_data[i - 1][j] = 98
 
     def initialize_attack(self):
-        self.attack_entity = AttackEntity(self.inv)  # + self.entity
+        self.attack_entity = AttackEntity(self.inv, self.player_update)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
-        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_update.player_rect)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
@@ -160,8 +160,7 @@ class Game:
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
-                             base_thirst=12, max_thirst=20, min_thirst=0,
-                             player_rect=self.player_update.player_rect
+                             base_thirst=12, max_thirst=20, min_thirst=0
                              )
 
         self.player_effect = PlayerEffect(self.player)
@@ -258,8 +257,6 @@ class Game:
                 self.inv.crafting_menu_open = False
 
         self.attack.update()
-        if self.click_x:
-            print(self.click_x)
 
         PlayerUpdate.render_HUD(self)  # Render HUD
         Drop.open_pouch(Drop.pouch_position)

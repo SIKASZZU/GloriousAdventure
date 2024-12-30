@@ -111,10 +111,10 @@ class Event_handler:
             UniversalVariables.attack_key_pressed = (True, arrow_keys)
 
             if keys[pygame.K_UP]:
-                self.player.attack('up')
+                self.attack_entity.attack_rect('up')
             elif keys[pygame.K_DOWN]:
-                self.player.attack('down')
+                self.attack_entity.attack_rect('down')
             elif keys[pygame.K_LEFT]:
-                self.player.attack('left')
+                self.attack_entity.attack_rect('left')
             elif keys[pygame.K_RIGHT]:
-                self.player.attack('right')
+                self.attack_entity.attack_rect('right')

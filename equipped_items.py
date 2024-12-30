@@ -22,7 +22,7 @@ def is_click_inside_player_rect(self):
     # Vaatab, kas click on player rect'i sees
     click_within_x = player_x < self.click_position[0] < player_x + self.player_update.player_rect[2]
     click_within_y = player_y < self.click_position[1] < player_y + self.player_update.player_rect[3]
-
+    print(click_within_x, click_within_y)
     return click_within_x and click_within_y  # Return'ib tulemuse
 
 
