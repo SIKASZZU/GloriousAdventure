@@ -279,7 +279,9 @@ class Player:
                  max_stamina, min_stamina,
                  base_speed, max_speed, min_speed,
                  base_hunger, max_hunger, min_hunger,
-                 base_thirst, max_thirst, min_thirst
+                 base_thirst, max_thirst, min_thirst,
+                 player_rect
+
                  ):
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health)
@@ -294,6 +296,8 @@ class Player:
         self.thirst = ThirstComponent(base_thirst=base_thirst, 
                                       max_thirst=max_thirst,
                                       min_thirst=min_thirst)
+
+        self.player_rect = player_rect
 
     def update(self):
         """ Update player components: health, hunger, thirst. """
@@ -311,24 +315,24 @@ class Player:
         """ Return player's attack rect. """
 
 
-        len_of_attack_box = 3 * self.player_update.player_rect[2]  # self.player_update.player_rect[2] LAIUS, self.player_update.player_rect[3] K6RGUS
+        len_of_attack_box = 3 * self.player_rect[2]  # self.player_rect[2] LAIUS, self.player_rect[3] K6RGUS
         
 
         if direction == 'up':
-            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] - len_of_attack_box * 1.5
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] - len_of_attack_box * 1.5
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
 
         elif direction == 'down':
-            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] + self.player_update.player_rect[3]
-            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
+            start_x, start_y = self.player_rect[0] - len_of_attack_box, self.player_rect[1] + self.player_rect[3]
+            end_x_width, end_y_height = len_of_attack_box * 2 + self.player_rect[2], len_of_attack_box * 1.5
 
         elif direction == 'right':
-            start_x, start_y = self.player_update.player_rect[0] + self.player_update.player_rect[2], self.player_update.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
+            start_x, start_y = self.player_rect[0] + self.player_rect[2], self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
 
         elif direction == 'left':
-            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box * 1.5, self.player_update.player_rect[1] - len_of_attack_box
-            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
+            start_x, start_y = self.player_rect[0] - len_of_attack_box * 1.5, self.player_rect[1] - len_of_attack_box
+            end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_rect[3]
 
         self.player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
         pygame.draw.rect(UniversalVariables.screen, (255, 255, 0), self.player_attack_rect, 6)  # visuaal

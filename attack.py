@@ -10,51 +10,61 @@ import random
 
 
 class Attack:
-    def __init__(self):
+    def __init__(self, click_position, camera, attack_entity, attack_object, event_handler, player_rect):
+        self.click_position = click_position
+
+        self.camera = camera
+        self.attack_entity = attack_entity
+        self.attack_object = attack_object
+        self.event_handler = event_handler
+        self.player_rect = player_rect
+
         self.last_attack_cooldown_max = 100
         self.last_attack_cooldown = self.last_attack_cooldown_max
+
 
     def update(self):
 
         ### FIXME: Miks on cooldown kui ta ei attacki mitte midagi naq?? peale igat clicki tleb cooldown nahuii????????
-        AttackObject.update_timers(self)
-        AttackObject.draw_hover_rect(self)
+        self.attack_object.update_timers()
+        self.attack_object.draw_hover_rect()
 
         entity_pressed = UniversalVariables.attack_key_pressed
 
-        if self.attack.last_attack_cooldown < self.attack.last_attack_cooldown_max:
-            self.attack.last_attack_cooldown += 1
+        if self.last_attack_cooldown < self.last_attack_cooldown_max:
+            self.last_attack_cooldown += 1
             entity_pressed = UniversalVariables.attack_key_pressed = (
             False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
             Attack.display_attack_cd_timer(self)
 
 
-        elif entity_pressed[0] == True:  # arrow keydega hittisid entityt
-            AttackEntity.update(self, pressed=True)
+        elif entity_pressed[0]:  # arrow keydega hittisid entityt
+            self.attack_entity.update(self, pressed=True)
             entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
 
         else:
-            entity_click = Camera.left_click_on_screen(self)  # x, y (Coords)
-            object_click = self.click_position  # x, y (Coords)
+            entity_click = self.camera.right_click_on_screen(self.event_handler.click_position)  # x, y (Coords)
+            object_click = self.event_handler.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
 
             if not entity_click and not object_click:
                 return False
 
             if entity_click and None not in entity_click:  # Check if entity_click is valid
-                AttackEntity.update(self, click=entity_click)
+                self.attack_entity.update(self, click=entity_click)
 
             if object_click and None not in object_click:  # Check if object_click is valid
-                AttackObject.update(self, object_click)  # Offseti asi on perses kuna muutsime camerat
+                self.attack_object.update(object_click)  # Offseti asi on perses kuna muutsime camerat
 
-        Camera.reset_clicks(self)
+        # FIXME: Ei reseti clicki
+        self.camera.reset_clicks(self.event_handler)
 
     def display_attack_cd_timer(self):
         left = self.player_rect[0] - 25
         top = self.player_rect[1] - 50
 
         cooldown_rect = pygame.Rect(left, top, 50 + self.player_rect[2], 30)
-        progress_to_width = (self.attack.last_attack_cooldown / self.attack.last_attack_cooldown_max) * (
+        progress_to_width = (self.last_attack_cooldown / self.last_attack_cooldown_max) * (
                     self.player_rect[2] + 50)
         filler_rect = pygame.Rect(left, top, progress_to_width, 30)
 
@@ -63,6 +73,10 @@ class Attack:
 
 
 class AttackEntity:
+    def __init__(self, inv):
+        self.inv = inv
+        self.player_attack_rect = None
+
     def find_entity(self, click=False, pressed=False):
         for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
             entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
@@ -71,6 +85,8 @@ class AttackEntity:
             if click:
                 if not entity_rect.collidepoint(click):
                     continue
+
+                print(entity_name, entity_info)
 
                 return entity_name, entity_info
 
@@ -81,7 +97,7 @@ class AttackEntity:
                     entity_rect[2], entity_rect[3]
                 )
 
-                if self.player_attack_rect != None and self.player_attack_rect.colliderect(entity_rect_converted):
+                if self.player_attack_rect is not None and self.player_attack_rect.colliderect(entity_rect_converted):
                     return entity_name, entity_info
                 else:
                     continue
@@ -142,7 +158,7 @@ class AttackEntity:
 
             del Entity.path[entity_name]
             del Entity.spawned_entity_dict[entity_name]
-            Player_audio.ghost_died_audio(self)
+            # Player_audio.ghost_died_audio(self)
 
             if UniversalVariables.debug_mode:
                 print(f"Killed {entity_name}.")
@@ -151,9 +167,9 @@ class AttackEntity:
             return
 
         # # Add knockback to entity
-        x, y = AttackEntity.calculate_entity_knockback(self, x, y)
+        x, y = self.calculate_entity_knockback(x, y)
         Entity.spawned_entity_dict[entity_name] = entity_image, x, y, new_HP
-        Player_audio.ghost_hurt_audio(self)
+        # Player_audio.ghost_hurt_audio(self)
 
         if UniversalVariables.debug_mode:
             print(
@@ -161,26 +177,28 @@ class AttackEntity:
             return
         return
 
-    def update(self, click=False, pressed=False):
-
+    def update(self, attack, click=False, pressed=False):
+        self.attack = attack
         if click:
-            entity_data = AttackEntity.find_entity(self, click=click)
+            entity_data = self.find_entity(click=click)
             if entity_data:
+                print(entity_data)
                 entity_name, entity_info = entity_data
-                AttackEntity.damage_entity(self, entity_name, entity_info)
+                self.damage_entity(entity_name, entity_info)
                 self.attack.last_attack_cooldown = 0
 
         if pressed:
-            entity_data = AttackEntity.find_entity(self, pressed=pressed)
+            entity_data = self.find_entity(pressed=pressed)
             if entity_data:
                 entity_name, entity_info = entity_data
-                AttackEntity.damage_entity(self, entity_name, entity_info)
+                self.damage_entity(entity_name, entity_info)
                 self.attack.last_attack_cooldown = 0
 
 
 class AttackObject:
-    def __init__(self, terrain_data):
+    def __init__(self, terrain_data, inv):
         self.terrain_data = terrain_data
+        self.inv = inv
 
         self.default_color = 255, 120, 20, 150
         self.click_color = 255, 0, 0, 255
@@ -239,8 +257,7 @@ class AttackObject:
 
         if new_hp <= 0:
             # X ja Y peavad olema vastupidi --> grid asi
-            was_removed = ObjectManagement.remove_object_at_position(self, y_minus_offset, x_minus_offset,
-                                                                     object_data['id'])
+            was_removed = ObjectManagement.remove_object_at_position(self, y_minus_offset, x_minus_offset, object_data['id'])
             if was_removed:
                 del UniversalVariables.object_hp_dict[rect_key]
 
@@ -251,7 +268,7 @@ class AttackObject:
 
         transparent_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y),
                                              pygame.SRCALPHA)
-        pygame.draw.rect(transparent_surface, self.attack_object.click_color, object_rect, 3)
+        pygame.draw.rect(transparent_surface, self.click_color, object_rect, 3)
 
         UniversalVariables.screen.blit(transparent_surface, (0, 0))
 
@@ -283,7 +300,7 @@ class AttackObject:
             object_rect = pygame.Rect(x, y, width, height)
 
             if object_rect.collidepoint(mouse_pos):
-                pygame.draw.rect(transparent_surface, self.attack_object.default_color, object_rect, 2)
+                pygame.draw.rect(transparent_surface, self.default_color, object_rect, 2)
 
                 UniversalVariables.screen.blit(transparent_surface, (0, 0))
                 return

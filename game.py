@@ -24,6 +24,7 @@ from final_maze import Final_Maze
 from HUD import HUD_class
 from interactions import Interaction
 from inventory import Inventory
+from loot import Loot
 from map import MapData, glade_creation
 from maze_changes import MazeChanges
 from menu import Menu, PauseMenu
@@ -62,22 +63,36 @@ class Game:
         self.right_click_window_x = None
         self.right_click_window_y = None
 
+        self.click_tuple = (
+            self.click_position,
+            self.click_window_x,
+            self.click_window_y,
+            self.right_click_position,
+            self.right_click_window_x,
+            self.right_click_window_y
+        )
+
+
         self.player_attack_rect = None
 
         # initialize #
-        self.initialize_pygame()
+        self.initialize_pygame()  # Alati 1.
 
-        self.initialize_camera()
-        self.initialize_map()
-        self.initialize_player()
+        self.initialize_player()  # None
+        self.initialize_inventory()  # None
+        self.initialize_building()  # None
+        self.initialize_essentials()  # None
+        self.initialize_map()  # self.terrain_data, self.click_position
+        self.initialize_camera()  # self.screen, self.click_tuple, self.terrain_data, self.player_rect
 
-        self.initialize_attack()
-        self.initialize_audio()
-        self.initialize_collisons()
-        self.initialize_inventory()
-        self.initialize_building()
-        self.initialize_essentials()
-        self.initialize_vision()
+        self.initialize_audio()  # self.terrain_data, self.player, self.py_mixer
+        self.initialize_collisons()  # self.player, self.player_rect
+        self.initialize_vision()  # self.screen, self.terrain_data, self.essentials.daylight_strength
+        self.initialize_loot()  # self.camera, self.inv, self.terrain_data, self.click_tuple
+
+        self.initialize_event_handler()  # self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot
+
+        self.initialize_attack()  # self.terrain_data, self.click_position, self.camera, self.attack_entity, self.attack_object, self.event_handler, self.inv, self.player_rect
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -92,7 +107,27 @@ class Game:
         self.py_mixer = pygame.mixer.init()
 
     def initialize_camera(self):
-        self.camera = Camera(self.screen)
+        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_rect)
+
+        self.camera_rect = self.camera.camera_rect
+        self.player_window_x = self.camera.player_window_x
+        self.player_window_y = self.camera.player_window_y
+        self.click_x = self.camera.click_x
+        self.click_y = self.camera.click_y
+
+        self.camera_click_tuple = (
+            self.camera_rect,
+            self.player_window_x,
+            self.player_window_y,
+            self.click_x,
+            self.click_y
+        )
+
+    # See peaks olema pmst nii, et kui sa paned self.event_handler siis ta vaatab event_handler,
+    # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
+
+    def initialize_event_handler(self):
+        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -111,33 +146,36 @@ class Game:
         #            self.terrain_data[i - 1][j] = 98
 
     def initialize_attack(self):
-        self.attack = Attack()
-        self.attack_entity = AttackEntity()
-        self.attack_object = AttackObject(self.terrain_data)
+        self.attack_entity = AttackEntity(self.inv)  # + self.entity
+        self.attack_object = AttackObject(self.terrain_data, self.inv)
+        self.attack = Attack(self.click_position, self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_rect)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
         self.tile_sounds = Tile_Sounds(self.py_mixer)
-        
+
     def initialize_player(self):
         self.player_update = PlayerUpdate()
         self.player_rect = self.player_update.get_player_rect()
-
-        print(self.player_rect)
 
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
-                             base_thirst=12, max_thirst=20, min_thirst=0)
-        
+                             base_thirst=12, max_thirst=20, min_thirst=0,
+                             player_rect=self.player_rect
+                             )
+
         self.player_effect = PlayerEffect(self.player)
 
     def initialize_collisons(self):
         self.collisions = Collisions(self.player, self.player_rect)
 
+    def initialize_loot(self):
+        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple)
+
     def initialize_building(self):
-        self.building = Building
+        self.building = Building()
 
     def initialize_inventory(self):
         self.inv = Inventory()
@@ -156,15 +194,14 @@ class Game:
     def events(self):
         for event in pygame.event.get():
             self.event_game_state(event)
-            Event_handler.handle_mouse_events(self, event)
-            Event_handler.handle_keyboard_events(self, event)
+            self.event_handler.handle_mouse_events(event)
+            self.event_handler.handle_keyboard_events(event)
 
     def load_variables(self):
         UniversalVariables()
 
-    def render_boxes():
-
-        if UniversalVariables.render_boxes_counter == True:
+    def render_boxes(self):
+        if UniversalVariables.render_boxes_counter:
             ObjectManagement.render_interaction_box()
             ObjectManagement.render_collision_box()
             Drop.display_all_floating_pouch_hitboxes()
@@ -177,7 +214,7 @@ class Game:
         if hash_matrix(self.terrain_data) != hash_matrix(self.old_terrain_data):
             UniversalVariables.update_view = True
             self.old_terrain_data = [row[:] for row in self.terrain_data]
-    
+
     def call_technical(self):
 
         PlayerUpdate.update_player(self)  # Update player position and attributes
@@ -203,7 +240,7 @@ class Game:
         RenderPictures.object_render(self)
 
         Drop.update(self)
-        Game.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
+        Game.render_boxes(self)  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         Entity.spawn(self)
 
@@ -221,7 +258,9 @@ class Game:
                 Fading_text.re_display_fading_text("Nothing to craft.")
                 self.inv.crafting_menu_open = False
 
-        Attack.update(self)
+        self.attack.update()
+        if self.click_x:
+            print(self.click_x)
 
         PlayerUpdate.render_HUD(self)  # Render HUD
         Drop.open_pouch(Drop.pouch_position)
@@ -231,7 +270,7 @@ class Game:
 
         Inventory.render_equipped_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
 
-        self.building.update(self)
+        # self.building.update()
 
     def check_keys(self):
         Event_handler.check_pressed_keys(self)  # Check pressed keys
@@ -307,7 +346,7 @@ class Game:
         if PauseMenu.game_paused:
             PauseMenu.settings_menu(self)
             return True
-        
+
         return False
 
 

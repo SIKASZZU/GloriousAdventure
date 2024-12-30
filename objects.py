@@ -102,7 +102,7 @@ class ObjectManagement:
         self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
         ObjectManagement.add_object_from_inv(self, name, amount)
-        Player_audio.player_item_audio(self)
+        # Player_audio.player_item_audio(self)
         UniversalVariables.interaction_delay = 0
         return True
 

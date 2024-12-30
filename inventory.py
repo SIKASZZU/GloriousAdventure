@@ -526,6 +526,6 @@ class Inventory:
             UniversalVariables.screen.blit(overlay, (0, 0))
 
     def inventory_full_error(self):
-        Player_audio.error_audio(self)
+        # Player_audio.error_audio(self)
         Fading_text.re_display_fading_text("Not enough space in Inventory.")
         UniversalVariables.interaction_delay = 0

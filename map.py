@@ -49,7 +49,7 @@ class MapData:
         """ Creates start door using cursor grid data. """
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
-        door_tuple = Camera.left_click_on_screen(self)
+        door_tuple = self.camera.left_click_on_screen(self.click_position)
         door_grid_map  = Camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:

@@ -31,7 +31,8 @@ class Interaction:
 
             if keys[pygame.K_SPACE]:
                 if object_id == 1001:  # panin selle if statementi, kuigi see ei muuda mdiagi. id 1001 ei ole m6jutatud removeobjectatposition functioonist.
-                    Loot.loot_update(self, True)
+                    # Loot.loot_update(self, True)
+                    ...
                 else:
                     ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
 
@@ -60,7 +61,7 @@ class Interaction:
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             Interaction.colliderect(self, collision_object_rect, object_id, terrain_x, terrain_y)
 
-            if not self.click_window_x and not self.click_window_y:
+            if not self.camera.click_window_x and not self.camera.click_window_y:
                 continue
 
             # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
