@@ -10,9 +10,7 @@ import random
 
 
 class Attack:
-    def __init__(self, click_position, camera, attack_entity, attack_object, event_handler, player_rect):
-        self.click_position = click_position
-
+    def __init__(self, camera, attack_entity, attack_object, event_handler, player_rect):
         self.camera = camera
         self.attack_entity = attack_entity
         self.attack_object = attack_object
@@ -44,8 +42,8 @@ class Attack:
             entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
 
         else:
-            entity_click = self.camera.right_click_on_screen(self.event_handler.click_position)  # x, y (Coords)
-            object_click = self.event_handler.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
+            entity_click = self.camera.right_click_on_screen(self.camera.click_position)  # x, y (Coords)
+            object_click = self.camera.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
 
             if not entity_click and not object_click:
                 return False
@@ -57,7 +55,7 @@ class Attack:
                 self.attack_object.update(object_click)  # Offseti asi on perses kuna muutsime camerat
 
         # FIXME: Ei reseti clicki
-        self.camera.reset_clicks(self.event_handler)
+        self.camera.reset_clicks()
 
     def display_attack_cd_timer(self):
         left = self.player_rect[0] - 25

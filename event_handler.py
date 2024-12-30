@@ -53,8 +53,8 @@ class Event_handler:
     def handle_mouse_events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                self.click_position = event.pos
-                self.click_x, self.click_y = self.camera.left_click_on_screen(self.click_position)
+                self.camera.click_position = event.pos
+                self.click_x, self.click_y = self.camera.left_click_on_screen(self.camera.click_position)
 
             if event.button == 3:
                 # TODO vaadata kuhu clickib ja selle järgi edasi minna, callida midagi

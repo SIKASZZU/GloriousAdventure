@@ -125,17 +125,15 @@ class Camera:
 
         return self.right_click_x, self.right_click_y
 
-    def reset_clicks(self, event_handler=False):
+    def reset_clicks(self):
         self.click_window_x = self.click_window_y = None
         self.click_x = self.click_y = None
 
         self.right_click_window_x = self.right_click_window_y = None
         self.right_click_x = self.right_click_y = None
 
-        # Event Handler set'ib click_position'i
-        if event_handler:
-            self.event_handler = event_handler
-            self.event_handler.click_position = None
+        self.click_position = None
+        self.right_click_position = None
 
 
     def print_clicks(self):

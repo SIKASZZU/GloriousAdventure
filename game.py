@@ -74,7 +74,6 @@ class Game:
             self.right_click_window_y
         )
 
-
         self.player_attack_rect = None
 
         # initialize #
@@ -150,7 +149,7 @@ class Game:
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
-        self.attack = Attack(self.click_position, self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_rect)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_rect)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
