@@ -78,7 +78,7 @@ class Game:
         self.terrain_data = glade_creation()
 
         self.initialize_player()
-        self.initialize_building()
+        # self.initialize_building()
         self.initialize_essentials()
         self.initialize_camera()
         self.initialize_inventory()
@@ -90,6 +90,7 @@ class Game:
         self.initialize_loot()
 
         # self.initialize_cooking()
+        self.initialize_maze_changes()
 
         self.initialize_event_handler()
 
@@ -189,6 +190,9 @@ class Game:
     def initialize_vision(self):
         self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength)
 
+    def initialize_maze_changes(self):
+        self.maze_changes = MazeChanges(self.essentials.day_night_text)
+
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -227,7 +231,7 @@ class Game:
 
         self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER Cadwasdwa
         Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
-        # MazeChanges.change_maze(self)
+        self.maze_changes.change_maze()
 
         Entity.update(self)
         Player_audio.player_audio_update(self)

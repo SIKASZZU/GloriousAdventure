@@ -1,6 +1,5 @@
 import random
 from variables import UniversalVariables
-from update import EssentialsUpdate
 
 already_changed = set()
 
@@ -47,24 +46,30 @@ def find_random_index_in_list_of_lists(grid_data, number, grid_name='block_maze'
 
 class MazeChanges:
 
-    times_changed: int = 0
-    max_amount_of_changes = 150
-    loop_counter: int = 0
+    def __init__(self, dn_text):
+        self.day_night_text = dn_text
+        self.times_changed: int = 0
+        self.loop_counter:  int = 0
+        self.max_amount_of_changes = 150
+
 
     def change_maze(self):
         """ Muudab random maze pathwayisid (id 98) maze blockideks (id 99) ja vastupidi. """
 
-        if self.essentials.day_night_text == 'Day':
-            MazeChanges.times_changed = 0
+        if UniversalVariables.maze_counter == 0:
+            return
+        
+        if self.day_night_text == 'Day':
+            self.times_changed = 0
             global already_changed
             already_changed = set()            
             return
 
         # iga nelja framei tagant muuta seina ja groundi. Night on 599 framei pikk ehk.. 599/150(muudatuste arv) ning saad framei kuna peab muutma
-        if MazeChanges.loop_counter < 4:  MazeChanges.loop_counter += 1
+        if self.loop_counter < 4:  self.loop_counter += 1
 
-        elif not MazeChanges.times_changed > MazeChanges.max_amount_of_changes:
-            MazeChanges.loop_counter = 0  # uue seina ja groundi valja vahetamine
+        elif not self.times_changed > self.max_amount_of_changes:
+            self.loop_counter = 0  # uue seina ja groundi valja vahetamine
 
             index_of_wall = find_random_index_in_list_of_lists(self.terrain_data, 99)
             self.terrain_data[index_of_wall[1]][index_of_wall[0]] = 98
@@ -72,4 +77,4 @@ class MazeChanges:
             index_of_pathway = find_random_index_in_list_of_lists(self.terrain_data, 98)
             self.terrain_data[index_of_pathway[1]][index_of_pathway[0]] = 99
 
-            MazeChanges.times_changed += 1
+            self.times_changed += 1

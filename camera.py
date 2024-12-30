@@ -4,7 +4,7 @@ from text import Fading_text
 
 
 class Camera:
-    def __init__(self, screen, click_tuple, terrain_value, player_update):
+    def __init__(self, screen, click_tuple, terrain_data, player_update):
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -13,7 +13,7 @@ class Camera:
         self.right_click_window_x = click_tuple[4]
         self.right_click_window_y = click_tuple[5]
 
-        self.terrain_data = terrain_value
+        self.terrain_data = terrain_data
         self.player_update = player_update
 
         self.screen = screen
@@ -95,9 +95,8 @@ class Camera:
 
         if UniversalVariables.debug_mode:
             grid_click = self.click_on_screen_to_grid(self.click_x, self.click_y)
-            UniversalVariables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
-            Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
-
+            try:  UniversalVariables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
+            except:  Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
         return self.click_x, self.click_y
 
     def right_click_on_screen(self, right_click_position):
