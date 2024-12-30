@@ -265,7 +265,7 @@ class Game:
 
         self.attack.update()
 
-        PlayerUpdate.render_HUD(self)  # Render HUD
+        self.player_update.render_HUD()  # Render HUD
         Drop.open_pouch(Drop.pouch_position)
 
         self.essentials.render_general()  # Render other elements
