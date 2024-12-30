@@ -2,42 +2,49 @@ import pygame
 import math
 from collections import deque
 
-from camera import Camera
 from images import ImageLoader
-from update import EssentialsUpdate
 from variables import UniversalVariables, GameConfig
 from status import PlayerEffect
 from objects import ObjectManagement
 import random
 
 class Entity:
-    ghost_image      = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
-        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
-    ghost_dead_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead"),
-        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
-    ghost_dead_geiger_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead_Geiger"),
-        (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+    def __init__(self, td, cam, pu, ess, player, peffect, inv):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
+        self.terrain_data = td
+        self.player_update = pu
+        self.essentials = ess
+        self.camera = cam
+        self.player = player
+        self.player_effect = peffect
+        self.inv = inv
+            
+        self.ghost_image      = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
+            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+        self.ghost_dead_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead"),
+            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+        self.ghost_dead_geiger_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead_Geiger"),
+            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
 
-    spawned_entity_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (entity_image, y, x, HP)
-    entity_in_range: set[tuple[str, str]] = set()
-    dead_entity_list: dict[str] = {}
+        self.spawned_entity_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (entity_image, y, x, HP)
+        self.entity_in_range: set[tuple[str, str]] = set()
+        self.dead_entity_list: dict[str] = {}
 
-    damage_delay: int = 50  # esimese hiti jaoks, et esimene hit oleks kiirem kui teised
-    path_ticks = {}
-    path = {}
-    save_entity_direction_x = int
-    save_entity_direction_y = int
+        self.damage_delay: int = 50  # esimese hiti jaoks, et esimene hit oleks kiirem kui teised
+        self.path_ticks = {}
+        self.path = {}
+        self.save_entity_direction_x = int
+        self.save_entity_direction_y = int
 
-    entity_restricted_areas = [99, 981, 982,  # maze wall stuff
-                            9099, 989, 900]  # blade wall stuff
-    combined_restricted_areas = set(entity_restricted_areas).union(set(GameConfig.ALL_THE_DOORS.value))
-    combined_restricted_areas = set(combined_restricted_areas).union(set(GameConfig.GLADE_ITEMS.value))
+        self.entity_restricted_areas = [99, 981, 982,  # maze wall stuff
+                                      9099, 989, 900]  # blade wall stuff
+        self.combined_restricted_areas = set(self.entity_restricted_areas).union(set(GameConfig.ALL_THE_DOORS.value))
+        self.combined_restricted_areas = set(self.combined_restricted_areas).union(set(GameConfig.GLADE_ITEMS.value))
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """
 
-        if not Entity.spawned_entity_dict and self.essentials.day_night_text == 'Night':
-            UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
+        if not self.spawned_entity_dict and self.essentials.day_night_text == 'Night':
+            entity_spawnpoint_list = UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
 
             # Player grid calculation
             player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
@@ -49,13 +56,13 @@ class Entity:
             # Count of spawned enemies
             spawned_entity_count = 0
 
-            for spawn_point in UniversalVariables.entity_spawnpoint_list:
+            for spawn_point in entity_spawnpoint_list:
                 # Check if the spawn point is far enough from the player
                 if (abs(player_grid[0] - spawn_point[0]) > distance_from_player or
                         abs(player_grid[1] - spawn_point[1]) > distance_from_player):
 
                     # Spawn an entity
-                    Entity.spawned_entity_dict[f'entity_{UniversalVariables.entity_counter}'] = Entity.ghost_image, \
+                    self.spawned_entity_dict[f'entity_{UniversalVariables.entity_counter}'] = self.ghost_image, \
                         spawn_point[1], spawn_point[0], UniversalVariables.ghost_hp
 
                     spawned_entity_count += 1
@@ -69,42 +76,41 @@ class Entity:
 
         # spawn alive enemies
         entity_blits_list = []
-        for entity in Entity.spawned_entity_dict.values():
+        for entity in self.spawned_entity_dict.values():
             entity_x = entity[1] * UniversalVariables.block_size + UniversalVariables.offset_x
             entity_y = entity[2] * UniversalVariables.block_size + UniversalVariables.offset_y
             entity_blits_list.append((entity[0], (entity_x, entity_y)))
 
         # spawn dead enemies
-        for entity in Entity.dead_entity_list.values():
+        for entity in self.dead_entity_list.values():
             entity_x = entity[0] * UniversalVariables.block_size + UniversalVariables.offset_x
             entity_y = entity[1] * UniversalVariables.block_size + UniversalVariables.offset_y
             
-            image = Entity.ghost_dead_image
-            if entity[2] == True:  image = Entity.ghost_dead_geiger_image
+            image = self.ghost_dead_image
+            if entity[2] == True:  image = self.ghost_dead_geiger_image
             entity_blits_list.append((image, (entity_x, entity_y)))
 
         UniversalVariables.screen.blits(entity_blits_list, doreturn=False)
 
-    @staticmethod
     def despawn(self):
         """ Despawns enemies during the day.  """
         """ Doesn't despawn detected enemies. """
 
         if self.essentials.day_night_text == 'Day':
-            detected_enemies = {entity_name for entity_name, _ in Entity.entity_in_range}
+            detected_enemies = {entity_name for entity_name, _ in self.entity_in_range}
             enemies_to_remove = set()
 
-            for entity_name, _ in Entity.spawned_entity_dict.items():
-                if entity_name not in detected_enemies or Entity.path[entity_name] is None:
+            for entity_name, _ in self.spawned_entity_dict.items():
+                if entity_name not in detected_enemies or self.path[entity_name] is None:
                     enemies_to_remove.add(entity_name)  # Add to the list of enemies to remove
 
             for entity_name in list(enemies_to_remove):
-                if entity_name in Entity.path:
-                    del Entity.path[entity_name]
-                del Entity.spawned_entity_dict[entity_name]
+                if entity_name in self.path:
+                    del self.path[entity_name]
+                del self.spawned_entity_dict[entity_name]
             
 
-            Entity.entity_in_range.clear()
+            self.entity_in_range.clear()
 
     @staticmethod
     def custom_round(number):
@@ -120,7 +126,7 @@ class Entity:
         
         in_terrain_bounds = 0 <= x < len(self.terrain_data) and 0 <= y < len(self.terrain_data[x])
         
-        if in_terrain_bounds and self.terrain_data[x][y] not in Entity.combined_restricted_areas:
+        if in_terrain_bounds and self.terrain_data[x][y] not in self.combined_restricted_areas:
             return True
             
     def find_path_bfs(self, start, end):
@@ -128,7 +134,7 @@ class Entity:
 
         try:
             # Check if the player is in a restricted area
-            if self.terrain_data[int(self.player_update.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_update.player_rect.center[0] // UniversalVariables.block_size)] in Entity.combined_restricted_areas:
+            if self.terrain_data[int(self.player_update.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_update.player_rect.center[0] // UniversalVariables.block_size)] in self.combined_restricted_areas:
                 return None
             else:
                 queue = deque([(start, [])])
@@ -154,7 +160,7 @@ class Entity:
 
                         for dx, dy in directions:
                             new_x, new_y = x + dx, y + dy
-                            if Entity.is_valid(self, new_x, new_y):
+                            if self.is_valid(new_x, new_y):
                                 new_path = path + [(new_x, new_y)]
 
                                 # Add randomness to enqueue order
@@ -167,44 +173,43 @@ class Entity:
         except IndexError:
             pass
 
-    @staticmethod
     def move(self):
         """ Move enemies based on their individual decisions."""
 
         entity_speed = UniversalVariables.entity_speed
 
-        for entity_name, entity_info in Entity.spawned_entity_dict.items():
+        for entity_name, entity_info in self.spawned_entity_dict.items():
             image, x, y, HP = entity_info
             direction = None
 
             # Check if the player is in range
-            for entity_name_, dir_ in Entity.entity_in_range:
+            for entity_name_, dir_ in self.entity_in_range:
                 if entity_name == entity_name_:
                     direction = dir_
                     break
             if direction:
-                entity_grid = (Entity.custom_round(entity_info[2]), Entity.custom_round(entity_info[1]))
-                player_grid = (Entity.custom_round(self.player_update.player_rect.centery // UniversalVariables.block_size),
-                                Entity.custom_round(self.player_update.player_rect.centerx // UniversalVariables.block_size))
+                entity_grid = (self.custom_round(entity_info[2]), self.custom_round(entity_info[1]))
+                player_grid = (self.custom_round(self.player_update.player_rect.centery // UniversalVariables.block_size),
+                                self.custom_round(self.player_update.player_rect.centerx // UniversalVariables.block_size))
 
-                if entity_name not in Entity.path or Entity.path_ticks[
+                if entity_name not in self.path or self.path_ticks[
                     entity_name] >= UniversalVariables.entity_path_update_tick:
 
-                    path = Entity.find_path_bfs(self, entity_grid, player_grid)
+                    path = self.find_path_bfs(entity_grid, player_grid)
 
-                    Entity.path[entity_name] = path
-                    Entity.path_ticks[entity_name] = 0
+                    self.path[entity_name] = path
+                    self.path_ticks[entity_name] = 0
 
                 next_x, next_y = x, y
-                if Entity.path[entity_name] is not None and len(Entity.path[entity_name]) > 0:  # enemil on path playerini olemas
-                    next_grid = Entity.path[entity_name][0]
+                if self.path[entity_name] is not None and len(self.path[entity_name]) > 0:  # enemil on path playerini olemas
+                    next_grid = self.path[entity_name][0]
 
                     if (entity_grid[0], entity_grid[1]) == (next_grid[0], next_grid[1]):
-                        Entity.path[entity_name].pop(0)  # Remove the first element if the entity has reached it
+                        self.path[entity_name].pop(0)  # Remove the first element if the entity has reached it
 
-                    if len(Entity.path[entity_name]) > 0:
+                    if len(self.path[entity_name]) > 0:
                         # Otsib playerit grididega
-                        next_grid = ((Entity.path[entity_name][0][1] - entity_grid[1]), (Entity.path[entity_name][0][0] - entity_grid[0]))
+                        next_grid = ((self.path[entity_name][0][1] - entity_grid[1]), (self.path[entity_name][0][0] - entity_grid[0]))
 
                         # Move entity based on the next grid
                         next_x += (next_grid[0] * entity_speed)
@@ -229,11 +234,11 @@ class Entity:
                 if next_y == y and next_x != x and str(next_y).endswith('.5'):
                     next_y = math.ceil(next_y)                        
 
-                Entity.spawned_entity_dict[entity_name] = image, next_x, next_y, HP
+                self.spawned_entity_dict[entity_name] = image, next_x, next_y, HP
 
                 # Increment path ticks
-                if entity_name in Entity.path_ticks:
-                    Entity.path_ticks[entity_name] += 1
+                if entity_name in self.path_ticks:
+                    self.path_ticks[entity_name] += 1
 
     def detection(self):
         player_window_x = self.camera.player_window_x
@@ -243,9 +248,9 @@ class Entity:
         elif UniversalVariables.player_sneaking:  detect_range = 5 * UniversalVariables.block_size
         else: detect_range = 10 * UniversalVariables.block_size
 
-        Entity.entity_in_range = set()
+        self.entity_in_range = set()
 
-        for entity_name, entity_info in Entity.spawned_entity_dict.items():
+        for entity_name, entity_info in self.spawned_entity_dict.items():
             entity_x_grid, entity_y_grid = entity_info[1], entity_info[2]
 
             entity_x = entity_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
@@ -260,7 +265,7 @@ class Entity:
                 if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
                     and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
                     if self.player.health.get_health() > 0:
-                        Entity.attack(self, 3, entity_x, entity_y)
+                        self.attack(3, entity_x, entity_y)
 
                 if abs(distance_to_player_x_grid) > abs(distance_to_player_y_grid):
                     if distance_to_player_x_grid > 0:
@@ -273,16 +278,16 @@ class Entity:
                         direction = 'down'
                     else:
                         direction = 'up'
-                Entity.entity_in_range.add((entity_name, direction))
+                self.entity_in_range.add((entity_name, direction))
 
     def attack(self, damage, entity_direct_x, entity_direct_y):
         """ Kui Ghost on playeri peal siis saab damage'i. """
         
-        if Entity.damage_delay == 50:
-            Entity.save_entity_direction_x = entity_direct_x
-            Entity.save_entity_direction_y = entity_direct_y
+        if self.damage_delay == 50:
+            self.save_entity_direction_x = entity_direct_x
+            self.save_entity_direction_y = entity_direct_y
 
-        if Entity.damage_delay >= 60:
+        if self.damage_delay >= 60:
 
             if not UniversalVariables.player_bleeding and random.randint(1, 10) <= 6:
                 UniversalVariables.player_bleeding = True
@@ -296,8 +301,8 @@ class Entity:
 
 
             # Calculate knockback direction
-            dx = self.camera.player_window_x - Entity.save_entity_direction_x
-            dy = self.camera.player_window_y - Entity.save_entity_direction_y
+            dx = self.camera.player_window_x - self.save_entity_direction_x
+            dy = self.camera.player_window_y - self.save_entity_direction_y
 
             if dx == 0 and dy == 0:
                 dx = random.uniform(-1, 1)
@@ -309,17 +314,16 @@ class Entity:
 
             self.player.apply_knockback(dx, dy)
 
-            Entity.damage_delay = 0
-        Entity.damage_delay += 1
+            self.damage_delay = 0
+        self.damage_delay += 1
 
-    @staticmethod
     def collision_with_entities(self):
-        for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
+        for entity_name, entity_info in list(self.spawned_entity_dict.items()):
             entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
                                      entity_info[2] * UniversalVariables.block_size, 73, 73)
 
             # Check for collisions between enemies
-            for other_entity_name, other_entity_info in list(Entity.spawned_entity_dict.items()):
+            for other_entity_name, other_entity_info in list(self.spawned_entity_dict.items()):
                 if entity_name != other_entity_name:
                     other_entity_rect = pygame.Rect(other_entity_info[1] * UniversalVariables.block_size,
                                                    other_entity_info[2] * UniversalVariables.block_size, 73, 73)
@@ -349,20 +353,20 @@ class Entity:
                         entity_y += dy * displacement
 
                         # update position
-                        Entity.spawned_entity_dict[entity_name] = (entity_info[0], entity_x, entity_y, entity_info[3])
+                        self.spawned_entity_dict[entity_name] = (entity_info[0], entity_x, entity_y, entity_info[3])
 
     def loot(self):
         """ Loot geiger from ghost! Nothing else atm. """
 
         def collect_geiger(click=False, press=False):
-            for entity_name, entity_info in Entity.dead_entity_list.items():
+            for entity_name, entity_info in self.dead_entity_list.items():
                 if_geiger = entity_info[2]
                 if not if_geiger:
                     continue
 
                 entity_dead_grid = (int(entity_info[0]), int(entity_info[1]))
                 
-                # vaatab self.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
+                # vaatab self.camera.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
                 if click and if_geiger:
                     grid = self.camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
                     grid = (grid[1], grid[0])  # p66ran ymber need v22rtused sest mdea watafak :D
@@ -373,7 +377,7 @@ class Entity:
                     if press != entity_dead_grid:
                         continue  # GOOD
                             
-                Entity.dead_entity_list[entity_name] = (entity_info[0], entity_info[1], False)
+                self.dead_entity_list[entity_name] = (entity_info[0], entity_info[1], False)
                 ObjectManagement.add_object_from_inv(self, "Geiger", 1)
 
         # spacebar
@@ -384,12 +388,12 @@ class Entity:
             collect_geiger(press=(x, y))
 
         # click
-        if self.click_position:
-            collect_geiger(click=self.click_position)
+        if self.camera.click_position:
+            collect_geiger(click=self.camera.click_position)
 
     def update(self):
-        Entity.detection(self)
-        Entity.move(self)
-        Entity.collision_with_entities(self)
-        Entity.loot(self)
-        Entity.despawn(self)
+        self.detection()
+        self.move()
+        self.collision_with_entities()
+        self.loot()
+        self.despawn()

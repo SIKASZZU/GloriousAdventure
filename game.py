@@ -15,7 +15,6 @@ from building import Building
 from camera import Camera
 from collisions import Collisions
 from components import Player
-from cooking import Cooking
 from dropping import Drop
 from entity import Entity
 from equipped_items import ItemFunctionality
@@ -89,6 +88,9 @@ class Game:
         self.initialize_vision()
         self.initialize_loot()
 
+        self.initialize_entity()
+        self.initialize_item_func()
+
         # self.initialize_cooking()
         self.initialize_maze_changes()
 
@@ -137,7 +139,7 @@ class Game:
         self.map_data = MapData(self.terrain_data, self.click_position, self.camera)
 
         # Blade maze
-        self.maze_blades = Blades(self.terrain_data)
+        self.maze_blades = Blades(self.terrain_data, self.essentials)
 
         # FIXME: Day/Night - Uksed lahti/kinni
 
@@ -147,7 +149,7 @@ class Game:
         #            self.terrain_data[i - 1][j] = 98
 
     def initialize_attack(self):
-        self.attack_entity = AttackEntity(self.inv, self.player_update)  # + self.entity
+        self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
         self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update)
 
@@ -193,6 +195,16 @@ class Game:
     def initialize_maze_changes(self):
         self.maze_changes = MazeChanges(self.essentials.day_night_text)
 
+    def initialize_entity(self):
+        self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player, self.player_effect, self.inv)
+
+    def initialize_item_func(self):
+        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv)
+
+
+
+
+
     def event_game_state(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -233,11 +245,11 @@ class Game:
         Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         self.maze_changes.change_maze()
 
-        Entity.update(self)
-        Player_audio.player_audio_update(self)
-        # change_blades(self)
+        self.entity.update()
+        self.player_audio.player_audio_update()
+        self.maze_blades.change_blades()
         PlayerEffect.update(self)
-        ItemFunctionality.update(self)
+        self.item_func.update()
 
     def call_visuals(self):
         self.check_for_update()
@@ -249,7 +261,7 @@ class Game:
         Drop.update(self)
         self.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
-        Entity.spawn(self)
+        self.entity.spawn()
 
         # Cooking.cooking.update(self)
 
@@ -280,7 +292,7 @@ class Game:
         # self.building.update()
 
     def check_keys(self):
-        Event_handler.check_pressed_keys(self)  # Check pressed keys
+        self.event_handler.check_pressed_keys()  # Check pressed keys
 
     def reset_lists(self):
         UniversalVariables.text_sequence = []

@@ -2,8 +2,6 @@ import random
 
 from variables import UniversalVariables, GameConfig
 from objects import ObjectManagement
-from entity import Entity
-from audio import Player_audio
 from items import search_item_from_items, ConsumableItem
 from text import Fading_text
 
@@ -55,16 +53,25 @@ def find_number_in_list_of_lists(list_of_lists):
 
 
 class ItemFunctionality:
-    last_strength_read = str
-    maze_counter       = 0
-    strength_counter   = 0
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv):
+        self.terrain_data = td
+        self.entity = entity
+        self.player = player
+        self.player_audio = paudio
+        self.player_update = pupdate
+        self.camera = cam
+        self.inv = inv
+
+        self.last_strength_read = str
+        self.maze_counter       = 0
+        self.strength_counter   = 0
 
     def update(self):
-        if ItemFunctionality.strength_counter > 0:
-            ItemFunctionality.strength_counter -= 1
+        if self.strength_counter > 0:
+            self.strength_counter -= 1
             return
 
-        ItemFunctionality.current_equipped(self)
+        self.current_equipped()
         return
 
 
@@ -84,7 +91,7 @@ class ItemFunctionality:
         
         # pathfind player -> random chosen door
         player_grid = (grid_y, grid_x)
-        path = Entity.find_path_bfs(self, UniversalVariables.geiger_chosen_grid, player_grid)
+        path = self.entity.find_path_bfs(UniversalVariables.geiger_chosen_grid, player_grid)
 
         # RETURN SIGNAL STRENGTH
         if not path:
@@ -100,21 +107,21 @@ class ItemFunctionality:
         equipped_item = UniversalVariables.current_equipped_item
         if equipped_item == 'Geiger':
 
-            if UniversalVariables.maze_counter != ItemFunctionality.maze_counter:
+            if UniversalVariables.maze_counter != self.maze_counter:
                 UniversalVariables.geiger_chosen_grid = None
-                ItemFunctionality.maze_counter = UniversalVariables.maze_counter
+                self.maze_counter = UniversalVariables.maze_counter
 
-            strength = ItemFunctionality.find_signal_strength(self)
+            strength = self.find_signal_strength()
 
             # heli, kui strength tase muutub
-            if strength != ItemFunctionality.last_strength_read:
-                ItemFunctionality.last_strength_read = strength
+            if strength != self.last_strength_read:
+                self.last_strength_read = strength
                 ... # audio
 
             # peamine heli pathi pikkuse tottu
             if not strength:
                 UniversalVariables.print_debug_text('None')
-                ItemFunctionality.strength_counter = 500
+                self.strength_counter = 500
                 ... # Ootab 5 sekki - teeb resa vms
 
             if strength == 'low':
@@ -204,8 +211,8 @@ class ItemFunctionality:
             else:
                 self.player.thirst.current_thirst = new_thirst
 
-            Player_audio.drinking_audio(self)
-            self.click_position = ()
+            self.player_audio.drinking_audio(self)
+            self.camera.click_position = ()
 
             # Kui thirst_resistance on alla 0 või alla eelneva thirst_resistance siis resetib thirst_resistance
             if UniversalVariables.thirst_resistance > thirst_resistance or 0 > UniversalVariables.thirst_resistance:
@@ -237,8 +244,8 @@ class ItemFunctionality:
             else:
                 self.player.hunger.current_hunger = new_hunger
 
-            Player_audio.eating_audio(self)
-            self.click_position = ()
+            self.player_audio.eating_audio(self)
+            self.camera.click_position = ()
 
             # Kui hunger_resistance on alla 0 või alla eelneva hunger_resistance siis resetib hunger_resistance
             if UniversalVariables.hunger_resistance > hunger_resistance or 0 > UniversalVariables.hunger_resistance:

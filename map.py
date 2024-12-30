@@ -117,32 +117,33 @@ class MapData:
             else:
                 maze[x][y] = 13  # 50% key bottom half
 
+
         def place_item(maze, item_value, count):
             for _ in range(count):
                 while True:
-                    x, y = random.randint(3, self.maze_size - 4), random.randint(3,
-                                                                                          self.maze_size - 4)
+                    x, y = random.randint(3, self.maze_size - 4), random.randint(3, self.maze_size - 4)
                     if maze[x][y] == 99 and not self.is_dead_end(maze, x, y):
-                        maze[x][y] = item_value
+                        print(x, y, type(x), type(y))
+                        if item_value == 'keys':  
+                            spawn_key(maze, x, y)
+                        else: 
+                            maze[x][y] = item_value                        
                         break
 
+        # Place maze keys
+        place_item(maze, 'keys', self._puzzle_pieces)
+
         # Place maze puzzle pieces
-        place_item(maze, None, self._puzzle_pieces)
-        for _ in range(self._puzzle_pieces):
-            while True:
-                x, y = random.randint(3, self.maze_size - 4), random.randint(3, self.maze_size - 4)
-                if maze[x][y] == 99 and not self.is_dead_end(maze, x, y):
-                    spawn_key(maze, x, y)
-                    break
+        # place_item(maze, None, self._puzzle_pieces)  # mingi solutioni placeholder!!!!
 
         # Place maze keyholders
         place_item(maze, 981, self._keyholders)
 
         # Place maze loot barrels
-        if random.choice([True]):
-            place_item(maze, 1001, self._loot)
+        place_item(maze, 1001, self._loot)
 
         return maze
+    
     def is_dead_end(self, maze, x, y):
         walls = 0
         if maze[x-1][y] == 99:

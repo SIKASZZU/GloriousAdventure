@@ -289,22 +289,27 @@ class UniversalVariables():
 
     @staticmethod
     def find_spawnpoints_in_map_data(terrain_data):
-        UniversalVariables.entity_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
-        if terrain_data is not None:
-            spawnpoints = set()
-            for row in range(len(terrain_data)):
-                for column in range(len(terrain_data[row])):
-                    if terrain_data[row][column] == 98:
-                        spawnpoints.add((row, column))
+        entity_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
+        
+        if terrain_data is None:
+            return
+        
+        spawnpoints = set()
+        for row in range(len(terrain_data)):
+            for column in range(len(terrain_data[row])):
+                if terrain_data[row][column] == 98:
+                    spawnpoints.add((row, column))
 
-            count = 0
-            for spawnpoint in spawnpoints:
+        count = 0
+        for spawnpoint in spawnpoints:
 
-                if count < 10 * UniversalVariables.maze_counter and spawnpoint not in UniversalVariables.entity_spawnpoint_list:
-                    UniversalVariables.entity_spawnpoint_list.add(spawnpoint)
-                    count += 1
-                else:
-                    break
+            if count < 10 * UniversalVariables.maze_counter and spawnpoint not in entity_spawnpoint_list:
+                entity_spawnpoint_list.add(spawnpoint)
+                count += 1
+            else:  
+                break
+
+        return entity_spawnpoint_list
 
     @staticmethod
     def print_debug_text(text: any):

@@ -1,11 +1,11 @@
-from update import EssentialsUpdate
 from variables import UniversalVariables
 from functions import UniversalFunctions
 
 
 class Blades:
-    def __init__(self, terrain_data):
+    def __init__(self, terrain_data, essentials):
         self.terrain_data = terrain_data
+        self.essentials = essentials
 
     def change_blades(self):
         if not UniversalVariables.blades_spawned:

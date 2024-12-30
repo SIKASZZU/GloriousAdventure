@@ -21,7 +21,11 @@ def update_object_dimensions():
 
 
 class Event_handler:
-    def __init__(self, click_tuple, camera, vision, inv, player, camera_click_tuple, terrain_data, loot, menu_states_tuples):
+    def __init__(
+            self, click_tuple, camera, vision, inv, player, camera_click_tuple, 
+            terrain_data, loot, menu_states_tuples
+            ):
+        
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -109,11 +113,11 @@ class Event_handler:
         if any(arrow_keys):
             UniversalVariables.attack_key_pressed = (True, arrow_keys)
 
-            if keys[pygame.K_UP]:
-                self.attack_entity.attack_rect('up')
-            elif keys[pygame.K_DOWN]:
-                self.attack_entity.attack_rect('down')
-            elif keys[pygame.K_LEFT]:
-                self.attack_entity.attack_rect('left')
-            elif keys[pygame.K_RIGHT]:
-                self.attack_entity.attack_rect('right')
+            # if keys[pygame.K_UP]:
+            #     self.attack_entity.attack_rect('up')
+            # elif keys[pygame.K_DOWN]:
+            #     self.attack_entity.attack_rect('down')
+            # elif keys[pygame.K_LEFT]:
+            #     self.attack_entity.attack_rect('left')
+            # elif keys[pygame.K_RIGHT]:
+            #     self.attack_entity.attack_rect('right')

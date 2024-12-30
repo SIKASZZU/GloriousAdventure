@@ -69,13 +69,15 @@ class Attack:
 
 
 class AttackEntity:
-    def __init__(self, inv, player_update):
+    def __init__(self, inv, player_update, entity):
         self.inv = inv
         self.player_update = player_update
-        self.player_attack_rect = pygame.rect
+        self.entity = entity 
+        
+        self.player_attack_rect = pygame.Rect
 
     def find_entity(self, click=None, pressed=False):
-        for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
+        for entity_name, entity_info in list(self.entity.spawned_entity_dict.items()):
             entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
                                       entity_info[2] * UniversalVariables.block_size, 73, 73)
 
@@ -97,25 +99,25 @@ class AttackEntity:
                 else:
                     continue
 
-    def attack_rect(self, direction):
-        """ Return player's attack rect. """
-
-        len_of_attack_box = 3 * self.player_update.player_rect[2]  # self.player_update.player_rect[2] LAIUS, self.player_update.player_rect[3] K6RGUS
+    def attack_rect(self, keys):
+        """ Return and visualize player's attack rect. """
         
-        if direction == 'up':
+        len_of_attack_box = 3 * self.player_update.player_rect[2]  # self.player_update.player_rect[2] LAIUS, self.player_update.player_rect[3] K6RGUS
+
+        if keys[0]:  # up
             start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] - len_of_attack_box * 1.5
             end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
 
-        elif direction == 'down':
+        elif keys[1]:  # down
             start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box, self.player_update.player_rect[1] + self.player_update.player_rect[3]
             end_x_width, end_y_height = len_of_attack_box * 2 + self.player_update.player_rect[2], len_of_attack_box * 1.5
 
-        elif direction == 'right':
-            start_x, start_y = self.player_update.player_rect[0] + self.player_update.player_rect[2], self.player_update.player_rect[1] - len_of_attack_box
+        elif keys[2]:  # left
+            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box * 1.5, self.player_update.player_rect[1] - len_of_attack_box
             end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
 
-        elif direction == 'left':
-            start_x, start_y = self.player_update.player_rect[0] - len_of_attack_box * 1.5, self.player_update.player_rect[1] - len_of_attack_box
+        elif keys[3]:  # right
+            start_x, start_y = self.player_update.player_rect[0] + self.player_update.player_rect[2], self.player_update.player_rect[1] - len_of_attack_box
             end_x_width, end_y_height = len_of_attack_box * 1.5, len_of_attack_box * 2 + self.player_update.player_rect[3]
 
         self.player_attack_rect = pygame.Rect(start_x, start_y, end_x_width, end_y_height)
@@ -173,13 +175,13 @@ class AttackEntity:
         if new_HP <= 0:
 
             # add entity to dead entity list
-            Entity.dead_entity_list[entity_name] = (x, y, False)
+            self.entity.dead_entity_list[entity_name] = (x, y, False)
             have_geiger = 'Geiger' in self.inv.inventory
             if random.random() < 0.05 or have_geiger == False:  # 5% chance
-                Entity.dead_entity_list[entity_name] = (x, y, True)
+                self.entity.dead_entity_list[entity_name] = (x, y, True)
 
-            del Entity.path[entity_name]
-            del Entity.spawned_entity_dict[entity_name]
+            del self.entity.path[entity_name]
+            del self.entity.spawned_entity_dict[entity_name]
             # Player_audio.ghost_died_audio(self)
 
             if UniversalVariables.debug_mode:
@@ -190,7 +192,7 @@ class AttackEntity:
 
         # # Add knockback to entity
         x, y = self.calculate_entity_knockback(x, y)
-        Entity.spawned_entity_dict[entity_name] = entity_image, x, y, new_HP
+        self.entity.spawned_entity_dict[entity_name] = entity_image, x, y, new_HP
         # Player_audio.ghost_hurt_audio(self)
 
         if UniversalVariables.debug_mode:
@@ -209,11 +211,15 @@ class AttackEntity:
                 atk_cls.last_attack_cooldown = 0
 
         if pressed:
-            entity_data = self.find_entity(pressed=pressed)
+            _, keys = UniversalVariables.attack_key_pressed
+            self.attack_rect(keys)  # Siin tekib self.player_attack_rect
+            
+            entity_data = self.find_entity(pressed=pressed)  # find_entity vajab self.player_attack_recti
             if entity_data:
                 entity_name, entity_info = entity_data
                 self.damage_entity(entity_name, entity_info)
                 atk_cls.last_attack_cooldown = 0
+
 
 
 class AttackObject:
