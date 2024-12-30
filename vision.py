@@ -14,7 +14,8 @@ class Vision:
         self.vision_count: bool = True
         self.vision_step = 5
 
-    def find_boxes_in_window() -> list:
+    @staticmethod
+    def find_boxes_in_window() -> None:
         UniversalVariables.walls = []
 
         for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id
@@ -30,7 +31,7 @@ class Vision:
             if wall not in UniversalVariables.walls:
                 UniversalVariables.walls.append(wall)
 
-
+    @staticmethod
     def get_line_segment_intersection(p0, p1, p2, p3):
         s1_x = p1[0] - p0[0]
         s1_y = p1[1] - p0[1]
@@ -49,7 +50,7 @@ class Vision:
 
         return None  # No collision
     
-
+    @staticmethod
     def get_relevant_segments(wall, player_pos):
         # Determine which two segments are relevant based on the player's position
         corners = [
@@ -198,7 +199,8 @@ class Vision:
             player_cone_light_strenght = 0
         
         vertices = [(int(x), int(y)) for x, y in self.visible_points]
-        pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)
+        if len(vertices) > 2:
+            pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)
 
         squares_hit = set()
         for wall in UniversalVariables.walls:
