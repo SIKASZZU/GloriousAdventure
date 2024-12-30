@@ -4,7 +4,6 @@ from collections import deque
 
 from images import ImageLoader
 from variables import UniversalVariables, GameConfig
-from status import PlayerEffect
 from objects import ObjectManagement
 import random
 
@@ -296,9 +295,8 @@ class Entity:
                 UniversalVariables.player_infected = True
 
             self.player.health.damage(damage)
-            PlayerEffect.infection(self)
-            PlayerEffect.bleed(self)
-
+            self.player_effect.infection()
+            self.player_effect.bleed()
 
             # Calculate knockback direction
             dx = self.camera.player_window_x - self.save_entity_direction_x

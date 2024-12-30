@@ -32,27 +32,27 @@ class PlayerEffect:
         if not UniversalVariables.player_poisoned:
             return
 
-        if self.player_effect.poison_timer in self.player_effect.poison_timer_list:
-            self.player.health.damage(self.player_effect.poison_damage)
+        if self.poison_timer in self.poison_timer_list:
+            self.player.health.damage(self.poison_damage)
 
-        if self.player_effect.poison_timer == self.player_effect.poison_timer_list[-1]:
+        if self.poison_timer == self.poison_timer_list[-1]:
             UniversalVariables.player_poisoned = False
-            self.player_effect.poison_timer = 0
+            self.poison_timer = 0
 
-        self.player_effect.poison_timer += 1
+        self.poison_timer += 1
 
     def bleed(self, just_update=False):
         if not UniversalVariables.player_bleeding:
             return
 
-        if self.player_effect.bleed_timer in self.player_effect.bleed_timer_list:
-            self.player.health.damage(self.player_effect.bleed_damage)
+        if self.bleed_timer in self.bleed_timer_list:
+            self.player.health.damage(self.bleed_damage)
 
-        if self.player_effect.bleed_timer == self.player_effect.bleed_timer_list[-1]:
+        if self.bleed_timer == self.bleed_timer_list[-1]:
             UniversalVariables.player_bleeding = False
-            self.player_effect.bleed_timer = 0
+            self.bleed_timer = 0
 
-        self.player_effect.bleed_timer += 1
+        self.bleed_timer += 1
 
         # + speed decreased when running // broken. vees on ikka sama kiire
 
@@ -73,17 +73,17 @@ class PlayerEffect:
             UniversalVariables.serum_active = False
             return
 
-        if self.player_effect.cure_timer == 0:
-            self.player_effect.cure_timer = self.player_effect.cure_duration
+        if self.cure_timer == 0:
+            self.cure_timer = self.cure_duration
 
         if UniversalVariables.debug_mode:
-            print('debug mode print: remaining_time', self.player_effect.cure_timer, 'sec')
+            print('debug mode print: remaining_time', self.cure_timer, 'sec')
 
-        if self.player_effect.cure_timer > 0:
-            self.player_effect.cure_timer -= 1
+        if self.cure_timer > 0:
+            self.cure_timer -= 1
 
-        if self.player_effect.cure_timer == 0:
+        if self.cure_timer == 0:
             UniversalVariables.player_infected = False
             UniversalVariables.player_poisoned = False
             UniversalVariables.serum_active = False
-            self.player_effect.cure_timer = 0  # Reset the timer for future use
+            self.cure_timer = 0  # Reset the timer for future use

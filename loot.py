@@ -91,4 +91,4 @@ class Loot:
         right_click_position = right_click_x, right_click_y
 
         self.toggle_loot_barrel(right_click_position, player_pressed_pick_up)
-        self.camera.reset_clicks()
+        # self.camera.reset_clicks()

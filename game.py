@@ -70,8 +70,6 @@ class Game:
             self.right_click_window_y
         )
 
-        self.player_attack_rect = None
-
         # initialize #
         self.initialize_pygame()  # Alati 1.
         self.terrain_data = glade_creation()
@@ -80,6 +78,7 @@ class Game:
         # self.initialize_building()
         self.initialize_essentials()
         self.initialize_camera()
+        
         self.initialize_inventory()
         self.initialize_map()
 
@@ -97,6 +96,8 @@ class Game:
         self.initialize_event_handler()
 
         self.initialize_attack()
+
+        self.initialize_interactions()
         # FIXME: Cooking, Building -> Ei tööta
 
     def initialize_pygame(self):
@@ -136,7 +137,7 @@ class Game:
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
-        self.map_data = MapData(self.terrain_data, self.click_position, self.camera)
+        self.map_data = MapData(self.terrain_data, self.camera)
 
         # Blade maze
         self.maze_blades = Blades(self.terrain_data, self.essentials)
@@ -201,6 +202,8 @@ class Game:
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv)
 
+    def initialize_interactions(self):
+        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data)
 
 
 
@@ -242,13 +245,13 @@ class Game:
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
         self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER Cadwasdwa
-        Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        self.interaction.objects()  # CHECK TERRAIN AND WATER Cadwasdwa
         self.maze_changes.change_maze()
 
         self.entity.update()
         self.player_audio.player_audio_update()
         self.maze_blades.change_blades()
-        PlayerEffect.update(self)
+        self.player_effect.update()
         self.item_func.update()
 
     def call_visuals(self):
@@ -294,13 +297,14 @@ class Game:
     def check_keys(self):
         self.event_handler.check_pressed_keys()  # Check pressed keys
 
-    def reset_lists(self):
+    @staticmethod
+    def reset_lists():
         UniversalVariables.text_sequence = []
         UniversalVariables.blits_sequence_collision = []
         UniversalVariables.blits_sequence_objects = []
 
     def refresh_loop(self):
-        Interaction.keylock = 0
+        self.interaction.keylock = 0
         self.add_counts()  # lisa countid juure uue loopi alguse puhul
 
         current_fps = self.clock.get_fps()
@@ -341,7 +345,7 @@ class Game:
         self.check_keys()  # Toggle hitbox / vision
         self.custom_addition()
 
-        self.click_position = ()
+        self.camera.reset_clicks()  # LOOPi lopus reset clicks
         pygame.display.update()
 
         # ******************** DEBUG MODE ******************** #
@@ -372,7 +376,6 @@ class Game:
         self.load_variables()
         while True:
             self.events()
-
-            if self.state() == True:  continue
-
+            if self.state() == True:  
+                continue
             self.logic()

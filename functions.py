@@ -39,12 +39,12 @@ class UniversalFunctions:
             x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 550)
             if x != None:
                 self.terrain_data[x][y] = 500
-                Camera.reset_clicks(self)
+                # Camera.reset_clicks(self)
 
         if color == 'yellow':
             x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 500)
             self.terrain_data[x][y] = 550
-            Camera.reset_clicks(self)
+            # Camera.reset_clicks(self)
 
 
     def yellow_green(self, color):
@@ -52,7 +52,7 @@ class UniversalFunctions:
             for i in range(8):
                 x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 555)
                 self.terrain_data[x][y] = 550
-                Camera.reset_clicks(self)
+                # Camera.reset_clicks(self)
 
             UniversalFunctions.gray_yellow(self, 'gray')
 
@@ -62,4 +62,4 @@ class UniversalFunctions:
                 x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 550)
 
                 self.terrain_data[x][y] = 555
-                Camera.reset_clicks(self)
+                # Camera.reset_clicks(self)

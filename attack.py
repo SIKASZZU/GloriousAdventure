@@ -1,9 +1,6 @@
 import pygame
 
 from variables import UniversalVariables
-from camera import Camera
-from entity import Entity
-from audio import Player_audio
 from items import search_item_from_items, ObjectItem, find_item_by_id
 from objects import ObjectManagement
 import random
@@ -32,18 +29,16 @@ class Attack:
             entity_pressed = UniversalVariables.attack_key_pressed = (
             False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
 
-
             self.display_attack_cd_timer()
-
 
         elif entity_pressed[0]:  # arrow keydega hittisid entityt
             self.attack_entity.update(self, pressed=True)
             entity_pressed = UniversalVariables.attack_key_pressed = (False, (False, False, False, False))
 
         else:
+            
             entity_click = self.camera.right_click_on_screen(self.camera.click_position)  # x, y (Coords)
             object_click = self.camera.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
-
             if not entity_click and not object_click:
                 return False
 
@@ -52,8 +47,6 @@ class Attack:
 
             if object_click and None not in object_click:  # Check if object_click is valid
                 self.attack_object.update(object_click)  # Offseti asi on perses kuna muutsime camerat
-
-        self.camera.reset_clicks()
 
     def display_attack_cd_timer(self):
         left = self.player_update.player_rect[0] - 25

@@ -20,9 +20,8 @@ def resource_path(relative_path):
 
 
 class MapData:
-    def __init__(self, terrain_data, click_position, camera):
+    def __init__(self, terrain_data, camera):
         # Initilazitud asjad
-        self.click_position = click_position
         self.terrain_data = terrain_data
         self.camera = camera
 
@@ -123,7 +122,7 @@ class MapData:
                 while True:
                     x, y = random.randint(3, self.maze_size - 4), random.randint(3, self.maze_size - 4)
                     if maze[x][y] == 99 and not self.is_dead_end(maze, x, y):
-                        print(x, y, type(x), type(y))
+
                         if item_value == 'keys':  
                             spawn_key(maze, x, y)
                         else: 

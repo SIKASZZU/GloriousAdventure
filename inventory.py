@@ -105,7 +105,7 @@ class Inventory:
                     continue
 
                 if name not in self.inventory and self.total_slots <= len(self.inventory):
-                    Player_audio.error_audio(self)
+                    self.player_audio.error_audio(self)
                     Fading_text.re_display_fading_text("Not enough space in Inventory.")
                     return
 

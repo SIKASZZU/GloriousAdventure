@@ -2,20 +2,26 @@ import pygame
 
 from text import Fading_text
 from items import items_list
-from update import EssentialsUpdate
 from objects import ObjectManagement
 from variables import GameConfig
 from variables import UniversalVariables
 from mazecalculation import AddingMazeAtPosition
-from camera import Camera
-from audio import Tile_Sounds, Player_audio
-from loot import Loot
 from functions import UniversalFunctions
 
 
 class Interaction:
-    keylock: int = 0
-    first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
+    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data):
+        self.player_update = pupdate
+        self.player_audio = paudio
+        self.tile_sounds = tile_sounds
+        self.terrain_data = td
+        self.camera = camera
+        self.inv = inv
+        self.essentials = essentials
+        self.map_data = map_data
+            
+        self.keylock: int = 0
+        self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
 
     def colliderect(self, collision_object_rect, object_id, terrain_x, terrain_y):
         """ Player collision itemiga ja siis tekib interaction. Barreli, key yles v6tmine space bariga. """
@@ -25,8 +31,8 @@ class Interaction:
         if self.player_update.player_rect.colliderect(collision_object_rect):
             pick_up_items = {item[5] for item in UniversalVariables.object_list}
 
-            if Interaction.first_time_collision == False and object_id in pick_up_items:
-                Interaction.first_time_collision = True
+            if self.first_time_collision == False and object_id in pick_up_items:
+                self.first_time_collision = True
                 UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
 
             if keys[pygame.K_SPACE]:
@@ -59,7 +65,7 @@ class Interaction:
             terrain_y: int = terrain_y - UniversalVariables.offset_y
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
-            Interaction.colliderect(self, collision_object_rect, object_id, terrain_x, terrain_y)
+            self.colliderect(collision_object_rect, object_id, terrain_x, terrain_y)
 
             if not self.camera.click_window_x and not self.camera.click_window_y:
                 continue
@@ -72,14 +78,14 @@ class Interaction:
 
                 if object_id == 981:  # Paneb key
                     if not 'Maze_Key' in self.inv.inventory or UniversalVariables.current_equipped_item != 'Maze_Key':  # and UniversalVariables.final_maze == True:
-                        Player_audio.error_audio(self)
+                        self.player_audio.error_audio()
 
                         text = "Shouldn't we put something here?"
                         if text in Fading_text.shown_texts:
                             Fading_text.shown_texts.remove(text)
                         UniversalVariables.ui_elements.append(text)
 
-                        Camera.reset_clicks(self)
+                        # self.camera.reset_clicks()
                         return
                     else:
                         if UniversalVariables.final_maze != True:
@@ -87,25 +93,25 @@ class Interaction:
                             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
                             UniversalVariables.portal_frames += 1
 
-                            Tile_Sounds.insert_key_audio(self)
-                            Camera.reset_clicks(self)
+                            self.tile_sounds.insert_key_audio()
+                            # self.camera.reset_clicks()
 
                         # Kui clickid tühja keysloti peale ja key on invis
                         else:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
                             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
 
-                            Tile_Sounds.insert_key_audio(self)
+                            self.tile_sounds.insert_key_audio()
                             UniversalFunctions.gray_yellow(self, 'yellow')
-                    Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
+                    # self.camera.reset_clicks()  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
                 if object_id == 982:
                     if UniversalVariables.final_maze != True:
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotti
                         UniversalVariables.portal_frames -= 1
 
-                        Tile_Sounds.insert_key_audio(self)
-                        Camera.reset_clicks(self)
+                        self.tile_sounds.insert_key_audio()
+                        # self.camera.reset_clicks()
 
                     # Kui portal on roheline, võtad key ära, portal läheb kollaseks ja 1 läheb halliks
                     if UniversalFunctions.count_occurrences_in_list_of_lists(self.terrain_data,
@@ -121,8 +127,8 @@ class Interaction:
                         ObjectManagement.add_object_from_inv(self, 'Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
-                        Tile_Sounds.portal_close_audio(self)
-                        Tile_Sounds.pop_key_audio(self)
+                        self.tile_sounds.portal_close_audio()
+                        self.tile_sounds.pop_key_audio()
                         UniversalFunctions.yellow_green(self, 'yellow')
                         x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 1000)
                         self.terrain_data[x][y] = 9882
@@ -134,38 +140,38 @@ class Interaction:
                         ObjectManagement.add_object_from_inv(self, 'Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
-                        Tile_Sounds.pop_key_audio(self)
+                        self.tile_sounds.pop_key_audio()
                         UniversalFunctions.gray_yellow(self, 'gray')
 
                 if object_id in GameConfig.CLOSED_DOOR_IDS.value:  # Kinniste uste ID'd. Clickides saab avada ukse - uue maze
                     if self.essentials.day_night_text != 'Day':
-                        Player_audio.error_audio(self)
+                        self.player_audio.error_audio()
 
                         text = ("Can't open new maze during night.")
                         if text in Fading_text.shown_texts:
                             Fading_text.shown_texts.remove(text)
                         UniversalVariables.ui_elements.append(text)
 
-                        Camera.reset_clicks(self)
+                        # self.camera.reset_clicks()
                         return
 
                     # For opening the door remove one key from inventory
                     else:
                         if not 'Maze_Key' in self.inv.inventory:
-                            Player_audio.error_audio(self)
+                            self.player_audio.error_audio()
 
                             text = ("No available Maze key in inventory.")
                             if text in Fading_text.shown_texts:
                                 Fading_text.shown_texts.remove(text)
                             UniversalVariables.ui_elements.append(text)
 
-                            Camera.reset_clicks(self)
+                            # self.camera.reset_clicks()
                             return
 
-                        if Interaction.keylock != 0:
+                        if self.keylock != 0:
                             continue
 
-                        Interaction.keylock += 1
+                        self.keylock += 1
 
                         # location on 1 ylesse, 2 alla, 3 vasakule, 4 paremale
                         locations = {
@@ -208,7 +214,7 @@ class Interaction:
                         else:  # left and right
                             AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
                                                                 grid_y)  # Vaatab y coordinaati
-                        Camera.reset_clicks(self)
+                        # self.camera.reset_clicks()
 
-                Camera.reset_clicks(self)  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
-        Camera.reset_clicks(self)
+                # self.camera.reset_clicks()  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
+        # self.camera.reset_clicks()

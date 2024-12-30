@@ -27,7 +27,7 @@ def is_click_inside_player_rect(self):
 def probably(chance):
     return random.random() < chance
 
-
+@staticmethod
 def find_number_in_list_of_lists(list_of_lists):
 
     choices = []
@@ -211,7 +211,7 @@ class ItemFunctionality:
             else:
                 self.player.thirst.current_thirst = new_thirst
 
-            self.player_audio.drinking_audio(self)
+            self.player_audio.drinking_audio()
             self.camera.click_position = ()
 
             # Kui thirst_resistance on alla 0 või alla eelneva thirst_resistance siis resetib thirst_resistance
@@ -244,7 +244,7 @@ class ItemFunctionality:
             else:
                 self.player.hunger.current_hunger = new_hunger
 
-            self.player_audio.eating_audio(self)
+            self.player_audio.eating_audio()
             self.camera.click_position = ()
 
             # Kui hunger_resistance on alla 0 või alla eelneva hunger_resistance siis resetib hunger_resistance
