@@ -22,7 +22,7 @@ class Interaction:
 
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
-        if self.player_rect.colliderect(collision_object_rect):
+        if self.player_update.player_rect.colliderect(collision_object_rect):
             pick_up_items = {item[5] for item in UniversalVariables.object_list}
 
             if Interaction.first_time_collision == False and object_id in pick_up_items:
@@ -44,7 +44,7 @@ class Interaction:
 
             if render_when != None:
                 point_of_render_after = collision_object_rect[1] + render_when
-                if point_of_render_after <= self.player_rect[1]:
+                if point_of_render_after <= self.player_update.player_rect[1]:
                     UniversalVariables.render_after = True
                 else:
                     UniversalVariables.render_after = False

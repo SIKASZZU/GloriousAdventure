@@ -75,7 +75,7 @@ class AttackEntity:
         self.inv = inv
         self.player_attack_rect = None
 
-    def find_entity(self, click=False, pressed=False):
+    def find_entity(self, click=None, pressed=False):
         for entity_name, entity_info in list(Entity.spawned_entity_dict.items()):
             entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
                                       entity_info[2] * UniversalVariables.block_size, 73, 73)
@@ -83,8 +83,6 @@ class AttackEntity:
             if click:
                 if not entity_rect.collidepoint(click):
                     continue
-
-                print(entity_name, entity_info)
 
                 return entity_name, entity_info
 
@@ -211,7 +209,7 @@ class AttackObject:
                 continue
 
             x, y, width, height = object_info[:4]
-            object_rect = pygame.Rect(x, y, width, height)
+            object_rect: pygame.Rect = pygame.Rect(x, y, width, height)
 
             if not object_rect.collidepoint(click):
                 continue
@@ -232,12 +230,12 @@ class AttackObject:
             else:
                 UniversalVariables.object_hp_dict[rect_key]['timer'] = UniversalVariables.object_reset_timer
 
-            AttackObject.deal_damage(self, rect_key, object_rect)
+            self.deal_damage(rect_key, object_rect)
 
             return True
 
     def deal_damage(self, rect_key: tuple[float, float, int, int],
-                    object_rect: tuple[float, float, float, float]) -> None:
+                    object_rect) -> None:
         object_data: dict[str, any] = UniversalVariables.object_hp_dict.get(rect_key)
 
         if not object_data:
@@ -307,4 +305,4 @@ class AttackObject:
 
     def update(self, click: tuple[int, int]) -> None:
         if UniversalVariables.interaction_delay >= UniversalVariables.interaction_delay_max:
-            AttackObject.find_object(self, click)
+            self.find_object(click)

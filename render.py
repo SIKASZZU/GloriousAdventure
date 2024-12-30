@@ -217,7 +217,7 @@ class RenderPictures:
     # See func renderib objecteid
     def object_render(self):
         if not UniversalVariables.render_after:
-            PlayerUpdate.render_player(self)
+            self.player_update.render_player()
 
         desired_order = GameConfig.OBJECT_RENDER_ORDER.value
 
@@ -245,7 +245,7 @@ class RenderPictures:
 
         UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
         if UniversalVariables.render_after:
-            PlayerUpdate.render_player(self)
+            self.player_update.render_player()
 
 class ObjectCreation:
     random_offsets = {}

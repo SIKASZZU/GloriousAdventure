@@ -128,7 +128,7 @@ class Entity:
 
         try:
             # Check if the player is in a restricted area
-            if self.terrain_data[int(self.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_rect.center[0] // UniversalVariables.block_size)] in Entity.combined_restricted_areas:
+            if self.terrain_data[int(self.player_update.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_update.player_rect.center[0] // UniversalVariables.block_size)] in Entity.combined_restricted_areas:
                 return None
             else:
                 queue = deque([(start, [])])
@@ -184,8 +184,8 @@ class Entity:
                     break
             if direction:
                 entity_grid = (Entity.custom_round(entity_info[2]), Entity.custom_round(entity_info[1]))
-                player_grid = (Entity.custom_round(self.player_rect.centery // UniversalVariables.block_size),
-                                Entity.custom_round(self.player_rect.centerx // UniversalVariables.block_size))
+                player_grid = (Entity.custom_round(self.player_update.player_rect.centery // UniversalVariables.block_size),
+                                Entity.custom_round(self.player_update.player_rect.centerx // UniversalVariables.block_size))
 
                 if entity_name not in Entity.path or Entity.path_ticks[
                     entity_name] >= UniversalVariables.entity_path_update_tick:
@@ -364,7 +364,7 @@ class Entity:
                 
                 # vaatab self.click_positioni j2rgi kas click toimus ja ss kasutab kamera clicki edasi et leida clicki grid
                 if click and if_geiger:
-                    grid = Camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
+                    grid = self.camera.click_on_screen_to_grid(self.camera.click_x, self.camera.click_y)
                     grid = (grid[1], grid[0])  # p66ran ymber need v22rtused sest mdea watafak :D
                     if grid != entity_dead_grid:
                         continue  # GOOD

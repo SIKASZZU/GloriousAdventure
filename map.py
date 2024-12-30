@@ -22,10 +22,11 @@ def resource_path(relative_path):
 
 
 class MapData:
-    def __init__(self, terrain_data, click_position):
+    def __init__(self, terrain_data, click_position, camera):
         # Initilazitud asjad
         self.click_position = click_position
         self.terrain_data = terrain_data
+        self.camera = camera
 
         # MapData asjad
         self.placeholder = [[None] * 40 for _ in range(40)]
@@ -50,7 +51,7 @@ class MapData:
         """ Selle funciga saab random exit doori asemele starteri panna. """
 
         door_tuple = self.camera.left_click_on_screen(self.click_position)
-        door_grid_map  = Camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
+        door_grid_map = self.camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
         if None in door_grid_map and UniversalVariables.maze_counter <= 1:
             door_grid = (self.map_data.maze_size // 2 - 1, self.map_data.maze_size // 2 - 1)

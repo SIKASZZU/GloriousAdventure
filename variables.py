@@ -184,12 +184,12 @@ class UniversalVariables():
         # ("Oak_Wood", (1, 2)),
         # ("Flashlight", 1),
         # ("Serum", 1),
-        # ("Bread", (2, 3)),
+        ("Bread", (2, 3)),
         # ("Raw_Meat", (2, 3)),
         # ("Bandage", (1, 4)),
         # ("Bottle_Water", (2, 3)),
         # ("Glowstick", (1, 3)),
-        ("String", (1, 3)),
+        # ("String", (1, 3)),
 
     ]
 

@@ -7,10 +7,10 @@ from HUD import HUD_class
 
 class Collisions:
 
-    def __init__(self, player, player_rect):
+    def __init__(self, player, player_update, terrain_data):
         self.player = player
-        self.player_rect = player_rect
-        
+        self.player_update = player_update
+        self.terrain_data = terrain_data
 
     # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
         # see voiks olla smoothim.
@@ -18,13 +18,15 @@ class Collisions:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
         # Kui player jookseb siis ta ei lähe läbi objektide
-        if keys[pygame.K_LSHIFT] and self.collisions.player.stamina.current_stamina != 0:  collision_move = 10
-        else:  collision_move = 4
+        if keys[pygame.K_LSHIFT] and self.player.stamina.current_stamina != 0:
+            collision_move = 10
+        else:
+            collision_move = 4
 
         # Arvutab, kui palju objekti hitbox on suurem (või väiksem) kui mängija hitbox
-        dx = (self.player_rect.centerx - collision_box.centerx) / (UniversalVariables.player_width / 2 + collision_box[2] / 2)
-        dy = (self.player_rect.centery - collision_box.centery) / (UniversalVariables.player_height / 2 + collision_box[3] / 2)
-        
+        dx = (self.player_update.player_rect.centerx - collision_box.centerx) / (UniversalVariables.player_width / 2 + collision_box[2] / 2)
+        dy = (self.player_update.player_rect.centery - collision_box.centery) / (UniversalVariables.player_height / 2 + collision_box[3] / 2)
+
         if abs(dx) > abs(dy):
             if dx > 0:  UniversalVariables.player_x += collision_move  # Liigutab mängijat paremale
             else:  UniversalVariables.player_x -= collision_move  # Liigutab mängijat vasakule
@@ -56,28 +58,28 @@ class Collisions:
 
                 terrain_rect = pygame.Rect(col * UniversalVariables.block_size, row * UniversalVariables.block_size,
                                            UniversalVariables.block_size, UniversalVariables.block_size)
-                
+
                 # see asi somehow ei lase staminal instantly tyhjaks joosta? Kas player ei ole mitte kogu eag terrainrectiga collisionis??
-                if not self.player_rect.colliderect(terrain_rect):
+                if not self.player_update.player_rect.colliderect(terrain_rect):
                     continue
 
                 try:
                     if self.terrain_data[row][col] in GameConfig.COLLISION_ITEMS.value:
-                        Collisions.player_hit_collision(self, terrain_rect)
+                        self.player_hit_collision(terrain_rect)
 
                     else:
                         # Kontrollib kas terrain block jääb faili terrain_data piiridesse
 
-                        if sprinting: 
+                        if sprinting:
                             UniversalVariables.player_sprinting = True
 
                         elif sneaking:
-                            UniversalVariables.player_sneaking  = True 
+                            UniversalVariables.player_sneaking  = True
 
-                        else: 
+                        else:
                             UniversalVariables.player_sprinting = False
                             UniversalVariables.player_sneaking  = False
-                        
+
                         if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
                             in_water = self.terrain_data[row][col] == 0
 
@@ -95,40 +97,40 @@ class Collisions:
                             if in_water == False:
                                 if sprinting:  # Player asub maal
                                     # stamina = 0 - playeri speed = base speed
-                                    if self.collisions.player.stamina.current_stamina == 0:
-                                        self.collisions.player.stamina.stamina_regenerate(stamina_regen)
-                                        self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
+                                        self.player.speed.current_speed = self.player.speed.base_speed
                                         UniversalVariables.player_sprinting = False  # stamina on otsas // et ei displayiks high volumeit
 
                                     else:
-                                        self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed * run_speed_multiplier
+                                        self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
                                         HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                        self.collisions.player.stamina.use_stamina(stamina_cost)
-                                
+                                        self.player.stamina.use_stamina(stamina_cost)
+
                                 elif sneaking:
-                                    self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed // 2
-                                    self.collisions.player.stamina.stamina_regenerate(stamina_regen)
+                                    self.player.speed.current_speed = self.player.speed.base_speed // 2
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
 
                                 else:  # tavaline kondimine
-                                    self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed
-                                    self.collisions.player.stamina.stamina_regenerate(stamina_regen)
-                                
+                                    self.player.speed.current_speed = self.player.speed.base_speed
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
+
 
                             else:  # Player asub vees
                                 if sprinting:
                                     # stamina = 0 - playeri speed = base speed
-                                    if self.collisions.player.stamina.current_stamina == 0:
-                                        self.collisions.player.stamina.stamina_regenerate(stamina_regen)
-                                        self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed / 2
+                                    if self.player.stamina.current_stamina == 0:
+                                        self.player.stamina.stamina_regenerate(stamina_regen)
+                                        self.player.speed.current_speed = self.player.speed.base_speed / 2
                                         UniversalVariables.player_sprinting = False  # stamina on otsas // et ei displayks high volumit
 
                                     else:
-                                        self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed
+                                        self.player.speed.current_speed = self.player.speed.base_speed
                                         HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
-                                        self.collisions.player.stamina.use_stamina(stamina_cost)
+                                        self.player.stamina.use_stamina(stamina_cost)
 
                                 else:
-                                    self.collisions.player.speed.current_speed = self.collisions.player.speed.base_speed / 2
-                                    self.collisions.player.stamina.stamina_regenerate(stamina_regen)
+                                    self.player.speed.current_speed = self.player.speed.base_speed / 2
+                                    self.player.stamina.stamina_regenerate(stamina_regen)
 
                 except Exception as e:  print('Error @ collisions.py, collison_terrain_types:', e)

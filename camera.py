@@ -1,12 +1,10 @@
-from typing import Tuple
-
 import pygame
 from variables import UniversalVariables
 from text import Fading_text
 
 
 class Camera:
-    def __init__(self, screen, click_tuple, terrain_value, player_rect):
+    def __init__(self, screen, click_tuple, terrain_value, player_update):
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -16,20 +14,20 @@ class Camera:
         self.right_click_window_y = click_tuple[5]
 
         self.terrain_data = terrain_value
-        self.player_rect = player_rect
+        self.player_update = player_update
 
         self.screen = screen
         self.camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
 
         self.l, self.t = self.camera_borders['left'], self.camera_borders['top']
-        self.w = screen.get_width() - (self.camera_borders['left'] + self.camera_borders['right'])
-        self.h = screen.get_height() - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        self.w = self.screen.get_width() - (self.camera_borders['left'] + self.camera_borders['right'])
+        self.h = self.screen.get_height() - (self.camera_borders['top'] + self.camera_borders['bottom'])
 
         self.camera_rect = pygame.Rect(self.l, self.t, self.w, self.h)
         self.click_info_available = False
 
-        self.player_window_x = self.player_rect.left - self.camera_rect.left + self.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x
-        self.player_window_y = self.player_rect.top - self.camera_rect.top + self.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y
+        self.player_window_x = self.player_update.player_rect.left - self.camera_rect.left + self.camera_borders['left'] - UniversalVariables.player_hitbox_offset_x
+        self.player_window_y = self.player_update.player_rect.top - self.camera_rect.top + self.camera_borders['top'] - UniversalVariables.player_hitbox_offset_y
 
         self.click_x = None
         self.click_y = None
@@ -87,7 +85,7 @@ class Camera:
         self.click_window_x = self.click_position[0] - self.player_window_x
         self.click_window_y = self.click_position[1] - self.player_window_y
 
-        if Camera.is_click_within_player_range(self.click_window_x, self.click_window_y):
+        if self.is_click_within_player_range(self.click_window_x, self.click_window_y):
             self.click_x = round(UniversalVariables.player_x + self.click_window_x)
             self.click_y = round(UniversalVariables.player_y + self.click_window_y)
             self.click_info_available = True
@@ -96,7 +94,7 @@ class Camera:
             self.click_x, self.click_y = None, None
 
         if UniversalVariables.debug_mode:
-            grid_click = Camera.click_on_screen_to_grid(self.click_x, self.click_y)
+            grid_click = self.click_on_screen_to_grid(self.click_x, self.click_y)
             UniversalVariables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
             Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
@@ -120,7 +118,7 @@ class Camera:
             self.right_click_x, self.right_click_y = None, None
 
         if UniversalVariables.debug_mode:
-            grid_click = Camera.click_on_screen_to_grid(self.right_click_x, self.right_click_y)
+            grid_click = self.click_on_screen_to_grid(self.right_click_x, self.right_click_y)
             Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
         return self.right_click_x, self.right_click_y

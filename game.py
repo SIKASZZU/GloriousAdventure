@@ -32,7 +32,7 @@ from objects import ObjectManagement
 from render import RenderPictures, ObjectCreation
 from status import PlayerEffect
 from text import Fading_text
-from update import EssentialsUpdate, PlayerUpdate
+from update import EssentialsUpdate, PlayerUpdate, Framerate
 from variables import UniversalVariables
 from vision import Vision
 
@@ -42,9 +42,6 @@ jurigged.watch()  # hot reload
 
 class Game:
     def __init__(self):
-
-        # self.player_rect = None  # Player rect to be set in the game
-
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
@@ -78,22 +75,24 @@ class Game:
 
         # initialize #
         self.initialize_pygame()  # Alati 1.
+        self.terrain_data = glade_creation()
 
-        self.initialize_player()  # None
-        self.initialize_inventory()  # None
-        self.initialize_building()  # None
-        self.initialize_essentials()  # None
-        self.initialize_map()  # self.terrain_data, self.click_position
-        self.initialize_camera()  # self.screen, self.click_tuple, self.terrain_data, self.player_rect
+        self.initialize_map()
+        self.initialize_player()
+        self.initialize_inventory()
+        self.initialize_building()
+        self.initialize_essentials()
+        self.initialize_camera()
 
-        self.initialize_audio()  # self.terrain_data, self.player, self.py_mixer
-        self.initialize_collisons()  # self.player, self.player_rect
-        self.initialize_vision()  # self.screen, self.terrain_data, self.essentials.daylight_strength
-        self.initialize_loot()  # self.camera, self.inv, self.terrain_data, self.click_tuple
+        self.initialize_audio()
+        self.initialize_collisons()
+        self.initialize_vision()
+        self.initialize_loot()
 
-        self.initialize_event_handler()  # self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot
+        self.initialize_event_handler()
 
-        self.initialize_attack()  # self.terrain_data, self.click_position, self.camera, self.attack_entity, self.attack_object, self.event_handler, self.inv, self.player_rect
+        self.initialize_attack()
+        # FIXME: Cooking, Building -> Ei tööta
 
     def initialize_pygame(self):
         pygame.display.set_caption("Glorious Adventure - BETA")
@@ -108,7 +107,7 @@ class Game:
         self.py_mixer = pygame.mixer.init()
 
     def initialize_camera(self):
-        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_rect)
+        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update)
 
         self.camera_rect = self.camera.camera_rect
         self.player_window_x = self.camera.player_window_x
@@ -132,9 +131,7 @@ class Game:
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
-
-        self.terrain_data = glade_creation()
-        self.map_data = MapData(self.terrain_data, self.click_position)
+        self.map_data = MapData(self.terrain_data, self.click_position, self.camera)
 
         # Blade maze
         self.maze_blades = Blades(self.terrain_data)
@@ -149,28 +146,28 @@ class Game:
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
-        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_rect)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.event_handler, self.player_update.player_rect)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
         self.tile_sounds = Tile_Sounds(self.py_mixer)
 
     def initialize_player(self):
-        self.player_update = PlayerUpdate()
-        self.player_rect = self.player_update.get_player_rect()
+        self.player_update = PlayerUpdate(self.terrain_data)
+        self.player_update.player_rect = self.player_update.get_player_rect()
 
         self.player = Player(max_health=20, min_health=0,
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
                              base_thirst=12, max_thirst=20, min_thirst=0,
-                             player_rect=self.player_rect
+                             player_rect=self.player_update.player_rect
                              )
 
         self.player_effect = PlayerEffect(self.player)
 
     def initialize_collisons(self):
-        self.collisions = Collisions(self.player, self.player_rect)
+        self.collisions = Collisions(self.player, self.player_update, self.terrain_data)
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple)
@@ -182,7 +179,8 @@ class Game:
         self.inv = Inventory()
 
     def initialize_essentials(self):
-        self.essentials = EssentialsUpdate()
+        self.framerate = Framerate()
+        self.essentials = EssentialsUpdate(self.font, self.framerate)
 
     def initialize_vision(self):
         self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength)
@@ -218,12 +216,12 @@ class Game:
 
     def call_technical(self):
 
-        PlayerUpdate.update_player(self)  # Update player position and attributes
-        self.camera.box_target_camera(self.player_rect)  # Camera follow
+        self.player_update.update_player(self.player)  # Update player position and attributes
+        self.camera.box_target_camera(self.player_update.player_rect)  # Camera follow
 
         ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
-        Collisions.collison_terrain_types(self)  # CHECK TERRAIN AND WATER Cadwasdwa
+        self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER Cadwasdwa
         Interaction.objects(self)  # CHECK TERRAIN AND WATER Cadwasdwa
         # MazeChanges.change_maze(self)
 
@@ -245,7 +243,7 @@ class Game:
 
         Entity.spawn(self)
 
-        EssentialsUpdate.calculate_daylight_strength(self)
+        self.essentials.calculate_daylight_strength()
 
         # ******************** # ↑ Kõik, mis on  visioni all ↑ # ******************** #
 
@@ -266,7 +264,7 @@ class Game:
         PlayerUpdate.render_HUD(self)  # Render HUD
         Drop.open_pouch(Drop.pouch_position)
 
-        EssentialsUpdate.render_general(self)  # Render other elements
+        self.essentials.render_general()  # Render other elements
         HUD_class.update()
 
         Inventory.render_equipped_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
@@ -291,7 +289,7 @@ class Game:
             if len(UniversalVariables.fps_list) > UniversalVariables.fps_list_max_size:
                 UniversalVariables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
 
-        if UniversalVariables.fps_lock == True:
+        if UniversalVariables.fps_lock:
             FPS = 60
         else: FPS = UniversalVariables.FPS
         self.clock.tick(FPS)
