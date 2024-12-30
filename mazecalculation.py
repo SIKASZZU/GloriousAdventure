@@ -66,7 +66,7 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
-            Inventory.calculate(self, calc_slots_only=True)
+            self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
@@ -124,7 +124,7 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
-            Inventory.calculate(self, calc_slots_only=True)
+            self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
@@ -173,7 +173,7 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
-            Inventory.calculate(self, calc_slots_only=True)
+            self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
@@ -229,7 +229,7 @@ class AddingMazeAtPosition:
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             AddingMazeAtPosition.maze_type = maze_type
-            Inventory.calculate(self, calc_slots_only=True)
+            self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.

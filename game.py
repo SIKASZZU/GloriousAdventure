@@ -77,17 +77,19 @@ class Game:
         self.initialize_pygame()  # Alati 1.
         self.terrain_data = glade_creation()
 
-        self.initialize_map()
         self.initialize_player()
-        self.initialize_inventory()
         self.initialize_building()
         self.initialize_essentials()
         self.initialize_camera()
+        self.initialize_inventory()
+        self.initialize_map()
 
         self.initialize_audio()
         self.initialize_collisons()
         self.initialize_vision()
         self.initialize_loot()
+
+        # self.initialize_cooking()
 
         self.initialize_event_handler()
 
@@ -127,7 +129,7 @@ class Game:
     # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
 
     def initialize_event_handler(self):
-        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple)
+        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple, self.cooking)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -151,6 +153,9 @@ class Game:
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
         self.tile_sounds = Tile_Sounds(self.py_mixer)
+
+    # def initialize_cooking(self):
+    #     self.cooking = Cooking(self.inv, self.camera, self.terrain_data, self.screen)
 
     def initialize_player(self):
         self.player_update = PlayerUpdate(self.terrain_data)
@@ -176,7 +181,7 @@ class Game:
         self.building = Building()
 
     def initialize_inventory(self):
-        self.inv = Inventory()
+        self.inv = Inventory(self.camera, self.player_update)
 
     def initialize_essentials(self):
         self.framerate = Framerate()
@@ -243,6 +248,8 @@ class Game:
 
         Entity.spawn(self)
 
+        # Cooking.cooking.update(self)
+
         self.essentials.calculate_daylight_strength()
 
         # ******************** # ↑ Kõik, mis on  visioni all ↑ # ******************** #
@@ -252,7 +259,7 @@ class Game:
         # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
 
         if self.inv.crafting_menu_open and not UniversalVariables.cooking_menu:
-            Inventory.render_craftable_items(self)
+            self.inv.render_craftable_items()
             if not self.inv.craftable_items_display_rects and self.inv.crafting_menu_open:
                 Fading_text.re_display_fading_text("Nothing to craft.")
                 self.inv.crafting_menu_open = False
@@ -267,7 +274,7 @@ class Game:
         self.essentials.render_general()  # Render other elements
         HUD_class.update()
 
-        Inventory.render_equipped_slot(self, UniversalVariables.current_equipped_item)  # Equipped item slot
+        self.inv.render_equipped_slot(UniversalVariables.current_equipped_item)  # Equipped item slot
 
         # self.building.update()
 
@@ -312,11 +319,10 @@ class Game:
         self.call_visuals()
         self.refresh_loop()
 
-        Inventory.call(self)
+        self.inv.call()
 
         Final_Maze.update(self)
         Fading_text.update(self)
-        Cooking.update(self)
         self.player.update()
 
         self.check_keys()  # Toggle hitbox / vision

@@ -21,7 +21,7 @@ def update_object_dimensions():
 
 
 class Event_handler:
-    def __init__(self, click_tuple, camera, vision, inv, player, camera_click_tuple, terrain_data, loot, menu_states_tuples):
+    def __init__(self, click_tuple, camera, vision, inv, player, camera_click_tuple, terrain_data, loot, menu_states_tuples, cooking):
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -49,6 +49,8 @@ class Event_handler:
         self.game_menu_state = menu_states_tuples[0]
         self.pause_menu_state = menu_states_tuples[1]
 
+        self.cooking = cooking
+
 
     def handle_mouse_events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -60,8 +62,7 @@ class Event_handler:
                 # TODO vaadata kuhu clickib ja selle järgi edasi minna, callida midagi
 
                 self.right_click_position = event.pos
-                self.camera.right_click_x, self.camera.right_click_y = self.camera.right_click_on_screen(self.right_click_position)
-                self.loot.loot_update(self.camera.right_click_x, self.camera.right_click_y)
+                self.loot.loot_update(self.camera.right_click_on_screen(self.right_click_position))
 
             if UniversalVariables.debug_mode:
                 if event.button == 4:  # Scroll +
