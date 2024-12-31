@@ -95,21 +95,23 @@ class Game:
         
         self.initialize_collisions()
         self.initialize_vision()
-        self.initialize_loot()
 
-        self.initialize_entity()
-        self.initialize_item_func()
 
         # self.initialize_cooking()
         self.initialize_maze_changes()
-        self.initialize_maze_addition()
 
-        self.initialize_event_handler()
-        self.initialize_attack()
-        self.initialize_interactions()
-        self.initialize_drop()
         self.initialize_final_maze()
         self.initialize_object_creation()
+
+        self.initialize_object_management()
+        self.initialize_drop()
+        self.initialize_entity()
+        self.initialize_attack()
+        self.initialize_item_func()
+        self.initialize_maze_addition()
+        self.initialize_interactions()
+        self.initialize_loot()
+        self.initialize_event_handler()
 
         # FIXME: Cooking, Building -> Ei tööta
 
@@ -166,7 +168,7 @@ class Game:
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
-        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
@@ -194,7 +196,7 @@ class Game:
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, \
-                         self.fading_text)
+                         self.fading_text, self.object_management)
 
     def initialize_building(self):
         self.building = Building()
@@ -214,19 +216,19 @@ class Game:
 
     def initialize_entity(self):
         self.entity = Entity(self.terrain_data, self.camera, self.player_update, \
-            self.essentials, self.player, self.player_effect, self.inv, self.image_loader)
+            self.essentials, self.player, self.player_effect, self.inv, self.image_loader, self.object_management)
 
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, \
-            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text)
+            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text, self.object_management)
 
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, \
             self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, \
-            self.fading_text, self.maze_addition)
+            self.fading_text, self.maze_addition, self.object_management)
 
     def initialize_drop(self):
-        self.drop = Drop(self.player_update, self.inv, self.image_loader)
+        self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management)
 
     def initialize_hud(self):
         self.hud = HUD_class(self.player, self.image_loader)
@@ -251,8 +253,11 @@ class Game:
         self.tile_set = TileSet(self.image_loader, self.terrain_data)
 
     def initialize_maze_addition(self):
-        self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, self.terrain_data, self.inv, self.camera)
+        self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, \
+            self.terrain_data, self.inv, self.camera, self.object_management)
 
+    def initialize_object_management(self):
+        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data)
 
 
 
@@ -272,8 +277,8 @@ class Game:
 
     def render_boxes(self):
         if UniversalVariables.render_boxes_counter:
-            ObjectManagement.render_interaction_box()
-            ObjectManagement.render_collision_box()
+            self.object_management.render_interaction_box()
+            self.object_management.render_collision_box()
             self.drop.display_all_floating_pouch_hitboxes()
 
     def check_for_update(self):
@@ -373,7 +378,7 @@ class Game:
     def custom_addition(self):
         if UniversalVariables.debug_mode:
             if not self.restrict_looping:
-                ObjectManagement.add_object_from_inv(self, "Maze_Key", 30)
+                self.object_management.add_object_from_inv("Maze_Key", 30)
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
                 self.restrict_looping = True
 

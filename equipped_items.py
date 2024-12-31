@@ -1,7 +1,6 @@
 import random
 
 from variables import UniversalVariables, GameConfig
-from objects import ObjectManagement
 from items import search_item_from_items, ConsumableItem
 
 
@@ -52,7 +51,7 @@ def find_number_in_list_of_lists(list_of_lists):
 
 
 class ItemFunctionality:
-    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text):
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management):
         self.terrain_data = td
         self.entity = entity
         self.player = player
@@ -61,6 +60,7 @@ class ItemFunctionality:
         self.camera = cam
         self.inv = inv
         self.fading_text = fading_text
+        self.object_management = o_management
 
         self.last_strength_read = str
         self.maze_counter       = 0
@@ -166,7 +166,7 @@ class ItemFunctionality:
         if cure:
             UniversalVariables.interaction_delay = 0
             UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
-            ObjectManagement.remove_object_from_inv(self, equipped_item)
+            self.object_management.remove_object_from_inv(equipped_item)
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
@@ -182,7 +182,7 @@ class ItemFunctionality:
             UniversalVariables.interaction_delay = 0
 
             player_healed = self.player.health.heal(healing_amount)
-            if player_healed:  ObjectManagement.remove_object_from_inv(self, equipped_item)
+            if player_healed:  self.object_management.remove_object_from_inv(equipped_item)
             if UniversalVariables.player_bleeding == True:
                 if probably(35 / 100):
                     UniversalVariables.player_bleeding = False
@@ -191,7 +191,7 @@ class ItemFunctionality:
 
         if thirst_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab joodud itemi 2ra
+            self.object_management.remove_object_from_inv(equipped_item)  # v6tab joodud itemi 2ra
 
             if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and UniversalVariables.thirst_resistance > 0:
                 self.fading_text.re_display_fading_text("If you drink too much you might get sick!")
@@ -224,7 +224,7 @@ class ItemFunctionality:
 
         elif hunger_resistance and satisfaction_gain:
             UniversalVariables.interaction_delay = 0
-            ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab s66dud itemi 2ra
+            self.object_management.remove_object_from_inv(equipped_item)  # v6tab s66dud itemi 2ra
 
             if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and UniversalVariables.hunger_resistance > 0:
                 self.fading_text.re_display_fading_text("If you eat too much you might get sick!")

@@ -3,11 +3,10 @@ import math
 from collections import deque
 
 from variables import UniversalVariables, GameConfig
-from objects import ObjectManagement
 import random
 
 class Entity:
-    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
+    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader, o_management):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
         self.terrain_data = td
         self.player_update = pupdate
         self.essentials = ess
@@ -16,7 +15,8 @@ class Entity:
         self.player_effect = peffect
         self.inv = inv
         self.image_loader = image_loader
-            
+        self.object_management = o_management
+
         self.ghost_image      = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost"),
             (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
         self.ghost_dead_image = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost_Dead"),
@@ -376,7 +376,7 @@ class Entity:
                         continue  # GOOD
                             
                 self.dead_entity_list[entity_name] = (entity_info[0], entity_info[1], False)
-                ObjectManagement.add_object_from_inv(self, "Geiger", 1)
+                self.object_management.add_object_from_inv(self, "Geiger", 1)
 
         # spacebar
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte

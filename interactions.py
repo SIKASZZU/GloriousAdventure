@@ -1,14 +1,14 @@
 import pygame
 
 from items import items_list
-from objects import ObjectManagement
 from variables import GameConfig
 from variables import UniversalVariables
 from functions import UniversalFunctions
 
 
 class Interaction:
-    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data, fading_text, maze_addition):
+    def __init__(self, pupdate, paudio, tile_sounds, td, camera, 
+                inv, essentials, map_data, fading_text, maze_addition, o_management):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -19,6 +19,7 @@ class Interaction:
         self.map_data = map_data
         self.fading_text = fading_text
         self.maze_addition = maze_addition
+        self.object_management = o_management
 
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -40,7 +41,7 @@ class Interaction:
                     # Loot.loot_update(self, True)
                     ...
                 else:
-                    ObjectManagement.remove_object_at_position(self, terrain_x, terrain_y, object_id)
+                    self.object_management.remove_object_at_position( terrain_x, terrain_y, object_id)
 
             # find render when for item
             # FIXME: See on siin, sest miks? OK, variableid on olemas ja puha aga miks mitte collisionis.
@@ -90,7 +91,7 @@ class Interaction:
                     else:
                         if UniversalVariables.final_maze != True:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
+                            self.object_management.remove_object_from_inv('Maze_Key')
                             UniversalVariables.portal_frames += 1
 
                             self.tile_sounds.insert_key_audio()
@@ -99,7 +100,7 @@ class Interaction:
                         # Kui clickid tühja keysloti peale ja key on invis
                         else:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
-                            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')
+                            self.object_management.remove_object_from_inv('Maze_Key')
 
                             self.tile_sounds.insert_key_audio()
                             UniversalFunctions.gray_yellow(self, 'yellow')
@@ -124,7 +125,7 @@ class Interaction:
                             "sealing away the mysteries of the sanctum."
                         )
 
-                        ObjectManagement.add_object_from_inv(self, 'Maze_Key')
+                        self.object_management.add_object_from_inv('Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
                         self.tile_sounds.portal_close_audio()
@@ -137,7 +138,7 @@ class Interaction:
                         UniversalVariables.portal_frame_rect = None
 
                     else:  # Kui slotist võtad key ära
-                        ObjectManagement.add_object_from_inv(self, 'Maze_Key')
+                        self.object_management.add_object_from_inv('Maze_Key')
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotist välja
 
                         self.tile_sounds.pop_key_audio()

@@ -2,16 +2,16 @@ import pygame
 
 from variables import UniversalVariables
 from items import search_item_from_items, ObjectItem, find_item_by_id
-from objects import ObjectManagement
 import random
 
 
 class Attack:
-    def __init__(self, camera, attack_entity, attack_object, player_update):
+    def __init__(self, camera, attack_entity, attack_object, player_update, object_management):
         self.camera = camera
         self.attack_entity = attack_entity
         self.attack_object = attack_object
         self.player_update = player_update
+        self.object_management = object_management
 
         self.last_attack_cooldown_max = 100
         self.last_attack_cooldown = self.last_attack_cooldown_max
@@ -277,7 +277,7 @@ class AttackObject:
 
         if new_hp <= 0:
             # X ja Y peavad olema vastupidi --> grid asi
-            was_removed = ObjectManagement.remove_object_at_position(self, y_minus_offset, x_minus_offset, object_data['id'])
+            was_removed = self.object_management.remove_object_at_position(y_minus_offset, x_minus_offset, object_data['id'])
             if was_removed:
                 del UniversalVariables.object_hp_dict[rect_key]
 

@@ -1,11 +1,17 @@
 import pygame
-from items import *
-from inventory import Inventory
-from variables import UniversalVariables, GameConfig
 import numpy as np
+
+from items import *
 from cooking import Cooking
+from variables import UniversalVariables, GameConfig
 
 class ObjectManagement:
+
+    def __init__(self, inv, fading_text, player_audio, terrain_data):
+        self.inv = inv
+        self.fading_text = fading_text
+        self.player_audio = player_audio
+        self.terrain_data = terrain_data
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, object_id: int = None) -> None:
         """ Items cannot be picked up until they are added to the minerals list """
@@ -61,17 +67,17 @@ class ObjectManagement:
             choice_len = sum(1 for drop_item in choice if drop_item not in self.inv.inventory)
 
             if self.inv.total_slots >= len(self.inv.inventory) + choice_len:
-                ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
+                self.update_terrain_and_add_item(terrain_x, terrain_y, object_id, name, amount)
                 return True
             else:
-                Inventory.inventory_full_error(self)
+                self.inv.inventory_full_error()
             return False
 
         if self.inv.total_slots > len(self.inv.inventory) or name in self.inv.inventory:
-            ObjectManagement.update_terrain_and_add_item(self, terrain_x, terrain_y, object_id, name, amount)
+            self.update_terrain_and_add_item(terrain_x, terrain_y, object_id, name, amount)
             return True
         else:
-            Inventory.inventory_full_error(self)
+            self.inv.inventory_full_error()
             return False
 
     def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, name: str, amount: int) -> bool:
@@ -99,7 +105,7 @@ class ObjectManagement:
         }
         self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
-        ObjectManagement.add_object_from_inv(self, name, amount)
+        self.add_object_from_inv(name, amount)
         # self.player_audio.player_item_audio()
         UniversalVariables.interaction_delay = 0
         return True

@@ -1,16 +1,14 @@
 from random import shuffle, choice, randint  # Randomized loot barrelitest
 
 from variables import UniversalVariables
-from objects import ObjectManagement
-
-
 
 class Loot:
-    def __init__(self, camera, inv, terrain_data, click_tuple, fading_text):
+    def __init__(self, camera, inv, terrain_data, click_tuple, fading_text, o_management):
         self.camera = camera
         self.inv = inv
         self.terrain_data = terrain_data
         self.fading_text = fading_text
+        self.object_management = o_management
 
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
@@ -79,7 +77,7 @@ class Loot:
             count -= 1
 
             # TODO: ObjectManagement -> self.object_management.add_object_from_inv(obtained_loot, obtained_count)
-            ObjectManagement.add_object_from_inv(self, obtained_loot, obtained_count)
+            self.object_management.add_object_from_inv(obtained_loot, obtained_count)
 
     def loot_update(self, right_click_pos, player_pressed_pick_up=False):
         right_click_x, right_click_y = right_click_pos

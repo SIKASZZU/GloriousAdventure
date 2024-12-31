@@ -1,10 +1,6 @@
 import numpy as np
 
 from variables import UniversalVariables
-from objects import ObjectManagement
-
-
-
 
 def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=5):
     # Search within the defined radius
@@ -20,12 +16,13 @@ def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=
 
 
 class AddingMazeAtPosition:
-    def __init__(self, fading_text, map_data, terrain_data, inv, camera):
+    def __init__(self, fading_text, map_data, terrain_data, inv, camera, o_management):
         self.fading_text = fading_text
         self.map_data = map_data
         self.terrain_data = terrain_data
         self.inv = inv
         self.camera = camera
+        self.object_management = o_management
 
         self.row = []
         self.col = []
@@ -69,7 +66,7 @@ class AddingMazeAtPosition:
                 for j in range(40):
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
-            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
+            self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
@@ -127,7 +124,7 @@ class AddingMazeAtPosition:
                 for j in range(40):
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
-            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
+            self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
@@ -176,7 +173,7 @@ class AddingMazeAtPosition:
                 for j in range(40):
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
-            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
+            self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
@@ -232,7 +229,7 @@ class AddingMazeAtPosition:
                 for j in range(40):
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
-            ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
+            self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)

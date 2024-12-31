@@ -2,13 +2,13 @@ import pygame
 import math
 
 from variables import UniversalVariables
-from objects import ObjectManagement
 
 class Drop:
-    def __init__(self, player_update, inv, image_loader):
+    def __init__(self, player_update, inv, image_loader, o_managment):
         self.player_update = player_update
         self.inv = inv
         self.image_loader = image_loader
+        self.object_management = o_managment
             
         # Animatsiooniga seotud asjad
         self.pouch_hitboxes = {}
@@ -187,7 +187,7 @@ class Drop:
 
                     # Decrement the quantity
                     item_data["quantity"] -= amount
-                    ObjectManagement.add_object_from_inv(self, name, amount)
+                    self.object_management.add_object_from_inv(name, amount)
 
                     # If quantity reaches zero, remove the item from the dictionary
                     if item_data["quantity"] <= 0:
