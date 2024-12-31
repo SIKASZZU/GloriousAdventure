@@ -98,6 +98,8 @@ class Game:
         self.initialize_attack()
 
         self.initialize_interactions()
+        self.initialize_drop()
+        
         # FIXME: Cooking, Building -> Ei tööta
 
     def initialize_pygame(self):
@@ -205,7 +207,8 @@ class Game:
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data)
 
-
+    def initialize_drop(self):
+        self.drop = Drop(self.player_update, self.inv)
 
 
     def event_game_state(self, event):
@@ -226,7 +229,7 @@ class Game:
         if UniversalVariables.render_boxes_counter:
             ObjectManagement.render_interaction_box()
             ObjectManagement.render_collision_box()
-            Drop.display_all_floating_pouch_hitboxes()
+            self.drop.display_all_floating_pouch_hitboxes()
 
     def check_for_update(self):
 
@@ -261,7 +264,7 @@ class Game:
 
         RenderPictures.object_render(self)
 
-        Drop.update(self)
+        self.drop.update()
         self.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
 
         self.entity.spawn()
@@ -285,7 +288,7 @@ class Game:
         self.attack.update()
 
         self.player_update.render_HUD()  # Render HUD
-        Drop.open_pouch(Drop.pouch_position)
+        self.drop.open_pouch(self.drop.pouch_position)
 
         self.essentials.render_general()  # Render other elements
         HUD_class.update()
