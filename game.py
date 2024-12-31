@@ -75,6 +75,7 @@ class Game:
         self.terrain_data = glade_creation()
 
         self.initialize_player()
+        self.initialize_hud() # enne collisoni ja playerit
         # self.initialize_building()
         self.initialize_essentials()
         self.initialize_camera()
@@ -83,7 +84,8 @@ class Game:
         self.initialize_map()
 
         self.initialize_audio()
-        self.initialize_collisons()
+
+        self.initialize_collisions()
         self.initialize_vision()
         self.initialize_loot()
 
@@ -176,8 +178,8 @@ class Game:
 
         self.player_effect = PlayerEffect(self.player)
 
-    def initialize_collisons(self):
-        self.collisions = Collisions(self.player, self.player_update, self.terrain_data)
+    def initialize_collisions(self):
+        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud)
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple)
@@ -209,6 +211,9 @@ class Game:
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv)
+
+    def initialize_hud(self):
+        self.hud = HUD_class(self.player)
 
 
     def event_game_state(self, event):
@@ -287,11 +292,10 @@ class Game:
 
         self.attack.update()
 
-        self.player_update.render_HUD()  # Render HUD
         self.drop.open_pouch(self.drop.pouch_position)
 
         self.essentials.render_general()  # Render other elements
-        HUD_class.update()
+        self.hud.update()
 
         self.inv.render_equipped_slot(UniversalVariables.current_equipped_item)  # Equipped item slot
 

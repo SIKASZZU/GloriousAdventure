@@ -4,41 +4,40 @@ from images import ImageLoader
 
 
 class HUD_class:
-    # need v6iks nahhuj siit saada. Game classi ei saa importida - circular porno
-    screen_x: int = UniversalVariables.screen_x
-    screen_y: int = UniversalVariables.screen_y
-    screen = pygame.display.set_mode((screen_x, screen_y))
+    def __init__(self, player):
+        self.player = player
+            
+        self.screen_x: int = UniversalVariables.screen_x
+        self.screen_y: int = UniversalVariables.screen_y
+        self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
 
-    stamina_bar_decay = 0
-    half_w = screen.get_size()[0] // 2  # pool screeni widthi
+        self.stamina_bar_decay = 0
+        self.half_w = self.screen.get_size()[0] // 2  # pool screeni widthi
 
-    @staticmethod
-    def update():
-        HUD_class.display_effects_icons(icon_width=UniversalVariables.icon_width, icon_height=UniversalVariables.icon_height)
+    def update(self):
+        self.render_HUD()
+        self.display_effects_icons(icon_width=UniversalVariables.icon_width, icon_height=UniversalVariables.icon_height)
 
     def bar_visualization(self):
-        half_w = HUD_class.half_w
-        sr, sb, sbg, swm, shm = HUD_class.stamina_bar(self,
-                                                      half_w)  # stamina_rect, stamina_bar_size_border, stamina_bar_size_bg
-        hr, hb, hbg, hwm, hhm = HUD_class.health_bar(self,
-                                                     half_w)  # health_rect, health_bar_size_border, health_bar_size_bg
-        fr, fb, fbg, fwm, fhm = HUD_class.food_bar(self, half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
-        hyr, hyb, hybg, hywm, hyhm = HUD_class.hydration_bar(self,
-                                                             half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
+        half_w = self.half_w
+        sr, sb, sbg, swm, shm = self.stamina_bar(half_w)  # stamina_rect, stamina_bar_size_border, stamina_bar_size_bg
+        hr, hb, hbg, hwm, hhm = self.health_bar(half_w)  # health_rect, health_bar_size_border, health_bar_size_bg
+        fr, fb, fbg, fwm, fhm = self.food_bar(half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
+        hyr, hyb, hybg, hywm, hyhm = self.hydration_bar(half_w)  # food_rect, food_bar_size_border, food_bar_size_bg
         return sr, sb, sbg, hr, hb, hbg, fr, fb, fbg, hwm, hhm, fwm, fhm, hyr, hyb, hybg, hywm, hyhm, swm, shm
 
     def stamina_bar(self, half_w):
         bar_width = 200
         bar_height = 15
         ratio = bar_width // 20
-        screen_y = HUD_class.screen_y - 75
+        screen_y = self.screen_y - 75
 
         if self.player.stamina.current_stamina >= self.player.stamina.max_stamina:
-            HUD_class.stamina_bar_decay = min(HUD_class.stamina_bar_decay + 1, 120)
+            self.stamina_bar_decay = min(self.stamina_bar_decay + 1, 120)
         else:
-            HUD_class.stamina_bar_decay = 0
+            self.stamina_bar_decay = 0
 
-        if HUD_class.stamina_bar_decay == 120:
+        if self.stamina_bar_decay == 120:
             return pygame.Rect(0, 0, 0, 0), pygame.Rect(0, 0, 0, 0), pygame.Rect(0, 0, 0, 0), 0, 0
 
         current_stamina_width = self.player.stamina.current_stamina * ratio
@@ -61,10 +60,10 @@ class HUD_class:
         health_bar_size_border: int = 100
         health_bar_size: int = 100
 
-        health_rect_bg = pygame.Rect(half_w - health_bar_size_bg - 6, HUD_class.screen_y - 50,
+        health_rect_bg = pygame.Rect(half_w - health_bar_size_bg - 6, self.screen_y - 50,
                                      health_bar_size_bg, 45)
 
-        health_rect_border = pygame.Rect(half_w - health_bar_size_border - 6, HUD_class.screen_y - 50,
+        health_rect_border = pygame.Rect(half_w - health_bar_size_border - 6, self.screen_y - 50,
                                          health_bar_size_border, 45)
 
         player_current_health = self.player.health.get_health()  # player current health
@@ -72,7 +71,7 @@ class HUD_class:
 
         val = player_current_health / player_max_health
 
-        health_rect = pygame.Rect(half_w - health_bar_size - 4, (HUD_class.screen_y - 5) - (45 * val),
+        health_rect = pygame.Rect(half_w - health_bar_size - 4, (self.screen_y - 5) - (45 * val),
                                   health_bar_size - 4, 45 * val)
 
         # Iconi paigutamiseks bari keskkoha leidmine
@@ -86,10 +85,10 @@ class HUD_class:
         food_bar_size_border: int = 50
         food_bar_size: int = 50
 
-        food_rect_bg = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
+        food_rect_bg = pygame.Rect(half_w + 6, self.screen_y - 50,
                                    food_bar_size_bg, 45)
 
-        food_rect_border = pygame.Rect(half_w + 6, HUD_class.screen_y - 50,
+        food_rect_border = pygame.Rect(half_w + 6, self.screen_y - 50,
                                        food_bar_size_border, 45)
 
         player_current_hunger = self.player.hunger.get_hunger()
@@ -97,7 +96,7 @@ class HUD_class:
 
         val = player_current_hunger / player_max_hunger
 
-        food_rect = pygame.Rect(half_w + 8, (HUD_class.screen_y - 5) - (45 * val),
+        food_rect = pygame.Rect(half_w + 8, (self.screen_y - 5) - (45 * val),
                                 food_bar_size - 4, 45 * val)
 
         # Iconi paigutamiseks bari keskkoha leidmine
@@ -111,10 +110,10 @@ class HUD_class:
         hydration_bar_size_border: int = 50
         hydration_bar_size: int = 50
 
-        hydration_rect_bg = pygame.Rect(half_w + 60, HUD_class.screen_y - 50,
+        hydration_rect_bg = pygame.Rect(half_w + 60, self.screen_y - 50,
                                         hydration_bar_size_bg, 45)
 
-        hydration_rect_border = pygame.Rect(half_w + 60, HUD_class.screen_y - 50,
+        hydration_rect_border = pygame.Rect(half_w + 60, self.screen_y - 50,
                                             hydration_bar_size_border, 45)
 
         player_current_thirst = self.player.thirst.get_thirst()
@@ -122,7 +121,7 @@ class HUD_class:
 
         val = player_current_thirst / player_max_thirst
 
-        hydration_rect = pygame.Rect(half_w + 62, (HUD_class.screen_y - 5) - (45 * val),
+        hydration_rect = pygame.Rect(half_w + 62, (self.screen_y - 5) - (45 * val),
                                      hydration_bar_size - 4, 45 * val)
 
         # Iconi paigutamiseks bari keskkoha leidmine
@@ -131,8 +130,7 @@ class HUD_class:
 
         return hydration_rect, hydration_rect_border, hydration_rect_bg, hydration_w_midpoint, hydration_h_midpoint
 
-    @staticmethod
-    def display_effects_icons(icon_width=50, icon_height=50):
+    def display_effects_icons(self, icon_width=50, icon_height=50):
         effect_blits_sequence = []
         effects = []
 
@@ -163,4 +161,69 @@ class HUD_class:
 
         UniversalVariables.screen.blits(effect_blits_sequence)
 
+    def render_HUD(self) -> None:
+        """ Renderib HUDi (Stamina-, food- ja healthbari, audio). """
+        stamina_rect, stamina_bar_border, stamina_bar_bg, \
+            health_rect, health_bar_border, health_bar_bg, \
+            food_rect, food_bar_border, food_bar_bg, \
+            heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint, \
+            hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint,\
+            hydration_h_midpoint, stamina_w_midpoint, stamina_h_midpoint = self.bar_visualization()
 
+        @staticmethod
+        def draw_bar(screen, bg_color, bar_rect, fg_color, border_rect, border_width=3, border_radius=7):
+            """Helper function to draw a bar with a background, foreground, and border."""
+            pygame.draw.rect(screen, bg_color, bar_rect, 0, border_radius)
+            pygame.draw.rect(screen, fg_color, bar_rect, 0, border_radius)
+
+            color = 'black'
+            if bar_rect != stamina_rect:
+
+                # Y coord mille yletamisel muutub v2rv black to red
+                critical_point = ((border_rect[1] + border_rect[3]) + border_rect[1]) / 2
+
+                if bar_rect[1] >= critical_point:
+                    color = 'red'
+
+            pygame.draw.rect(screen, color, border_rect, border_width, border_radius)
+
+        # Drawing all bars using the helper function
+        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
+        draw_bar(UniversalVariables.screen, '#662828', health_rect, '#FF6666', health_bar_border)
+        draw_bar(UniversalVariables.screen, '#78684B', food_rect, '#C8AE7D', food_bar_border)
+        draw_bar(UniversalVariables.screen, '#273F87', hydration_rect, '#4169E1', hydration_bar_border)
+
+        if self.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
+
+            # Stamina bari keskele icon (Stamina.png)
+            stamina_icon = ImageLoader.load_gui_image("Stamina")
+            scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
+            UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
+
+        # Health bari keskele icon (Heart.png)
+        heart_icon = ImageLoader.load_gui_image("Health")
+        scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
+        UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
+
+        # Food bari keskele icon (Food.png)
+        food_icon = ImageLoader.load_gui_image("Food")
+        scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
+        UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
+
+        # Hydration bari keskele icon (Hydration.png)
+        hydration_icon = ImageLoader.load_gui_image("Hydration")
+        scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
+        UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
+
+        # Player's audio icons
+        audio_icon_position = (800, 715)
+        audio_icon = None
+
+        if UniversalVariables.player_sneaking:
+            audio_icon = ImageLoader.load_gui_image("sound_low")
+        elif UniversalVariables.player_sprinting:
+            audio_icon = ImageLoader.load_gui_image("sound_high")
+        else:
+            audio_icon = ImageLoader.load_gui_image("sound_average")
+        audio_icon = pygame.transform.scale(audio_icon, (50, 50))
+        UniversalVariables.screen.blit(audio_icon, audio_icon_position)

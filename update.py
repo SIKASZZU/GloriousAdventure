@@ -4,10 +4,8 @@ import os
 import sys
 
 from images import ImageLoader
-from HUD import HUD_class
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
-from components import HungerComponent
 from variables import UniversalVariables
 
 def resource_path(relative_path):
@@ -23,6 +21,7 @@ def resource_path(relative_path):
 class PlayerUpdate:
     def __init__(self, terrain_data):
         self.terrain_data = terrain_data
+
         self.player = None
 
         # ******************** ANIMATION ******************** #
@@ -218,72 +217,6 @@ class PlayerUpdate:
 
         UniversalVariables.player_width = UniversalVariables.player_width_factor * UniversalVariables.block_size
         UniversalVariables.player_height = UniversalVariables.player_height_factor * UniversalVariables.block_size
-
-    def render_HUD(self) -> None:
-        """ Renderib HUDi (Stamina-, food- ja healthbari). """
-        stamina_rect, stamina_bar_border, stamina_bar_bg, \
-            health_rect, health_bar_border, health_bar_bg, \
-            food_rect, food_bar_border, food_bar_bg, \
-            heart_w_midpoint, heart_h_midpoint, food_w_midpoint, food_h_midpoint, \
-            hydration_rect, hydration_bar_border, hydration_bar_bg, hydration_w_midpoint,\
-            hydration_h_midpoint, stamina_w_midpoint, stamina_h_midpoint = HUD_class.bar_visualization(self)
-
-        def draw_bar(screen, bg_color, bar_rect, fg_color, border_rect, border_width=3, border_radius=7):
-            """Helper function to draw a bar with a background, foreground, and border."""
-            pygame.draw.rect(screen, bg_color, bar_rect, 0, border_radius)
-            pygame.draw.rect(screen, fg_color, bar_rect, 0, border_radius)
-
-            color = 'black'
-            if bar_rect != stamina_rect:
-
-                # Y coord mille yletamisel muutub v2rv black to red
-                critical_point = ((border_rect[1] + border_rect[3]) + border_rect[1]) / 2
-
-                if bar_rect[1] >= critical_point:
-                    color = 'red'
-
-            pygame.draw.rect(screen, color, border_rect, border_width, border_radius)
-
-        # Drawing all bars using the helper function
-        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
-        draw_bar(UniversalVariables.screen, '#662828', health_rect, '#FF6666', health_bar_border)
-        draw_bar(UniversalVariables.screen, '#78684B', food_rect, '#C8AE7D', food_bar_border)
-        draw_bar(UniversalVariables.screen, '#273F87', hydration_rect, '#4169E1', hydration_bar_border)
-
-        if HUD_class.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
-
-            # Stamina bari keskele icon (Stamina.png)
-            stamina_icon = ImageLoader.load_gui_image("Stamina")
-            scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
-            UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
-
-        # Health bari keskele icon (Heart.png)
-        heart_icon = ImageLoader.load_gui_image("Health")
-        scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
-        UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
-
-        # Food bari keskele icon (Food.png)
-        food_icon = ImageLoader.load_gui_image("Food")
-        scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
-        UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
-
-        # Hydration bari keskele icon (Hydration.png)
-        hydration_icon = ImageLoader.load_gui_image("Hydration")
-        scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
-        UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
-
-        # Player's audio icons
-        audio_icon_position = (800, 715)
-        audio_icon = None
-
-        if UniversalVariables.player_sneaking:
-            audio_icon = ImageLoader.load_gui_image("sound_low")
-        elif UniversalVariables.player_sprinting:
-            audio_icon = ImageLoader.load_gui_image("sound_high")
-        else:
-            audio_icon = ImageLoader.load_gui_image("sound_average")
-        audio_icon = pygame.transform.scale(audio_icon, (50, 50))
-        UniversalVariables.screen.blit(audio_icon, audio_icon_position)
 
 
 class EssentialsUpdate:

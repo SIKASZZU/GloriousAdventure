@@ -2,15 +2,15 @@ import pygame
 
 from render import RenderPictures
 from variables import UniversalVariables, GameConfig
-from HUD import HUD_class
 
 
 class Collisions:
 
-    def __init__(self, player, player_update, terrain_data):
+    def __init__(self, player, player_update, terrain_data, hud):
         self.player = player
         self.player_update = player_update
         self.terrain_data = terrain_data
+        self.hud = hud
 
     # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
         # see voiks olla smoothim.
@@ -104,7 +104,7 @@ class Collisions:
 
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed * run_speed_multiplier
-                                        HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.hud.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                         self.player.stamina.use_stamina(stamina_cost)
 
                                 elif sneaking:
@@ -126,7 +126,7 @@ class Collisions:
 
                                     else:
                                         self.player.speed.current_speed = self.player.speed.base_speed
-                                        HUD_class.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
+                                        self.hud.stamina_bar_decay = 0  # Toob stamina bari uuesti nähtavale
                                         self.player.stamina.use_stamina(stamina_cost)
 
                                 else:
