@@ -3,10 +3,10 @@ import time
 
 from variables import UniversalVariables
 from inventory import Inventory
-from text import Fading_text
 
 class HealthComponent:
-    def __init__(self, max_health, min_health):
+    def __init__(self, max_health, min_health, fading_text):
+        self.fading_text = fading_text
         self.death_start_time = None
         self.max_health = max_health
         self.min_health = min_health
@@ -14,17 +14,19 @@ class HealthComponent:
         self.health_cooldown_timer = 0
         self.previous_health = self.current_health
         self.player_dead_flag = False
-        self.hunger = None
         self.health_timer = 150
 
-    def update(self):
-        self.health.check_health(self.hunger.current_hunger)
+    def update(self, hunger_cls_import):
+        self.hunger = hunger_cls_import
+
+        current_hunger = self.hunger.current_hunger
+        self.check_health(current_hunger)
 
 
     def print_health(self):
         """ Print out player's current health. """
 
-        self.current_health = HealthComponent.get_health(self)
+        self.current_health = self.get_health()
 
         if not self.player_dead_flag and self.current_health <= 0:
             print("Player dead"); self.player_dead_flag = True
@@ -36,7 +38,7 @@ class HealthComponent:
         self.current_health = max(self.current_health - amount, self.min_health)
         self.health_cooldown_timer = 0
         UniversalVariables.health_status = False
-        HealthComponent.check_health(self)
+        self.check_health()
 
     def regenerate_health(self, hunger):
         if self.current_health < self.max_health and self.current_health != 0:
@@ -51,7 +53,7 @@ class HealthComponent:
     def heal(self, amount):
         # et player ei overhealiks ennast. Health cap on ikkagi olemas.
         if self.current_health == self.max_health:
-            Fading_text.re_display_fading_text(f'Max health reached!')
+            self.fading_text.re_display_fading_text(f'Max health reached!')
             return False  # no healing
 
         self.current_health += amount
@@ -62,13 +64,12 @@ class HealthComponent:
         return True  # healing == True
 
     def check_health(self, hunger=None):
-        self.hunger = hunger
         self.health_cooldown_timer += 1
         if self.current_health <= 0:
-            HealthComponent.death(self)
+            self.death()
 
         if self.health_cooldown_timer >= 220:
-            HealthComponent.regenerate_health(self, hunger)
+            self.regenerate_health(hunger)
             self.health_cooldown_timer = 100
         
         if self.current_health > self.max_health:
@@ -98,7 +99,7 @@ class HealthComponent:
             if self.hunger <= 12:
                 self.hunger = round(self.hunger, 3)
                 if self.hunger <= 0:
-                    return f"Health: {self.current_health}/{self.max_health}\n     -- Starvation Damage: {HungerComponent.health_timer} ticks"
+                    return f"Health: {self.current_health}/{self.max_health}\n     -- Starvation Damage: {self.health_timer} ticks"
 
                 else:
                     return f"Health: {self.current_health}/{self.max_health}\n     -- Regenerating Disabled, Too Hungry: {self.hunger}"
@@ -113,7 +114,9 @@ class HealthComponent:
 class StaminaComponent:
     stamina_bar_decay: int = 0
 
-    def __init__(self, max_stamina, min_stamina):
+    def __init__(self, max_stamina, min_stamina, fading_text):
+        self.fading_text = fading_text
+
         self.max_stamina = max_stamina
         self.min_stamina = min_stamina
         self.current_stamina = max(min_stamina, min(max_stamina, max_stamina))
@@ -165,7 +168,9 @@ class SpeedComponent:
 
 
 class HungerComponent:
-    def __init__(self, base_hunger, max_hunger, min_hunger):
+    def __init__(self, base_hunger, max_hunger, min_hunger, fading_text):
+        self.fading_text = fading_text
+
         self.hunger_timer = 100
         self.health_timer = 300
         self.base_hunger = base_hunger
@@ -173,8 +178,9 @@ class HungerComponent:
         self.min_hunger = min_hunger
         self.current_hunger = max(min_hunger, min(max_hunger, base_hunger))
 
-    def update(self):
-        HungerComponent.decrease_hunger(self)
+    def update(self, health_cls_import):
+        self.health = health_cls_import
+        self.decrease_hunger()
 
     def get_hunger(self):
         return (self.current_hunger)
@@ -189,24 +195,24 @@ class HungerComponent:
             UniversalVariables.hunger_resistance -= hunger_resist
             if UniversalVariables.hunger_resistance <= 0:
                 UniversalVariables.hunger_resistance = 0
-                self.hunger.hunger_timer = 100
+                self.hunger_timer = 100
             return
 
-        elif self.hunger.current_hunger <= 0:
+        elif self.current_hunger <= 0:
 
             if self.health.health_timer <= 0:
                 if self.health.current_health > 0:
-                    Fading_text.re_display_fading_text("Starving")
+                    self.fading_text.re_display_fading_text("Starving")
 
                 self.health.damage(0.5)
                 self.health.health_timer = 300
             self.health.health_timer -= 1
         else:
-            if self.hunger.hunger_timer <= 0:
-                self.hunger.current_hunger = max(self.hunger.min_hunger, self.hunger.current_hunger - hunger_decrease)
-                self.hunger.hunger_timer = 100
+            if self.hunger_timer <= 0:
+                self.current_hunger = max(self.min_hunger, self.current_hunger - hunger_decrease)
+                self.hunger_timer = 100
 
-            self.hunger.hunger_timer -= 1
+            self.hunger_timer -= 1
             if self.health.health_timer < 300:
                 self.health.health_timer = 300
 
@@ -223,15 +229,18 @@ class HungerComponent:
 
 
 class ThirstComponent:
-    def __init__(self, base_thirst, max_thirst, min_thirst):
+    def __init__(self, base_thirst, max_thirst, min_thirst, fading_text):
+        self.fading_text = fading_text
+
         self.thirst_timer = 100
         self.base_thirst = base_thirst
         self.max_thirst = max_thirst
         self.min_thirst = min_thirst
         self.current_thirst = max(min_thirst, min(max_thirst, base_thirst))
 
-    def update(self):
-        ThirstComponent.decrease_thirst(self)
+    def update(self, health_cls_import):
+        self.health = health_cls_import
+        self.decrease_thirst()
 
     def get_thirst(self):
         return self.current_thirst
@@ -247,24 +256,24 @@ class ThirstComponent:
             UniversalVariables.thirst_resistance -= thirst_resist
             if UniversalVariables.thirst_resistance <= 0:
                 UniversalVariables.thirst_resistance = 0
-                self.thirst.thirst_timer = 100
+                self.thirst_timer = 100
             return
 
-        elif self.thirst.current_thirst <= 0:
+        elif self.current_thirst <= 0:
             if self.health.health_timer <= 0:
                 if self.health.current_health > 0:
-                    Fading_text.re_display_fading_text("Dying from hydration.")
+                    self.fading_text.re_display_fading_text("Dying from hydration.")
 
                 self.health.damage(0.5)
                 self.health.health_timer = 150
             self.health.health_timer -= 1
 
         else:
-            if self.thirst.thirst_timer <= 0:
-                self.thirst.current_thirst = max(self.thirst.min_thirst, self.thirst.current_thirst - thirst_decrease)
-                self.thirst.thirst_timer = 100
+            if self.thirst_timer <= 0:
+                self.current_thirst = max(self.min_thirst, self.current_thirst - thirst_decrease)
+                self.thirst_timer = 100
 
-            self.thirst.thirst_timer -= 1
+            self.thirst_timer -= 1
             if self.health.health_timer < 150:
                 self.health.health_timer = 150        
     
@@ -278,30 +287,42 @@ class Player:
                  max_stamina, min_stamina,
                  base_speed, max_speed, min_speed,
                  base_hunger, max_hunger, min_hunger,
-                 base_thirst, max_thirst, min_thirst
-                 ):
+                 base_thirst, max_thirst, min_thirst,
+                 fading_text):
         
+        self.fading_text = fading_text  # redefine, et saaks kasutada argumendina componentites
+
         # playeri componentid on siin initialized, ei pea main game failis tegema!
-        self.health = HealthComponent(max_health=max_health,
-                                      min_health=min_health)
+        
         self.stamina = StaminaComponent(max_stamina=max_stamina,
-                                        min_stamina=min_stamina)
+                                        min_stamina=min_stamina, 
+                                        fading_text=self.fading_text)
+        
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
                                     min_speed=min_speed)
+        
         self.hunger = HungerComponent(base_hunger=base_hunger,
                                       max_hunger=max_hunger,
-                                      min_hunger=min_hunger)
+                                      min_hunger=min_hunger, 
+                                      fading_text=self.fading_text)
+
+        self.health = HealthComponent(max_health=max_health,
+                                      min_health=min_health,
+                                      fading_text=self.fading_text)
+        
         self.thirst = ThirstComponent(base_thirst=base_thirst, 
                                       max_thirst=max_thirst,
-                                      min_thirst=min_thirst)
+                                      min_thirst=min_thirst, 
+                                      fading_text=self.fading_text)
 
     def update(self):
         """ Update player components: health, hunger, thirst. """
 
-        HealthComponent.update(self)
-        HungerComponent.update(self)
-        ThirstComponent.update(self)
+        # Importanto!! ARGUMENDID on teised classid, mida imporditavad classid vajavad
+        self.health.update(self.hunger)
+        self.hunger.update(self.health)
+        self.thirst.update(self.health)
 
     def apply_knockback(self, dx, dy):
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...

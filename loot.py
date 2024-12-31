@@ -1,18 +1,16 @@
 from random import shuffle, choice, randint  # Randomized loot barrelitest
 
-from camera import Camera
 from variables import UniversalVariables
 from objects import ObjectManagement
-from inventory import Inventory
-from audio import Player_audio
-from text import Fading_text
+
 
 
 class Loot:
-    def __init__(self, camera, inv, terrain_data, click_tuple):
+    def __init__(self, camera, inv, terrain_data, click_tuple, fading_text):
         self.camera = camera
         self.inv = inv
         self.terrain_data = terrain_data
+        self.fading_text = fading_text
 
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
@@ -56,7 +54,7 @@ class Loot:
                         self.inv.inventory) + inv_count:
                     # Player_audio.opening_a_barrel_audio(self, False)
 
-                    Fading_text.re_display_fading_text("Not enough space in Inventory.")
+                    self.fading_text.re_display_fading_text("Not enough space in Inventory.")
 
                 else:
                     return

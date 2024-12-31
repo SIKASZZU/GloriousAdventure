@@ -1,25 +1,27 @@
 import pygame
 
 from variables import UniversalVariables
-from render import RenderPictures
 from functions import UniversalFunctions
-from audio import Tile_Sounds
-from text import Fading_text
 
 
 class Final_Maze:
-    delay: int = 0
-    y_00: int = 0
-    y_11: int = 0
-    x_00: int = 0
-    x_11: int = 0
+    def __init__(self, terrain_data, tile_sounds, render):
+        self.terrain_data = terrain_data
+        self.tile_sounds = tile_sounds
+        self.render = render
+
+        self.delay: int = 0
+        self.y_00: int = 0
+        self.y_11: int = 0
+        self.x_00: int = 0
+        self.x_11: int = 0
 
     def handle_portal_interaction(self) -> None:
         """Kui player läheb portali sisse siis ta detectib selle ära ja ei lase enam playeril liikuda + hide player"""
 
         # Resetib delay kui player pole portalisse läinud
         if not UniversalVariables.cutscene:
-            Final_Maze.delay = 0
+            self.delay = 0
 
         # Vaatab kas player läks portalisse või mitte
         if UniversalVariables.portal_frame_rect:
@@ -36,37 +38,37 @@ class Final_Maze:
         UniversalVariables.ui_elements.append("""   Thanks for playing.   """)
 
         # Muudab iga 20 ticki tagant groundi
-        if Final_Maze.delay == 20:
+        if self.delay == 20:
 
-            x_0 = original_x - RenderPictures.render_range * 2 - 2 + Final_Maze.x_00
-            y_0 = original_y - RenderPictures.render_range * 2 - 2 + Final_Maze.y_00
-            x_1 = original_x + RenderPictures.render_range * 2 + 3 + Final_Maze.x_11
-            y_1 = original_y + RenderPictures.render_range * 2 + 3 + Final_Maze.y_11
+            x_0 = original_x - self.render.render_range * 2 - 2 + self.x_00
+            y_0 = original_y - self.render.render_range * 2 - 2 + self.y_00
+            x_1 = original_x + self.render.render_range * 2 + 3 + self.x_11
+            y_1 = original_y + self.render.render_range * 2 + 3 + self.y_11
 
-            for x in range(original_x - RenderPictures.render_range * 2,
-                           original_x + RenderPictures.render_range * 2 + 3):
+            for x in range(original_x - self.render.render_range * 2,
+                           original_x + self.render.render_range * 2 + 3):
                 self.terrain_data[x][y_0] = 999
                 self.terrain_data[x][y_1] = 999
 
-            for y in range(original_y - RenderPictures.render_range * 2,
-                           original_y + RenderPictures.render_range * 2 + 3):
+            for y in range(original_y - self.render.render_range * 2,
+                           original_y + self.render.render_range * 2 + 3):
                 self.terrain_data[x_0][y] = 999
                 self.terrain_data[x_1][y] = 999
 
             # Resetib uue rea jaoks x ja y
-            Final_Maze.x_00 += 1
-            Final_Maze.y_00 += 1
-            Final_Maze.x_11 -= 1
-            Final_Maze.y_11 -= 1
+            self.x_00 += 1
+            self.y_00 += 1
+            self.x_11 -= 1
+            self.y_11 -= 1
 
-            Final_Maze.delay = 0
+            self.delay = 0
 
             # Vaatab kuna peab cutscene'ist välja tulema
-            if abs(Final_Maze.y_11) == 10:
+            if abs(self.y_11) == 10:
 
                 # UniversalVariables.player_x = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
                 # UniversalVariables.player_y = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
-                # self.terrain_data = Final_Maze.generate_map_with_portal(80)  # See teeb final boss mapi
+                # self.terrain_data = self.generate_map_with_portal(80)  # See teeb final boss mapi
                 # Create a black surface
 
                 UniversalVariables.cutscene = False
@@ -131,11 +133,11 @@ class Final_Maze:
                     "revealing its arcane depths. A resounding hum fills the air, "
                     "echoing through the labyrinth as the portal's magic pulses with newfound life."
                 )
-            if text not in Fading_text.shown_texts:
+            if text not in self.fading_text.shown_texts:
                 UniversalVariables.ui_elements.append(text)
 
             UniversalVariables.portal_list = []
-            Tile_Sounds.portal_open_audio(self)
+            self.tile_sounds.portal_open_audio()
             UniversalFunctions.yellow_green(self, 'green')
             x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 555)
             self.terrain_data[x+1][y] = 1000
@@ -148,8 +150,8 @@ class Final_Maze:
     def update(self) -> None:
         """Update final maze state."""
         
-        Final_Maze.handle_portal_interaction(self)
+        self.handle_portal_interaction()
         if UniversalVariables.cutscene:
-            Final_Maze.change_ground(self)
+            self.change_ground()
 
-        Final_Maze.portal(self)
+        self.portal()

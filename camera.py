@@ -1,10 +1,9 @@
 import pygame
 from variables import UniversalVariables
-from text import Fading_text
 
 
 class Camera:
-    def __init__(self, screen, click_tuple, terrain_data, player_update):
+    def __init__(self, screen, click_tuple, terrain_data, player_update, fading_text):
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -15,6 +14,7 @@ class Camera:
 
         self.terrain_data = terrain_data
         self.player_update = player_update
+        self.fading_text = fading_text
 
         self.screen = screen
         self.camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
@@ -96,7 +96,7 @@ class Camera:
         if UniversalVariables.debug_mode:
             grid_click = self.click_on_screen_to_grid(self.click_x, self.click_y)
             try:  UniversalVariables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
-            except:  Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
+            except:  self.fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
         return self.click_x, self.click_y
 
     def right_click_on_screen(self, right_click_position):
@@ -118,7 +118,7 @@ class Camera:
 
         if UniversalVariables.debug_mode:
             grid_click = self.click_on_screen_to_grid(self.right_click_x, self.right_click_y)
-            Fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
+            self.fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
 
         return self.right_click_x, self.right_click_y
 

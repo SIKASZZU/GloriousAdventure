@@ -3,7 +3,6 @@ import random
 from variables import UniversalVariables, GameConfig
 from objects import ObjectManagement
 from items import search_item_from_items, ConsumableItem
-from text import Fading_text
 
 
 def is_click_inside_player_rect(self):
@@ -53,7 +52,7 @@ def find_number_in_list_of_lists(list_of_lists):
 
 
 class ItemFunctionality:
-    def __init__(self, td, entity, player, paudio, pupdate, cam, inv):
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text):
         self.terrain_data = td
         self.entity = entity
         self.player = player
@@ -61,6 +60,7 @@ class ItemFunctionality:
         self.player_update = pupdate
         self.camera = cam
         self.inv = inv
+        self.fading_text = fading_text
 
         self.last_strength_read = str
         self.maze_counter       = 0
@@ -194,7 +194,7 @@ class ItemFunctionality:
             ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab joodud itemi 2ra
 
             if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and UniversalVariables.thirst_resistance > 0:
-                Fading_text.re_display_fading_text("If you drink too much you might get sick!")
+                self.fading_text.re_display_fading_text("If you drink too much you might get sick!")
                 if probably(15 / 100):
                     UniversalVariables.player_poisoned = True
 
@@ -227,7 +227,7 @@ class ItemFunctionality:
             ObjectManagement.remove_object_from_inv(self, equipped_item)  # v6tab s66dud itemi 2ra
 
             if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and UniversalVariables.hunger_resistance > 0:
-                Fading_text.re_display_fading_text("If you eat too much you might get sick!")
+                self.fading_text.re_display_fading_text("If you eat too much you might get sick!")
                 if probably(15 / 100):
                     UniversalVariables.player_poisoned = True
 

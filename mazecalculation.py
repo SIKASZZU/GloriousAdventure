@@ -1,10 +1,9 @@
-from map import MapData
+import numpy as np
+
 from variables import UniversalVariables
 from objects import ObjectManagement
-from text import Fading_text
-from inventory import Inventory
 
-import numpy as np
+
 
 
 def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=5):
@@ -29,7 +28,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
-            Fading_text.re_display_fading_text("This place looks familiar.")
+            self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -94,7 +93,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
-            Fading_text.re_display_fading_text("This place looks familiar.")
+            self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -142,7 +141,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
-            Fading_text.re_display_fading_text("This place looks familiar.")
+            self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
@@ -198,7 +197,7 @@ class AddingMazeAtPosition:
 
         # Kui valitud asukohal on glade või maze siis teeb lihtsalt uksed lahti
         if map_list[row_index][col_index] in ['labyrinth_maze', 'block_maze', 'blade_maze', 'final_maze', 'abandoned_glade']:
-            Fading_text.re_display_fading_text("This place looks familiar.")
+            self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
             player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)

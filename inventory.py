@@ -2,7 +2,6 @@ import pygame
 
 from variables import UniversalVariables
 from items import object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
-from text import Fading_text
 
 
 def craftable_items_manager(func):
@@ -14,10 +13,11 @@ def craftable_items_manager(func):
 
 
 class Inventory:
-    def __init__(self, camera, player_update, image_loader):
+    def __init__(self, camera, player_update, image_loader, fading_text):
         self.camera = camera
         self.player_update = player_update
         self.image_loader = image_loader
+        self.fading_text = fading_text
 
         self.slot_image = self.image_loader.load_gui_image("Selected_Item_Inventory")
         self.position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
@@ -88,7 +88,7 @@ class Inventory:
                 try:
                     item = list(self.inventory.keys())[index]
                     item = str(item).replace('_', ' ')
-                    Fading_text.re_display_fading_text(item)
+                    self.fading_text.re_display_fading_text(item)
 
                 except Exception:
                     pass
@@ -105,7 +105,7 @@ class Inventory:
 
                 if name not in self.inventory and self.total_slots <= len(self.inventory):
                     self.player_audio.error_audio(self)
-                    Fading_text.re_display_fading_text("Not enough space in Inventory.")
+                    self.fading_text.re_display_fading_text("Not enough space in Inventory.")
                     return
 
                 crafted_item = self.craft_item(name)  # Pass 'self' and 'name'
@@ -142,7 +142,7 @@ class Inventory:
                 else:
                     UniversalVariables.items_to_drop[item] = amount
 
-                Fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
+                self.fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
 
 
         except IndexError as IE:
@@ -528,5 +528,5 @@ class Inventory:
 
     def inventory_full_error(self):
         # Player_audio.error_audio(self)
-        Fading_text.re_display_fading_text("Not enough space in Inventory.")
+        self.fading_text.re_display_fading_text("Not enough space in Inventory.")
         UniversalVariables.interaction_delay = 0

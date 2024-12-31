@@ -1,6 +1,5 @@
 import pygame
 
-from text import Fading_text
 from items import items_list
 from objects import ObjectManagement
 from variables import GameConfig
@@ -10,7 +9,7 @@ from functions import UniversalFunctions
 
 
 class Interaction:
-    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data):
+    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data, fading_text):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -19,7 +18,8 @@ class Interaction:
         self.inv = inv
         self.essentials = essentials
         self.map_data = map_data
-            
+        self.fading_text = fading_text
+
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
 
@@ -81,8 +81,8 @@ class Interaction:
                         self.player_audio.error_audio()
 
                         text = "Shouldn't we put something here?"
-                        if text in Fading_text.shown_texts:
-                            Fading_text.shown_texts.remove(text)
+                        if text in self.fading_text.shown_texts:
+                            self.fading_text.shown_texts.remove(text)
                         UniversalVariables.ui_elements.append(text)
 
                         # self.camera.reset_clicks()
@@ -148,8 +148,8 @@ class Interaction:
                         self.player_audio.error_audio()
 
                         text = ("Can't open new maze during night.")
-                        if text in Fading_text.shown_texts:
-                            Fading_text.shown_texts.remove(text)
+                        if text in self.fading_text.shown_texts:
+                            self.fading_text.shown_texts.remove(text)
                         UniversalVariables.ui_elements.append(text)
 
                         # self.camera.reset_clicks()
@@ -161,8 +161,8 @@ class Interaction:
                             self.player_audio.error_audio()
 
                             text = ("No available Maze key in inventory.")
-                            if text in Fading_text.shown_texts:
-                                Fading_text.shown_texts.remove(text)
+                            if text in self.fading_text.shown_texts:
+                                self.fading_text.shown_texts.remove(text)
                             UniversalVariables.ui_elements.append(text)
 
                             # self.camera.reset_clicks()

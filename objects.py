@@ -2,8 +2,6 @@ import pygame
 from items import *
 from inventory import Inventory
 from variables import UniversalVariables, GameConfig
-from audio import Player_audio
-from text import Fading_text
 import numpy as np
 from cooking import Cooking
 
@@ -44,9 +42,9 @@ class ObjectManagement:
                 cooked_item, _ = station["station_cooked_item"]
 
                 if not raw_item == None or not cooked_item == None:
-                    Fading_text.re_display_fading_text("Aren't you forgetting something?")
+                    self.fading_text.re_display_fading_text("Aren't you forgetting something?")
                     UniversalVariables.interaction_delay = 0
-                    Player_audio.error_audio(self)
+                    self.player_audio.error_audio()
                     return False
 
 
@@ -102,7 +100,7 @@ class ObjectManagement:
         self.terrain_data[grid_row][grid_col] = terrain_update.get(object_id, 1)  # Default to Ground
 
         ObjectManagement.add_object_from_inv(self, name, amount)
-        # Player_audio.player_item_audio(self)
+        # self.player_audio.player_item_audio()
         UniversalVariables.interaction_delay = 0
         return True
 

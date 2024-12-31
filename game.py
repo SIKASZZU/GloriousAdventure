@@ -3,7 +3,6 @@
 # Built-in, downloaded modules
 import pygame
 import sys
-import os
 import jurigged
 import hashlib
 
@@ -22,6 +21,7 @@ from event_handler import Event_handler
 from final_maze import Final_Maze
 from HUD import HUD_class
 from interactions import Interaction
+from images import ImageLoader
 from inventory import Inventory
 from loot import Loot
 from map import MapData, glade_creation
@@ -34,7 +34,6 @@ from text import Fading_text
 from update import EssentialsUpdate, PlayerUpdate, Framerate
 from variables import UniversalVariables
 from vision import Vision
-from images import ImageLoader
 
 jurigged.watch()  # hot reload
 
@@ -75,6 +74,7 @@ class Game:
         self.terrain_data = glade_creation()
         self.initialize_image_loader()
 
+        self.initialize_fading_text()
         self.initialize_player()
         self.initialize_hud() # enne collisoni ja playerit
         # self.initialize_building()
@@ -86,6 +86,8 @@ class Game:
 
         self.initialize_audio()
 
+        self.initialize_render()
+        
         self.initialize_collisions()
         self.initialize_vision()
         self.initialize_loot()
@@ -102,7 +104,11 @@ class Game:
 
         self.initialize_interactions()
         self.initialize_drop()
-        
+
+        self.initialize_final_maze()
+
+        self.initialize_object_creation()
+
         # FIXME: Cooking, Building -> Ei tööta
 
     def initialize_pygame(self):
@@ -118,7 +124,7 @@ class Game:
         self.py_mixer = pygame.mixer.init()
 
     def initialize_camera(self):
-        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update)
+        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update, self.fading_text)
 
         self.camera_rect = self.camera.camera_rect
         self.player_window_x = self.camera.player_window_x
@@ -174,22 +180,22 @@ class Game:
                              max_stamina=20, min_stamina=0,
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
-                             base_thirst=12, max_thirst=20, min_thirst=0
-                             )
+                             base_thirst=12, max_thirst=20, min_thirst=0,
+                             fading_text=self.fading_text)
 
         self.player_effect = PlayerEffect(self.player)
 
     def initialize_collisions(self):
-        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud)
+        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud, self.render)
 
     def initialize_loot(self):
-        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple)
+        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, self.fading_text)
 
     def initialize_building(self):
         self.building = Building()
 
     def initialize_inventory(self):
-        self.inv = Inventory(self.camera, self.player_update, self.image_loader)
+        self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text)
 
     def initialize_essentials(self):
         self.framerate = Framerate()
@@ -205,10 +211,10 @@ class Game:
         self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player, self.player_effect, self.inv, self.image_loader)
 
     def initialize_item_func(self):
-        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv)
+        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv, self.fading_text)
 
     def initialize_interactions(self):
-        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data)
+        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, self.fading_text)
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv, self.image_loader)
@@ -218,6 +224,24 @@ class Game:
 
     def initialize_image_loader(self):
         self.image_loader = ImageLoader()
+
+    def initialize_final_maze(self):
+        self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render)
+
+    def initialize_render(self):
+        self.render = RenderPictures(self.player_update, self.image_loader, self.camera, self.terrain_data, self.click_tuple)
+
+    def initialize_object_creation(self):
+        self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data)
+
+    def initialize_fading_text(self):
+        self.fading_text = Fading_text(self.screen)
+
+    def initialize_tile_set(self):
+        ...
+
+
+
 
 
     def event_game_state(self, event):
@@ -254,7 +278,7 @@ class Game:
         self.player_update.update_player(self.player)  # Update player position and attributes
         self.camera.box_target_camera(self.player_update.player_rect)  # Camera follow
 
-        ObjectCreation.creating_lists(self)  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
+        self.object_creation.creating_lists()  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
         self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER Cadwasdwa
         self.interaction.objects()  # CHECK TERRAIN AND WATER Cadwasdwa
@@ -268,10 +292,10 @@ class Game:
 
     def call_visuals(self):
         self.check_for_update()
-        RenderPictures.map_render(self)
+        self.render.map_render()
         UniversalVariables.screen.blit(UniversalVariables.buffer_collision, (0, 0))
 
-        RenderPictures.object_render(self)
+        self.render.object_render()
 
         self.drop.update()
         self.render_boxes()  # et visual boxid oleksid objektide peal, peab see oleme renderitud p2rast object_renderit.
@@ -349,8 +373,8 @@ class Game:
 
         self.inv.call()
 
-        Final_Maze.update(self)
-        Fading_text.update(self)
+        self.final_maze.update()
+        self.fading_text.update()
         self.player.update()
 
         self.check_keys()  # Toggle hitbox / vision

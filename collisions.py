@@ -1,16 +1,16 @@
 import pygame
 
-from render import RenderPictures
 from variables import UniversalVariables, GameConfig
 
 
 class Collisions:
 
-    def __init__(self, player, player_update, terrain_data, hud):
+    def __init__(self, player, player_update, terrain_data, hud, render):
         self.player = player
         self.player_update = player_update
         self.terrain_data = terrain_data
         self.hud = hud
+        self.render = render
 
     # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
         # see voiks olla smoothim.
@@ -53,8 +53,8 @@ class Collisions:
         player_grid_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
 
         # Siin peavad need for loopid olema, sest muidu tekib mingisugune offset tiks ja for loopid sunnivad asju windowi j2rgi tegema.
-        for row in range(player_grid_col - RenderPictures.render_range, player_grid_col + RenderPictures.render_range + 1):
-            for col in range(player_grid_row - RenderPictures.render_range, player_grid_row + RenderPictures.render_range + 1):
+        for row in range(player_grid_col - self.render.render_range, player_grid_col + self.render.render_range + 1):
+            for col in range(player_grid_row - self.render.render_range, player_grid_row + self.render.render_range + 1):
 
                 terrain_rect = pygame.Rect(col * UniversalVariables.block_size, row * UniversalVariables.block_size,
                                            UniversalVariables.block_size, UniversalVariables.block_size)

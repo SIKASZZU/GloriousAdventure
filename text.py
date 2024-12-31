@@ -4,20 +4,23 @@ import textwrap
 from variables import UniversalVariables
 
 class Fading_text:
-    shown_texts = set()
-    text_fade_duration = 700  # Duration of each fade in milliseconds
-    text_elements = []  # Store text elements with their fade state
+    def __init__(self, screen):
+        self.screen = screen    
+            
+        self.shown_texts = set()
+        self.text_fade_duration = 700  # Duration of each fade in milliseconds
+        self.text_elements = []  # Store text elements with their fade state
 
     def update(self):
-        Fading_text.render_general(self)
-        Fading_text.handle_fading_texts(self)
+        self.render_general()
+        self.handle_fading_texts()
         UniversalVariables.screen.blits(UniversalVariables.text_sequence)
 
     def render_general(self):
         for text in UniversalVariables.ui_elements:
-            if text not in Fading_text.shown_texts:
-                Fading_text.add_fading_text(self, text)
-                Fading_text.shown_texts.add(text)
+            if text not in self.shown_texts:
+                self.add_fading_text(text)
+                self.shown_texts.add(text)
 
 
     def add_fading_text(self, text, color=(255, 255, 255), background_color=(30, 30, 30), padding=5):
@@ -71,9 +74,9 @@ class Fading_text:
         duration = len(text) * 0.05 * 1000  # Duration based on text length
 
         # Remove the currently displayed text element, if any
-        Fading_text.text_elements = []
+        self.text_elements = []
 
-        Fading_text.text_elements.append(
+        self.text_elements.append(
             (background_surface, background_rect, text_surfaces, text_rects, start_time, True, duration))
 
 
@@ -81,7 +84,7 @@ class Fading_text:
         """Handle the fading effect for all text elements."""
         current_time = pygame.time.get_ticks()
         new_text_elements = []
-        for background_surface, background_rect, text_surfaces, text_rects, start_time, fade_in, duration in Fading_text.text_elements:
+        for background_surface, background_rect, text_surfaces, text_rects, start_time, fade_in, duration in self.text_elements:
             elapsed_time = current_time - start_time
             if fade_in:
                 if elapsed_time < 500:  # Fade in for 0.5 seconds
@@ -128,20 +131,18 @@ class Fading_text:
                 new_text_elements.append(
                     (background_surface, background_rect, text_surfaces, text_rects, start_time, False, duration))
 
-        Fading_text.text_elements = new_text_elements
+        self.text_elements = new_text_elements
 
-    @staticmethod
-    def re_display_fading_text(text: str, debug: bool = False) -> None:
+    def re_display_fading_text(self, text: str, debug: bool = False) -> None:
         # Kui debug = True, disply'b text'i ainult siis kui debug_mode = True
         if debug and not UniversalVariables.debug_mode:
             return
 
         UniversalVariables.ui_elements.append(text)
-        if text in Fading_text.shown_texts:
-            Fading_text.shown_texts.remove(text)
+        if text in self.shown_texts:
+            self.shown_texts.remove(text)
 
-    @staticmethod
-    def display_once_fading_text(text: str) -> None:
-        if text in Fading_text.shown_texts:
+    def display_once_fading_text(self, text: str) -> None:
+        if text in self.shown_texts:
             return
         UniversalVariables.ui_elements.append(text)
