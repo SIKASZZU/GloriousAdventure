@@ -2,11 +2,9 @@ import pygame
 import random
 
 from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
-from images import ImageLoader
 from variables import UniversalVariables, GameConfig
 from tile_set import TileSet
 from farmables import farming
-from update import PlayerUpdate
 
 
 class RenderPictures:
@@ -209,7 +207,7 @@ class RenderPictures:
                         RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image_name, object_id)
                         continue
 
-                    image = ImageLoader.load_image(image_name)
+                    image = self.image_loader.load_image(image_name)
                     RenderPictures.image_to_sequence(self, terrain_x, terrain_y, grid, image, object_id)
 
             UniversalVariables.buffer_collision.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
@@ -270,7 +268,7 @@ class ObjectCreation:
                 object_image_name = item.name
                 object_width = item.width
                 object_height = item.height
-                object_image = ImageLoader.load_image(object_image_name)
+                object_image = self.image_loader.load_image(object_image_name)
                 breakability = item.breakable if isinstance(item, ObjectItem) else False
 
                 a_item = (object_id, breakability, object_width, object_height, object_image)

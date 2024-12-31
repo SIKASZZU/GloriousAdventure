@@ -3,7 +3,6 @@ import math
 import os
 import sys
 
-from images import ImageLoader
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
 from variables import UniversalVariables

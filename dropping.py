@@ -2,13 +2,13 @@ import pygame
 import math
 
 from variables import UniversalVariables
-from images import ImageLoader
 from objects import ObjectManagement
 
 class Drop:
-    def __init__(self, player_update, inv):
+    def __init__(self, player_update, inv, image_loader):
         self.player_update = player_update
         self.inv = inv
+        self.image_loader = image_loader
             
         # Animatsiooniga seotud asjad
         self.pouch_hitboxes = {}
@@ -17,7 +17,7 @@ class Drop:
         self.floating_speed = 4  # Animatsiooni kiirus  # Default 4
 
         # Pildiga seotud asjad
-        self.pouch_image = ImageLoader.load_image("Pouch", 'images/Items/Objects/Pouch.png')
+        self.pouch_image = self.image_loader.load_image("Pouch", 'images/Items/Objects/Pouch.png')
         self.half_block_size = UniversalVariables.block_size // 4
         self.pouch_image = pygame.transform.scale(self.pouch_image, (self.half_block_size, self.half_block_size))
         self.pouch_half_width, self.pouch_half_height = self.pouch_image.get_width() // 2, self.pouch_image.get_height() // 2
@@ -131,7 +131,7 @@ class Drop:
         # Process each item for display in the pouch
         slot_index = 0
         for item_name, item_data in contents.items():
-            original_image = ImageLoader.load_image(item_name)
+            original_image = self.image_loader.load_image(item_name)
             if original_image is None:
                 continue  # Skip if image not found
 

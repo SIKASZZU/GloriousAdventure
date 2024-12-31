@@ -1,9 +1,7 @@
 import pygame
 
-from images import ImageLoader
 from variables import UniversalVariables
 from items import object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
-from audio import Player_audio
 from text import Fading_text
 
 
@@ -16,11 +14,12 @@ def craftable_items_manager(func):
 
 
 class Inventory:
-    def __init__(self, camera, player_update):
+    def __init__(self, camera, player_update, image_loader):
         self.camera = camera
         self.player_update = player_update
+        self.image_loader = image_loader
 
-        self.slot_image = ImageLoader.load_gui_image("Selected_Item_Inventory")
+        self.slot_image = self.image_loader.load_gui_image("Selected_Item_Inventory")
         self.position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
         self.resized_slot_image = pygame.transform.scale(self.slot_image, (
         self.slot_image.get_width() * 0.9, self.slot_image.get_height() * 0.9))
@@ -272,7 +271,7 @@ class Inventory:
             if count < 0:
                 continue
 
-            item_image = ImageLoader.load_image(name)
+            item_image = self.image_loader.load_image(name)
             if not item_image:
                 continue
 
@@ -400,7 +399,7 @@ class Inventory:
         # Pre-load images and resize them
         resized_images = {}
         for name, rect in self.craftable_items_display_rects.items():
-            object_image = ImageLoader.load_image(name)
+            object_image = self.image_loader.load_image(name)
             if object_image is not None:
                 object_image = pygame.transform.scale(object_image, (int(rect.width / 1.4), int(rect.height / 1.4)))
                 resized_images[name] = object_image
@@ -476,7 +475,7 @@ class Inventory:
             return
 
         # Load and resize item image
-        item_image = ImageLoader.load_image(name)
+        item_image = self.image_loader.load_image(name)
         slot_width, slot_height = self.resized_slot_image.get_size()
         max_item_size = (slot_width - 15, slot_height - 15)
         resized_item_image = pygame.transform.scale(item_image, max_item_size)

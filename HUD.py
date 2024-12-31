@@ -1,11 +1,11 @@
 import pygame
 from variables import UniversalVariables
-from images import ImageLoader
 
 
 class HUD_class:
-    def __init__(self, player):
+    def __init__(self, player, image_loader):
         self.player = player
+        self.image_loader = image_loader
             
         self.screen_x: int = UniversalVariables.screen_x
         self.screen_y: int = UniversalVariables.screen_y
@@ -150,7 +150,7 @@ class HUD_class:
             return
 
         for i, effect_name in enumerate(effects):
-            icon = ImageLoader.load_gui_image(effect_name)
+            icon = self.image_loader.load_gui_image(effect_name)
             scaled_icon = pygame.transform.scale(icon, (icon_width, icon_height))
 
             # Arvutab TOP-RIGHT asukoha iga effectile, mis parasjagu playeril on
@@ -196,22 +196,22 @@ class HUD_class:
         if self.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
 
             # Stamina bari keskele icon (Stamina.png)
-            stamina_icon = ImageLoader.load_gui_image("Stamina")
+            stamina_icon = self.image_loader.load_gui_image("Stamina")
             scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
             UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
 
         # Health bari keskele icon (Heart.png)
-        heart_icon = ImageLoader.load_gui_image("Health")
+        heart_icon = self.image_loader.load_gui_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
         UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
 
         # Food bari keskele icon (Food.png)
-        food_icon = ImageLoader.load_gui_image("Food")
+        food_icon = self.image_loader.load_gui_image("Food")
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
         UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
         # Hydration bari keskele icon (Hydration.png)
-        hydration_icon = ImageLoader.load_gui_image("Hydration")
+        hydration_icon = self.image_loader.load_gui_image("Hydration")
         scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
         UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
 
@@ -220,10 +220,10 @@ class HUD_class:
         audio_icon = None
 
         if UniversalVariables.player_sneaking:
-            audio_icon = ImageLoader.load_gui_image("sound_low")
+            audio_icon = self.image_loader.load_gui_image("sound_low")
         elif UniversalVariables.player_sprinting:
-            audio_icon = ImageLoader.load_gui_image("sound_high")
+            audio_icon = self.image_loader.load_gui_image("sound_high")
         else:
-            audio_icon = ImageLoader.load_gui_image("sound_average")
+            audio_icon = self.image_loader.load_gui_image("sound_average")
         audio_icon = pygame.transform.scale(audio_icon, (50, 50))
         UniversalVariables.screen.blit(audio_icon, audio_icon_position)

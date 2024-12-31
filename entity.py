@@ -2,26 +2,26 @@ import pygame
 import math
 from collections import deque
 
-from images import ImageLoader
 from variables import UniversalVariables, GameConfig
 from objects import ObjectManagement
 import random
 
 class Entity:
-    def __init__(self, td, cam, pu, ess, player, peffect, inv):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
+    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
         self.terrain_data = td
-        self.player_update = pu
+        self.player_update = pupdate
         self.essentials = ess
         self.camera = cam
         self.player = player
         self.player_effect = peffect
         self.inv = inv
+        self.image_loader = image_loader
             
-        self.ghost_image      = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost"),
+        self.ghost_image      = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost"),
             (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
-        self.ghost_dead_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead"),
+        self.ghost_dead_image = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost_Dead"),
             (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
-        self.ghost_dead_geiger_image = pygame.transform.scale(ImageLoader.load_sprite_image("Ghost_Dead_Geiger"),
+        self.ghost_dead_geiger_image = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost_Dead_Geiger"),
             (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
 
         self.spawned_entity_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (entity_image, y, x, HP)

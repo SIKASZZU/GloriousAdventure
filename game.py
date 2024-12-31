@@ -34,7 +34,7 @@ from text import Fading_text
 from update import EssentialsUpdate, PlayerUpdate, Framerate
 from variables import UniversalVariables
 from vision import Vision
-
+from images import ImageLoader
 
 jurigged.watch()  # hot reload
 
@@ -73,6 +73,7 @@ class Game:
         # initialize #
         self.initialize_pygame()  # Alati 1.
         self.terrain_data = glade_creation()
+        self.initialize_image_loader()
 
         self.initialize_player()
         self.initialize_hud() # enne collisoni ja playerit
@@ -188,7 +189,7 @@ class Game:
         self.building = Building()
 
     def initialize_inventory(self):
-        self.inv = Inventory(self.camera, self.player_update)
+        self.inv = Inventory(self.camera, self.player_update, self.image_loader)
 
     def initialize_essentials(self):
         self.framerate = Framerate()
@@ -201,7 +202,7 @@ class Game:
         self.maze_changes = MazeChanges(self.essentials.day_night_text)
 
     def initialize_entity(self):
-        self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player, self.player_effect, self.inv)
+        self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player, self.player_effect, self.inv, self.image_loader)
 
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv)
@@ -210,10 +211,13 @@ class Game:
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data)
 
     def initialize_drop(self):
-        self.drop = Drop(self.player_update, self.inv)
+        self.drop = Drop(self.player_update, self.inv, self.image_loader)
 
     def initialize_hud(self):
-        self.hud = HUD_class(self.player)
+        self.hud = HUD_class(self.player, self.image_loader)
+
+    def initialize_image_loader(self):
+        self.image_loader = ImageLoader()
 
 
     def event_game_state(self, event):
