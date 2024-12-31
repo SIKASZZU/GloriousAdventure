@@ -1,6 +1,4 @@
 import pygame
-from variables import UniversalVariables
-from components import HealthComponent
 
 ### TODO: Kõik ümber teha, liiga raske animatsioone lisada, lic teha func millega on kegem animatsioone teha
 
@@ -35,7 +33,7 @@ class SpriteSheet:
 
 
 class AnimationManager:
-    def __init__(self, sprite_sheets, animations, animation_speeds):
+    def __init__(self, sprite_sheets, animations, animation_speeds, variables):
         self.frame = None
         self.sprite_sheets = sprite_sheets
         self.animations = animations
@@ -43,6 +41,7 @@ class AnimationManager:
         self.animation_index = 3
         self.frame_index = 0
         self.animation_timer = 0
+        self.variables = variables
 
     def update_animation(self, keys, is_idle):
         # Update animation index based on keys

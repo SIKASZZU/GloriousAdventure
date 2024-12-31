@@ -57,18 +57,17 @@ class PlayerUpdate:
         self.animation_speeds = [10, 10, 10, 10]
 
         # Teeb idle ja mitte idle animatsioone
-        self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds)
+        self.animation_manager = AnimationManager(self.sprite_sheets, self.animations, self.animation_speeds, self.variables)
         self.idle_animation_manager = AnimationManager(self.sprite_sheets_idle, self.animations_idle,
-                                                        self.animation_speeds)
+                                                        self.animation_speeds, self.variables)
 
         # *** swimming *** #
-        self.swimming_animation_manager = AnimationManager(self.sprite_sheets_swimming, self.animations, self.animation_speeds)
-        self.idle_swimming_animation_manager = AnimationManager(self.sprite_sheets_idle_swimming, self.animations_idle, self.animation_speeds)
+        self.swimming_animation_manager = AnimationManager(self.sprite_sheets_swimming, self.animations, self.animation_speeds, self.variables)
+        self.idle_swimming_animation_manager = AnimationManager(self.sprite_sheets_idle_swimming, self.animations_idle, self.animation_speeds, self.variables)
 
         self.player_rect = None
-        self.frame = None
+        self.frame = 0
 
-    @staticmethod
     def disable_movement() -> tuple[int, int]:
         return 0, 0
 
@@ -79,7 +78,7 @@ class PlayerUpdate:
         keys = pygame.key.get_pressed()  # Track keyboard inputs
 
         if not self.variables.allow_movement:  # Check if cutscene is active
-            x, y = PlayerUpdate.disable_movement()
+            x, y = self.disable_movement()
 
         else:
             keys = pygame.key.get_pressed()  # Track keyboard inputs
@@ -192,6 +191,7 @@ class PlayerUpdate:
             # Add other blit operations here if they exist in the same rendering context.
         ]
 
+        print(blit_operations)
         if not self.variables.cutscene:
             self.variables.screen.blits(blit_operations, doreturn=False)
 
