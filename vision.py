@@ -14,11 +14,11 @@ class Vision:
         self.vision_count: bool = True
         self.vision_step = 5
 
-    @staticmethod
-    def find_boxes_in_window() -> None:
-        UniversalVariables.walls = []
 
-        for vision_blocking_box in UniversalVariables.collision_boxes:  # x, y, width, height, id
+    def find_boxes_in_window(self) -> None:
+        self.variables.walls = []
+
+        for vision_blocking_box in self.variables.collision_boxes:  # x, y, width, height, id
             x = vision_blocking_box[0]
             y = vision_blocking_box[1]
             top_left = (x, y)
@@ -28,8 +28,8 @@ class Vision:
             bottom_right = (x, y)
 
             wall = (top_left, bottom_right)
-            if wall not in UniversalVariables.walls:
-                UniversalVariables.walls.append(wall)
+            if wall not in self.variables.walls:
+                self.variables.walls.append(wall)
 
     @staticmethod
     def get_line_segment_intersection(p0, p1, p2, p3):
@@ -80,47 +80,47 @@ class Vision:
     def draw_light_source_and_rays(self):
 
         # funci sisesed variables
-        attack_key_tuple = UniversalVariables.attack_key_pressed[1]
+        attack_key_tuple = self.variables.attack_key_pressed[1]
         
-        if UniversalVariables.attack_key_pressed[0] == True:  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
+        if self.variables.attack_key_pressed[0] == True:  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
             
             # tra see last inputi settimine siin pole yldse loogiilne aga nii t66tab. idk wtf
-            if attack_key_tuple[1] == True:  UniversalVariables.last_input = 's'
-            elif attack_key_tuple[2] == True:  UniversalVariables.last_input = 'a'
-            elif attack_key_tuple[3] == True:  UniversalVariables.last_input = 'd'
-            else:                            UniversalVariables.last_input = 'w'
+            if attack_key_tuple[1] == True:  self.variables.last_input = 's'
+            elif attack_key_tuple[2] == True:  self.variables.last_input = 'a'
+            elif attack_key_tuple[3] == True:  self.variables.last_input = 'd'
+            else:                            self.variables.last_input = 'w'
 
-        if len(UniversalVariables.last_input) >= 3 and self.main_global == None:
+        if len(self.variables.last_input) >= 3 and self.main_global == None:
             main_angles = range(0, 360 + self.vision_step)
             opposite_angles = range(0, 0)
 
-        elif self.main_global != None and UniversalVariables.last_input == "None":
+        elif self.main_global != None and self.variables.last_input == "None":
             main_angles = self.main_global
             opposite_angles = self.opposite_global
         
-        elif UniversalVariables.last_input == 'wa':
+        elif self.variables.last_input == 'wa':
             main_angles = range(135, 315)
             opposite_angles = range(310, 500)
-        elif UniversalVariables.last_input == 'wd':
+        elif self.variables.last_input == 'wd':
             main_angles = range(-135, 45)
             opposite_angles = range(40, 230)
-        elif UniversalVariables.last_input == 'sa':
+        elif self.variables.last_input == 'sa':
             main_angles = range(45, 225)
             opposite_angles = range(220, 410)
-        elif UniversalVariables.last_input == 'sd':
+        elif self.variables.last_input == 'sd':
             main_angles = range(-45, 135)
             opposite_angles = range(130, 320)
         
-        elif UniversalVariables.last_input == 'w':
+        elif self.variables.last_input == 'w':
             main_angles = range(205, 335)
             opposite_angles = range(335, 566)
-        elif UniversalVariables.last_input == 's':
+        elif self.variables.last_input == 's':
             main_angles = range(25, 155)
             opposite_angles = range(155, 386)
-        elif UniversalVariables.last_input == 'a':
+        elif self.variables.last_input == 'a':
             main_angles = range(125, 245)
             opposite_angles = range(245, 486)
-        elif UniversalVariables.last_input == 'd':
+        elif self.variables.last_input == 'd':
             main_angles = range(295, 415)
             opposite_angles = range(415, 656)
 
@@ -134,13 +134,13 @@ class Vision:
     def calculate_angle(self, main_angles, opposite_angles, position):
         self.visible_points = []  # reset point list
         #TODO: fix this lag please lord help 
-        light_range = UniversalVariables.light_range
+        light_range = self.variables.light_range
         lowest_angle = min(main_angles.start, opposite_angles.start)
         biggest_angle = max(main_angles.stop, opposite_angles.stop)
         
         for angle in range(lowest_angle, biggest_angle, self.vision_step):
             if angle in opposite_angles: 
-                light_range = UniversalVariables.opposite_light_range
+                light_range = self.variables.opposite_light_range
                 
             rad_angle = math.radians(angle)
             ray_end = (position[0] + math.cos(rad_angle) * light_range,
@@ -148,7 +148,7 @@ class Vision:
 
             closest_intersection = None
                         
-            for wall in UniversalVariables.walls:
+            for wall in self.variables.walls:
                 relevant_segments = Vision.get_relevant_segments(wall, position)
                 for seg_start, seg_end in relevant_segments:
                     intersection = Vision.get_line_segment_intersection(position, ray_end, seg_start, seg_end)
@@ -172,28 +172,28 @@ class Vision:
         if len(self.visible_points) < 3:
             return
 
-        shadow_color = 0 if UniversalVariables.debug_mode and self.vision_count == True else 255
+        shadow_color = 0 if self.variables.debug_mode and self.vision_count == True else 255
         self.shadow_mask = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         self.shadow_mask.fill((0, 0, 0, shadow_color))
 
-        player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
-        player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_x_row = int(self.variables.player_x // self.variables.block_size)
+        player_y_col = int(self.variables.player_y // self.variables.block_size)
 
-        UniversalVariables.light_range = UniversalVariables.base_light_range
-        UniversalVariables.opposite_light_range = UniversalVariables.base_opposite_light_range
+        self.variables.light_range = self.variables.base_light_range
+        self.variables.opposite_light_range = self.variables.base_opposite_light_range
         player_cone_light_strenght = self.daylight_strength
 
         try:
             if self.terrain_data[player_y_col][player_x_row] not in GameConfig.RENDER_RANGE_SMALL.value:
-                UniversalVariables.light_range *= 6
-                UniversalVariables.opposite_light_range *= 34
+                self.variables.light_range *= 6
+                self.variables.opposite_light_range *= 34
                 if self.terrain_data[player_y_col][player_x_row] not in {988, 9882, 500, 550, 555}:
                     player_cone_light_strenght -= 100
 
         except IndexError as e: 
             print('Error @ vision.py, draw_shadows:', e)
             
-        if UniversalVariables.current_equipped_item == 'Flashlight':  
+        if self.variables.current_equipped_item == 'Flashlight':  
             player_cone_light_strenght -= 70
         if player_cone_light_strenght < 0:  
             player_cone_light_strenght = 0
@@ -203,7 +203,7 @@ class Vision:
             pygame.draw.polygon(self.shadow_mask, (0, 0, 0, player_cone_light_strenght), vertices)
 
         squares_hit = set()
-        for wall in UniversalVariables.walls:
+        for wall in self.variables.walls:
             for point in self.visible_points:
                 if wall[0][0] <= point[0] <= wall[1][0] and wall[0][1] <= point[1] <= wall[1][1]:
                     squares_hit.add(wall)

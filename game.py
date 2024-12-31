@@ -44,12 +44,14 @@ jurigged.watch()  # hot reload
 
 class Game:
     def __init__(self):
+        self.initialize_variables()
+
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
         self.menu_states_tuple = (self.game_menu_state, self.pause_menu_state)
 
-        self.dim_surface = pygame.Surface((UniversalVariables.screen_x, UniversalVariables.screen_y), pygame.SRCALPHA,
+        self.dim_surface = pygame.Surface((self.variables.screen_x, self.variables.screen_y), pygame.SRCALPHA,
                                           32)
 
         self.print_hp = 0
@@ -113,6 +115,8 @@ class Game:
         self.initialize_loot()
         self.initialize_event_handler()
 
+        self.initialize_menus()
+
         # FIXME: Cooking, Building -> Ei tööta
 
     def initialize_pygame(self):
@@ -121,14 +125,14 @@ class Game:
         pygame.init()
 
         self.font = pygame.font.SysFont("Verdana", 20)
-        self.screen = UniversalVariables.screen
+        self.screen = self.variables.screen
         self.clock = pygame.time.Clock()  # FPS
 
         # audio #
         self.py_mixer = pygame.mixer.init()
 
     def initialize_camera(self):
-        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update, self.fading_text)
+        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update, self.fading_text, self.variables)
 
         self.camera_rect = self.camera.camera_rect
         self.player_window_x = self.camera.player_window_x
@@ -153,10 +157,10 @@ class Game:
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
-        self.map_data = MapData(self.terrain_data, self.camera)
+        self.map_data = MapData(self.terrain_data, self.camera, self.variables)
 
         # Blade maze
-        self.maze_blades = Blades(self.terrain_data, self.essentials)
+        self.maze_blades = Blades(self.terrain_data, self.essentials, self.variables)
 
         # FIXME: Day/Night - Uksed lahti/kinni
 
@@ -168,17 +172,17 @@ class Game:
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity)  # + self.entity
         self.attack_object = AttackObject(self.terrain_data, self.inv)
-        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management, self.variables)
 
     def initialize_audio(self):
-        self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer)
-        self.tile_sounds = Tile_Sounds(self.py_mixer)
+        self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer, self.variables)
+        self.tile_sounds = Tile_Sounds(self.py_mixer, self.variables)
 
     # def initialize_cooking(self):
     #     self.cooking = Cooking(self.inv, self.camera, self.terrain_data, self.screen)
 
     def initialize_player(self):
-        self.player_update = PlayerUpdate(self.terrain_data)
+        self.player_update = PlayerUpdate(self.terrain_data, self.variables)
         self.player_update.player_rect = self.player_update.get_player_rect()
 
         self.player = Player(max_health=20, min_health=0,
@@ -188,11 +192,11 @@ class Game:
                              base_thirst=12, max_thirst=20, min_thirst=0,
                              fading_text=self.fading_text)
 
-        self.player_effect = PlayerEffect(self.player)
+        self.player_effect = PlayerEffect(self.player, self.variables)
 
     def initialize_collisions(self):
         self.collisions = Collisions(self.player, self.player_update, self.terrain_data, \
-                                     self.hud, self.render)
+                                     self.hud, self.render, self.variables)
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, \
@@ -202,36 +206,36 @@ class Game:
         self.building = Building()
 
     def initialize_inventory(self):
-        self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text)
+        self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text, self.variables)
 
     def initialize_essentials(self):
         self.framerate = Framerate()
-        self.essentials = EssentialsUpdate(self.font, self.framerate)
+        self.essentials = EssentialsUpdate(self.font, self.framerate, self.variables)
 
     def initialize_vision(self):
         self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength)
 
     def initialize_maze_changes(self):
-        self.maze_changes = MazeChanges(self.essentials.day_night_text)
+        self.maze_changes = MazeChanges(self.essentials.day_night_text, self.variables)
 
     def initialize_entity(self):
         self.entity = Entity(self.terrain_data, self.camera, self.player_update, \
-            self.essentials, self.player, self.player_effect, self.inv, self.image_loader, self.object_management)
+            self.essentials, self.player, self.player_effect, self.inv, self.image_loader, self.object_management, self.variables)
 
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, \
-            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text, self.object_management)
+            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text, self.object_management, self.variables)
 
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, \
             self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, \
-            self.fading_text, self.maze_addition, self.object_management)
+            self.fading_text, self.maze_addition, self.object_management, self.variables)
 
     def initialize_drop(self):
-        self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management)
+        self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management, self.variables)
 
     def initialize_hud(self):
-        self.hud = HUD_class(self.player, self.image_loader)
+        self.hud = HUD_class(self.player, self.image_loader, self.variables)
 
     def initialize_image_loader(self):
         self.image_loader = ImageLoader()
@@ -241,10 +245,10 @@ class Game:
 
     def initialize_render(self):
         self.render = RenderPictures(self.player_update, self.image_loader, self.camera, \
-                                     self.terrain_data, self.click_tuple, self.tile_set)
+                                     self.terrain_data, self.click_tuple, self.tile_set, self.variables)
 
     def initialize_object_creation(self):
-        self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data)
+        self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables)
 
     def initialize_fading_text(self):
         self.fading_text = Fading_text(self.screen)
@@ -259,6 +263,13 @@ class Game:
     def initialize_object_management(self):
         self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data)
 
+    def initialize_variables(self):
+        self.variables = UniversalVariables()
+
+    def initialize_menus(self):
+        self.menu = Menu(self.variables)
+        self.pmenu = PauseMenu(self.variables)
+
 
 
     def event_game_state(self, event):
@@ -272,26 +283,21 @@ class Game:
             self.event_handler.handle_mouse_events(event)
             self.event_handler.handle_keyboard_events(event)
 
-    def load_variables(self):
-        UniversalVariables()
-
     def render_boxes(self):
-        if UniversalVariables.render_boxes_counter:
+        if self.variables.render_boxes_counter:
             self.object_management.render_interaction_box()
             self.object_management.render_collision_box()
             self.drop.display_all_floating_pouch_hitboxes()
 
     def check_for_update(self):
 
-        def hash_matrix(matrix):
-            return hashlib.md5(str(matrix).encode()).hexdigest()
+        def hash_matrix(matrix):  return hashlib.md5(str(matrix).encode()).hexdigest()
 
         if hash_matrix(self.terrain_data) != hash_matrix(self.old_terrain_data):
-            UniversalVariables.update_view = True
+            self.variables.update_view = True
             self.old_terrain_data = [row[:] for row in self.terrain_data]
 
     def call_technical(self):
-
         self.player_update.update_player(self.player)  # Update player position and attributes
         self.camera.box_target_camera(self.player_update.player_rect)  # Camera follow
 
@@ -310,7 +316,7 @@ class Game:
     def call_visuals(self):
         self.check_for_update()
         self.render.map_render()
-        UniversalVariables.screen.blit(UniversalVariables.buffer_collision, (0, 0))
+        self.variables.screen.blit(self.variables.buffer_collision, (0, 0))
 
         self.render.object_render()
 
@@ -329,7 +335,7 @@ class Game:
 
         # ******************** # ↓ Kõik, mis on visioni peal ↓ # ******************** #
 
-        if self.inv.crafting_menu_open and not UniversalVariables.cooking_menu:
+        if self.inv.crafting_menu_open and not self.variables.cooking_menu:
             self.inv.render_craftable_items()
             if not self.inv.craftable_items_display_rects and self.inv.crafting_menu_open:
                 self.fading_text.re_display_fading_text("Nothing to craft.")
@@ -342,18 +348,17 @@ class Game:
         self.essentials.render_general()  # Render other elements
         self.hud.update()
 
-        self.inv.render_equipped_slot(UniversalVariables.current_equipped_item)  # Equipped item slot
+        self.inv.render_equipped_slot(self.variables.current_equipped_item)  # Equipped item slot
 
         # self.building.update()
 
     def check_keys(self):
         self.event_handler.check_pressed_keys()  # Check pressed keys
 
-    @staticmethod
-    def reset_lists():
-        UniversalVariables.text_sequence = []
-        UniversalVariables.blits_sequence_collision = []
-        UniversalVariables.blits_sequence_objects = []
+    def reset_lists(self):
+        self.variables.text_sequence = []
+        self.variables.blits_sequence_collision = []
+        self.variables.blits_sequence_objects = []
 
     def refresh_loop(self):
         self.interaction.keylock = 0
@@ -361,22 +366,21 @@ class Game:
 
         current_fps = self.clock.get_fps()
         if current_fps > 0:  # To avoid adding 0 FPS values
-            UniversalVariables.fps_list.append(current_fps)
-            if len(UniversalVariables.fps_list) > UniversalVariables.fps_list_max_size:
-                UniversalVariables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
+            self.variables.fps_list.append(current_fps)
+            if len(self.variables.fps_list) > self.variables.fps_list_max_size:
+                self.variables.fps_list.pop(0)  # Remove the oldest FPS value if we exceed max size
 
-        if UniversalVariables.fps_lock:
+        if self.variables.fps_lock:
             FPS = 60
-        else: FPS = UniversalVariables.FPS
+        else: FPS = self.variables.FPS
         self.clock.tick(FPS)
 
-    @staticmethod
-    def add_counts():
-        if UniversalVariables.interaction_delay <= UniversalVariables.interaction_delay_max:
-            UniversalVariables.interaction_delay += 1
+    def add_counts(self):
+        if self.variables.interaction_delay <= self.variables.interaction_delay_max:
+            self.variables.interaction_delay += 1
 
     def custom_addition(self):
-        if UniversalVariables.debug_mode:
+        if self.variables.debug_mode:
             if not self.restrict_looping:
                 self.object_management.add_object_from_inv("Maze_Key", 30)
                 # ObajectManagement.add_object_from_inv("Bandage", 100)
@@ -401,31 +405,30 @@ class Game:
         pygame.display.update()
 
         # ******************** DEBUG MODE ******************** #
-        if UniversalVariables.debug_mode:
-            UniversalVariables.ui_elements.append("!        Debug mode - True        !")
+        if self.variables.debug_mode:
+            self.variables.ui_elements.append("!        Debug mode - True        !")
             self.player.speed.base_speed = 20
 
-            # UniversalVariables.player_x, UniversalVariables.player_y = 2800, 8600  # FPS'side testimiseks
+            # self.variables.player_x, self.variables.player_y = 2800, 8600  # FPS'side testimiseks
             # print(self.player)
 
 
     def state(self):
 
         # Vaatab kas mäng on tööle pandud või mitte
-        if Menu.game_state:
-            Menu.main_menu(self)
+        if self.menu.game_state:
+            self.menu.main_menu(self)
             return True
 
         # Vaatab kas mäng on pausi peale pandud või mitte
-        if PauseMenu.game_paused:
-            PauseMenu.settings_menu(self)
+        if self.pmenu.game_paused:
+            self.pmenu.settings_menu(self)
             return True
 
         return False
 
 
     def run(self):
-        self.load_variables()
         while True:
             self.events()
             if self.state() == True:  

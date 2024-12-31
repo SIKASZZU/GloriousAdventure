@@ -1,6 +1,6 @@
 import random
 
-from variables import UniversalVariables, GameConfig
+from variables import GameConfig
 from items import search_item_from_items, ConsumableItem
 
 
@@ -12,8 +12,8 @@ def is_click_inside_player_rect(self):
     if None in self.camera.click_position:  # Return'ib kui click_position'is on None
         return False
 
-    player_x = self.player_update.player_rect[0] + UniversalVariables.offset_x
-    player_y = self.player_update.player_rect[1] + UniversalVariables.offset_y
+    player_x = self.player_update.player_rect[0] + self.variables.offset_x
+    player_y = self.player_update.player_rect[1] + self.variables.offset_y
 
     # Vaatab, kas click on player rect'i sees
     click_within_x = player_x < self.camera.click_position[0] < player_x + self.player_update.player_rect[2]
@@ -25,8 +25,8 @@ def is_click_inside_player_rect(self):
 def probably(chance):
     return random.random() < chance
 
-@staticmethod
-def find_number_in_list_of_lists(list_of_lists):
+
+def find_number_in_list_of_lists(self, list_of_lists):
 
     choices = []
     # FIXME: 96,7 on broken millegi pärast.
@@ -43,15 +43,15 @@ def find_number_in_list_of_lists(list_of_lists):
                     choices.append(grid)  # Number found, add to all possible choices
             
     if choices:
-        UniversalVariables.geiger_chosen_grid = random.choice(choices)
-        print('choices', choices, 'chose, ', UniversalVariables.geiger_chosen_grid)
-        return UniversalVariables.geiger_chosen_grid  # Return grid
+        self.variables.geiger_chosen_grid = random.choice(choices)
+        print('choices', choices, 'chose, ', self.variables.geiger_chosen_grid)
+        return self.variables.geiger_chosen_grid  # Return grid
     
     return None  # Number not found, return None
 
 
 class ItemFunctionality:
-    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management):
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management, variables):
         self.terrain_data = td
         self.entity = entity
         self.player = player
@@ -61,6 +61,7 @@ class ItemFunctionality:
         self.inv = inv
         self.fading_text = fading_text
         self.object_management = o_management
+        self.variables = variables
 
         self.last_strength_read = str
         self.maze_counter       = 0
@@ -79,19 +80,19 @@ class ItemFunctionality:
         """ Vaatab pathi yhe random ukseni ning selle jargi returnib. """
 
         # FIND GRID
-        if UniversalVariables.geiger_chosen_grid == None:
+        if self.variables.geiger_chosen_grid == None:
             find_number_in_list_of_lists(self.terrain_data)
 
-        if UniversalVariables.geiger_chosen_grid == None:
+        if self.variables.geiger_chosen_grid == None:
             return
                     
         # FIND PATH TO GRID
-        grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
-        grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        grid_x = int(self.variables.player_x // self.variables.block_size)
+        grid_y = int(self.variables.player_y // self.variables.block_size)
         
         # pathfind player -> random chosen door
         player_grid = (grid_y, grid_x)
-        path = self.entity.find_path_bfs(UniversalVariables.geiger_chosen_grid, player_grid)
+        path = self.entity.find_path_bfs(self.variables.geiger_chosen_grid, player_grid)
 
         # RETURN SIGNAL STRENGTH
         if not path:
@@ -104,12 +105,12 @@ class ItemFunctionality:
     def current_equipped(self):
         """ Argument on item, mille funktsiooni kutsutakse. """
 
-        equipped_item = UniversalVariables.current_equipped_item
+        equipped_item = self.variables.current_equipped_item
         if equipped_item == 'Geiger':
 
-            if UniversalVariables.maze_counter != self.maze_counter:
-                UniversalVariables.geiger_chosen_grid = None
-                self.maze_counter = UniversalVariables.maze_counter
+            if self.variables.maze_counter != self.maze_counter:
+                self.variables.geiger_chosen_grid = None
+                self.maze_counter = self.variables.maze_counter
 
             strength = self.find_signal_strength()
 
@@ -120,20 +121,20 @@ class ItemFunctionality:
 
             # peamine heli pathi pikkuse tottu
             if not strength:
-                UniversalVariables.print_debug_text('None')
+                self.variables.print_debug_text('None')
                 self.strength_counter = 500
                 ... # Ootab 5 sekki - teeb resa vms
 
             if strength == 'low':
-                UniversalVariables.print_debug_text('low')
+                self.variables.print_debug_text('low')
                 ... # audio
                 
             elif strength == 'medium':
-                UniversalVariables.print_debug_text('low')
+                self.variables.print_debug_text('low')
                 ... # audio
 
             elif strength == 'high':
-                UniversalVariables.print_debug_text('low')
+                self.variables.print_debug_text('low')
                 ... # audio
 
             # heli, mis on alati
@@ -147,9 +148,9 @@ class ItemFunctionality:
         if not is_click_inside_player_rect(self):
             return
 
-        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
-            if UniversalVariables.debug_mode:
-                print(f'Item delay: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max} ')
+        if self.variables.interaction_delay < self.variables.interaction_delay_max:
+            if self.variables.debug_mode:
+                print(f'Item delay: {self.variables.interaction_delay} < {self.variables.interaction_delay_max} ')
             return
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
@@ -164,39 +165,39 @@ class ItemFunctionality:
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         if cure:
-            UniversalVariables.interaction_delay = 0
-            UniversalVariables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
+            self.variables.interaction_delay = 0
+            self.variables.serum_active = True  # see funktsionaalsus j2tkub status.py-is
             self.object_management.remove_object_from_inv(equipped_item)
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         if poisonous:
-            UniversalVariables.interaction_delay = 0
+            self.variables.interaction_delay = 0
 
             if probably(35 / 100):
-                UniversalVariables.player_poisoned = True
+                self.variables.player_poisoned = True
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         if healing_amount:
-            UniversalVariables.interaction_delay = 0
+            self.variables.interaction_delay = 0
 
             player_healed = self.player.health.heal(healing_amount)
             if player_healed:  self.object_management.remove_object_from_inv(equipped_item)
-            if UniversalVariables.player_bleeding == True:
+            if self.variables.player_bleeding == True:
                 if probably(35 / 100):
-                    UniversalVariables.player_bleeding = False
+                    self.variables.player_bleeding = False
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         if thirst_resistance and satisfaction_gain:
-            UniversalVariables.interaction_delay = 0
+            self.variables.interaction_delay = 0
             self.object_management.remove_object_from_inv(equipped_item)  # v6tab joodud itemi 2ra
 
-            if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and UniversalVariables.thirst_resistance > 0:
+            if self.player.thirst.current_thirst >= self.player.thirst.max_thirst and self.variables.thirst_resistance > 0:
                 self.fading_text.re_display_fading_text("If you drink too much you might get sick!")
                 if probably(15 / 100):
-                    UniversalVariables.player_poisoned = True
+                    self.variables.player_poisoned = True
 
             # Arvutab uue thirsti 'current + söödud itemi Gain'
             new_thirst = self.player.thirst.current_thirst + satisfaction_gain
@@ -215,21 +216,21 @@ class ItemFunctionality:
             self.camera.click_position = ()
 
             # Kui thirst_resistance on alla 0 või alla eelneva thirst_resistance siis resetib thirst_resistance
-            if UniversalVariables.thirst_resistance > thirst_resistance or 0 > UniversalVariables.thirst_resistance:
+            if self.variables.thirst_resistance > thirst_resistance or 0 > self.variables.thirst_resistance:
                 return
 
-            UniversalVariables.thirst_resistance = thirst_resistance
+            self.variables.thirst_resistance = thirst_resistance
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
         elif hunger_resistance and satisfaction_gain:
-            UniversalVariables.interaction_delay = 0
+            self.variables.interaction_delay = 0
             self.object_management.remove_object_from_inv(equipped_item)  # v6tab s66dud itemi 2ra
 
-            if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and UniversalVariables.hunger_resistance > 0:
+            if self.player.hunger.current_hunger >= self.player.hunger.max_hunger and self.variables.hunger_resistance > 0:
                 self.fading_text.re_display_fading_text("If you eat too much you might get sick!")
                 if probably(15 / 100):
-                    UniversalVariables.player_poisoned = True
+                    self.variables.player_poisoned = True
 
             # Arvutab uue hungeri 'current + söödud itemi Gain'
             new_hunger = self.player.hunger.current_hunger + satisfaction_gain
@@ -248,10 +249,10 @@ class ItemFunctionality:
             self.camera.click_position = ()
 
             # Kui hunger_resistance on alla 0 või alla eelneva hunger_resistance siis resetib hunger_resistance
-            if UniversalVariables.hunger_resistance > hunger_resistance or 0 > UniversalVariables.hunger_resistance:
+            if self.variables.hunger_resistance > hunger_resistance or 0 > self.variables.hunger_resistance:
                 return
 
-            UniversalVariables.hunger_resistance = hunger_resistance
+            self.variables.hunger_resistance = hunger_resistance
 
  # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - #
 
@@ -259,32 +260,32 @@ class ItemFunctionality:
     #    new_player_cone_light_strenght = -70
     #    return new_player_cone_light_strenght
 
-    #grid_y, grid_x = int(UniversalVariables.player_y // UniversalVariables.block_size), int(UniversalVariables.player_x // UniversalVariables.block_size)
+    #grid_y, grid_x = int(self.variables.player_y // self.variables.block_size), int(self.variables.player_x // self.variables.block_size)
 
 
 
 
-#        if UniversalVariables.current_equipped_item == 'Glowstick':
+#        if self.variables.current_equipped_item == 'Glowstick':
 #            self.terrain_data[grid_y][grid_x] = 34
 #
-#        elif UniversalVariables.current_equipped_item == 'String':
-#            if UniversalVariables.string_active:
+#        elif self.variables.current_equipped_item == 'String':
+#            if self.variables.string_active:
 #                # Deactivate string if already active
-#                UniversalVariables.string_active = False
+#                self.variables.string_active = False
 #                print("String deactivated.")
 #            else:
 #                # Activate string
-#                UniversalVariables.string_active = True
-#                UniversalVariables.string_start_pos = self.player_rect.center
-#                print("String activated at position:", UniversalVariables.string_start_pos)
+#                self.variables.string_active = True
+#                self.variables.string_start_pos = self.player_rect.center
+#                print("String activated at position:", self.variables.string_start_pos)
 #    else:
-#        if UniversalVariables.string_active:
+#        if self.variables.string_active:
 #            # Draw string following the player
 #            def draw_string(screen, color, start_pos, end_pos):
 #                pygame.draw.line(screen, color, start_pos, end_pos, 2)
 #
 #            # Current end position of the string is the player's current center
 #            current_end_pos = self.player_rect.center
-#            draw_string(UniversalVariables.screen, 'black', UniversalVariables.string_start_pos, current_end_pos)
+#            draw_string(self.variables.screen, 'black', self.variables.string_start_pos, current_end_pos)
 #    
 #    self.click_position = ()

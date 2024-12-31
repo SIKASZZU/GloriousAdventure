@@ -34,10 +34,10 @@ class ObjectManagement:
             return False
 
         # Check interaction delay
-        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
-            if UniversalVariables.debug_mode:
+        if self.variables.interaction_delay < self.variables.interaction_delay_max:
+            if self.variables.debug_mode:
                 print(
-                    f"Don't pick up so fast: {UniversalVariables.interaction_delay} < {UniversalVariables.interaction_delay_max}")
+                    f"Don't pick up so fast: {self.variables.interaction_delay} < {self.variables.interaction_delay_max}")
             return False
 
 
@@ -49,7 +49,7 @@ class ObjectManagement:
 
                 if not raw_item == None or not cooked_item == None:
                     self.fading_text.re_display_fading_text("Aren't you forgetting something?")
-                    UniversalVariables.interaction_delay = 0
+                    self.variables.interaction_delay = 0
                     self.player_audio.error_audio()
                     return False
 
@@ -81,8 +81,8 @@ class ObjectManagement:
             return False
 
     def update_terrain_and_add_item(self, terrain_x: int, terrain_y: int, object_id: int, name: str, amount: int) -> bool:
-        grid_col: int = int(terrain_x // UniversalVariables.block_size)
-        grid_row: int = int(terrain_y // UniversalVariables.block_size)
+        grid_col: int = int(terrain_x // self.variables.block_size)
+        grid_row: int = int(terrain_y // self.variables.block_size)
 
         # Ensure the coordinates are within the terrain boundaries
         if not (0 <= grid_row < len(self.terrain_data) and 0 <= grid_col < len(self.terrain_data[0])):
@@ -107,7 +107,7 @@ class ObjectManagement:
 
         self.add_object_from_inv(name, amount)
         # self.player_audio.player_item_audio()
-        UniversalVariables.interaction_delay = 0
+        self.variables.interaction_delay = 0
         return True
 
     def add_object_from_inv(self, item, amount=1):
@@ -133,17 +133,17 @@ class ObjectManagement:
 
     @staticmethod
     def render_collision_box() -> None:
-        for box_item in UniversalVariables.collision_boxes:
+        for box_item in self.variables.collision_boxes:
             item_start_x, item_start_y  = box_item[0], box_item[1]
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'green'
-            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, 3)
+            pygame.draw.rect(self.variables.screen, collision_box_color, obj_collision_box, 3)
 
     @staticmethod
     def render_interaction_box() -> None:
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-        for box_item in UniversalVariables.object_list:
+        for box_item in self.variables.object_list:
             outline_thickness = 3
             if box_item[5] in [981, 982]:
                 outline_thickness = 8
@@ -152,4 +152,4 @@ class ObjectManagement:
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'pink'
-            pygame.draw.rect(UniversalVariables.screen, collision_box_color, obj_collision_box, outline_thickness, 5)
+            pygame.draw.rect(self.variables.screen, collision_box_color, obj_collision_box, outline_thickness, 5)

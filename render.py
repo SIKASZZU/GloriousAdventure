@@ -7,12 +7,13 @@ from farmables import farming
 
 
 class RenderPictures:
-    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set):
+    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set, variables):
         self.player_update = player_update
         self.image_loader = image_loader
         self.camera = camera
         self.terrain_data = terrain_data
         self.tile_set = tile_set
+        self.variables = variables
 
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
@@ -43,13 +44,13 @@ class RenderPictures:
                 occupied_positions[position] = image
             else:
                 scaled_saved_image = pygame.transform.scale(occupied_positions[position],
-                                                            (UniversalVariables.block_size,
-                                                             UniversalVariables.block_size))
+                                                            (self.variables.block_size,
+                                                             self.variables.block_size))
                 if terrain_value in [7, 107]:
-                    UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
+                    self.variables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
-                elif [scaled_saved_image, (terrain_x, terrain_y)] not in UniversalVariables.blits_sequence_collision:
-                    UniversalVariables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
+                elif [scaled_saved_image, (terrain_x, terrain_y)] not in self.variables.blits_sequence_collision:
+                    self.variables.blits_sequence_collision.append([scaled_saved_image, (terrain_x, terrain_y)])
 
     def get_render_ranges(self, player_grid_x, player_grid_y, camera_grid_col, camera_grid_row, terrain_type):
         # # TODO: fix this
@@ -61,16 +62,16 @@ class RenderPictures:
         #     base_row_range_0, base_row_range_1 = player_grid_y - self.render_range - 1, player_grid_y + self.render_range + 3
         #     base_col_range_0, base_col_range_1 = player_grid_x - self.render_range - 2, player_grid_x + self.render_range + 3
 
-        #     if UniversalVariables.last_input in ['w', 'wa', 'wd']:
+        #     if self.variables.last_input in ['w', 'wa', 'wd']:
         #         row_range_0, row_range_1 = base_row_range_0, player_grid_y + 2
         #         col_range_0, col_range_1 = base_col_range_0, base_col_range_1
-        #     elif UniversalVariables.last_input in ['s', 'sa', 'sd']:
+        #     elif self.variables.last_input in ['s', 'sa', 'sd']:
         #         row_range_0, row_range_1 = player_grid_y, base_row_range_1
         #         col_range_0, col_range_1 = base_col_range_0, base_col_range_1
-        #     elif UniversalVariables.last_input in ['a', 'wa', 'sa']:
+        #     elif self.variables.last_input in ['a', 'wa', 'sa']:
         #         row_range_0, row_range_1 = base_row_range_0, base_row_range_1
         #         col_range_0, col_range_1 = base_col_range_0, player_grid_x + 2
-        #     elif UniversalVariables.last_input in ['d', 'wd', 'sd']:
+        #     elif self.variables.last_input in ['d', 'wd', 'sd']:
         #         row_range_0, row_range_1 = base_row_range_0, base_row_range_1
         #         col_range_0, col_range_1 = player_grid_x, base_col_range_1 + 1
         #     else:
@@ -81,7 +82,7 @@ class RenderPictures:
         # else:
 
         self.render_range = (
-                                                    UniversalVariables.screen_x + UniversalVariables.screen_y) // UniversalVariables.block_size // 5
+                                                    self.variables.screen_x + self.variables.screen_y) // self.variables.block_size // 5
         row_range_0, row_range_1 = camera_grid_col - self.render_range, camera_grid_col + self.render_range + 3
         col_range_0, col_range_1 = camera_grid_row - self.render_range - 3, camera_grid_row + self.render_range + 6
 
@@ -91,12 +92,12 @@ class RenderPictures:
         self.terrain_in_view.clear()
 
         camera_grid_row = int(
-            (self.camera.camera_rect.left + self.camera.camera_rect.width / 2) // UniversalVariables.block_size) - 1
+            (self.camera.camera_rect.left + self.camera.camera_rect.width / 2) // self.variables.block_size) - 1
         camera_grid_col = int(
-            (self.camera.camera_rect.top + self.camera.camera_rect.height / 2) // UniversalVariables.block_size) - 1
+            (self.camera.camera_rect.top + self.camera.camera_rect.height / 2) // self.variables.block_size) - 1
 
-        player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
-        player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_grid_x = int(self.variables.player_x // self.variables.block_size)
+        player_grid_y = int(self.variables.player_y // self.variables.block_size)
 
         try:
             # Determine the render range based on the player's position and terrain type
@@ -163,7 +164,7 @@ class RenderPictures:
 
     # renderib k6ik objektide all, backgroundi,terraini, seinad
     def map_render(self):
-        attacked_detected = UniversalVariables.attack_key_pressed[0]
+        attacked_detected = self.variables.attack_key_pressed[0]
 
         # Click
         # Update view
@@ -171,8 +172,8 @@ class RenderPictures:
         # Input
         # Playeri asukoht muutus
 
-        if UniversalVariables.last_input != 'None' or attacked_detected or UniversalVariables.update_view or self.right_click_position or self.click_position:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
-            UniversalVariables.update_view = False
+        if self.variables.last_input != 'None' or attacked_detected or self.variables.update_view or self.right_click_position or self.click_position:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
+            self.variables.update_view = False
             self.find_terrain_in_view()
 
             many_choices = [0, 1, 107, 98, 99]  # objektid, millel on rohkem kui yks pilt. See list ei pruugi olla 6ige :D
@@ -184,8 +185,8 @@ class RenderPictures:
                 grid, grid_ids = grid_info
 
                 x, y = grid
-                terrain_x = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                terrain_y = y * UniversalVariables.block_size + UniversalVariables.offset_y
+                terrain_x = x * self.variables.block_size + self.variables.offset_x
+                terrain_y = y * self.variables.block_size + self.variables.offset_y
 
                 object_id = grid_ids[0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
 
@@ -220,11 +221,11 @@ class RenderPictures:
                     image = self.image_loader.load_image(image_name)
                     self.image_to_sequence(terrain_x, terrain_y, grid, image, object_id)
 
-            UniversalVariables.buffer_collision.blits(UniversalVariables.blits_sequence_collision, doreturn=False)
+            self.variables.buffer_collision.blits(self.variables.blits_sequence_collision, doreturn=False)
 
     # See func renderib objecteid
     def object_render(self):
-        if not UniversalVariables.render_after:
+        if not self.variables.render_after:
             self.player_update.render_player()
 
         desired_order = GameConfig.OBJECT_RENDER_ORDER.value
@@ -235,7 +236,7 @@ class RenderPictures:
 
         # Filter and sort the objects
         sorted_objects = sorted(
-            (item for item in UniversalVariables.object_list if item[4] is not None),
+            (item for item in self.variables.object_list if item[4] is not None),
             key=sort_key
         )
 
@@ -248,23 +249,24 @@ class RenderPictures:
             image = item[4]
 
             scaled_object_image = pygame.transform.scale(image, item[2:4])  # image, sizes
-            if [scaled_object_image, position] not in UniversalVariables.blits_sequence_objects:
-                UniversalVariables.blits_sequence_objects.append([scaled_object_image, position])
+            if [scaled_object_image, position] not in self.variables.blits_sequence_objects:
+                self.variables.blits_sequence_objects.append([scaled_object_image, position])
 
-        UniversalVariables.screen.blits(UniversalVariables.blits_sequence_objects, doreturn=False)
-        if UniversalVariables.render_after:
+        self.variables.screen.blits(self.variables.blits_sequence_objects, doreturn=False)
+        if self.variables.render_after:
             self.player_update.render_player()
 
 class ObjectCreation:
-    def __init__(self, render, image_loader, terrain_data):
+    def __init__(self, render, image_loader, terrain_data, variables):
         self.render = render
         self.image_loader = image_loader
         self.terrain_data = terrain_data
+        self.variables = variables
 
     def creating_lists(self):
 
-        UniversalVariables.collision_boxes = []
-        UniversalVariables.object_list = []
+        self.variables.collision_boxes = []
+        self.variables.object_list = []
 
         collision_items = []
         non_collision_items = []
@@ -316,13 +318,13 @@ class ObjectCreation:
                 object_id = grid_ids[
                     0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
                 if object_id in GameConfig.COLLISION_ITEMS.value:
-                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+                    terrain_x: int = x * self.variables.block_size + self.variables.offset_x
+                    terrain_y: int = y * self.variables.block_size + self.variables.offset_y
 
                     new_object: tuple[int, ...] = (terrain_x, terrain_y, object_width, object_height, object_id)
 
-                    if new_object not in UniversalVariables.collision_boxes:
-                        UniversalVariables.collision_boxes.append(new_object)
+                    if new_object not in self.variables.collision_boxes:
+                        self.variables.collision_boxes.append(new_object)
 
     def object_list_creation(self, non_collision_items) -> None:
         for item in non_collision_items:
@@ -331,14 +333,14 @@ class ObjectCreation:
             for grid, grid_ids in self.render.terrain_in_view.items():
                 x, y = grid
                 if self.terrain_data[y][x] == object_id:  # Object is found on the rendered terrain
-                    terrain_x: int = x * UniversalVariables.block_size + UniversalVariables.offset_x
-                    terrain_y: int = y * UniversalVariables.block_size + UniversalVariables.offset_y
+                    terrain_x: int = x * self.variables.block_size + self.variables.offset_x
+                    terrain_y: int = y * self.variables.block_size + self.variables.offset_y
 
                     new_object = (terrain_x, terrain_y, object_width, object_height, object_image, object_id)
 
-                    if new_object not in UniversalVariables.object_list:
+                    if new_object not in self.variables.object_list:
                         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-                        UniversalVariables.object_list.append(new_object)
+                        self.variables.object_list.append(new_object)
 
 
 if __name__ == '__main__':  ...

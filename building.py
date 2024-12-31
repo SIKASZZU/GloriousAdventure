@@ -11,7 +11,7 @@ class Building:
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.
         Return'ib (name, object_id) if valid, else False.
         """
-        name = UniversalVariables.current_equipped_item
+        name = self.variables.current_equipped_item
 
         if not name:
             return False
@@ -35,8 +35,8 @@ class Building:
 
         terrain_x, terrain_y = click_position
 
-        grid_x, grid_y = int(terrain_x // UniversalVariables.block_size), int(
-            terrain_y // UniversalVariables.block_size)
+        grid_x, grid_y = int(terrain_x // self.variables.block_size), int(
+            terrain_y // self.variables.block_size)
 
         if 0 <= grid_x < len(self.terrain_data[0]) and 0 <= grid_y < len(self.terrain_data):
             terrain_value = self.terrain_data[grid_y][grid_x]
@@ -68,7 +68,7 @@ class Building:
             return False
 
     def update(self) -> bool:
-        if not UniversalVariables.allow_building:
+        if not self.variables.allow_building:
             return
 
         if Building.is_valid_item(self) and Building.is_valid_location(self):

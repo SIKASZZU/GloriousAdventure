@@ -3,10 +3,11 @@ import math
 from collections import deque
 
 from variables import UniversalVariables, GameConfig
+from functions import UniversalFunctions
 import random
 
 class Entity:
-    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader, o_management):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
+    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader, o_management, variables):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
         self.terrain_data = td
         self.player_update = pupdate
         self.essentials = ess
@@ -16,13 +17,14 @@ class Entity:
         self.inv = inv
         self.image_loader = image_loader
         self.object_management = o_management
+        self.variables = variables
 
         self.ghost_image      = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost"),
-            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+            (self.variables.block_size // 1.5, self.variables.block_size // 1.5))
         self.ghost_dead_image = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost_Dead"),
-            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+            (self.variables.block_size // 1.5, self.variables.block_size // 1.5))
         self.ghost_dead_geiger_image = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost_Dead_Geiger"),
-            (UniversalVariables.block_size // 1.5, UniversalVariables.block_size // 1.5))
+            (self.variables.block_size // 1.5, self.variables.block_size // 1.5))
 
         self.spawned_entity_dict: dict[str, tuple[pygame.Surface, int, int, float]] = {}  # (entity_image, y, x, HP)
         self.entity_in_range: set[tuple[str, str]] = set()
@@ -43,14 +45,14 @@ class Entity:
         """ Spawns enemies based on certain conditions. """
 
         if not self.spawned_entity_dict and self.essentials.day_night_text == 'Night':
-            entity_spawnpoint_list = UniversalVariables.find_spawnpoints_in_map_data(self.terrain_data)
+            entity_spawnpoint_list = UniversalFunctions.find_spawnpoints_in_map_data(self.terrain_data)
 
             # Player grid calculation
-            player_x_row = int(UniversalVariables.player_x // UniversalVariables.block_size)
-            player_y_col = int(UniversalVariables.player_y // UniversalVariables.block_size)
+            player_x_row = int(self.variables.player_x // self.variables.block_size)
+            player_y_col = int(self.variables.player_y // self.variables.block_size)
             player_grid = (player_y_col, player_x_row)
 
-            distance_from_player = int(UniversalVariables.light_range / UniversalVariables.block_size)
+            distance_from_player = int(self.variables.light_range / self.variables.block_size)
 
             # Count of spawned enemies
             spawned_entity_count = 0
@@ -61,35 +63,35 @@ class Entity:
                         abs(player_grid[1] - spawn_point[1]) > distance_from_player):
 
                     # Spawn an entity
-                    self.spawned_entity_dict[f'entity_{UniversalVariables.entity_counter}'] = self.ghost_image, \
-                        spawn_point[1], spawn_point[0], UniversalVariables.ghost_hp
+                    self.spawned_entity_dict[f'entity_{self.variables.entity_counter}'] = self.ghost_image, \
+                        spawn_point[1], spawn_point[0], self.variables.ghost_hp
 
                     spawned_entity_count += 1
-                    UniversalVariables.entity_counter += 1
+                    self.variables.entity_counter += 1
 
                     # Limiteerib Enemite arvu vastvalt maze_counterile
-                    max_enenmy = 5 * UniversalVariables.maze_counter
-                    if UniversalVariables.maze_counter == 1: max_enenmy = 2  # Kui on ainult 1 maze siis spawnib max 2 enemit
+                    max_enenmy = 5 * self.variables.maze_counter
+                    if self.variables.maze_counter == 1: max_enenmy = 2  # Kui on ainult 1 maze siis spawnib max 2 enemit
                     if spawned_entity_count >= max_enenmy:
                         break
 
         # spawn alive enemies
         entity_blits_list = []
         for entity in self.spawned_entity_dict.values():
-            entity_x = entity[1] * UniversalVariables.block_size + UniversalVariables.offset_x
-            entity_y = entity[2] * UniversalVariables.block_size + UniversalVariables.offset_y
+            entity_x = entity[1] * self.variables.block_size + self.variables.offset_x
+            entity_y = entity[2] * self.variables.block_size + self.variables.offset_y
             entity_blits_list.append((entity[0], (entity_x, entity_y)))
 
         # spawn dead enemies
         for entity in self.dead_entity_list.values():
-            entity_x = entity[0] * UniversalVariables.block_size + UniversalVariables.offset_x
-            entity_y = entity[1] * UniversalVariables.block_size + UniversalVariables.offset_y
+            entity_x = entity[0] * self.variables.block_size + self.variables.offset_x
+            entity_y = entity[1] * self.variables.block_size + self.variables.offset_y
             
             image = self.ghost_dead_image
             if entity[2] == True:  image = self.ghost_dead_geiger_image
             entity_blits_list.append((image, (entity_x, entity_y)))
 
-        UniversalVariables.screen.blits(entity_blits_list, doreturn=False)
+        self.variables.screen.blits(entity_blits_list, doreturn=False)
 
     def despawn(self):
         """ Despawns enemies during the day.  """
@@ -133,7 +135,7 @@ class Entity:
 
         try:
             # Check if the player is in a restricted area
-            if self.terrain_data[int(self.player_update.player_rect.center[1] // UniversalVariables.block_size)][int(self.player_update.player_rect.center[0] // UniversalVariables.block_size)] in self.combined_restricted_areas:
+            if self.terrain_data[int(self.player_update.player_rect.center[1] // self.variables.block_size)][int(self.player_update.player_rect.center[0] // self.variables.block_size)] in self.combined_restricted_areas:
                 return None
             else:
                 queue = deque([(start, [])])
@@ -175,7 +177,7 @@ class Entity:
     def move(self):
         """ Move enemies based on their individual decisions."""
 
-        entity_speed = UniversalVariables.entity_speed
+        entity_speed = self.variables.entity_speed
 
         for entity_name, entity_info in self.spawned_entity_dict.items():
             image, x, y, HP = entity_info
@@ -188,11 +190,11 @@ class Entity:
                     break
             if direction:
                 entity_grid = (self.custom_round(entity_info[2]), self.custom_round(entity_info[1]))
-                player_grid = (self.custom_round(self.player_update.player_rect.centery // UniversalVariables.block_size),
-                                self.custom_round(self.player_update.player_rect.centerx // UniversalVariables.block_size))
+                player_grid = (self.custom_round(self.player_update.player_rect.centery // self.variables.block_size),
+                                self.custom_round(self.player_update.player_rect.centerx // self.variables.block_size))
 
                 if entity_name not in self.path or self.path_ticks[
-                    entity_name] >= UniversalVariables.entity_path_update_tick:
+                    entity_name] >= self.variables.entity_path_update_tick:
 
                     path = self.find_path_bfs(entity_grid, player_grid)
 
@@ -243,17 +245,17 @@ class Entity:
         player_window_x = self.camera.player_window_x
         player_window_y = self.camera.player_window_y
 
-        if UniversalVariables.player_sprinting: detect_range = 25 * UniversalVariables.block_size
-        elif UniversalVariables.player_sneaking:  detect_range = 5 * UniversalVariables.block_size
-        else: detect_range = 10 * UniversalVariables.block_size
+        if self.variables.player_sprinting: detect_range = 25 * self.variables.block_size
+        elif self.variables.player_sneaking:  detect_range = 5 * self.variables.block_size
+        else: detect_range = 10 * self.variables.block_size
 
         self.entity_in_range = set()
 
         for entity_name, entity_info in self.spawned_entity_dict.items():
             entity_x_grid, entity_y_grid = entity_info[1], entity_info[2]
 
-            entity_x = entity_x_grid * UniversalVariables.block_size + UniversalVariables.offset_x
-            entity_y = entity_y_grid * UniversalVariables.block_size + UniversalVariables.offset_y
+            entity_x = entity_x_grid * self.variables.block_size + self.variables.offset_x
+            entity_y = entity_y_grid * self.variables.block_size + self.variables.offset_y
 
             distance_to_player_x_grid = player_window_x - entity_x
             distance_to_player_y_grid = player_window_y - entity_y
@@ -261,8 +263,8 @@ class Entity:
             if abs(distance_to_player_x_grid) <= detect_range and abs(distance_to_player_y_grid) <= detect_range:
                 direction: str = 'none'
 
-                if abs(distance_to_player_x_grid) < UniversalVariables.block_size * 0.75 \
-                    and abs(distance_to_player_y_grid) < UniversalVariables.block_size * 0.75:
+                if abs(distance_to_player_x_grid) < self.variables.block_size * 0.75 \
+                    and abs(distance_to_player_y_grid) < self.variables.block_size * 0.75:
                     if self.player.health.get_health() > 0:
                         self.attack(3, entity_x, entity_y)
 
@@ -288,11 +290,11 @@ class Entity:
 
         if self.damage_delay >= 60:
 
-            if not UniversalVariables.player_bleeding and random.randint(1, 10) <= 6:
-                UniversalVariables.player_bleeding = True
+            if not self.variables.player_bleeding and random.randint(1, 10) <= 6:
+                self.variables.player_bleeding = True
 
-            if not UniversalVariables.player_infected and random.randint(1, 10) <= 3:
-                UniversalVariables.player_infected = True
+            if not self.variables.player_infected and random.randint(1, 10) <= 3:
+                self.variables.player_infected = True
 
             self.player.health.damage(damage)
             self.player_effect.infection()
@@ -317,14 +319,14 @@ class Entity:
 
     def collision_with_entities(self):
         for entity_name, entity_info in list(self.spawned_entity_dict.items()):
-            entity_rect = pygame.Rect(entity_info[1] * UniversalVariables.block_size,
-                                     entity_info[2] * UniversalVariables.block_size, 73, 73)
+            entity_rect = pygame.Rect(entity_info[1] * self.variables.block_size,
+                                     entity_info[2] * self.variables.block_size, 73, 73)
 
             # Check for collisions between enemies
             for other_entity_name, other_entity_info in list(self.spawned_entity_dict.items()):
                 if entity_name != other_entity_name:
-                    other_entity_rect = pygame.Rect(other_entity_info[1] * UniversalVariables.block_size,
-                                                   other_entity_info[2] * UniversalVariables.block_size, 73, 73)
+                    other_entity_rect = pygame.Rect(other_entity_info[1] * self.variables.block_size,
+                                                   other_entity_info[2] * self.variables.block_size, 73, 73)
                     if entity_rect.colliderect(other_entity_rect):
                         entity_x = entity_info[1]
                         entity_y = entity_info[2]
@@ -381,8 +383,8 @@ class Entity:
         # spacebar
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         if keys[pygame.K_SPACE]:
-            x = UniversalVariables.player_x // UniversalVariables.block_size
-            y = UniversalVariables.player_y // UniversalVariables.block_size
+            x = self.variables.player_x // self.variables.block_size
+            y = self.variables.player_y // self.variables.block_size
             collect_geiger(press=(x, y))
 
         # click

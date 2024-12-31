@@ -6,7 +6,7 @@ from menu import PauseMenu
 from components import Player
 
 
-def update_object_dimensions():
+def update_object_dimensions(self):
     for item in items.items_list:
         if isinstance(item, items.WorldItem) or isinstance(item, items.ObjectItem):
             pass
@@ -14,10 +14,10 @@ def update_object_dimensions():
             continue
 
         if item.width:
-            item.width = int(item.width * UniversalVariables.block_size / items.block_size)
+            item.width = int(item.width * self.variables.block_size / items.block_size)
         if item.height:
-            item.height = int(item.height * UniversalVariables.block_size / items.block_size)
-    items.block_size = UniversalVariables.block_size
+            item.height = int(item.height * self.variables.block_size / items.block_size)
+    items.block_size = self.variables.block_size
 
 
 class Event_handler:
@@ -66,16 +66,16 @@ class Event_handler:
                 self.right_click_position = event.pos
                 self.loot.loot_update(self.camera.right_click_on_screen(self.right_click_position))
 
-            if UniversalVariables.debug_mode:
+            if self.variables.debug_mode:
                 if event.button == 4:  # Scroll +
-                    UniversalVariables.block_size += 10
-                    update_object_dimensions()
+                    self.variables.block_size += 10
+                    update_object_dimensions(self)
 
                 elif event.button == 5:  # Scroll -
-                    UniversalVariables.block_size -= 10
-                    if UniversalVariables.block_size < 1:
-                        UniversalVariables.block_size = 1
-                    update_object_dimensions()
+                    self.variables.block_size -= 10
+                    if self.variables.block_size < 1:
+                        self.variables.block_size = 1
+                    update_object_dimensions(self)
 
     def handle_keyboard_events(self, event):
         if event.type == pygame.KEYDOWN:
@@ -95,13 +95,13 @@ class Event_handler:
         keys = pygame.key.get_pressed()
         arrow_keys = (keys[pygame.K_UP], keys[pygame.K_DOWN], keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
         keybinds = {
-            pygame.K_h: lambda: setattr(UniversalVariables, 'render_boxes_counter',
-                                        not UniversalVariables.render_boxes_counter),
+            pygame.K_h: lambda: setattr(self.variables, 'render_boxes_counter',
+                                        not self.variables.render_boxes_counter),
             pygame.K_j: lambda: setattr(self.vision, 'vision_count', not self.vision.vision_count),
-            pygame.K_g: lambda: setattr(UniversalVariables, 'fps_lock', not UniversalVariables.fps_lock),
+            pygame.K_g: lambda: setattr(self.variables, 'fps_lock', not self.variables.fps_lock),
         }
 
-        if UniversalVariables.debug_mode:
+        if self.variables.debug_mode:
             for key, action in keybinds.items():
                 key_pressed_attr = f'{key}_pressed'
                 if keys[key] and not getattr(self, key_pressed_attr, False):
@@ -111,7 +111,7 @@ class Event_handler:
                     setattr(self, key_pressed_attr, False)
 
         if any(arrow_keys):
-            UniversalVariables.attack_key_pressed = (True, arrow_keys)
+            self.variables.attack_key_pressed = (True, arrow_keys)
 
             # if keys[pygame.K_UP]:
             #     self.attack_entity.attack_rect('up')

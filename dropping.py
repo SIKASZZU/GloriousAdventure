@@ -1,14 +1,14 @@
 import pygame
 import math
 
-from variables import UniversalVariables
 
 class Drop:
-    def __init__(self, player_update, inv, image_loader, o_managment):
+    def __init__(self, player_update, inv, image_loader, o_managment, variables):
         self.player_update = player_update
         self.inv = inv
         self.image_loader = image_loader
         self.object_management = o_managment
+        self.variables = variables
             
         # Animatsiooniga seotud asjad
         self.pouch_hitboxes = {}
@@ -18,7 +18,7 @@ class Drop:
 
         # Pildiga seotud asjad
         self.pouch_image = self.image_loader.load_image("Pouch", 'images/Items/Objects/Pouch.png')
-        self.half_block_size = UniversalVariables.block_size // 4
+        self.half_block_size = self.variables.block_size // 4
         self.pouch_image = pygame.transform.scale(self.pouch_image, (self.half_block_size, self.half_block_size))
         self.pouch_half_width, self.pouch_half_height = self.pouch_image.get_width() // 2, self.pouch_image.get_height() // 2
 
@@ -32,7 +32,7 @@ class Drop:
         self.click_position = None  # Et saaks vaadata, kas click'id Pouch'i hitbox'i peale -> window click -> x, y
         self.pouch_position = None  # Coord ilma offsetita -> x, y
         self.show_pouch = True  # Pouch state -> on / off
-        self.drop_range = UniversalVariables.block_size * .8
+        self.drop_range = self.variables.block_size * .8
 
         # Click delay variables
         self.toggle_cooldown = 200  # 1000 -> 1 sek
@@ -43,10 +43,10 @@ class Drop:
         self.drop_delay = self.drop_delay_max
 
     def find_location(self) -> tuple[int, int]:  # Coord ilma offsetita
-        if UniversalVariables.dropped_items:
-            for position, contents in UniversalVariables.dropped_items.items():
+        if self.variables.dropped_items:
+            for position, contents in self.variables.dropped_items.items():
                 pouch_x, pouch_y = position
-                player_x_minus_offset, player_y_minus_offset = UniversalVariables.player_x, UniversalVariables.player_y
+                player_x_minus_offset, player_y_minus_offset = self.variables.player_x, self.variables.player_y
 
                 distance = math.sqrt((player_x_minus_offset - pouch_x) ** 2 + (player_y_minus_offset - pouch_y) ** 2)
                 # Vaatab kas player ulatub Pouch'ini
@@ -56,8 +56,8 @@ class Drop:
 
         player_position = self.player_update.player_rect.center
         player_x, player_y = \
-            player_position[0] - UniversalVariables.offset_x - self.pouch_half_width, \
-            player_position[1] - UniversalVariables.offset_y - self.pouch_half_height
+            player_position[0] - self.variables.offset_x - self.pouch_half_width, \
+            player_position[1] - self.variables.offset_y - self.pouch_half_height
 
         return player_x, player_y
 
@@ -68,26 +68,26 @@ class Drop:
     @staticmethod
     def add_item_to_existing_position(position: tuple, item: str, quantity: int) -> None:
         # Initialize the position with an empty dict if not already present
-        if position not in UniversalVariables.dropped_items:
-            UniversalVariables.dropped_items[position] = {}
+        if position not in self.variables.dropped_items:
+            self.variables.dropped_items[position] = {}
 
         # Add the item or update quantity and timer if it already exists
-        if item not in UniversalVariables.dropped_items[position]:
-            UniversalVariables.dropped_items[position][item] = {
+        if item not in self.variables.dropped_items[position]:
+            self.variables.dropped_items[position][item] = {
                 "quantity": quantity,
-                "timer": UniversalVariables.despawn_timer_default
+                "timer": self.variables.despawn_timer_default
             }
         else:
-            UniversalVariables.dropped_items[position][item]["quantity"] += quantity
-            UniversalVariables.dropped_items[position][item]["timer"] = UniversalVariables.despawn_timer_default
+            self.variables.dropped_items[position][item]["quantity"] += quantity
+            self.variables.dropped_items[position][item]["timer"] = self.variables.despawn_timer_default
 
     def open_pouch(self, position: tuple[int, int]) -> None:
         if not self.show_pouch:
             return
 
         if self.pouch_position:
-            player_x_minus_offset = UniversalVariables.player_x
-            player_y_minus_offset = UniversalVariables.player_y
+            player_x_minus_offset = self.variables.player_x
+            player_y_minus_offset = self.variables.player_y
 
             # Playeri kaugus Pouch'i click'i positsioonist
             distance = math.sqrt((player_x_minus_offset - self.pouch_position[0]) ** 2 + (player_y_minus_offset - self.pouch_position[1]) ** 2)
@@ -97,8 +97,8 @@ class Drop:
                 self.close_pouch()
                 return False
 
-            if position in UniversalVariables.dropped_items:
-                contents = UniversalVariables.dropped_items[position]
+            if position in self.variables.dropped_items:
+                contents = self.variables.dropped_items[position]
                 self.display_pouch_contents(contents)
                 return True
 
@@ -109,7 +109,7 @@ class Drop:
         # Calculate the UI position and dimensions based on the item count
         current_slot_count = len(contents)
         pouch_y = 25
-        pouch_x = (UniversalVariables.screen_x // 2) - (current_slot_count * self.slot_size[0]) // 2
+        pouch_x = (self.variables.screen_x // 2) - (current_slot_count * self.slot_size[0]) // 2
         pouch_width = current_slot_count * self.slot_size[0] + 10
         pouch_height = self.slot_size[1] + 10
 
@@ -143,7 +143,7 @@ class Drop:
             # Calculate transparency based on the despawn timer
             max_transparency = 255
             min_transparency = 100
-            despawn_timer_default = UniversalVariables.despawn_timer_default
+            despawn_timer_default = self.variables.despawn_timer_default
 
             # Ratio for transparency
             transparency_ratio = max(0, min(1, item_timer / despawn_timer_default))
@@ -170,7 +170,7 @@ class Drop:
             slot_index += 1
 
         # Render the pouch display surface to the main screen without affecting inventory
-        UniversalVariables.screen.blit(pouch_surface, (pouch_x, pouch_y))
+        self.variables.screen.blit(pouch_surface, (pouch_x, pouch_y))
 
         return slot_hitboxes
 
@@ -178,8 +178,8 @@ class Drop:
         # Check if the position exists in dropped_items
         # TODO: Reset timer to default
         if self.inv.total_slots > len(self.inv.inventory) or name in self.inv.inventory:
-            if position in UniversalVariables.dropped_items:
-                item_data = UniversalVariables.dropped_items[position].get(name)
+            if position in self.variables.dropped_items:
+                item_data = self.variables.dropped_items[position].get(name)
 
                 if item_data:
                     # Kui hoiad shifti siis võtab kõik itemid
@@ -191,19 +191,19 @@ class Drop:
 
                     # If quantity reaches zero, remove the item from the dictionary
                     if item_data["quantity"] <= 0:
-                        del UniversalVariables.dropped_items[position][name]
+                        del self.variables.dropped_items[position][name]
 
                         # If no items left at this position, remove the position from the dictionary
-                        if not UniversalVariables.dropped_items[position]:  # Check if the dict is empty
-                            del UniversalVariables.dropped_items[position]
+                        if not self.variables.dropped_items[position]:  # Check if the dict is empty
+                            del self.variables.dropped_items[position]
                             del self.pouch_hitboxes[position]
                             self.close_pouch()
                             return
 
                     # Resetib timeri ja transparency kui võtad itemi invist ära
                     item_data["timer"] = item_data["timer"] + 200
-                    if item_data["timer"] > UniversalVariables.despawn_timer_default:
-                        item_data["timer"] = UniversalVariables.despawn_timer_default
+                    if item_data["timer"] > self.variables.despawn_timer_default:
+                        item_data["timer"] = self.variables.despawn_timer_default
         else:
             self.inv.inventory_full_error(self)
             return
@@ -216,7 +216,7 @@ class Drop:
 
     def update_timers(self):
         self.drop_delay += 1
-        for position, items in list(UniversalVariables.dropped_items.items()):
+        for position, items in list(self.variables.dropped_items.items()):
             for item_name, item_data in list(items.items()):
                 if item_data["timer"] > 0:
                     item_data["timer"] -= 1
@@ -225,7 +225,7 @@ class Drop:
 
             # Remove the position entry if no items are left
             if not items:
-                del UniversalVariables.dropped_items[position]
+                del self.variables.dropped_items[position]
                 del self.pouch_hitboxes[position]
                 if position == self.pouch_position:
                     self.close_pouch()
@@ -235,13 +235,13 @@ class Drop:
         if position not in self.floating_angles:
             self.floating_angles[position] = 0
 
-        base_position = (position[0] + UniversalVariables.offset_x, position[1] + UniversalVariables.offset_y)
+        base_position = (position[0] + self.variables.offset_x, position[1] + self.variables.offset_y)
         angle = self.floating_angles[position]
         float_offset = int(self.floating_distance * math.sin(math.radians(angle)))
         float_position = (base_position[0], base_position[1] + float_offset)
 
         # Display pouch image at the calculated floating position
-        UniversalVariables.screen.blit(self.pouch_image, float_position)
+        self.variables.screen.blit(self.pouch_image, float_position)
 
         # Update hitbox in the pouch hitboxes dictionary for position
         pouch_width, pouch_height = self.pouch_image.get_size()
@@ -252,7 +252,7 @@ class Drop:
 
     def display_all_floating_pouch_hitboxes(self) -> None:
         for position, original_hitbox in self.pouch_hitboxes.items():
-            pygame.draw.rect(UniversalVariables.screen, 'pink', original_hitbox, 3, 5)
+            pygame.draw.rect(self.variables.screen, 'pink', original_hitbox, 3, 5)
 
     def toggle_pouch(self, mouse_pos=None):
         if not mouse_pos:
@@ -283,28 +283,28 @@ class Drop:
 
     def update(self, item: str = None, quantity: int = None):
        # Lisab item'id invi, mida ei saa otse lisada, circular error asi
-        if UniversalVariables.items_to_drop:
+        if self.variables.items_to_drop:
             items_to_remove = []
 
-            for item, quantity in UniversalVariables.items_to_drop.items():
+            for item, quantity in self.variables.items_to_drop.items():
                 # Otsib õige Pouch'i
                 position = self.find_location()
                 self.drop_items(position, item, quantity)
 
                 # Viin ühest listist asjad teise listi -> Circular errori pärast
-                UniversalVariables.items_to_drop[item] = 0
+                self.variables.items_to_drop[item] = 0
                 items_to_remove.append(item)
 
             # Listi loopimise ajal ei saa samat listi muuta
             for item in items_to_remove:
-                del UniversalVariables.items_to_drop[item]
+                del self.variables.items_to_drop[item]
 
         self.update_timers()
 
         # Check if there are dropped items and display the pouch
-        if UniversalVariables.dropped_items:
+        if self.variables.dropped_items:
             # Iterate over a copy of dropped_items to avoid modification errors
-            for position, contents in list(UniversalVariables.dropped_items.items()):  # Create a list copy
+            for position, contents in list(self.variables.dropped_items.items()):  # Create a list copy
 
                 # Display the floating pouch
                 self.display_floating_pouch(position)
@@ -327,6 +327,6 @@ class Drop:
                                     break
 
             # Handle pouch toggling with right-click
-            if pygame.mouse.get_pressed()[2] and not UniversalVariables.cooking_menu:  # Right-click
+            if pygame.mouse.get_pressed()[2] and not self.variables.cooking_menu:  # Right-click
                 mouse_position = pygame.mouse.get_pos()
                 self.toggle_pouch(mouse_position)

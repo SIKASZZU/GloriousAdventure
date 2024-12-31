@@ -37,15 +37,15 @@ class HealthComponent:
     def damage(self, amount):
         self.current_health = max(self.current_health - amount, self.min_health)
         self.health_cooldown_timer = 0
-        UniversalVariables.health_status = False
+        self.variables.health_status = False
         self.check_health()
 
     def regenerate_health(self, hunger):
         if self.current_health < self.max_health and self.current_health != 0:
             if hunger >= 12:
                 self.current_health += 1
-                HungerComponent.hunger_timer += 100
-                UniversalVariables.health_status = True
+                self.hunger.hunger_timer += 100
+                self.variables.health_status = True
         
         if self.current_health > self.max_health:
             self.current_health = self.max_health
@@ -57,7 +57,7 @@ class HealthComponent:
             return False  # no healing
 
         self.current_health += amount
-        UniversalVariables.health_status = True
+        self.variables.health_status = True
 
         if self.current_health > self.max_health:
             self.current_health = self.max_health
@@ -77,8 +77,8 @@ class HealthComponent:
 
     def death(self):
         ### TODO: player moement disable.
-        if UniversalVariables.debug_mode == True:
-            UniversalVariables.ui_elements.append("""Debug mode, not closing the game.""")
+        if self.variables.debug_mode == True:
+            self.variables.ui_elements.append("""Debug mode, not closing the game.""")
         else:
             if self.death_start_time is None:
                 self.death_start_time = time.perf_counter()
@@ -87,7 +87,7 @@ class HealthComponent:
             remaining_time = 5 - int(elapsed_time)
 
             if remaining_time >= 0:
-                UniversalVariables.ui_elements[-1] = f" You have died! Exiting game in {remaining_time} sec. "
+                self.variables.ui_elements[-1] = f" You have died! Exiting game in {remaining_time} sec. "
             else:
                 pygame.quit()
 
@@ -188,13 +188,13 @@ class HungerComponent:
     def decrease_hunger(self):
         hunger_resist   = 2
         hunger_decrease = 0.1
-        if UniversalVariables.player_infected == True:
+        if self.variables.player_infected == True:
             hunger_resist   = 2
             hunger_decrease = 0.4
-        if UniversalVariables.hunger_resistance:
-            UniversalVariables.hunger_resistance -= hunger_resist
-            if UniversalVariables.hunger_resistance <= 0:
-                UniversalVariables.hunger_resistance = 0
+        if self.variables.hunger_resistance:
+            self.variables.hunger_resistance -= hunger_resist
+            if self.variables.hunger_resistance <= 0:
+                self.variables.hunger_resistance = 0
                 self.hunger_timer = 100
             return
 
@@ -222,8 +222,8 @@ class HungerComponent:
         if rounded_hunger == self.min_hunger:
             return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Starving"
         else:
-            if UniversalVariables.hunger_resistance != 0:
-                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Hunger Resistance: {UniversalVariables.hunger_resistance} ticks"
+            if self.variables.hunger_resistance != 0:
+                return f"Hunger: {rounded_hunger}/{self.max_hunger}\n     -- Hunger Resistance: {self.variables.hunger_resistance} ticks"
             else:
                 return f"Hunger: {rounded_hunger}/{self.max_hunger}\n       -- Losing Hunger: {self.hunger_timer} ticks"
 
@@ -248,14 +248,14 @@ class ThirstComponent:
     def decrease_thirst(self):
         thirst_resist   = 1
         thirst_decrease = 0.07
-        #if UniversalVariables.player_infected == True:
+        #if self.variables.player_infected == True:
         #    thirst_resist   = 2
         #    thirst_decrease = 0.4
 
-        if UniversalVariables.thirst_resistance:
-            UniversalVariables.thirst_resistance -= thirst_resist
-            if UniversalVariables.thirst_resistance <= 0:
-                UniversalVariables.thirst_resistance = 0
+        if self.variables.thirst_resistance:
+            self.variables.thirst_resistance -= thirst_resist
+            if self.variables.thirst_resistance <= 0:
+                self.variables.thirst_resistance = 0
                 self.thirst_timer = 100
             return
 
@@ -326,8 +326,8 @@ class Player:
 
     def apply_knockback(self, dx, dy):
         knockback_force = 35.0  # Knockback strength, 100.0 == 1 block size almost...
-        UniversalVariables.player_x += dx * knockback_force
-        UniversalVariables.player_y += dy * knockback_force
+        self.variables.player_x += dx * knockback_force
+        self.variables.player_y += dy * knockback_force
 
     def __str__(self):
         return f"Player stats:\n   {self.health}\n   {self.stamina}\n   {self.speed}\n   {self.hunger}\n   {self.thirst}\n  Inventory: {Inventory.inventory}\n"

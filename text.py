@@ -14,10 +14,10 @@ class Fading_text:
     def update(self):
         self.render_general()
         self.handle_fading_texts()
-        UniversalVariables.screen.blits(UniversalVariables.text_sequence)
+        self.variables.screen.blits(self.variables.text_sequence)
 
     def render_general(self):
-        for text in UniversalVariables.ui_elements:
+        for text in self.variables.ui_elements:
             if text not in self.shown_texts:
                 self.add_fading_text(text)
                 self.shown_texts.add(text)
@@ -25,7 +25,7 @@ class Fading_text:
 
     def add_fading_text(self, text, color=(255, 255, 255), background_color=(30, 30, 30), padding=5):
         """Add text with a background to be rendered with a fading effect."""
-        max_width = UniversalVariables.screen_x  # Max width with padding
+        max_width = self.variables.screen_x  # Max width with padding
         # Start with a relatively large font size
         font_size = 20
         font = pygame.font.SysFont("Verdana", font_size)
@@ -43,15 +43,15 @@ class Fading_text:
                 text_rects.append(text_rect)
 
             total_height = sum(rect.height for rect in text_rects) + (len(text_rects) - 1) * padding
-            if total_height < UniversalVariables.screen_y * 0.9:
+            if total_height < self.variables.screen_y * 0.9:
                 break
             else:
                 font_size -= 1
                 font = pygame.font.SysFont("Verdana", font_size)
                 lines = textwrap.wrap(text, width=max_width // font_size)
 
-        # Position the text so that its bottom aligns with UniversalVariables.screen_y * 0.9
-        start_y = UniversalVariables.screen_y * 0.88 - total_height
+        # Position the text so that its bottom aligns with self.variables.screen_y * 0.9
+        start_y = self.variables.screen_y * 0.88 - total_height
 
         # Calculate the total width and height for the background surface
         max_text_width = max(text_rect.width for text_rect in text_rects)
@@ -61,7 +61,7 @@ class Fading_text:
 
         # Center the background surface on the screen
         background_rect = background_surface.get_rect(
-            center=(UniversalVariables.screen_x // 2, start_y + total_height // 2))
+            center=(self.variables.screen_x // 2, start_y + total_height // 2))
 
         # Center text lines within the background surface
         current_y = padding
@@ -135,14 +135,14 @@ class Fading_text:
 
     def re_display_fading_text(self, text: str, debug: bool = False) -> None:
         # Kui debug = True, disply'b text'i ainult siis kui debug_mode = True
-        if debug and not UniversalVariables.debug_mode:
+        if debug and not self.variables.debug_mode:
             return
 
-        UniversalVariables.ui_elements.append(text)
+        self.variables.ui_elements.append(text)
         if text in self.shown_texts:
             self.shown_texts.remove(text)
 
     def display_once_fading_text(self, text: str) -> None:
         if text in self.shown_texts:
             return
-        UniversalVariables.ui_elements.append(text)
+        self.variables.ui_elements.append(text)

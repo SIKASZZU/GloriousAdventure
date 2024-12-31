@@ -1,11 +1,10 @@
 import os
 import sys
 import numpy as np
+import random
 from skimage.transform import resize
 from collections import deque
-import random
 
-from variables import UniversalVariables
 from variables import GameConfig
 
 
@@ -20,10 +19,11 @@ def resource_path(relative_path):
 
 
 class MapData:
-    def __init__(self, terrain_data, camera):
+    def __init__(self, terrain_data, camera, variables):
         # Initilazitud asjad
         self.terrain_data = terrain_data
         self.camera = camera
+        self.variables = variables
 
         # MapData asjad
         self.placeholder = [[None] * 40 for _ in range(40)]
@@ -33,7 +33,7 @@ class MapData:
         self.create_save_puzzle = None
         self.converted_maze = []
 
-        if UniversalVariables.debug_mode:
+        if self.variables.debug_mode:
             self._puzzle_pieces = 20
             self._keyholders = 20
             self._loot = 20
@@ -50,7 +50,7 @@ class MapData:
         door_tuple = self.camera.left_click_on_screen(self.camera.click_position)
         door_grid_map = self.camera.click_on_screen_to_grid(door_tuple[0], door_tuple[1])
 
-        if None in door_grid_map and UniversalVariables.maze_counter <= 1:
+        if None in door_grid_map and self.variables.maze_counter <= 1:
             door_grid = (self.maze_size // 2 - 1, self.maze_size // 2 - 1)
 
         else:
@@ -336,12 +336,12 @@ class MapData:
 
 
     def final_maze_generation(self, start_side):
-        UniversalVariables.final_maze = True
+        self.variables.final_maze = True
         return self.file_to_maze(file_name='final_maze.txt', side=start_side)
 
 
     def blade_maze_generation(self, start_side):
-        UniversalVariables.blades_spawned = True
+        self.variables.blades_spawned = True
         return self.file_to_maze(file_name='blade_maze.txt', side=start_side)
 
     def abandoned_glade_generation(self, start_side):
@@ -578,13 +578,13 @@ class MapData:
                 return self.labyrinth_maze_generation(start_side)
 
             elif item == 'blade_maze':
-                UniversalVariables.blades_spawned = True
+                self.variables.blades_spawned = True
                 return self.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
             elif item == 'final_maze':
-                for row in UniversalVariables.map_list:
+                for row in self.variables.map_list:
                     if 'final_maze' in row:
-                        UniversalVariables.final_maze = True
+                        self.variables.final_maze = True
                         return self.file_to_maze(file_name=f'{item}.txt', side=start_side)
 
         elif item == 'abandoned_glade':

@@ -4,9 +4,6 @@ import pygame
 import os
 import sys
 
-from variables import UniversalVariables
-
-
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -20,11 +17,12 @@ def resource_path(relative_path):
 
 class Player_audio:
 
-    def __init__(self, terrain_data, player, py_mixer):
+    def __init__(self, terrain_data, player, py_mixer, variables):
         self.terrain_data = terrain_data
         self.player = player
         self.py_mixer = py_mixer
         self.mixer = pygame.mixer
+        self.variables = variables
 
         self.previous_ground_sound = None
 
@@ -95,7 +93,7 @@ class Player_audio:
                     sound.set_volume(0.0)
                     sound.play()
                     sound.stop()
-                    sound.set_volume(UniversalVariables.sound_volume)
+                    sound.set_volume(self.variables.sound_volume)
 
             else:
                 audio_name.set_volume(0.0)
@@ -103,11 +101,11 @@ class Player_audio:
                 audio_name.stop()
 
                 # Muudab kogu mängu audio ära vastavalt sound_volume'ile
-                audio_name.set_volume(UniversalVariables.sound_volume)
+                audio_name.set_volume(self.variables.sound_volume)
 
     def player_movement_audio(self) -> None:
-        player_grid_x = int(UniversalVariables.player_x // UniversalVariables.block_size)
-        player_grid_y = int(UniversalVariables.player_y // UniversalVariables.block_size)
+        player_grid_x = int(self.variables.player_x // self.variables.block_size)
+        player_grid_y = int(self.variables.player_y // self.variables.block_size)
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
         try:
 
@@ -256,9 +254,10 @@ class Player_audio:
 
 
 class Tile_Sounds:
-    def __init__(self, py_mixer):
+    def __init__(self, py_mixer, variables):
         self.py_mixer = py_mixer
         self.mixer    = pygame.mixer
+        self.variables = variables
 
         self.insert_key_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Key_To_Slot.mp3'))
         self.pop_key_sound = self.mixer.Sound(resource_path('audio/Tile_Sounds/Key_From_Slot.mp3'))
@@ -276,7 +275,7 @@ class Tile_Sounds:
             audio_name.stop()
 
             # Muudab kogu mängu audio ära vastavalt sound_volume'ile
-            audio_name.set_volume(UniversalVariables.sound_volume)
+            audio_name.set_volume(self.variables.sound_volume)
 
     def portal_open_audio(self) -> None:
         if self.portal_channel.get_busy():

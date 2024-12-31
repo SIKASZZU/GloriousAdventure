@@ -1,6 +1,5 @@
 import pygame
 
-from variables import UniversalVariables
 from items import object_items, mineral_items, tool_items, ObjectItem, MineralItem, ToolItem
 
 
@@ -13,14 +12,15 @@ def craftable_items_manager(func):
 
 
 class Inventory:
-    def __init__(self, camera, player_update, image_loader, fading_text):
+    def __init__(self, camera, player_update, image_loader, fading_text, variables):
         self.camera = camera
         self.player_update = player_update
         self.image_loader = image_loader
         self.fading_text = fading_text
+        self.variables = variables
 
         self.slot_image = self.image_loader.load_gui_image("Selected_Item_Inventory")
-        self.position = (UniversalVariables.screen_x // 2 - 170, UniversalVariables.screen_y - 51)
+        self.position = (self.variables.screen_x // 2 - 170, self.variables.screen_y - 51)
         self.resized_slot_image = pygame.transform.scale(self.slot_image, (
         self.slot_image.get_width() * 0.9, self.slot_image.get_height() * 0.9))
 
@@ -120,7 +120,7 @@ class Inventory:
             if not delete_boolean:
                 item = list(self.inventory.keys())[index]
                 value = list(self.inventory.values())[index]
-                UniversalVariables.current_equipped_item = item
+                self.variables.current_equipped_item = item
 
             else:
                 item = list(self.inventory.keys())[index]
@@ -134,26 +134,26 @@ class Inventory:
                 # Võtab itemi invist ära kui on <= 0
                 if self.inventory[item] <= 0:
                     del self.inventory[item]
-                    UniversalVariables.current_equipped_item = None
+                    self.variables.current_equipped_item = None
 
                 # Lisab itemi `Floating Pouch`i
-                if item in UniversalVariables.items_to_drop:
-                    UniversalVariables.items_to_drop[item] += amount
+                if item in self.variables.items_to_drop:
+                    self.variables.items_to_drop[item] += amount
                 else:
-                    UniversalVariables.items_to_drop[item] = amount
+                    self.variables.items_to_drop[item] = amount
 
                 self.fading_text.display_once_fading_text("Left unattended, items will fade into whispers of the wind.")
 
 
         except IndexError as IE:
             print(IE)
-            UniversalVariables.current_equipped_item = None
+            self.variables.current_equipped_item = None
 
     def call(self) -> None:
         """ Inventory kutsumiseks on see func. """
 
         if len(self.inventory.items()) != 0 and not self.message_to_user and not self.first_time_click:
-            UniversalVariables.ui_elements.append(
+            self.variables.ui_elements.append(
                 """ Press TAB to open inventory. """)
             self.message_to_user = True
 
@@ -167,38 +167,38 @@ class Inventory:
 
             if not self.first_time_click:
                 self.first_time_click = True
-                UniversalVariables.ui_elements.append('Select items with left click. Remove items with right click.')
+                self.variables.ui_elements.append('Select items with left click. Remove items with right click.')
 
             self.render_inv = (self.inv_count % 2 != 0)
-            UniversalVariables.cooking_menu = False
+            self.variables.cooking_menu = False
 
         elif not keys[pygame.K_TAB]:
             self.tab_pressed = False
 
         if self.render_inv:
-            # UniversalVariables.allow_movement = False
+            # self.variables.allow_movement = False
             self.render()  # Render inventory
-            UniversalVariables.allow_building = False
+            self.variables.allow_building = False
         else:
-            # UniversalVariables.allow_movement = True
+            # self.variables.allow_movement = True
             self.render(update_white_text=True)  # Kui sulgeb invi white text itemitega, ss j2rgmine kord ei ole neid itemid enam valged
-            UniversalVariables.allow_building = True
+            self.variables.allow_building = True
 
     # TODO : invi on vaja optimatiseerida
     def calculate(self, calc_slots_only=False) -> None:
         """ Arvutab invetory suuruse, asukoha
         vastavalt playeri asukohale """
 
-        if UniversalVariables.maze_counter <= 5:
-            self.total_rows = UniversalVariables.maze_counter + 1 if UniversalVariables.maze_counter < 5 else UniversalVariables.maze_counter
-            self.total_cols = 3 if UniversalVariables.maze_counter == 5 else 2
+        if self.variables.maze_counter <= 5:
+            self.total_rows = self.variables.maze_counter + 1 if self.variables.maze_counter < 5 else self.variables.maze_counter
+            self.total_cols = 3 if self.variables.maze_counter == 5 else 2
 
-        if UniversalVariables.maze_counter <= 5:
-            self.total_rows = UniversalVariables.maze_counter + 1
+        if self.variables.maze_counter <= 5:
+            self.total_rows = self.variables.maze_counter + 1
             if self.total_rows > 5:
                 self.total_rows = 5
 
-            if UniversalVariables.maze_counter == 5:
+            if self.variables.maze_counter == 5:
                 self.total_cols = 3
             else:
                 self.total_cols = 2
@@ -212,27 +212,27 @@ class Inventory:
             return
 
         if not self.old_x:
-            self.old_x = UniversalVariables.player_x
+            self.old_x = self.variables.player_x
 
-        if self.old_x == UniversalVariables.player_x:
+        if self.old_x == self.variables.player_x:
             return
 
         self.inventory_display_rects = []
-        rect_width: int = UniversalVariables.block_size / 2
-        rect_height: int = UniversalVariables.block_size / 2
+        rect_width: int = self.variables.block_size / 2
+        rect_height: int = self.variables.block_size / 2
 
         # Calculate inventory position relative to player and screen size
-        rect_x: int = self.player_update.player_rect.centerx + total_cols + UniversalVariables.block_size / 2  # Siia ei tohi offsetti panna
-        rect_y: int = self.player_update.player_rect.centery - total_rows * UniversalVariables.block_size / 4  # Siia ei tohi offsetti panna
+        rect_x: int = self.player_update.player_rect.centerx + total_cols + self.variables.block_size / 2  # Siia ei tohi offsetti panna
+        rect_y: int = self.player_update.player_rect.centery - total_rows * self.variables.block_size / 4  # Siia ei tohi offsetti panna
 
-        right_side: int = UniversalVariables.screen.get_size()[0] - (
-                self.camera.camera_borders['left'] * 2) + UniversalVariables.block_size * 0.6
+        right_side: int = self.variables.screen.get_size()[0] - (
+                self.camera.camera_borders['left'] * 2) + self.variables.block_size * 0.6
         left_side: int = self.camera.camera_borders['left'] * 2
 
         if rect_x >= right_side:
-            rect_x = UniversalVariables.player_x - UniversalVariables.block_size * total_cols / 2 + UniversalVariables.offset_x
+            rect_x = self.variables.player_x - self.variables.block_size * total_cols / 2 + self.variables.offset_x
         elif rect_x >= left_side:
-            rect_x = UniversalVariables.player_x + UniversalVariables.block_size * 2 / 2 + UniversalVariables.offset_x
+            rect_x = self.variables.player_x + self.variables.block_size * 2 / 2 + self.variables.offset_x
 
         # Create inventory rectangles
         for rows in range(total_rows):
@@ -252,7 +252,7 @@ class Inventory:
         self.calculate()
 
         # Create a semi-transparent overlay
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+        overlay = pygame.Surface((self.variables.screen.get_width(), self.variables.screen.get_height()),
                                  pygame.SRCALPHA)
         overlay.set_alpha(180)
 
@@ -262,7 +262,7 @@ class Inventory:
             pygame.draw.rect(overlay, 'black', rect, 2, border_radius=5)  # Black border
 
         # Blit the overlay onto the screen
-        UniversalVariables.screen.blit(overlay, (0, 0))
+        self.variables.screen.blit(overlay, (0, 0))
 
         new_white_items = set()
         for rect, (name, count) in zip(self.inventory_display_rects, self.inventory.items()):
@@ -296,7 +296,7 @@ class Inventory:
             text_rect = text.get_rect(center=(rect.x + 10, rect.y + 10))
 
             blit_operations = [(item_image, item_image_rect.topleft), (text, text_rect.topleft)]
-            UniversalVariables.screen.blits(blit_operations, False)
+            self.variables.screen.blits(blit_operations, False)
 
         items_to_remove = [item for item, counter in self.white_text_counters.items() if counter >= 120]
         for item in items_to_remove:
@@ -360,8 +360,8 @@ class Inventory:
 
         self.craftable_items_display_rects = {}
 
-        rect_width: float = UniversalVariables.block_size / 2
-        rect_height: float = UniversalVariables.block_size / 2
+        rect_width: float = self.variables.block_size / 2
+        rect_height: float = self.variables.block_size / 2
         max_cols: int = 3  # Max columns in a row
 
         # Calculate inventory item positions based on player location and inventory settings
@@ -386,8 +386,8 @@ class Inventory:
         if not self.craftable_items_display_rects:
             return
 
-        screen_width = UniversalVariables.screen.get_width()
-        screen_height = UniversalVariables.screen.get_height()
+        screen_width = self.variables.screen.get_width()
+        screen_height = self.variables.screen.get_height()
 
         # Create a semi-transparent overlay
         overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
@@ -430,7 +430,7 @@ class Inventory:
         overlay.blits(blit_operations)
 
         # Blit the overlay to the screen once
-        UniversalVariables.screen.blit(overlay, (0, 0))
+        self.variables.screen.blit(overlay, (0, 0))
 
     def craft_item(self, name):
         """Craft an item and update the inventory."""
@@ -470,8 +470,8 @@ class Inventory:
 
         # Check if the item name is valid
         if name is None or name not in self.inventory:
-            UniversalVariables.screen.blits(blit_operations)
-            UniversalVariables.current_equipped_item = None
+            self.variables.screen.blits(blit_operations)
+            self.variables.current_equipped_item = None
             return
 
         # Load and resize item image
@@ -500,7 +500,7 @@ class Inventory:
             blit_operations.append((text_surface, text_rect.topleft))
 
         # Perform all blit operations
-        UniversalVariables.screen.blits(blit_operations)
+        self.variables.screen.blits(blit_operations)
 
         # Call item delay bar rendering function
         self.item_delay_bar(self.resized_slot_image, self.position)
@@ -512,21 +512,21 @@ class Inventory:
         height = slot_image.get_height()
 
         # Tekitab semi-transparent recti
-        overlay = pygame.Surface((UniversalVariables.screen.get_width(), UniversalVariables.screen.get_height()),
+        overlay = pygame.Surface((self.variables.screen.get_width(), self.variables.screen.get_height()),
                                  pygame.SRCALPHA)
         overlay.set_alpha(100)
 
-        if UniversalVariables.interaction_delay < UniversalVariables.interaction_delay_max:
+        if self.variables.interaction_delay < self.variables.interaction_delay_max:
             tl_point = position[0]
             tr_point = position[1]
 
-            progress = int((UniversalVariables.interaction_delay / UniversalVariables.interaction_delay_max) * height)
+            progress = int((self.variables.interaction_delay / self.variables.interaction_delay_max) * height)
 
             loading_bar_border_rect = pygame.Rect(tl_point, tr_point + progress, width, height - progress, )
             pygame.draw.rect(overlay, 'black', loading_bar_border_rect)
-            UniversalVariables.screen.blit(overlay, (0, 0))
+            self.variables.screen.blit(overlay, (0, 0))
 
     def inventory_full_error(self):
         # Player_audio.error_audio(self)
         self.fading_text.re_display_fading_text("Not enough space in Inventory.")
-        UniversalVariables.interaction_delay = 0
+        self.variables.interaction_delay = 0

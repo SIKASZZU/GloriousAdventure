@@ -30,7 +30,7 @@ class SpriteSheet:
                                           pixel_color[3])
                         image.set_at((i, j), filtered_color)
 
-        image = pygame.transform.scale(image, (UniversalVariables.player_width, UniversalVariables.player_height))
+        image = pygame.transform.scale(image, (self.variables.player_width, self.variables.player_height))
         return image
 
 
@@ -57,35 +57,35 @@ class AnimationManager:
             elif keys[pygame.K_s]:
                 self.animation_index = 3  # Down animation
         elif is_idle:
-            if UniversalVariables.last_input == "a":
+            if self.variables.last_input == "a":
                 self.animation_index = 0  # Left animation
-            elif UniversalVariables.last_input == "d":
+            elif self.variables.last_input == "d":
                 self.animation_index = 1  # Right animation
-            elif UniversalVariables.last_input == "w":
+            elif self.variables.last_input == "w":
                 self.animation_index = 2  # Up animation
-            elif UniversalVariables.last_input == "s":
+            elif self.variables.last_input == "s":
                 self.animation_index = 3  # Down animation
-            UniversalVariables.last_input = 'None'  # resetin selle 2ra, sest niisama tra. lheb vist vaja. fuck you 20.11.24
+            self.variables.last_input = 'None'  # resetin selle 2ra, sest niisama tra. lheb vist vaja. fuck you 20.11.24
 
         # Update animation frame based on animation_timer and animation_speed
         self.animation_timer += 1
         sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index])
         x, y, animation_width, animation_height = self.animations[self.animation_index][0]
-        if UniversalVariables.health_status == True:
+        if self.variables.health_status == True:
             self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
                                                 animation_height, filter_color=(0, 255, 0))
             self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
             self.animation_timer = 0  # Reset the animation timer
-            UniversalVariables.health_status = None
+            self.variables.health_status = None
 
             return self.frame
 
-        elif UniversalVariables.health_status == False:
+        elif self.variables.health_status == False:
             self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,
                                                 animation_height, filter_color=(255, 0, 0))
             self.frame_index = (self.frame_index + 1) % len(self.animations[self.animation_index])
             self.animation_timer = 0  # Reset the animation timer
-            UniversalVariables.health_status = None
+            self.variables.health_status = None
 
             return self.frame
 

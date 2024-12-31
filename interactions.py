@@ -2,13 +2,12 @@ import pygame
 
 from items import items_list
 from variables import GameConfig
-from variables import UniversalVariables
 from functions import UniversalFunctions
 
 
 class Interaction:
     def __init__(self, pupdate, paudio, tile_sounds, td, camera, 
-                inv, essentials, map_data, fading_text, maze_addition, o_management):
+                inv, essentials, map_data, fading_text, maze_addition, o_management, variables):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -20,6 +19,7 @@ class Interaction:
         self.fading_text = fading_text
         self.maze_addition = maze_addition
         self.object_management = o_management
+        self.variables = variables
 
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -30,11 +30,11 @@ class Interaction:
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte
 
         if self.player_update.player_rect.colliderect(collision_object_rect):
-            pick_up_items = {item[5] for item in UniversalVariables.object_list}
+            pick_up_items = {item[5] for item in self.variables.object_list}
 
             if self.first_time_collision == False and object_id in pick_up_items:
                 self.first_time_collision = True
-                UniversalVariables.ui_elements.append(""" Press SPACE to pick up items. """)
+                self.variables.ui_elements.append(""" Press SPACE to pick up items. """)
 
             if keys[pygame.K_SPACE]:
                 if object_id == 1001:  # panin selle if statementi, kuigi see ei muuda mdiagi. id 1001 ei ole m6jutatud removeobjectatposition functioonist.
@@ -52,18 +52,18 @@ class Interaction:
             if render_when != None:
                 point_of_render_after = collision_object_rect[1] + render_when
                 if point_of_render_after <= self.player_update.player_rect[1]:
-                    UniversalVariables.render_after = True
+                    self.variables.render_after = True
                 else:
-                    UniversalVariables.render_after = False
+                    self.variables.render_after = False
 
     def objects(self) -> None:
         """ Playeri interactionid objektidega. Ntks keyholderid, doors. """
 
         collision_object_rect = pygame.Rect(0, 0, 0, 0)
 
-        for terrain_x, terrain_y, object_width, object_height, _, object_id in UniversalVariables.object_list:
-            terrain_x: int = terrain_x - UniversalVariables.offset_x
-            terrain_y: int = terrain_y - UniversalVariables.offset_y
+        for terrain_x, terrain_y, object_width, object_height, _, object_id in self.variables.object_list:
+            terrain_x: int = terrain_x - self.variables.offset_x
+            terrain_y: int = terrain_y - self.variables.offset_y
 
             collision_object_rect = pygame.Rect(terrain_x, terrain_y, object_width, object_height)
             self.colliderect(collision_object_rect, object_id, terrain_x, terrain_y)
@@ -74,25 +74,25 @@ class Interaction:
             # VAJALIK: imelik kood, laseb ainult ühe block click info läbi
             if terrain_x < self.camera.click_x < terrain_x + object_width and terrain_y < self.camera.click_y < terrain_y + object_height:
 
-                terrain_grid_x = int(terrain_x // UniversalVariables.block_size)
-                terrain_grid_y = int(terrain_y // UniversalVariables.block_size)
+                terrain_grid_x = int(terrain_x // self.variables.block_size)
+                terrain_grid_y = int(terrain_y // self.variables.block_size)
 
                 if object_id == 981:  # Paneb key
-                    if not 'Maze_Key' in self.inv.inventory or UniversalVariables.current_equipped_item != 'Maze_Key':  # and UniversalVariables.final_maze == True:
+                    if not 'Maze_Key' in self.inv.inventory or self.variables.current_equipped_item != 'Maze_Key':  # and self.variables.final_maze == True:
                         self.player_audio.error_audio()
 
                         text = "Shouldn't we put something here?"
                         if text in self.fading_text.shown_texts:
                             self.fading_text.shown_texts.remove(text)
-                        UniversalVariables.ui_elements.append(text)
+                        self.variables.ui_elements.append(text)
 
                         # self.camera.reset_clicks()
                         return
                     else:
-                        if UniversalVariables.final_maze != True:
+                        if self.variables.final_maze != True:
                             self.terrain_data[terrain_grid_y][terrain_grid_x] = 982  # Key slotti
                             self.object_management.remove_object_from_inv('Maze_Key')
-                            UniversalVariables.portal_frames += 1
+                            self.variables.portal_frames += 1
 
                             self.tile_sounds.insert_key_audio()
                             # self.camera.reset_clicks()
@@ -107,9 +107,9 @@ class Interaction:
                     # self.camera.reset_clicks()  # KUI OBJECT_ID'D EI LEITUD, clearib click x/y history ära.
 
                 if object_id == 982:
-                    if UniversalVariables.final_maze != True:
+                    if self.variables.final_maze != True:
                         self.terrain_data[terrain_grid_y][terrain_grid_x] = 981  # Key slotti
-                        UniversalVariables.portal_frames -= 1
+                        self.variables.portal_frames -= 1
 
                         self.tile_sounds.insert_key_audio()
                         # self.camera.reset_clicks()
@@ -119,7 +119,7 @@ class Interaction:
                                                                              555) and UniversalFunctions.count_occurrences_in_list_of_lists(
                             self.terrain_data, 982) <= 8:
 
-                        UniversalVariables.ui_elements.append(
+                        self.variables.ui_elements.append(
                             "Yet, with every passing moment, the portal's brilliance wanes, "
                             "its ethereal glow dimming until it flickers and fades into darkness once more, "
                             "sealing away the mysteries of the sanctum."
@@ -134,8 +134,8 @@ class Interaction:
                         x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 1000)
                         self.terrain_data[x][y] = 9882
 
-                        UniversalVariables.portal_list = []
-                        UniversalVariables.portal_frame_rect = None
+                        self.variables.portal_list = []
+                        self.variables.portal_frame_rect = None
 
                     else:  # Kui slotist võtad key ära
                         self.object_management.add_object_from_inv('Maze_Key')
@@ -151,7 +151,7 @@ class Interaction:
                         text = ("Can't open new maze during night.")
                         if text in self.fading_text.shown_texts:
                             self.fading_text.shown_texts.remove(text)
-                        UniversalVariables.ui_elements.append(text)
+                        self.variables.ui_elements.append(text)
 
                         # self.camera.reset_clicks()
                         return
@@ -164,7 +164,7 @@ class Interaction:
                             text = ("No available Maze key in inventory.")
                             if text in self.fading_text.shown_texts:
                                 self.fading_text.shown_texts.remove(text)
-                            UniversalVariables.ui_elements.append(text)
+                            self.variables.ui_elements.append(text)
 
                             # self.camera.reset_clicks()
                             return
@@ -179,18 +179,18 @@ class Interaction:
                             95: 1, 97: 2, 94: 3, 96: 4}
                         location = locations[object_id]
 
-                        grid_x, grid_y = terrain_x // UniversalVariables.block_size, terrain_y // UniversalVariables.block_size
+                        grid_x, grid_y = terrain_x // self.variables.block_size, terrain_y // self.variables.block_size
 
-                        if UniversalVariables.first_time:
+                        if self.variables.first_time:
                             for _ in range(2):
 
-                                new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
-                                UniversalVariables.map_list.insert(0, new_row)
+                                new_row = ['place' for _ in range(len(self.variables.map_list[0]))]
+                                self.variables.map_list.insert(0, new_row)
 
                                 for row in range(39):
                                     self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
 
-                                for row in UniversalVariables.map_list:
+                                for row in self.variables.map_list:
                                     row.insert(0, 'place')
 
                                 for row in self.terrain_data:
@@ -198,12 +198,12 @@ class Interaction:
                                         row.insert(0, None)
 
                                 # teleb playeri ja camera 6igesse kohta
-                                UniversalVariables.player_x += 39 * UniversalVariables.block_size
-                                UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * UniversalVariables.block_size
-                                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * UniversalVariables.block_size
+                                self.variables.player_x += 39 * self.variables.block_size
+                                self.variables.player_y += 39 * self.variables.block_size
+                                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * self.variables.block_size
+                                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * self.variables.block_size
 
-                            UniversalVariables.first_time = False
+                            self.variables.first_time = False
                             grid_x, grid_y = grid_x + 80, grid_y + 80
 
                         j = (grid_y // 39) * 39  # Y koordinaat

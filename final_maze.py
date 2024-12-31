@@ -1,6 +1,5 @@
 import pygame
 
-from variables import UniversalVariables
 from functions import UniversalFunctions
 
 
@@ -20,22 +19,22 @@ class Final_Maze:
         """Kui player läheb portali sisse siis ta detectib selle ära ja ei lase enam playeril liikuda + hide player"""
 
         # Resetib delay kui player pole portalisse läinud
-        if not UniversalVariables.cutscene:
+        if not self.variables.cutscene:
             self.delay = 0
 
         # Vaatab kas player läks portalisse või mitte
-        if UniversalVariables.portal_frame_rect:
-            if UniversalVariables.portal_frame_rect.colliderect(self.player_rect):
-                UniversalVariables.cutscene = True
-                UniversalVariables.portal_frame_rect = None
-                UniversalVariables.portal_list = []
+        if self.variables.portal_frame_rect:
+            if self.variables.portal_frame_rect.colliderect(self.player_rect):
+                self.variables.cutscene = True
+                self.variables.portal_frame_rect = None
+                self.variables.portal_list = []
 
     def change_ground(self) -> None:
         """Muudab groundi None'iks"""
         
         original_x, original_y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 1000)
         
-        UniversalVariables.ui_elements.append("""   Thanks for playing.   """)
+        self.variables.ui_elements.append("""   Thanks for playing.   """)
 
         # Muudab iga 20 ticki tagant groundi
         if self.delay == 20:
@@ -66,12 +65,12 @@ class Final_Maze:
             # Vaatab kuna peab cutscene'ist välja tulema
             if abs(self.y_11) == 10:
 
-                # UniversalVariables.player_x = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
-                # UniversalVariables.player_y = UniversalVariables.block_size * 40.75  # Teleb final bossi mapi keskele
+                # self.variables.player_x = self.variables.block_size * 40.75  # Teleb final bossi mapi keskele
+                # self.variables.player_y = self.variables.block_size * 40.75  # Teleb final bossi mapi keskele
                 # self.terrain_data = self.generate_map_with_portal(80)  # See teeb final boss mapi
                 # Create a black surface
 
-                UniversalVariables.cutscene = False
+                self.variables.cutscene = False
                 pygame.quit()
 
     def generate_map_with_portal(size=80):
@@ -109,16 +108,16 @@ class Final_Maze:
 
     def portal(self):
 
-        if UniversalVariables.final_maze == False:
+        if self.variables.final_maze == False:
             return
-        if UniversalVariables.portal_frames > 0:
-            _ = UniversalVariables.portal_frames
+        if self.variables.portal_frames > 0:
+            _ = self.variables.portal_frames
             for i in range(_):
                 UniversalFunctions.gray_yellow(self, 'yellow')
-                UniversalVariables.portal_frames -= 1
+                self.variables.portal_frames -= 1
 
                 if i == 7:
-                    UniversalVariables.portal_frames = 0
+                    self.variables.portal_frames = 0
                     break
 
         # Teeb portali valmis
@@ -134,24 +133,24 @@ class Final_Maze:
                     "echoing through the labyrinth as the portal's magic pulses with newfound life."
                 )
             if text not in self.fading_text.shown_texts:
-                UniversalVariables.ui_elements.append(text)
+                self.variables.ui_elements.append(text)
 
-            UniversalVariables.portal_list = []
+            self.variables.portal_list = []
             self.tile_sounds.portal_open_audio()
             UniversalFunctions.yellow_green(self, 'green')
             x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 555)
             self.terrain_data[x+1][y] = 1000
             portal_y, portal_x =\
-                ((x+1) * UniversalVariables.block_size) + UniversalVariables.block_size / 2,\
-                (y * UniversalVariables.block_size) + UniversalVariables.block_size / 2
+                ((x+1) * self.variables.block_size) + self.variables.block_size / 2,\
+                (y * self.variables.block_size) + self.variables.block_size / 2
 
-            UniversalVariables.portal_list.append((portal_x, portal_y))
+            self.variables.portal_list.append((portal_x, portal_y))
 
     def update(self) -> None:
         """Update final maze state."""
         
         self.handle_portal_interaction()
-        if UniversalVariables.cutscene:
+        if self.variables.cutscene:
             self.change_ground()
 
         self.portal()

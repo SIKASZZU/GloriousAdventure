@@ -1,4 +1,3 @@
-from camera import Camera
 import random
 
 
@@ -63,3 +62,30 @@ class UniversalFunctions:
 
                 self.terrain_data[x][y] = 555
                 # Camera.reset_clicks(self)
+
+    def find_spawnpoints_in_map_data(self, terrain_data):
+        entity_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
+        
+        if terrain_data is None:
+            return
+        
+        spawnpoints = set()
+        for row in range(len(terrain_data)):
+            for column in range(len(terrain_data[row])):
+                if terrain_data[row][column] == 98:
+                    spawnpoints.add((row, column))
+
+        count = 0
+        for spawnpoint in spawnpoints:
+
+            if count < 10 * self.variables.maze_counter and spawnpoint not in entity_spawnpoint_list:
+                entity_spawnpoint_list.add(spawnpoint)
+                count += 1
+            else:  
+                break
+
+        return entity_spawnpoint_list
+
+    def print_debug_text(self, text: any):
+        if self.variables.debug_mode:
+            print(text)

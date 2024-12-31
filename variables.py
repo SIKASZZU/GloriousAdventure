@@ -56,262 +56,236 @@ class GameConfig(Enum):
 
 class UniversalVariables():
 
-    debug_mode = True
+    def __init__(self):
+            
 
-    # ******************** Settings ******************** #
+        self.debug_mode = True
 
-    # Windowi suurus x, y
-    screen_x: int = 1366  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-    screen_y: int = 768
+        # ******************** Settings ******************** #
 
-    # Mängu max tick rate
-
-    # ******************** Screen ******************** #
-    screen = pygame.display.set_mode((screen_x, screen_y))
-
-    # Double buffering, flickerimise fiximiseks
-    buffer_collision = pygame.Surface(screen.get_size())
-    buffer_collision = buffer_collision.convert()
-
-    buffer_objects = pygame.Surface(screen.get_size())
-    buffer_objects = buffer_objects.convert()
-
-    # Effectide suurused
-    icon_width: int = 60
-    icon_height: int = 60
-
-    fps_list = []
-    fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
-    fps_lock = False
-
-    # Block size muutmiseks kui zoomitakse sisse või välja
-    prev_block_size: int = 0
-
-    if debug_mode:
-        jagatis: float = 10
-
-        game_minute_lenght = 5
-
-        # Mängu heli tugevus
-        sound_volume: int = 0
+        # Windowi suurus x, y
+        self.screen_x: int = 1366  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
+        self.screen_y: int = 768
 
         # Mängu max tick rate
-        FPS: int = 200
 
-        block_size: int = screen_x // jagatis
-        player_range: int = block_size * 15
+        # ******************** Screen ******************** #
+        self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
 
-        entity_speed: float = 0.05  # entity kiirus grid size'ina
+        # Double buffering, flickerimise fiximiseks
+        self.buffer_collision = pygame.Surface(self.screen.get_size())
+        self.buffer_collision = self.buffer_collision.convert()
 
-        cooking_range:int = 5  # Grid
+        self.buffer_objects = pygame.Surface(self.screen.get_size())
+        self.buffer_objects = self.buffer_objects.convert()
 
+        # Effectide suurused
+        self.icon_width: int = 60
+        self.icon_height: int = 60
 
-    else:
-        jagatis: float = 10
+        self.fps_list = []
+        self.fps_list_max_size = 1000  # Limit the size of fps_list, avg tekib ka selle listi jargi.
+        self.fps_lock = False
 
-        game_minute_lenght = 75
+        # Block size muutmiseks kui zoomitakse sisse või välja
+        self.prev_block_size: int = 0
 
-        # Mängu heli tugevus
-        sound_volume: int = 0.1
+        if self.debug_mode:
+            jagatis: float = 10
 
-        # Mängu max tick rate
-        FPS: int = 60
+            self.game_minute_lenght = 5
 
-        block_size: int = screen_x // jagatis
-        player_range: int = block_size * 1.5
+            # Mängu heli tugevus
+            self.sound_volume: int = 0
 
-        entity_speed: float = 0.03  # entity kiirus grid size'ina
+            # Mängu max tick rate
+            self.FPS: int = 200
 
-        cooking_range:int = 2  # Grid
+            self.block_size: int = self.screen_x // jagatis
+            self.player_range: int = self.block_size * 15
 
-    # ******************** Dropping ******************** #
-    items_to_drop = {}
-    dropped_items: dict = {}
-    despawn_timer_default: int = 800  # Dropped itemite despawn timer
+            self.entity_speed: float = 0.05  # entity kiirus grid size'ina
 
-    # ******************** Attacking ******************** #
-    object_hp_dict: dict = {}
-    object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
-
-    # ******************** PLAYER ******************** #
-    animation_index = 2
-
-    current_equipped_item = None
-    current_equipped_item_item_type = None
-    interaction_delay = 100  # Delay tegevuse vahel, näiteks söömine, ehitamine, asjade ülesse võtmine
-    interaction_delay_max = interaction_delay
+            self.cooking_range:int = 5  # Grid
 
 
-    player_height_factor  = 0.45
-    player_width_factor   = 0.45
-    player_height: int = block_size * player_height_factor
-    player_width:  int = block_size * player_width_factor
+        else:
+            jagatis: float = 10
 
-    player_hitbox_offset_x: float = 0.29 * player_width
-    player_hitbox_offset_y: float = 0.22 * player_height
+            self.game_minute_lenght = 75
 
-    # Playeri koordinaatide arvutamine
-    # Player_x/_y ei ole offsetti lisatud
-    player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
-    player_y: int = 1010 # random.randint(40 * block_size, 77 * block_size)
+            # Mängu heli tugevus
+            self.sound_volume: int = 0.1
 
-    health_status      = None
-    hunger_resistance  = 0
-    thirst_resistance  = 0
-    player_poisoned    = False
-    player_infected    = False
-    player_bleeding    = False
-    serum_active       = False
-    player_sprinting   = False
-    player_sneaking    = False
-    attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
-    allow_movement     = True
-    render_after       = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
+            # Mängu max tick rate
+            self.FPS: int = 60
+
+            self.block_size: int = self.screen_x // jagatis
+            self.player_range: int = self.block_size * 1.5
+
+            self.entity_speed: float = 0.03  # entity kiirus grid size'ina
+
+            self.cooking_range:int = 2  # Grid
+
+        # ******************** Dropping ******************** #
+        self.items_to_drop = {}
+        self.dropped_items: dict = {}
+        self.despawn_timer_default: int = 800  # Dropped itemite despawn timer
+
+        # ******************** Attacking ******************** #
+        self.object_hp_dict: dict = {}
+        self.object_reset_timer: int = 200  # Kui reset timer jõuab 0 siis kaob 'object_hp_dict' ära
+
+        # ******************** PLAYER ******************** #
+        self.animation_index = 2
+
+        self.current_equipped_item = None
+        self.current_equipped_item_item_type = None
+        self.interaction_delay = 100  # Delay tegevuse vahel, näiteks söömine, ehitamine, asjade ülesse võtmine
+        self.interaction_delay_max = self.interaction_delay
 
 
-    player_damage: float = 2
+        self.player_height_factor  = 0.45
+        self.player_width_factor   = 0.45
+        self.player_height: int = self.block_size * self.player_height_factor
+        self.player_width:  int = self.block_size * self.player_width_factor
 
-    # ******************** Screen ******************** #
-    ui_elements: list = []
+        self.player_hitbox_offset_x: float = 0.29 * self.player_width
+        self.player_hitbox_offset_y: float = 0.22 * self.player_height
 
-    loot = [
-        # ("Stick", (2, 5)),
-        # ("Stone_Shard", 1),
-        # ("Wood_Pickaxe", 1),
-        # ("Oak_Planks", (2, 3)),
-        # ("Small_Rock_Sword", 1),
-        # ("Oak_Planks", (2, 3)),
-        # ("Oak_Wood", (1, 2)),
-        # ("Flashlight", 1),
-        # ("Serum", 1),
-        ("Bread", (2, 3)),
-        # ("Raw_Meat", (2, 3)),
-        # ("Bandage", (1, 4)),
-        # ("Bottle_Water", (2, 3)),
-        # ("Glowstick", (1, 3)),
-        # ("String", (1, 3)),
+        # Playeri koordinaatide arvutamine
+        # Player_x/_y ei ole offsetti lisatud
+        self.player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
+        self.player_y: int = 1010 # random.randint(40 * block_size, 77 * block_size)
 
-    ]
+        self.health_status      = None
+        self.hunger_resistance  = 0
+        self.thirst_resistance  = 0
+        self.player_poisoned    = False
+        self.player_infected    = False
+        self.player_bleeding    = False
+        self.serum_active       = False
+        self.player_sprinting   = False
+        self.player_sneaking    = False
+        self.attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
+        self.allow_movement     = True
+        self.render_after       = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
 
-    # ******************** COLLISION ******************** #
-    collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
-    object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
 
-    # ******************** VISION ******************** #
-    base_light_range: int = 420
-    base_opposite_light_range: int = player_width
+        self.player_damage: float = 2
 
-    light_range: int = 420
-    opposite_light_range: int = player_width
+        # ******************** Screen ******************** #
+        self.ui_elements: list = []
 
-    walls: list = []  # Collision boxide seinad
-    last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
+        self.loot = [
+            # ("Stick", (2, 5)),
+            # ("Stone_Shard", 1),
+            # ("Wood_Pickaxe", 1),
+            # ("Oak_Planks", (2, 3)),
+            # ("Small_Rock_Sword", 1),
+            # ("Oak_Planks", (2, 3)),
+            # ("Oak_Wood", (1, 2)),
+            # ("Flashlight", 1),
+            # ("Serum", 1),
+            ("Bread", (2, 3)),
+            # ("Raw_Meat", (2, 3)),
+            # ("Bandage", (1, 4)),
+            # ("Bottle_Water", (2, 3)),
+            # ("Glowstick", (1, 3)),
+            # ("String", (1, 3)),
 
-    # ******************** MAZE ******************** #
+        ]
 
-    # General
-    maze_counter: int = 0
-    entity_counter: int = 0
+        # ******************** COLLISION ******************** #
+        self.collision_boxes:    list = []  # terrain_x, terrain_y, collision_box_width, collision_box_height, object_id
+        self.object_list:        list = []  # terrain_x, terrain_y, object_width, object_height, object_image, object_id
 
-    # 0 col / row maze fix
-    first_time = True
+        # ******************** VISION ******************** #
+        self.base_light_range: int = 420
+        self.base_opposite_light_range: int = self.player_width
 
-    # Final maze
-    portal_frame_rect = None
+        self.light_range: int = 420
+        self.opposite_light_range: int = self.player_width
 
-    final_maze = False
-    cutscene = False
+        self.walls: list = []  # Collision boxide seinad
+        self.last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
-    final_maze_key_slots: set = set()
-    portal_list: list = []
-    portal_frames: int = 0
+        # ******************** MAZE ******************** #
 
-    # Blade maze
-    blades_spawned = False
-    already_looped_blades = None
+        # General
+        self.maze_counter: int = 0
+        self.entity_counter: int = 0
 
-    # ******************** Render ******************** #
-    map_list: list = [['glade']]
+        # 0 col / row maze fix
+        self.first_time = True
 
-    blits_sequence_collision: list = []
-    blits_sequence_objects: list = []
-    text_sequence: list = []
+        # Final maze
+        self.portal_frame_rect = None
 
-    offset_x: int = 0
-    offset_y: int = 0
-    update_view = True
-    
-    # ******************** entity ******************** #
-    entity_spawnpoint_list = set()
+        self.final_maze = False
+        self.cutscene = False
 
-    # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
-    entity_path_update_tick = 5 + random.randint(15, 20)
+        self.final_maze_key_slots: set = set()
+        self.portal_list: list = []
+        self.portal_frames: int = 0
 
-    ghost_hp = 8
+        # Blade maze
+        self.blades_spawned = False
+        self.already_looped_blades = None
 
-    # ******************** Counters ******************** #
-    render_boxes_counter: bool = True
+        # ******************** Render ******************** #
+        self.map_list: list = [['glade']]
 
-    # ******************** Cooking ******************** #
-    station_capacity = 24  # Max raw ja cooked item'ite kogus cooking station'is
+        self.blits_sequence_collision: list = []
+        self.blits_sequence_objects: list = []
+        self.text_sequence: list = []
 
-    is_cooking: bool = False  # Invi lockimiseks
-    cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
-    cooking_delay = 150  # Kaua läheb itemi cookimisega -> Default 300
-    cooking_menu = False
-
-    # ******************** Building ******************** #
-    allow_building = True
-
-    # ******************** Farming ******************** #
-    farmable_stage_list = []
-
-    # ******************** Items ******************** #
-    geiger_chosen_grid = None
-
-    # Avg Growth Time
-    avg_growth_time_wheat   = 105  # (real - time)
-    avg_growth_time_potato  = 90   # (real - time)
-    avg_growth_time_corn    = 80   # (real - time)
-    avg_growth_time_carrot  = 75   # (real - time)
-
-    wheat_stage_growth_time = 20 * avg_growth_time_wheat  # Default: 75 * avg_growth_time_wheat
-    wheat_minus_random_range = (0, wheat_stage_growth_time // 1.1)
-
-    potato_stage_growth_time = avg_growth_time_potato * wheat_stage_growth_time // avg_growth_time_wheat
-    potato_minus_random_range = (0, potato_stage_growth_time // 1.1)
-
-    corn_stage_growth_time = avg_growth_time_corn * wheat_stage_growth_time // avg_growth_time_wheat
-    corn_minus_random_range = (0, corn_stage_growth_time // 1.1)
-
-    carrot_stage_growth_time = avg_growth_time_carrot * wheat_stage_growth_time // avg_growth_time_wheat
-    carrot_minus_random_range = (0, carrot_stage_growth_time // 1.1)
-
-    @staticmethod
-    def find_spawnpoints_in_map_data(terrain_data):
-        entity_spawnpoint_list = set()  # resetib ka ikka selle sitajunni
+        self.offset_x: int = 0
+        self.offset_y: int = 0
+        self.update_view = True
         
-        if terrain_data is None:
-            return
-        
-        spawnpoints = set()
-        for row in range(len(terrain_data)):
-            for column in range(len(terrain_data[row])):
-                if terrain_data[row][column] == 98:
-                    spawnpoints.add((row, column))
+        # ******************** entity ******************** #
+        self.entity_spawnpoint_list = set()
 
-        count = 0
-        for spawnpoint in spawnpoints:
+        # Et ei arvutaks uut pathi 24/7 vaid arvutab seda seatud aja tagant
+        self.entity_path_update_tick = 5 + random.randint(15, 20)
 
-            if count < 10 * UniversalVariables.maze_counter and spawnpoint not in entity_spawnpoint_list:
-                entity_spawnpoint_list.add(spawnpoint)
-                count += 1
-            else:  
-                break
+        self.ghost_hp = 8
 
-        return entity_spawnpoint_list
+        # ******************** Counters ******************** #
+        self.render_boxes_counter: bool = True
 
-    @staticmethod
-    def print_debug_text(text: any):
-        if UniversalVariables.debug_mode:
-            print(text)
+        # ******************** Cooking ******************** #
+        self.station_capacity = 24  # Max raw ja cooked item'ite kogus cooking station'is
+
+        self.is_cooking: bool = False  # Invi lockimiseks
+        self.cooking_range: int  # Muuda üleval -> 'debub | normal - mode'
+        self.cooking_delay = 150  # Kaua läheb itemi cookimisega -> Default 300
+        self.cooking_menu = False
+
+        # ******************** Building ******************** #
+        self.allow_building = True
+
+        # ******************** Farming ******************** #
+        self.farmable_stage_list = []
+
+        # ******************** Items ******************** #
+        self.geiger_chosen_grid = None
+
+        # Avg Growth Time
+        self.avg_growth_time_wheat   = 105  # (real - time)
+        self.avg_growth_time_potato  = 90   # (real - time)
+        self.avg_growth_time_corn    = 80   # (real - time)
+        self.avg_growth_time_carrot  = 75   # (real - time)
+
+        self.wheat_stage_growth_time = 20 * self.avg_growth_time_wheat  # Default: 75 * avg_growth_time_wheat
+        self.wheat_minus_random_range = (0, self.wheat_stage_growth_time // 1.1)
+
+        self.potato_stage_growth_time = self.avg_growth_time_potato * self.wheat_stage_growth_time // self.avg_growth_time_wheat
+        self.potato_minus_random_range = (0, self.potato_stage_growth_time // 1.1)
+
+        self.corn_stage_growth_time = self.avg_growth_time_corn * self.wheat_stage_growth_time // self.avg_growth_time_wheat
+        self.corn_minus_random_range = (0, self.corn_stage_growth_time // 1.1)
+
+        self.carrot_stage_growth_time = self.avg_growth_time_carrot * self.wheat_stage_growth_time // self.avg_growth_time_wheat
+        self.carrot_minus_random_range = (0, self.carrot_stage_growth_time // 1.1)

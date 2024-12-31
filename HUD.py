@@ -1,14 +1,13 @@
 import pygame
-from variables import UniversalVariables
-
 
 class HUD_class:
-    def __init__(self, player, image_loader):
+    def __init__(self, player, image_loader, variables):
         self.player = player
         self.image_loader = image_loader
+        self.variables = variables
             
-        self.screen_x: int = UniversalVariables.screen_x
-        self.screen_y: int = UniversalVariables.screen_y
+        self.screen_x: int = self.variables.screen_x
+        self.screen_y: int = self.variables.screen_y
         self.screen = pygame.display.set_mode((self.screen_x, self.screen_y))
 
         self.stamina_bar_decay = 0
@@ -16,7 +15,7 @@ class HUD_class:
 
     def update(self):
         self.render_HUD()
-        self.display_effects_icons(icon_width=UniversalVariables.icon_width, icon_height=UniversalVariables.icon_height)
+        self.display_effects_icons(icon_width=self.variables.icon_width, icon_height=self.variables.icon_height)
 
     def bar_visualization(self):
         half_w = self.half_w
@@ -134,15 +133,15 @@ class HUD_class:
         effect_blits_sequence = []
         effects = []
 
-        if UniversalVariables.player_bleeding:
+        if self.variables.player_bleeding:
             icon_name = "Bleed"
             effects.append(icon_name)
 
-        if UniversalVariables.player_infected:
+        if self.variables.player_infected:
             icon_name = "Infection"
             effects.append(icon_name)
 
-        if UniversalVariables.player_poisoned:
+        if self.variables.player_poisoned:
             icon_name = "Poison"
             effects.append(icon_name)
 
@@ -154,12 +153,12 @@ class HUD_class:
             scaled_icon = pygame.transform.scale(icon, (icon_width, icon_height))
 
             # Arvutab TOP-RIGHT asukoha iga effectile, mis parasjagu playeril on
-            screen_width = UniversalVariables.screen_x
+            screen_width = self.variables.screen_x
             pos = (screen_width - icon_width - 10, 10 + i * (icon_height + 10))  # Margin 10
 
             effect_blits_sequence.append((scaled_icon, pos))
 
-        UniversalVariables.screen.blits(effect_blits_sequence)
+        self.variables.screen.blits(effect_blits_sequence)
 
     def render_HUD(self) -> None:
         """ Renderib HUDi (Stamina-, food- ja healthbari, audio). """
@@ -188,42 +187,42 @@ class HUD_class:
             pygame.draw.rect(screen, color, border_rect, border_width, border_radius)
 
         # Drawing all bars using the helper function
-        draw_bar(UniversalVariables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
-        draw_bar(UniversalVariables.screen, '#662828', health_rect, '#FF6666', health_bar_border)
-        draw_bar(UniversalVariables.screen, '#78684B', food_rect, '#C8AE7D', food_bar_border)
-        draw_bar(UniversalVariables.screen, '#273F87', hydration_rect, '#4169E1', hydration_bar_border)
+        draw_bar(self.variables.screen, '#FFBB70', stamina_rect, '#FFEC9E', stamina_bar_border)
+        draw_bar(self.variables.screen, '#662828', health_rect, '#FF6666', health_bar_border)
+        draw_bar(self.variables.screen, '#78684B', food_rect, '#C8AE7D', food_bar_border)
+        draw_bar(self.variables.screen, '#273F87', hydration_rect, '#4169E1', hydration_bar_border)
 
         if self.stamina_bar_decay != 120:  # Muidu pilt spawnib 0,0 kohta. Idk wtf miks.
 
             # Stamina bari keskele icon (Stamina.png)
             stamina_icon = self.image_loader.load_gui_image("Stamina")
             scaled_stamina_icon = pygame.transform.scale(stamina_icon, (35, 35))
-            UniversalVariables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
+            self.variables.screen.blit(scaled_stamina_icon, (stamina_w_midpoint, stamina_h_midpoint))
 
         # Health bari keskele icon (Heart.png)
         heart_icon = self.image_loader.load_gui_image("Health")
         scaled_heart_icon = pygame.transform.scale(heart_icon, (50, 50))
-        UniversalVariables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
+        self.variables.screen.blit(scaled_heart_icon, (heart_w_midpoint, heart_h_midpoint))
 
         # Food bari keskele icon (Food.png)
         food_icon = self.image_loader.load_gui_image("Food")
         scaled_food_icon = pygame.transform.scale(food_icon, (50, 45))
-        UniversalVariables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
+        self.variables.screen.blit(scaled_food_icon, (food_w_midpoint, food_h_midpoint))
 
         # Hydration bari keskele icon (Hydration.png)
         hydration_icon = self.image_loader.load_gui_image("Hydration")
         scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
-        UniversalVariables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
+        self.variables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
 
         # Player's audio icons
         audio_icon_position = (800, 715)
         audio_icon = None
 
-        if UniversalVariables.player_sneaking:
+        if self.variables.player_sneaking:
             audio_icon = self.image_loader.load_gui_image("sound_low")
-        elif UniversalVariables.player_sprinting:
+        elif self.variables.player_sprinting:
             audio_icon = self.image_loader.load_gui_image("sound_high")
         else:
             audio_icon = self.image_loader.load_gui_image("sound_average")
         audio_icon = pygame.transform.scale(audio_icon, (50, 50))
-        UniversalVariables.screen.blit(audio_icon, audio_icon_position)
+        self.variables.screen.blit(audio_icon, audio_icon_position)

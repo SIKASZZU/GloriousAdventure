@@ -5,7 +5,6 @@ import sys
 
 from sprite import AnimationManager
 from sprite import load_sprite_sheets
-from variables import UniversalVariables
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -18,8 +17,9 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class PlayerUpdate:
-    def __init__(self, terrain_data):
+    def __init__(self, terrain_data, variables):
         self.terrain_data = terrain_data
+        self.variables = variables
 
         self.player = None
 
@@ -78,15 +78,15 @@ class PlayerUpdate:
         """ Uuendab player datat (x,y ja animation väärtused) ja laseb tal liikuda. """
         keys = pygame.key.get_pressed()  # Track keyboard inputs
 
-        if not UniversalVariables.allow_movement:  # Check if cutscene is active
+        if not self.variables.allow_movement:  # Check if cutscene is active
             x, y = PlayerUpdate.disable_movement()
 
         else:
             keys = pygame.key.get_pressed()  # Track keyboard inputs
 
             # Teeb uue player x/y, algne x ja y tuleb playeri maailma panekuga (randint)
-            new_player_x: int = UniversalVariables.player_x
-            new_player_y: int = UniversalVariables.player_y
+            new_player_x: int = self.variables.player_x
+            new_player_y: int = self.variables.player_y
 
             # fixme mis see self.frame delayu on ??
 
@@ -105,15 +105,15 @@ class PlayerUpdate:
             # initial animations
             for key, anim_index in key_animation_map.items():
                 if keys[key]:
-                    UniversalVariables.animation_index = anim_index
-                    UniversalVariables.last_input = pygame.key.name(key)
+                    self.variables.animation_index = anim_index
+                    self.variables.last_input = pygame.key.name(key)
 
             # combined animations
             if keys[pygame.K_s] or keys[pygame.K_w]:
                 if keys[pygame.K_a]:
-                    UniversalVariables.last_input += 'a'
+                    self.variables.last_input += 'a'
                 if keys[pygame.K_d]:
-                    UniversalVariables.last_input += 'd'
+                    self.variables.last_input += 'd'
 
             x = -1 * int(keys[pygame.K_a]) + 1 * int(keys[pygame.K_d])
             y = -1 * int(keys[pygame.K_w]) + 1 * int(keys[pygame.K_s])
@@ -127,28 +127,28 @@ class PlayerUpdate:
             normalized_x = x / magnitude
             normalized_y = y / magnitude
 
-        new_player_x = UniversalVariables.player_x + self.player.speed.current_speed * normalized_x
-        new_player_y = UniversalVariables.player_y + self.player.speed.current_speed * normalized_y
+        new_player_x = self.variables.player_x + self.player.speed.current_speed * normalized_x
+        new_player_y = self.variables.player_y + self.player.speed.current_speed * normalized_y
 
-        if self.player.health.get_health() == 0 and UniversalVariables.debug_mode == False:
-            UniversalVariables.last_input = 'None'
+        if self.player.health.get_health() == 0 and self.variables.debug_mode == False:
+            self.variables.last_input = 'None'
         else:
-            UniversalVariables.player_x: int = new_player_x
-            UniversalVariables.player_y: int = new_player_y
+            self.variables.player_x: int = new_player_x
+            self.variables.player_y: int = new_player_y
 
-        self.player_rect = pygame.Rect(UniversalVariables.player_x + UniversalVariables.player_hitbox_offset_x,
-                                    UniversalVariables.player_y + UniversalVariables.player_hitbox_offset_y,
-                                    (UniversalVariables.player_width // 2), (UniversalVariables.player_height // 2))
+        self.player_rect = pygame.Rect(self.variables.player_x + self.variables.player_hitbox_offset_x,
+                                    self.variables.player_y + self.variables.player_hitbox_offset_y,
+                                    (self.variables.player_width // 2), (self.variables.player_height // 2))
 
         # Kui player seisab (Animationi jaoks - IDLE)
         is_idle = not (keys[pygame.K_a] or keys[pygame.K_d] or keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_e])
         try:
-            top_left = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // UniversalVariables.block_size)][int((self.player_rect.left + self.player_rect.width) // UniversalVariables.block_size)]
-            top_right = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // UniversalVariables.block_size)][int(self.player_rect.left // UniversalVariables.block_size)]
-            bottom_left = self.terrain_data[int(self.player_rect.top // UniversalVariables.block_size)][int((self.player_rect.left + self.player_rect.width) // UniversalVariables.block_size)]
-            bottom_right = self.terrain_data[int(self.player_rect.top // UniversalVariables.block_size)][int(self.player_rect.left // UniversalVariables.block_size)]
+            top_left = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // self.variables.block_size)][int((self.player_rect.left + self.player_rect.width) // self.variables.block_size)]
+            top_right = self.terrain_data[int((self.player_rect.top + self.player_rect.height) // self.variables.block_size)][int(self.player_rect.left // self.variables.block_size)]
+            bottom_left = self.terrain_data[int(self.player_rect.top // self.variables.block_size)][int((self.player_rect.left + self.player_rect.width) // self.variables.block_size)]
+            bottom_right = self.terrain_data[int(self.player_rect.top // self.variables.block_size)][int(self.player_rect.left // self.variables.block_size)]
 
-            if UniversalVariables.last_input != 'None':
+            if self.variables.last_input != 'None':
                 if top_left == 0 and top_right == 0 and bottom_left == 0 and bottom_right == 0:
                     if is_idle:
                         self.frame = self.idle_swimming_animation_manager.update_animation(keys, is_idle)
@@ -166,14 +166,14 @@ class PlayerUpdate:
 
     def get_player_rect(self):
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x,
-                                                     UniversalVariables.player_y + UniversalVariables.offset_y)
+        player_position_adjusted: tuple[int, int] = (self.variables.player_x + self.variables.offset_x,
+                                                     self.variables.player_y + self.variables.offset_y)
 
 
 
-        player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
-                                  player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
-                                  UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
+        player_rect = pygame.Rect(player_position_adjusted[0] + self.variables.player_hitbox_offset_x,
+                                  player_position_adjusted[1] + self.variables.player_hitbox_offset_y,
+                                  self.variables.player_width * 0.47, self.variables.player_height * 0.74)
 
         self.player_rect = player_rect
 
@@ -185,43 +185,44 @@ class PlayerUpdate:
         """ Renderib ainult playeri. """
 
         # Muudab playeri asukohta vastavalt kaamera asukohale / paiknemisele
-        player_position_adjusted: tuple[int, int] = (UniversalVariables.player_x + UniversalVariables.offset_x, UniversalVariables.player_y + UniversalVariables.offset_y)
+        player_position_adjusted: tuple[int, int] = (self.variables.player_x + self.variables.offset_x, self.variables.player_y + self.variables.offset_y)
 
         blit_operations = [
             (self.frame, player_position_adjusted)
             # Add other blit operations here if they exist in the same rendering context.
         ]
 
-        if not UniversalVariables.cutscene:
-            UniversalVariables.screen.blits(blit_operations, doreturn=False)
+        if not self.variables.cutscene:
+            self.variables.screen.blits(blit_operations, doreturn=False)
 
         # Joonistab playeri ümber punase ringi ehk playeri hitboxi
-        player_rect = pygame.Rect(player_position_adjusted[0] + UniversalVariables.player_hitbox_offset_x,
-                                  player_position_adjusted[1] + UniversalVariables.player_hitbox_offset_y,
-                                  UniversalVariables.player_width * 0.47, UniversalVariables.player_height * 0.74)
+        player_rect = pygame.Rect(player_position_adjusted[0] + self.variables.player_hitbox_offset_x,
+                                  player_position_adjusted[1] + self.variables.player_hitbox_offset_y,
+                                  self.variables.player_width * 0.47, self.variables.player_height * 0.74)
         self.player_rect = player_rect
 
-        if not UniversalVariables.portal_list == []:
-            x, y = int(UniversalVariables.portal_list[0][0]), int(UniversalVariables.portal_list[0][1])
-            UniversalVariables.portal_frame_rect = pygame.Rect(x + UniversalVariables.offset_x,
-                                                           y + UniversalVariables.offset_y,
-                                                           UniversalVariables.block_size, UniversalVariables.block_size)
+        if not self.variables.portal_list == []:
+            x, y = int(self.variables.portal_list[0][0]), int(self.variables.portal_list[0][1])
+            self.variables.portal_frame_rect = pygame.Rect(x + self.variables.offset_x,
+                                                           y + self.variables.offset_y,
+                                                           self.variables.block_size, self.variables.block_size)
 
         # renderib playeri hitboxi
-        if UniversalVariables.render_boxes_counter and UniversalVariables.debug_mode:
-            pygame.draw.rect(UniversalVariables.screen, (255, 0, 0), self.player_rect, 2)
+        if self.variables.render_boxes_counter and self.variables.debug_mode:
+            pygame.draw.rect(self.variables.screen, (255, 0, 0), self.player_rect, 2)
 
-            if not UniversalVariables.portal_list == []:
-                pygame.draw.rect(UniversalVariables.screen, "orange", UniversalVariables.portal_frame_rect, 2)
+            if not self.variables.portal_list == []:
+                pygame.draw.rect(self.variables.screen, "orange", self.variables.portal_frame_rect, 2)
 
-        UniversalVariables.player_width = UniversalVariables.player_width_factor * UniversalVariables.block_size
-        UniversalVariables.player_height = UniversalVariables.player_height_factor * UniversalVariables.block_size
+        self.variables.player_width = self.variables.player_width_factor * self.variables.block_size
+        self.variables.player_height = self.variables.player_height_factor * self.variables.block_size
 
 
 class EssentialsUpdate:
-    def __init__(self, font, framerate):
+    def __init__(self, font, framerate, variables):
         self.font = font
         self.framerate = framerate
+        self.variables = variables
 
         self.game_start_clock = (9, 0)
         self.time_update: int = 0
@@ -239,7 +240,7 @@ class EssentialsUpdate:
         minutes = time[1]
 
         # Check if new minute should be added to game's time
-        if UniversalVariables.game_minute_lenght <= self.time_update:
+        if self.variables.game_minute_lenght <= self.time_update:
             minutes += 1
             self.time_update = 0
 
@@ -273,7 +274,7 @@ class EssentialsUpdate:
         """ See func edastab self.daylight_strengthi vision draw_shadowile."""
         """ Draw_shadowis player_vision_conei valgustugevus self.daylight_strengthist """
 
-        if not UniversalVariables.debug_mode:
+        if not self.variables.debug_mode:
             hours = self.game_start_clock[0]  # Get current time
 
             daylight_strength_map = {
@@ -297,24 +298,24 @@ class EssentialsUpdate:
         """Utility function to render text on the screen."""
         if not debug:
             text_surface = self.font.render(text, True, color)
-            UniversalVariables.text_sequence.append((text_surface, position))
-        if UniversalVariables.debug_mode:
+            self.variables.text_sequence.append((text_surface, position))
+        if self.variables.debug_mode:
             text_surface = self.font.render(text, True, color)
-            UniversalVariables.text_sequence.append((text_surface, position))
+            self.variables.text_sequence.append((text_surface, position))
 
 
     def render_general(self):
         fps_text = 'FPS unlocked'
-        if UniversalVariables.fps_lock: fps_text = 'FPS locked'
+        if self.variables.fps_lock: fps_text = 'FPS locked'
 
         ui_elements = [
             (f"{self.framerate.display_fps_statistics()}", (5, 5)),  # FPS display
             (f"Time {EssentialsUpdate.calculate_time(self)[0]}:{EssentialsUpdate.calculate_time(self)[1]}", (5, 35)),
             (f"{self.day_night_text} {EssentialsUpdate.calculate_time(self)[2]}", (5, 65)),
 
-            ("H - Show hitboxes", (UniversalVariables.screen_x / 2, 5), "YELLOW", True),
-            ("J - Switch light", (UniversalVariables.screen_x / 2, 35), "YELLOW", True),
-            (f"G - {fps_text}", (UniversalVariables.screen_x / 2, 65), "YELLOW", True)
+            ("H - Show hitboxes", (self.variables.screen_x / 2, 5), "YELLOW", True),
+            ("J - Switch light", (self.variables.screen_x / 2, 35), "YELLOW", True),
+            (f"G - {fps_text}", (self.variables.screen_x / 2, 65), "YELLOW", True)
 
         ]
         for element in ui_elements:
@@ -336,18 +337,18 @@ class Framerate:
         ...
 
     def get_fps_statistics(self):
-        if not UniversalVariables.fps_list:
+        if not self.variables.fps_list:
             return 0.0, 0.0, 0.0
 
-        avg_fps = sum(UniversalVariables.fps_list) / len(UniversalVariables.fps_list)
-        min_fps = min(UniversalVariables.fps_list)
-        max_fps = max(UniversalVariables.fps_list)
+        avg_fps = sum(self.variables.fps_list) / len(self.variables.fps_list)
+        min_fps = min(self.variables.fps_list)
+        max_fps = max(self.variables.fps_list)
         return int(avg_fps), int(min_fps), int(max_fps)
 
 
     def display_fps_statistics(self):
         avg_fps, min_fps, max_fps = self.get_fps_statistics()
-        try:  current_fps = int(UniversalVariables.fps_list[-1])
+        try:  current_fps = int(self.variables.fps_list[-1])
         except IndexError: current_fps = 0
         fps_text = f"FPS {current_fps} [Avg: {avg_fps}, Min: {min_fps}, Max: {max_fps}]"  # avg, min, max, last value of the fps num list >:)
         return fps_text

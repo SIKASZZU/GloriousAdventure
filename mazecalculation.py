@@ -35,8 +35,8 @@ class AddingMazeAtPosition:
             self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            player_row = int(self.variables.player_y // self.variables.block_size)
+            player_col = int(self.variables.player_x // self.variables.block_size)
 
             coordinates = find_number_in_radius(self.terrain_data, 95, player_row, player_col)
 
@@ -54,7 +54,7 @@ class AddingMazeAtPosition:
 
             # Kui teed esimese maze siis muudab selle ukse 933'ks,
             # et need hakkaksid öö/päeva vältel kinni/lahti käima
-            if UniversalVariables.maze_counter == 0:
+            if self.variables.maze_counter == 0:
                 for row in new_maze:
                     row[:] = [933 if value == 93 else value for value in row]
 
@@ -67,15 +67,15 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
+            self.variables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
-            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            # player_row = int(self.variables.player_y // self.variables.block_size)
+            # player_col = int(self.variables.player_x // self.variables.block_size)
             #
             # coordinates = find_number_in_radius(self.terrain_data, 93, player_row, player_col)
             # for tuple in coordinates:
@@ -100,8 +100,8 @@ class AddingMazeAtPosition:
             self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            player_row = int(self.variables.player_y // self.variables.block_size)
+            player_col = int(self.variables.player_x // self.variables.block_size)
 
             coordinates = find_number_in_radius(self.terrain_data, 97, player_row, player_col)
 
@@ -125,15 +125,15 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
+            self.variables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
-            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            # player_row = int(self.variables.player_y // self.variables.block_size)
+            # player_col = int(self.variables.player_x // self.variables.block_size)
             #
             # coordinates = find_number_in_radius(self.terrain_data, 91, player_row, player_col)
             # for tuple in coordinates:
@@ -148,8 +148,8 @@ class AddingMazeAtPosition:
             self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            player_row = int(self.variables.player_y // self.variables.block_size)
+            player_col = int(self.variables.player_x // self.variables.block_size)
 
             coordinates = find_number_in_radius(self.terrain_data, 94, player_row, player_col)
 
@@ -174,15 +174,15 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
+            self.variables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
-            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            # player_row = int(self.variables.player_y // self.variables.block_size)
+            # player_col = int(self.variables.player_x // self.variables.block_size)
             #
             # coordinates = find_number_in_radius(self.terrain_data, 92, player_row, player_col)
             # for tuple in coordinates:
@@ -204,8 +204,8 @@ class AddingMazeAtPosition:
             self.fading_text.re_display_fading_text("This place looks familiar.")
 
             # Arvutab algus row'i ja col'i self.terrain_data jaoks
-            player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            player_row = int(self.variables.player_y // self.variables.block_size)
+            player_col = int(self.variables.player_x // self.variables.block_size)
 
             coordinates = find_number_in_radius(self.terrain_data, 96, player_row, player_col)
 
@@ -230,15 +230,15 @@ class AddingMazeAtPosition:
                     self.terrain_data[start_row + i][start_col + j] = new_maze[i][j]
 
             self.object_management.remove_object_from_inv('Maze_Key')  # remove maze key
-            UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
+            self.variables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
             self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
             # # Muudab uue maze uksed 933.
             # # Kui maze uks on 933 siis see läheb öösel kinni ja päeval tuleb lahti
-            # player_row = int(UniversalVariables.player_y // UniversalVariables.block_size)
-            # player_col = int(UniversalVariables.player_x // UniversalVariables.block_size)
+            # player_row = int(self.variables.player_y // self.variables.block_size)
+            # player_col = int(self.variables.player_x // self.variables.block_size)
             #
             # coordinates = find_number_in_radius(self.terrain_data, 90, player_row, player_col)
             # for tuple in coordinates:
@@ -246,16 +246,16 @@ class AddingMazeAtPosition:
             #     self.terrain_data[start_row][start_col] = 933
 
     def update_terrain(self, location, coordinate, grid_other, object_id, grid_main):
-        if UniversalVariables.maze_counter == 0:  # Kõige esimene maze on alati 'block_maze'
+        if self.variables.maze_counter == 0:  # Kõige esimene maze on alati 'block_maze'
             choices = ['block_maze']
             probabilities = [1]  # 100 % alati olema
 
-        elif self.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
+        elif self.maze_type == 'blade_maze' or self.variables.maze_counter == 1:
             # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
             choices = ['labyrinth_maze', 'block_maze', 'abandoned_glade']
             probabilities = [0.09, 0.83, 0.08]  # 100 % alati olema
 
-        elif UniversalVariables.final_maze:
+        elif self.variables.final_maze:
             # 30 % 'labyrinth_maze' ja 60 % 'block_maze' ja 10 % 'blade_maze'
             choices = ['labyrinth_maze', 'block_maze', 'blade_maze', 'abandoned_glade']
             probabilities = [0.25, 0.49, 0.19, 0.07, ]  # 100 % alati olema
@@ -285,7 +285,7 @@ class AddingMazeAtPosition:
             # Kui siia ei pane seda siis läheb hiljem perse
             if col_index == 0:
 
-                for row in UniversalVariables.map_list:
+                for row in self.variables.map_list:
                     row.insert(0, 'place')
 
                 for row in self.terrain_data:
@@ -293,14 +293,14 @@ class AddingMazeAtPosition:
                         row.insert(0, None)
 
                 # teleb playeri ja camera 6igesse kohta
-                UniversalVariables.player_x += 39 * UniversalVariables.block_size
-                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * UniversalVariables.block_size
+                self.variables.player_x += 39 * self.variables.block_size
+                self.camera.camera_rect.left = self.camera.camera_rect.left + 39 * self.variables.block_size
 
                 # Kuna lisas uue placei listi algusesse siis peab ka indexi lisama
                 col_index += 1
 
 
-            self.add_maze_to_specific_position_left(UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_left(self.variables.map_list, row_index,
                                                                     col_index, maze_type)
 
         if location == 4:
@@ -314,7 +314,7 @@ class AddingMazeAtPosition:
             else:
                 coordinate += 20
                 col_index = ((gridy + 20) // 40)
-            self.add_maze_to_specific_position_right(UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_right(self.variables.map_list, row_index,
                                                                      col_index, maze_type)
 
         if location == 1:
@@ -330,20 +330,20 @@ class AddingMazeAtPosition:
             # Kui siia ei pane seda siis läheb hiljem perse
             if row_index == 0:
 
-                new_row = ['place' for _ in range(len(UniversalVariables.map_list[0]))]
-                UniversalVariables.map_list.insert(0, new_row)
+                new_row = ['place' for _ in range(len(self.variables.map_list[0]))]
+                self.variables.map_list.insert(0, new_row)
 
                 for row in range(39):
                     self.terrain_data.insert(0, [None] * len(self.terrain_data[0]))
 
                 # teleb playeri ja camera 6igesse kohta
-                UniversalVariables.player_y += 39 * UniversalVariables.block_size
-                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * UniversalVariables.block_size
+                self.variables.player_y += 39 * self.variables.block_size
+                self.camera.camera_rect.top = self.camera.camera_rect.top + 39 * self.variables.block_size
 
                 # Kuna lisas uue placei listi algusesse siis peab ka indexi lisama
                 row_index += 1
 
-            self.add_maze_to_specific_position_top(UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_top(self.variables.map_list, row_index,
                                                                    col_index, maze_type)
 
         if location == 2:
@@ -355,13 +355,13 @@ class AddingMazeAtPosition:
             else:
                 row_index = ((gridy + 20) // 40)
             if row_index < 0: row_index = 0
-            self.add_maze_to_specific_position_bottom(UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_bottom(self.variables.map_list, row_index,
                                                                       col_index, maze_type)
 
         # # # Do stuff here after adding maze
         # print()
-        # for row in UniversalVariables.map_list: print(row)  # print maze list
-        # print(UniversalVariables.maze_counter)
+        # for row in self.variables.map_list: print(row)  # print maze list
+        # print(self.variables.maze_counter)
 
 
 if __name__ == '__main__':

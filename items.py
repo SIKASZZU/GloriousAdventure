@@ -2,7 +2,8 @@
 """ Folder jaguneb v2iksemateks harudeks classide systeemi j2rgi -> Objects folder on ObjectItemi jaoks. """
 
 from variables import UniversalVariables
-block_size = UniversalVariables.block_size
+variables = UniversalVariables()
+block_size = variables.block_size
 
 
 class Item:
