@@ -20,9 +20,16 @@ def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=
 
 
 class AddingMazeAtPosition:
-    row = []
-    col = []
-    maze_type = 'block_maze'  # regular maze is 'block_maze', final maze is 'final_maze'
+    def __init__(self, fading_text, map_data, terrain_data, inv, camera):
+        self.fading_text = fading_text
+        self.map_data = map_data
+        self.terrain_data = terrain_data
+        self.inv = inv
+        self.camera = camera
+
+        self.row = []
+        self.col = []
+        self.maze_type = 'block_maze'  # regular maze is 'block_maze', final maze is 'final_maze'
 
     def add_maze_to_specific_position_top(self, map_list, row_index, col_index, maze_type):
 
@@ -64,7 +71,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
-            AddingMazeAtPosition.maze_type = maze_type
+            self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
@@ -122,7 +129,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
-            AddingMazeAtPosition.maze_type = maze_type
+            self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
@@ -171,7 +178,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
-            AddingMazeAtPosition.maze_type = maze_type
+            self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
@@ -227,7 +234,7 @@ class AddingMazeAtPosition:
 
             ObjectManagement.remove_object_from_inv(self, 'Maze_Key')  # remove maze key
             UniversalVariables.maze_counter += 1  # add maze counter, to calculate extra entity spawns
-            AddingMazeAtPosition.maze_type = maze_type
+            self.maze_type = maze_type
             self.inv.calculate(calc_slots_only=True)
             return
 
@@ -246,7 +253,7 @@ class AddingMazeAtPosition:
             choices = ['block_maze']
             probabilities = [1]  # 100 % alati olema
 
-        elif AddingMazeAtPosition.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
+        elif self.maze_type == 'blade_maze' or UniversalVariables.maze_counter == 1:
             # 40 % 'labyrinth_maze' ja 60 % 'block_maze'
             choices = ['labyrinth_maze', 'block_maze', 'abandoned_glade']
             probabilities = [0.09, 0.83, 0.08]  # 100 % alati olema
@@ -296,7 +303,7 @@ class AddingMazeAtPosition:
                 col_index += 1
 
 
-            AddingMazeAtPosition.add_maze_to_specific_position_left(self, UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_left(UniversalVariables.map_list, row_index,
                                                                     col_index, maze_type)
 
         if location == 4:
@@ -310,7 +317,7 @@ class AddingMazeAtPosition:
             else:
                 coordinate += 20
                 col_index = ((gridy + 20) // 40)
-            AddingMazeAtPosition.add_maze_to_specific_position_right(self, UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_right(UniversalVariables.map_list, row_index,
                                                                      col_index, maze_type)
 
         if location == 1:
@@ -339,7 +346,7 @@ class AddingMazeAtPosition:
                 # Kuna lisas uue placei listi algusesse siis peab ka indexi lisama
                 row_index += 1
 
-            AddingMazeAtPosition.add_maze_to_specific_position_top(self, UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_top(UniversalVariables.map_list, row_index,
                                                                    col_index, maze_type)
 
         if location == 2:
@@ -351,7 +358,7 @@ class AddingMazeAtPosition:
             else:
                 row_index = ((gridy + 20) // 40)
             if row_index < 0: row_index = 0
-            AddingMazeAtPosition.add_maze_to_specific_position_bottom(self, UniversalVariables.map_list, row_index,
+            self.add_maze_to_specific_position_bottom(UniversalVariables.map_list, row_index,
                                                                       col_index, maze_type)
 
         # # # Do stuff here after adding maze

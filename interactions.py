@@ -4,12 +4,11 @@ from items import items_list
 from objects import ObjectManagement
 from variables import GameConfig
 from variables import UniversalVariables
-from mazecalculation import AddingMazeAtPosition
 from functions import UniversalFunctions
 
 
 class Interaction:
-    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data, fading_text):
+    def __init__(self, pupdate, paudio, tile_sounds, td, camera, inv, essentials, map_data, fading_text, maze_addition):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -19,6 +18,7 @@ class Interaction:
         self.essentials = essentials
         self.map_data = map_data
         self.fading_text = fading_text
+        self.maze_addition = maze_addition
 
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -209,10 +209,10 @@ class Interaction:
                         i = (grid_x // 39) * 39  # X kooridnaat
 
                         if location == 1 or location == 2:  # top and bottom
-                            AddingMazeAtPosition.update_terrain(self, location, i, grid_x, object_id,
+                            self.maze_addition.update_terrain(location, i, grid_x, object_id,
                                                                 grid_y)  # Vaatab x coordinaati
                         else:  # left and right
-                            AddingMazeAtPosition.update_terrain(self, location, j, grid_x, object_id,
+                            self.maze_addition.update_terrain(location, j, grid_x, object_id,
                                                                 grid_y)  # Vaatab y coordinaati
                         # self.camera.reset_clicks()
 

@@ -25,15 +25,19 @@ from images import ImageLoader
 from inventory import Inventory
 from loot import Loot
 from map import MapData, glade_creation
+from mazecalculation import AddingMazeAtPosition
 from maze_changes import MazeChanges
 from menu import Menu, PauseMenu
 from objects import ObjectManagement
 from render import RenderPictures, ObjectCreation
 from status import PlayerEffect
 from text import Fading_text
+from tile_set import TileSet
 from update import EssentialsUpdate, PlayerUpdate, Framerate
 from variables import UniversalVariables
 from vision import Vision
+
+
 
 jurigged.watch()  # hot reload
 
@@ -86,6 +90,7 @@ class Game:
 
         self.initialize_audio()
 
+        self.initialize_tile_set()
         self.initialize_render()
         
         self.initialize_collisions()
@@ -97,16 +102,13 @@ class Game:
 
         # self.initialize_cooking()
         self.initialize_maze_changes()
+        self.initialize_maze_addition()
 
         self.initialize_event_handler()
-
         self.initialize_attack()
-
         self.initialize_interactions()
         self.initialize_drop()
-
         self.initialize_final_maze()
-
         self.initialize_object_creation()
 
         # FIXME: Cooking, Building -> Ei tööta
@@ -144,7 +146,8 @@ class Game:
     # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
 
     def initialize_event_handler(self):
-        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple)
+        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, \
+            self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -186,10 +189,12 @@ class Game:
         self.player_effect = PlayerEffect(self.player)
 
     def initialize_collisions(self):
-        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud, self.render)
+        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, \
+                                     self.hud, self.render)
 
     def initialize_loot(self):
-        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, self.fading_text)
+        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, \
+                         self.fading_text)
 
     def initialize_building(self):
         self.building = Building()
@@ -208,13 +213,17 @@ class Game:
         self.maze_changes = MazeChanges(self.essentials.day_night_text)
 
     def initialize_entity(self):
-        self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player, self.player_effect, self.inv, self.image_loader)
+        self.entity = Entity(self.terrain_data, self.camera, self.player_update, \
+            self.essentials, self.player, self.player_effect, self.inv, self.image_loader)
 
     def initialize_item_func(self):
-        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio, self.player_update, self.camera, self.inv, self.fading_text)
+        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, \
+            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text)
 
     def initialize_interactions(self):
-        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, self.fading_text)
+        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, \
+            self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, \
+            self.fading_text, self.maze_addition)
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv, self.image_loader)
@@ -229,7 +238,8 @@ class Game:
         self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render)
 
     def initialize_render(self):
-        self.render = RenderPictures(self.player_update, self.image_loader, self.camera, self.terrain_data, self.click_tuple)
+        self.render = RenderPictures(self.player_update, self.image_loader, self.camera, \
+                                     self.terrain_data, self.click_tuple, self.tile_set)
 
     def initialize_object_creation(self):
         self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data)
@@ -238,8 +248,10 @@ class Game:
         self.fading_text = Fading_text(self.screen)
 
     def initialize_tile_set(self):
-        ...
+        self.tile_set = TileSet(self.image_loader, self.terrain_data)
 
+    def initialize_maze_addition(self):
+        self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, self.terrain_data, self.inv, self.camera)
 
 
 
@@ -315,7 +327,7 @@ class Game:
         if self.inv.crafting_menu_open and not UniversalVariables.cooking_menu:
             self.inv.render_craftable_items()
             if not self.inv.craftable_items_display_rects and self.inv.crafting_menu_open:
-                Fading_text.re_display_fading_text("Nothing to craft.")
+                self.fading_text.re_display_fading_text("Nothing to craft.")
                 self.inv.crafting_menu_open = False
 
         self.attack.update()

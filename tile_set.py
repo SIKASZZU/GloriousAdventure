@@ -3,6 +3,9 @@ import pygame
 
 
 class TileSet:
+    def __init__(self, image_loader, terrain_data):
+        self.image_loader = image_loader
+        self.terrain_data = terrain_data
 
     def get_tileset_image(self, image_name, image_path):
         return self.image_loader.load_image(image_name, image_path=image_path)
@@ -23,41 +26,41 @@ class TileSet:
 
     def determine_ground_image(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
-        tileset_image = TileSet.get_tileset_image(self, 'Water_Ground_Tileset', 'images/Tile_Sets/Water_Ground_Tileset.png')
+        tileset_image = self.get_tileset_image('Water_Ground_Tileset', 'images/Tile_Sets/Water_Ground_Tileset.png')
 
         if right_empty and left_empty and top_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 6, 1)
+            return self.get_tile(tileset_image, 32, 6, 1)
         if right_empty and left_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 3, 2)
+            return self.get_tile(tileset_image, 32, 3, 2)
         if right_empty and left_empty and top_empty:
-            return TileSet.get_tile(tileset_image, 32, 3, 0)
+            return self.get_tile(tileset_image, 32, 3, 0)
         if right_empty and top_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 6, 0)
+            return self.get_tile(tileset_image, 32, 6, 0)
         if left_empty and top_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 4, 0)
+            return self.get_tile(tileset_image, 32, 4, 0)
 
         if right_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 2, 2)
+            return self.get_tile(tileset_image, 32, 2, 2)
         if left_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 0, 2)
+            return self.get_tile(tileset_image, 32, 0, 2)
         if left_empty and top_empty:
-            return TileSet.get_tile(tileset_image, 32, 0, 0)
+            return self.get_tile(tileset_image, 32, 0, 0)
         if right_empty and top_empty:
-            return TileSet.get_tile(tileset_image, 32, 2, 0)
+            return self.get_tile(tileset_image, 32, 2, 0)
 
         if right_empty and left_empty:
-            return TileSet.get_tile(tileset_image, 32, 3, 1)
+            return self.get_tile(tileset_image, 32, 3, 1)
         if top_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 5, 0)
+            return self.get_tile(tileset_image, 32, 5, 0)
 
         if right_empty:
-            return TileSet.get_tile(tileset_image, 32, 2, 1)
+            return self.get_tile(tileset_image, 32, 2, 1)
         if left_empty:
-            return TileSet.get_tile(tileset_image, 32, 0, 1)
+            return self.get_tile(tileset_image, 32, 0, 1)
         if bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 1, 2)
+            return self.get_tile(tileset_image, 32, 1, 2)
         if top_empty:
-            return TileSet.get_tile(tileset_image, 32, 1, 0)
+            return self.get_tile(tileset_image, 32, 1, 0)
 
         if random.random() < 0.5:
             return 'Ground_19'
@@ -66,10 +69,10 @@ class TileSet:
 
     def determine_string_image(self, surroundings):
         top_empty, bottom_empty, left_empty, right_empty = surroundings
-        tileset_image = TileSet.get_tileset_image('String_Tile_Set', 'images/Tile_Sets/String_Tile_Set.png')
+        tileset_image = self.get_tileset_image('String_Tile_Set', 'images/Tile_Sets/String_Tile_Set.png')
 
         if right_empty and left_empty and top_empty and bottom_empty:
-            return TileSet.get_tile(tileset_image, 32, 1, 1)
+            return self.get_tile(tileset_image, 32, 1, 1)
 
         # if right_empty and left_empty and bottom_empty:
         #     return TileSet.get_tile(tileset_image, 32, 3, 2)

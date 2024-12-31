@@ -3,16 +3,16 @@ import random
 
 from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
 from variables import UniversalVariables, GameConfig
-from tile_set import TileSet
 from farmables import farming
 
 
 class RenderPictures:
-    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple):
+    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set):
         self.player_update = player_update
         self.image_loader = image_loader
         self.camera = camera
         self.terrain_data = terrain_data
+        self.tile_set = tile_set
 
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
@@ -139,13 +139,13 @@ class RenderPictures:
             return 'Maze_Wall_' + str(random.randint(0, 9))
 
         if image_name is 'Ground':
-            return TileSet.determine_ground_image(self, surroundings)
+            return self.tile_set.determine_ground_image(surroundings)
 
         # if image_name == 'String':
-        #     return TileSet.determine_string_image(self, surroundings)
+        #     return self.tile_set.determine_string_image(self, surroundings)
 
         if image_name is 'Farmland':
-            return TileSet.determine_farmland_image_name(self, surroundings)
+            return self.tile_set.determine_farmland_image_name(surroundings)
 
         if image_name is 'Water':
             if random.random() < 0.6:
@@ -208,10 +208,10 @@ class RenderPictures:
                 if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
                 if image_name:
                     if object_id in many_choices:
-                        surroundings = TileSet.check_surroundings(self, y, x, surrounding_values)
+                        surroundings = self.tile_set.check_surroundings(y, x, surrounding_values)
                         image_name = self.select_choice(image_name, surroundings)  # m6nel asjal on mitu varianti.
 
-                    # FIXME mdv, see see Tileset.determine ground image name returnib mingi surfaci kogu aeg...
+                    # FIXME mdv, see see self.tile_set.determine ground image name returnib mingi surfaci kogu aeg...
                     # insane hack
                     if type(image_name) == pygame.surface.Surface:
                         self.image_to_sequence(terrain_x, terrain_y, grid, image_name, object_id)
