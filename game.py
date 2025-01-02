@@ -250,7 +250,8 @@ class Game:
 
     def initialize_render(self):
         self.render = RenderPictures(self.player_update, self.image_loader, self.camera, self.terrain_data,
-                                     self.click_tuple, self.tile_set, self.variables, self.GROUND_IMAGE, self.MAZE_GROUND_IMAGE, self.COLLISION_ITEMS, self.FARMLAND_IMAGE, self.OBJECT_RENDER_ORDER)
+                                    self.click_tuple, self.tile_set, self.variables, self.GROUND_IMAGE, self.MAZE_GROUND_IMAGE, self.COLLISION_ITEMS,
+                                    self.FARMLAND_IMAGE, self.OBJECT_RENDER_ORDER, self.WHEAT_STAGES, self.CARROT_STAGES, self.CORN_STAGES, self.POTATO_STAGES, self.FARMABLES)
 
     def initialize_object_creation(self):
         self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables, self.COLLISION_ITEMS, self.INTERACTABLE_ITEMS)
