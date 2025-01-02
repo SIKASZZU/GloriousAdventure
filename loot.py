@@ -21,12 +21,14 @@ class Loot:
 
         self.obtained_loot_list = []
 
-    def toggle_loot_barrel(self, right_click_position, player_pressed_pick_up=False):
+    def toggle_loot_barrel(self, right_click_position=False, player_pressed_pick_up=False):
 
         count = randint(1, 3)
         inv_count = len(self.variables.loot)
-        if player_pressed_pick_up:
-            barrel_x, barrel_y = self.variables.player_x, self.variables.player_y
+        if player_pressed_pick_up == True:
+            barrel_x = self.variables.player_x
+            barrel_y = self.variables.player_y
+
         else:
             if not right_click_position:
                 return
@@ -41,6 +43,7 @@ class Loot:
 
             barrel_x = int(barrel_x // self.variables.block_size)
             barrel_y = int(barrel_y // self.variables.block_size)
+
             if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
 
                 if self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots >= len(self.inv.inventory) + inv_count or self.terrain_data[barrel_y][ barrel_x] == 1001 and self.inv.total_slots >= len(self.inv.inventory) + count:
@@ -80,12 +83,9 @@ class Loot:
             # TODO: ObjectManagement -> self.object_management.add_object_from_inv(obtained_loot, obtained_count)
             self.object_management.add_object_from_inv(obtained_loot, obtained_count)
 
-    def loot_update(self, right_click_pos, player_pressed_pick_up=False):
-        right_click_x, right_click_y = right_click_pos
-        if right_click_x is None or right_click_y is None and player_pressed_pick_up == False:
+    def loot_update(self, right_click_position=False, player_pressed_pick_up=False):
+        print(right_click_position, player_pressed_pick_up)
+        if right_click_position is None and player_pressed_pick_up == False:
             return
 
-        right_click_position = right_click_x, right_click_y
-
         self.toggle_loot_barrel(right_click_position, player_pressed_pick_up)
-        # self.camera.reset_clicks()

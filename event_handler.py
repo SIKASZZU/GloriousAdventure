@@ -46,7 +46,7 @@ class Event_handler:
                 # TODO vaadata kuhu clickib ja selle järgi edasi minna, callida midagi
 
                 self.camera.right_click_position = event.pos
-                self.loot.loot_update(self.camera.right_click_on_screen())
+                self.loot.loot_update(right_click_position=self.camera.right_click_on_screen())
 
             if self.variables.debug_mode:
                 if event.button == 4:  # Scroll +
