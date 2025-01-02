@@ -208,7 +208,7 @@ class UniversalVariables():
         self.opposite_light_range: int = self.player_width
 
         self.walls: list = []  # Collision boxide seinad
-        self.last_input: str = 'asd'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
+        self.last_input: str = 's'  # See peab olema üks neist: [a, s, d, w], muidu annab errori - sest visionis tahab selle len() saada
 
         # ******************** MAZE ******************** #
 

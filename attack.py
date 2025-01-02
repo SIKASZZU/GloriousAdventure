@@ -217,9 +217,10 @@ class AttackEntity:
 
 
 class AttackObject:
-    def __init__(self, terrain_data, inv):
+    def __init__(self, terrain_data, inv, variables):
         self.terrain_data = terrain_data
         self.inv = inv
+        self.variables = variables
 
         self.default_color = 255, 120, 20, 150
         self.click_color = 255, 0, 0, 255

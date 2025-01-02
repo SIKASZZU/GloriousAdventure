@@ -4,8 +4,9 @@ import textwrap
 from variables import UniversalVariables
 
 class Fading_text:
-    def __init__(self, screen):
-        self.screen = screen    
+    def __init__(self, screen, variables):
+        self.screen = screen
+        self.variables = variables
             
         self.shown_texts = set()
         self.text_fade_duration = 700  # Duration of each fade in milliseconds

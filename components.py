@@ -5,8 +5,10 @@ from variables import UniversalVariables
 from inventory import Inventory
 
 class HealthComponent:
-    def __init__(self, max_health, min_health, fading_text):
+    def __init__(self, max_health, min_health, fading_text, variables):
+        self.variables = variables
         self.fading_text = fading_text
+
         self.death_start_time = None
         self.max_health = max_health
         self.min_health = min_health
@@ -114,8 +116,9 @@ class HealthComponent:
 class StaminaComponent:
     stamina_bar_decay: int = 0
 
-    def __init__(self, max_stamina, min_stamina, fading_text):
+    def __init__(self, max_stamina, min_stamina, fading_text, variables):
         self.fading_text = fading_text
+        self.variables = variables
 
         self.max_stamina = max_stamina
         self.min_stamina = min_stamina
@@ -150,7 +153,9 @@ class StaminaComponent:
 
 
 class SpeedComponent:
-    def __init__(self, base_speed, max_speed, min_speed):
+    def __init__(self, base_speed, max_speed, min_speed, variables):
+        self.variables = variables
+
         self.base_speed = base_speed
         self.max_speed = max_speed
         self.min_speed = min_speed
@@ -168,8 +173,9 @@ class SpeedComponent:
 
 
 class HungerComponent:
-    def __init__(self, base_hunger, max_hunger, min_hunger, fading_text):
+    def __init__(self, base_hunger, max_hunger, min_hunger, fading_text, variables):
         self.fading_text = fading_text
+        self.variables = variables
 
         self.hunger_timer = 100
         self.health_timer = 300
@@ -229,8 +235,9 @@ class HungerComponent:
 
 
 class ThirstComponent:
-    def __init__(self, base_thirst, max_thirst, min_thirst, fading_text):
+    def __init__(self, base_thirst, max_thirst, min_thirst, fading_text, variables):
         self.fading_text = fading_text
+        self.variables = variables
 
         self.thirst_timer = 100
         self.base_thirst = base_thirst
@@ -288,33 +295,39 @@ class Player:
                  base_speed, max_speed, min_speed,
                  base_hunger, max_hunger, min_hunger,
                  base_thirst, max_thirst, min_thirst,
-                 fading_text):
-        
+                 fading_text, variables):
+
+        self.variables = variables
         self.fading_text = fading_text  # redefine, et saaks kasutada argumendina componentites
 
         # playeri componentid on siin initialized, ei pea main game failis tegema!
         
         self.stamina = StaminaComponent(max_stamina=max_stamina,
                                         min_stamina=min_stamina, 
-                                        fading_text=self.fading_text)
+                                        fading_text=self.fading_text,
+                                        variables=self.variables)
         
         self.speed = SpeedComponent(base_speed=base_speed,
                                     max_speed=max_speed,
-                                    min_speed=min_speed)
+                                    min_speed=min_speed,
+                                    variables=self.variables)
         
         self.hunger = HungerComponent(base_hunger=base_hunger,
                                       max_hunger=max_hunger,
                                       min_hunger=min_hunger, 
-                                      fading_text=self.fading_text)
+                                      fading_text=self.fading_text,
+                                      variables = self.variables)
 
         self.health = HealthComponent(max_health=max_health,
                                       min_health=min_health,
-                                      fading_text=self.fading_text)
+                                      fading_text=self.fading_text,
+                                      variables=self.variables)
         
         self.thirst = ThirstComponent(base_thirst=base_thirst, 
                                       max_thirst=max_thirst,
                                       min_thirst=min_thirst, 
-                                      fading_text=self.fading_text)
+                                      fading_text=self.fading_text,
+                                      variables=self.variables)
 
     def update(self):
         """ Update player components: health, hunger, thirst. """

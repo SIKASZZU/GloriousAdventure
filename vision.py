@@ -3,7 +3,7 @@ import pygame
 import math
 
 class Vision:
-    def __init__(self, screen, td, dls):
+    def __init__(self, screen, td, dls, variables):
         self.screen = screen
         self.daylight_strength = dls
         self.terrain_data = td
@@ -13,7 +13,7 @@ class Vision:
         self.opposite_global = None
         self.vision_count: bool = True
         self.vision_step = 5
-
+        self.variables = variables
 
     def find_boxes_in_window(self) -> None:
         self.variables.walls = []
@@ -218,7 +218,7 @@ class Vision:
 
     def update(self, position):
 
-        Vision.find_boxes_in_window()  # List of walls coords on screen
-        main_angles, opposite_angles = Vision.draw_light_source_and_rays(self)
-        self.visible_points = Vision.calculate_angle(self, main_angles, opposite_angles, position)
-        Vision.draw_shadows(self)
+        self.find_boxes_in_window()  # List of walls coords on screen
+        main_angles, opposite_angles = self.draw_light_source_and_rays()
+        self.visible_points = self.calculate_angle(main_angles, opposite_angles, position)
+        self.draw_shadows()

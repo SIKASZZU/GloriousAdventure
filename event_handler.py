@@ -23,8 +23,8 @@ def update_object_dimensions(self):
 class Event_handler:
     def __init__(
             self, click_tuple, camera, vision, inv, player, camera_click_tuple, 
-            terrain_data, loot, menu_states_tuples
-            ):
+            terrain_data, loot, menu_states_tuples, variables
+            ) -> None:
         
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
@@ -53,6 +53,7 @@ class Event_handler:
         self.game_menu_state = menu_states_tuples[0]
         self.pause_menu_state = menu_states_tuples[1]
 
+        self.variables = variables
 
     def handle_mouse_events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:

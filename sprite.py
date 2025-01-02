@@ -9,8 +9,9 @@ def load_sprite_sheets(image_filenames):
 
 
 class SpriteSheet:
-    def __init__(self, image):
+    def __init__(self, image, variables):
         self.sheet = image
+        self.variables = variables
 
     def get_image(self, x, y, width, height, filter_color=None):
         image = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -68,7 +69,7 @@ class AnimationManager:
 
         # Update animation frame based on animation_timer and animation_speed
         self.animation_timer += 1
-        sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index])
+        sprite_sheet = SpriteSheet(self.sprite_sheets[self.animation_index], self.variables)
         x, y, animation_width, animation_height = self.animations[self.animation_index][0]
         if self.variables.health_status == True:
             self.frame = sprite_sheet.get_image(x + self.frame_index * animation_width, y, animation_width,

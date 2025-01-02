@@ -68,6 +68,7 @@ class PlayerUpdate:
         self.player_rect = None
         self.frame = 0
 
+    @staticmethod
     def disable_movement() -> tuple[int, int]:
         return 0, 0
 
@@ -191,7 +192,6 @@ class PlayerUpdate:
             # Add other blit operations here if they exist in the same rendering context.
         ]
 
-        print(blit_operations)
         if not self.variables.cutscene:
             self.variables.screen.blits(blit_operations, doreturn=False)
 
@@ -332,9 +332,8 @@ class EssentialsUpdate:
 
 
 class Framerate:
-    def __init__(self):
-        # self.universal = universal
-        ...
+    def __init__(self, variables):
+        self.variables = variables
 
     def get_fps_statistics(self):
         if not self.variables.fps_list:

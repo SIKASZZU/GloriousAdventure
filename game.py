@@ -44,15 +44,10 @@ jurigged.watch()  # hot reload
 
 class Game:
     def __init__(self):
-        self.initialize_variables()
-
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
         self.menu_states_tuple = (self.game_menu_state, self.pause_menu_state)
-
-        self.dim_surface = pygame.Surface((self.variables.screen_x, self.variables.screen_y), pygame.SRCALPHA,
-                                          32)
 
         self.print_hp = 0
         self.restrict_looping = False
@@ -76,7 +71,10 @@ class Game:
         )
 
         # initialize #
+        self.initialize_variables()
         self.initialize_pygame()  # Alati 1.
+
+
         self.terrain_data = glade_creation()
         self.initialize_image_loader()
 
@@ -127,7 +125,8 @@ class Game:
         self.font = pygame.font.SysFont("Verdana", 20)
         self.screen = self.variables.screen
         self.clock = pygame.time.Clock()  # FPS
-
+        self.dim_surface = pygame.Surface((self.variables.screen_x, self.variables.screen_y), pygame.SRCALPHA,
+                                          32)
         # audio #
         self.py_mixer = pygame.mixer.init()
 
@@ -153,7 +152,7 @@ class Game:
 
     def initialize_event_handler(self):
         self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, \
-            self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple)
+            self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple, self.variables)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -171,7 +170,7 @@ class Game:
 
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity)  # + self.entity
-        self.attack_object = AttackObject(self.terrain_data, self.inv)
+        self.attack_object = AttackObject(self.terrain_data, self.inv, self.variables)
         self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management, self.variables)
 
     def initialize_audio(self):
@@ -190,7 +189,7 @@ class Game:
                              base_speed=6, max_speed=15, min_speed=1,
                              base_hunger=8, max_hunger=20, min_hunger=0,
                              base_thirst=12, max_thirst=20, min_thirst=0,
-                             fading_text=self.fading_text)
+                             fading_text=self.fading_text, variables=self.variables)
 
         self.player_effect = PlayerEffect(self.player, self.variables)
 
@@ -209,11 +208,11 @@ class Game:
         self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text, self.variables)
 
     def initialize_essentials(self):
-        self.framerate = Framerate()
+        self.framerate = Framerate(self.variables)
         self.essentials = EssentialsUpdate(self.font, self.framerate, self.variables)
 
     def initialize_vision(self):
-        self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength)
+        self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength, self.variables)
 
     def initialize_maze_changes(self):
         self.maze_changes = MazeChanges(self.essentials.day_night_text, self.variables)
@@ -241,7 +240,7 @@ class Game:
         self.image_loader = ImageLoader()
 
     def initialize_final_maze(self):
-        self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render)
+        self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render, self.variables)
 
     def initialize_render(self):
         self.render = RenderPictures(self.player_update, self.image_loader, self.camera, \
@@ -251,7 +250,7 @@ class Game:
         self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables)
 
     def initialize_fading_text(self):
-        self.fading_text = Fading_text(self.screen)
+        self.fading_text = Fading_text(self.screen, self.variables)
 
     def initialize_tile_set(self):
         self.tile_set = TileSet(self.image_loader, self.terrain_data)
@@ -261,7 +260,7 @@ class Game:
             self.terrain_data, self.inv, self.camera, self.object_management)
 
     def initialize_object_management(self):
-        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data)
+        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data, UniversalVariables)
 
     def initialize_variables(self):
         self.variables = UniversalVariables()
@@ -285,8 +284,8 @@ class Game:
 
     def render_boxes(self):
         if self.variables.render_boxes_counter:
-            self.object_management.render_interaction_box()
-            self.object_management.render_collision_box()
+            self.object_management.render_interaction_box(self.variables.object_list, self.variables.screen)
+            self.object_management.render_collision_box(self.variables.collision_boxes)
             self.drop.display_all_floating_pouch_hitboxes()
 
     def check_for_update(self):

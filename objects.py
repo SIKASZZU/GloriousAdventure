@@ -7,11 +7,12 @@ from variables import UniversalVariables, GameConfig
 
 class ObjectManagement:
 
-    def __init__(self, inv, fading_text, player_audio, terrain_data):
+    def __init__(self, inv, fading_text, player_audio, terrain_data, universal):
         self.inv = inv
         self.fading_text = fading_text
         self.player_audio = player_audio
         self.terrain_data = terrain_data
+        self.variables = universal
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, object_id: int = None) -> None:
         """ Items cannot be picked up until they are added to the minerals list """
@@ -131,19 +132,19 @@ class ObjectManagement:
         if self.inv.inventory[item] == 0:
             del self.inv.inventory[item]
 
-    @staticmethod
-    def render_collision_box() -> None:
-        for box_item in self.variables.collision_boxes:
+
+    def render_collision_box(self, collision_boxes) -> None:
+        for box_item in collision_boxes:
             item_start_x, item_start_y  = box_item[0], box_item[1]
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'green'
             pygame.draw.rect(self.variables.screen, collision_box_color, obj_collision_box, 3)
 
-    @staticmethod
-    def render_interaction_box() -> None:
+
+    def render_interaction_box(self, object_list, screen) -> None:
         # terrain_x, terrain_y, object_width, object_height, object_image, object_id
-        for box_item in self.variables.object_list:
+        for box_item in object_list:
             outline_thickness = 3
             if box_item[5] in [981, 982]:
                 outline_thickness = 8
@@ -152,4 +153,4 @@ class ObjectManagement:
             item_width, item_height = box_item[2], box_item[3]
             obj_collision_box = pygame.Rect(item_start_x, item_start_y, item_width, item_height)
             collision_box_color = 'pink'
-            pygame.draw.rect(self.variables.screen, collision_box_color, obj_collision_box, outline_thickness, 5)
+            pygame.draw.rect(screen, collision_box_color, obj_collision_box, outline_thickness, 5)

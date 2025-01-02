@@ -4,10 +4,11 @@ from functions import UniversalFunctions
 
 
 class Final_Maze:
-    def __init__(self, terrain_data, tile_sounds, render):
+    def __init__(self, terrain_data, tile_sounds, render, variables):
         self.terrain_data = terrain_data
         self.tile_sounds = tile_sounds
         self.render = render
+        self.variables = variables
 
         self.delay: int = 0
         self.y_00: int = 0
