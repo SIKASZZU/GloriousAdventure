@@ -2,12 +2,11 @@ import pygame
 import math
 from collections import deque
 
-from variables import UniversalVariables, GameConfig
 from functions import UniversalFunctions
 import random
 
 class Entity:
-    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader, o_management, variables):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
+    def __init__(self, td, cam, pupdate, ess, player, peffect, inv, image_loader, o_management, variables, ALL_THE_DOORS, GLADE_ITEMS):  # ma ei viitsi enam kirjutada .. lyhendatud ver nimetustest
         self.terrain_data = td
         self.player_update = pupdate
         self.essentials = ess
@@ -18,6 +17,8 @@ class Entity:
         self.image_loader = image_loader
         self.object_management = o_management
         self.variables = variables
+        self.ALL_THE_DOORS = ALL_THE_DOORS
+        self.GLADE_ITEMS = GLADE_ITEMS
 
         self.ghost_image      = pygame.transform.scale(self.image_loader.load_sprite_image("Ghost"),
             (self.variables.block_size // 1.5, self.variables.block_size // 1.5))
@@ -38,8 +39,8 @@ class Entity:
 
         self.entity_restricted_areas = [99, 981, 982,  # maze wall stuff
                                       9099, 989, 900]  # blade wall stuff
-        self.combined_restricted_areas = set(self.entity_restricted_areas).union(set(GameConfig.ALL_THE_DOORS.value))
-        self.combined_restricted_areas = set(self.combined_restricted_areas).union(set(GameConfig.GLADE_ITEMS.value))
+        self.combined_restricted_areas = set(self.entity_restricted_areas).union(set(self.ALL_THE_DOORS.value))
+        self.combined_restricted_areas = set(self.combined_restricted_areas).union(set(self.GLADE_ITEMS.value))
 
     def spawn(self):
         """ Spawns enemies based on certain conditions. """

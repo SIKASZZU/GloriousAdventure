@@ -34,7 +34,7 @@ from status import PlayerEffect
 from text import Fading_text
 from tile_set import TileSet
 from update import EssentialsUpdate, PlayerUpdate, Framerate
-from variables import UniversalVariables
+from variables import UniversalVariables, GameConfig
 from vision import Vision
 
 
@@ -159,7 +159,7 @@ class Game:
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
-        self.map_data = MapData(self.terrain_data, self.camera, self.variables)
+        self.map_data = MapData(self.terrain_data, self.camera, self.variables, self.CLOSED_DOOR_IDS)
 
         # Blade maze
         self.maze_blades = Blades(self.terrain_data, self.essentials, self.variables)
@@ -199,7 +199,7 @@ class Game:
 
     def initialize_collisions(self):
         self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud, self.render,
-                                     self.variables)
+                                     self.variables, self.COLLISION_ITEMS)
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, self.fading_text,
@@ -217,24 +217,24 @@ class Game:
         self.essentials = EssentialsUpdate(self.font, self.framerate, self.variables)
 
     def initialize_vision(self):
-        self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength, self.variables)
+        self.vision = Vision(self.screen, self.terrain_data, self.essentials.daylight_strength, self.variables, self.RENDER_RANGE_SMALL)
 
     def initialize_maze_changes(self):
         self.maze_changes = MazeChanges(self.essentials.day_night_text, self.variables)
 
     def initialize_entity(self):
         self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player,
-                             self.player_effect, self.inv, self.image_loader, self.object_management, self.variables)
+                             self.player_effect, self.inv, self.image_loader, self.object_management, self.variables, self.ALL_THE_DOORS, self.GLADE_ITEMS)
 
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio,
                                            self.player_update, self.camera, self.inv, self.fading_text,
-                                           self.object_management, self.variables)
+                                           self.object_management, self.variables, self.CLOSED_DOOR_IDS)
 
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data,
                                        self.camera, self.inv, self.essentials, self.map_data, self.fading_text,
-                                       self.maze_addition, self.object_management, self.variables)
+                                       self.maze_addition, self.object_management, self.variables, self.CLOSED_DOOR_IDS)
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management, self.variables)
@@ -250,10 +250,10 @@ class Game:
 
     def initialize_render(self):
         self.render = RenderPictures(self.player_update, self.image_loader, self.camera, self.terrain_data,
-                                     self.click_tuple, self.tile_set, self.variables)
+                                     self.click_tuple, self.tile_set, self.variables, self.GROUND_IMAGE, self.MAZE_GROUND_IMAGE, self.COLLISION_ITEMS, self.FARMLAND_IMAGE, self.OBJECT_RENDER_ORDER)
 
     def initialize_object_creation(self):
-        self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables)
+        self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables, self.COLLISION_ITEMS, self.INTERACTABLE_ITEMS)
 
     def initialize_fading_text(self):
         self.fading_text = Fading_text(self.screen, self.variables)
@@ -267,10 +267,36 @@ class Game:
 
     def initialize_object_management(self):
         self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data,
-                                                  self.variables)
+                                                  self.variables, self.COOKING_STATIONS)
 
     def initialize_variables(self):
         self.variables = UniversalVariables()
+        
+        self.initialize_config()
+        
+    def initialize_config(self):
+        self.OBJECT_RENDER_ORDER = GameConfig.OBJECT_RENDER_ORDER
+        self.RANDOM_PLACEMENT = GameConfig.RANDOM_PLACEMENT
+        self.INITIAL_GLADE_ITEMS = GameConfig.INITIAL_GLADE_ITEMS
+        self.FARMABLES = GameConfig.FARMABLES
+        self.WHEAT_STAGES = GameConfig.WHEAT_STAGES
+        self.CARROT_STAGES = GameConfig.CARROT_STAGES
+        self.CORN_STAGES = GameConfig.CORN_STAGES
+        self.POTATO_STAGES = GameConfig.POTATO_STAGES
+        self.FARMABLE_STAGES = GameConfig.FARMABLE_STAGES
+        self.FARMLAND_IMAGE = GameConfig.FARMLAND_IMAGE
+        self.GROUND_IMAGE = GameConfig.GROUND_IMAGE
+        self.MAZE_GROUND_IMAGE = GameConfig.MAZE_GROUND_IMAGE
+        self.OPEN_DOOR_IDS = GameConfig.OPEN_DOOR_IDS
+        self.CLOSED_DOOR_IDS = GameConfig.CLOSED_DOOR_IDS
+        self.ALL_THE_DOORS = GameConfig.ALL_THE_DOORS
+        self.GLADE_ITEMS = GameConfig.GLADE_ITEMS
+        self.ABND_GLADE_ITEMS = GameConfig.ABND_GLADE_ITEMS
+        self.BERRY_ITEMS = GameConfig.BERRY_ITEMS
+        self.INTERACTABLE_ITEMS = GameConfig.INTERACTABLE_ITEMS
+        self.COLLISION_ITEMS = GameConfig.COLLISION_ITEMS
+        self.RENDER_RANGE_SMALL = GameConfig.RENDER_RANGE_SMALL
+        self.COOKING_STATIONS = GameConfig.COOKING_STATIONS
 
     def initialize_menus(self):
         self.menu = Menu(self.variables)

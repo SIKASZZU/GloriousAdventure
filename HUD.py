@@ -213,16 +213,27 @@ class HUD_class:
         hydration_icon = self.image_loader.load_gui_image("Hydration")
         scaled_hydration_icon = pygame.transform.scale(hydration_icon, (50, 40))
         self.variables.screen.blit(scaled_hydration_icon, (hydration_w_midpoint, hydration_h_midpoint))
+        
+        a_rect_border = pygame.Rect(self.half_w + 60, self.screen_y - 50,
+                                            50, 45)
 
-        # Player's audio icons
-        audio_icon_position = (800, 715)
+        # # Player's audio icons
+        # Iconi paigutamiseks bari keskkoha leidmine
+        a_w_midpoint = a_rect_border[0] + (a_rect_border[2] // 2) + 35
+        a_h_midpoint = a_rect_border[1] + (a_rect_border[3] // 2) - 25
+        audio_position = (a_w_midpoint, a_h_midpoint)
+
+
         audio_icon = None
 
         if self.variables.player_sneaking:
             audio_icon = self.image_loader.load_gui_image("sound_low")
         elif self.variables.player_sprinting:
             audio_icon = self.image_loader.load_gui_image("sound_high")
-        else:
+        elif self.variables.player_walking:
             audio_icon = self.image_loader.load_gui_image("sound_average")
+        elif self.variables.player_standing:
+            audio_icon = self.image_loader.load_gui_image("sound_none")
+
         audio_icon = pygame.transform.scale(audio_icon, (50, 50))
-        self.variables.screen.blit(audio_icon, audio_icon_position)
+        self.variables.screen.blit(audio_icon, audio_position)

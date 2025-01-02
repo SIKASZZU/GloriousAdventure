@@ -64,8 +64,11 @@ class UniversalVariables():
         # ******************** Settings ******************** #
 
         # Windowi suurus x, y
-        self.screen_x: int = 1600  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-        self.screen_y: int = 900
+        # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440
+        resolution_tuple = ((1024, 576), (1152, 648), (1280, 720), (1366, 768), (1600, 900), (1920, 1080), (2560, 1440))
+        CHOOSE_RESOLUTION = resolution_tuple[2]
+        self.screen_x: int = CHOOSE_RESOLUTION[0]
+        self.screen_y: int = CHOOSE_RESOLUTION[1]
 
         # Mängu max tick rate
 
@@ -158,15 +161,19 @@ class UniversalVariables():
         self.player_x: int = 2500 # random.randint(1 * block_size, 38 * block_size)
         self.player_y: int = 1010 # random.randint(40 * block_size, 77 * block_size)
 
-        self.health_status      = None
-        self.hunger_resistance  = 0
-        self.thirst_resistance  = 0
-        self.player_poisoned    = False
-        self.player_infected    = False
-        self.player_bleeding    = False
-        self.serum_active       = False
-        self.player_sprinting   = False
-        self.player_sneaking    = False
+        self.health_status     = None
+        self.hunger_resistance = 0
+        self.thirst_resistance = 0
+        self.player_poisoned   = False
+        self.player_infected   = False
+        self.player_bleeding   = False
+        self.serum_active      = False
+        
+        self.player_sprinting = False
+        self.player_sneaking  = False
+        self.player_walking   = False
+        self.player_standing  = False
+
         self.attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
         self.allow_movement     = True
         self.render_after       = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte

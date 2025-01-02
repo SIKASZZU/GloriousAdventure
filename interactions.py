@@ -1,13 +1,12 @@
 import pygame
 
 from items import items_list
-from variables import GameConfig
 from functions import UniversalFunctions
 
 
 class Interaction:
     def __init__(self, pupdate, paudio, tile_sounds, td, camera, 
-                inv, essentials, map_data, fading_text, maze_addition, o_management, variables):
+                inv, essentials, map_data, fading_text, maze_addition, o_management, variables, CLOSED_DOOR_IDS):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -20,6 +19,7 @@ class Interaction:
         self.maze_addition = maze_addition
         self.object_management = o_management
         self.variables = variables
+        self.CLOSED_DOOR_IDS = CLOSED_DOOR_IDS
 
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -144,7 +144,7 @@ class Interaction:
                         self.tile_sounds.pop_key_audio()
                         UniversalFunctions.gray_yellow(self, 'gray')
 
-                if object_id in GameConfig.CLOSED_DOOR_IDS.value:  # Kinniste uste ID'd. Clickides saab avada ukse - uue maze
+                if object_id in self.CLOSED_DOOR_IDS.value:  # Kinniste uste ID'd. Clickides saab avada ukse - uue maze
                     if self.essentials.day_night_text != 'Day':
                         self.player_audio.error_audio()
 

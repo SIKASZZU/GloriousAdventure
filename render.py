@@ -2,12 +2,11 @@ import pygame
 import random
 
 from items import object_items, world_items, ObjectItem, WorldItem, find_item_by_name, items_list
-from variables import UniversalVariables, GameConfig
 from farmables import farming
 
 
 class RenderPictures:
-    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set, variables):
+    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set, variables, GROUND_IMAGE, MAZE_GROUND_IMAGE, COLLISION_ITEMS, FARMLAND_IMAGE, OBJECT_RENDER_ORDER):
         self.player_update = player_update
         self.image_loader = image_loader
         self.camera = camera
@@ -22,6 +21,12 @@ class RenderPictures:
         self.right_click_position = click_tuple[3]
         self.right_click_window_x = click_tuple[4]
         self.right_click_window_y = click_tuple[5]
+
+        self.GROUND_IMAGE = GROUND_IMAGE
+        self.MAZE_GROUND_IMAGE = MAZE_GROUND_IMAGE
+        self.COLLISION_ITEMS = COLLISION_ITEMS
+        self.FARMLAND_IMAGE = FARMLAND_IMAGE
+        self.OBJECT_RENDER_ORDER = OBJECT_RENDER_ORDER
 
         self.render_range: int = 0
         self.terrain_in_view: dict = {}
@@ -56,7 +61,7 @@ class RenderPictures:
         # # TODO: fix this
 
         #  # Determine the render range based on terrain type
-        # if terrain_type in GameConfig.RENDER_RANGE_SMALL.value:
+        # if terrain_type in self.RENDER_RANGE_SMALL.value:
 
         #     self.render_range = 2
         #     base_row_range_0, base_row_range_1 = player_grid_y - self.render_range - 1, player_grid_y + self.render_range + 3
@@ -115,13 +120,13 @@ class RenderPictures:
                     terrain_value = self.terrain_data[row][
                         col]  # see tekitab probleemi, et vaatab k6iki v22rtusi, isegi, kui object ei ole collision. Lisasin in_object_list variable, et counterida seda.
 
-                    if terrain_value in GameConfig.GROUND_IMAGE.value and terrain_value != 1:
+                    if terrain_value in self.GROUND_IMAGE.value and terrain_value != 1:
                         terrain_value = (1, terrain_value)
 
-                    elif terrain_value in GameConfig.MAZE_GROUND_IMAGE.value and terrain_value != 98:
+                    elif terrain_value in self.MAZE_GROUND_IMAGE.value and terrain_value != 98:
                         terrain_value = (98, terrain_value)
 
-                    elif terrain_value in GameConfig.FARMLAND_IMAGE.value and terrain_value != 107:
+                    elif terrain_value in self.FARMLAND_IMAGE.value and terrain_value != 107:
                         terrain_value = (107, terrain_value)
 
                     else:
@@ -193,16 +198,16 @@ class RenderPictures:
                 if object_id == 0:  # neid itemeid ei ole item listis ehk see ei lahe allpool labi
                     image_name = 'Water'
 
-                elif object_id in GameConfig.GROUND_IMAGE.value:
+                elif object_id in self.GROUND_IMAGE.value:
                     image_name = 'Ground'
                     object_id = 1
                     surrounding_values = (0,)
 
-                elif object_id in GameConfig.MAZE_GROUND_IMAGE.value:
+                elif object_id in self.MAZE_GROUND_IMAGE.value:
                     image_name = 'Maze_Ground'
                     object_id = 98
 
-                elif object_id in GameConfig.FARMLAND_IMAGE.value:
+                elif object_id in self.FARMLAND_IMAGE.value:
                     image_name, object_id, surrounding_values = farming(self, x, y, grid)  # See on farming failist
 
                 ### FIXME: STRING, Tileset on broken ???
@@ -228,7 +233,7 @@ class RenderPictures:
         if not self.variables.render_after:
             self.player_update.render_player()
 
-        desired_order = GameConfig.OBJECT_RENDER_ORDER.value
+        desired_order = self.OBJECT_RENDER_ORDER.value
 
         def sort_key(item):
             id = item[5]
@@ -243,7 +248,7 @@ class RenderPictures:
         # Render the objects
         for item in sorted_objects:
             if item[
-                5] in GameConfig.COLLISION_ITEMS.value:  # Skip need itemid, sest collisionis renderib kaa. SEe peab siin olema, et roosa ruut tekiks.
+                5] in self.COLLISION_ITEMS.value:  # Skip need itemid, sest collisionis renderib kaa. SEe peab siin olema, et roosa ruut tekiks.
                 continue
             position = item[:2]  # x, y
             image = item[4]
@@ -257,11 +262,13 @@ class RenderPictures:
             self.player_update.render_player()
 
 class ObjectCreation:
-    def __init__(self, render, image_loader, terrain_data, variables):
+    def __init__(self, render, image_loader, terrain_data, variables, COLLISION_ITEMS, INTERACTABLE_ITEMS):
         self.render = render
         self.image_loader = image_loader
         self.terrain_data = terrain_data
         self.variables = variables
+        self.INTERACTABLE_ITEMS = INTERACTABLE_ITEMS
+        self.COLLISION_ITEMS = COLLISION_ITEMS
 
     def creating_lists(self):
 
@@ -293,10 +300,10 @@ class ObjectCreation:
                     pass
 
                 else:
-                    if a_item[0] in GameConfig.INTERACTABLE_ITEMS.value:
+                    if a_item[0] in self.INTERACTABLE_ITEMS.value:
                         non_collision_items.append(a_item)
 
-                    if a_item[0] in GameConfig.COLLISION_ITEMS.value:
+                    if a_item[0] in self.COLLISION_ITEMS.value:
                         collision_items.append(a_item)
 
         self.collision_box_list_creation(collision_items)
@@ -317,7 +324,7 @@ class ObjectCreation:
                 x, y = grid
                 object_id = grid_ids[
                     0]  # renderib esimese indexi, sest esimene index on alati alumine pilt ehk ground v6i maze wall
-                if object_id in GameConfig.COLLISION_ITEMS.value:
+                if object_id in self.COLLISION_ITEMS.value:
                     terrain_x: int = x * self.variables.block_size + self.variables.offset_x
                     terrain_y: int = y * self.variables.block_size + self.variables.offset_y
 

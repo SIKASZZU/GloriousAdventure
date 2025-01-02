@@ -5,7 +5,6 @@ import random
 from skimage.transform import resize
 from collections import deque
 
-from variables import GameConfig
 
 
 def resource_path(relative_path):
@@ -19,11 +18,12 @@ def resource_path(relative_path):
 
 
 class MapData:
-    def __init__(self, terrain_data, camera, variables):
+    def __init__(self, terrain_data, camera, variables, CLOSED_DOOR_IDS):
         # Initilazitud asjad
         self.terrain_data = terrain_data
         self.camera = camera
         self.variables = variables
+        self.CLOSED_DOOR_IDS = CLOSED_DOOR_IDS
 
         # MapData asjad
         self.placeholder = [[None] * 40 for _ in range(40)]
@@ -96,11 +96,11 @@ class MapData:
         yyy = self.terrain_data[door_grid_map[0] - 1][door_grid_map[1]]        
         
         if start_from == 'right' or start_from == 'left':
-            if yyy in GameConfig.CLOSED_DOOR_IDS.value:
+            if yyy in self.CLOSED_DOOR_IDS.value:
                 return -1
             
         elif start_from == 'top' or start_from == 'bottom':
-            if xxx in GameConfig.CLOSED_DOOR_IDS.value:
+            if xxx in self.CLOSED_DOOR_IDS.value:
                 return -1
         
         return None
@@ -438,7 +438,7 @@ class MapData:
         
         # func dfs teeb pathi, 98, mazei
         def dfs(row, col):
-            if maze[row, col] not in GameConfig.CLOSED_DOOR_IDS.value and maze[row, col] not in GameConfig.OPEN_DOOR_IDS.value:
+            if maze[row, col] not in self.CLOSED_DOOR_IDS.value and maze[row, col] not in self.OPEN_DOOR_IDS.value:
                 maze[row, col] = 98
 
             directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up

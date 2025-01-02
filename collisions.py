@@ -1,17 +1,17 @@
 import pygame
 
-from variables import UniversalVariables, GameConfig
 
 
 class Collisions:
 
-    def __init__(self, player, player_update, terrain_data, hud, render, variables):
+    def __init__(self, player, player_update, terrain_data, hud, render, variables, COLLISION_ITEMS):
         self.player = player
         self.player_update = player_update
         self.terrain_data = terrain_data
         self.hud = hud
         self.render = render
         self.variables = variables
+        self.COLLISION_ITEMS = COLLISION_ITEMS
 
     # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
         # see voiks olla smoothim.
@@ -50,6 +50,8 @@ class Collisions:
                     keys[pygame.K_LCTRL] and keys[pygame.K_w] or \
                     keys[pygame.K_LCTRL] and keys[pygame.K_s]
 
+        walking = keys[pygame.K_w] or keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d]
+
         player_grid_row = int(self.variables.player_x // self.variables.block_size)
         player_grid_col = int(self.variables.player_y // self.variables.block_size)
 
@@ -65,21 +67,28 @@ class Collisions:
                     continue
 
                 try:
-                    if self.terrain_data[row][col] in GameConfig.COLLISION_ITEMS.value:
+                    if self.terrain_data[row][col] in self.COLLISION_ITEMS.value:
+                        print('COLLL')
                         self.player_hit_collision(terrain_rect)
 
                     else:
-                        # Kontrollib kas terrain block jääb faili terrain_data piiridesse
+                        #player statei loomine
+                        self.variables.player_sprinting = False
+                        self.variables.player_sneaking  = False
+                        self.variables.player_walking   = False
+                        self.variables.player_standing  = False
 
                         if sprinting:
                             self.variables.player_sprinting = True
 
                         elif sneaking:
                             self.variables.player_sneaking  = True
-
+                        
+                        elif walking:
+                            self.variables.player_walking  = True
+                        
                         else:
-                            self.variables.player_sprinting = False
-                            self.variables.player_sneaking  = False
+                            self.variables.player_standing = True
 
                         if 0 <= row < len(self.terrain_data) and 0 <= col < len(self.terrain_data[row]):
                             in_water = self.terrain_data[row][col] == 0
