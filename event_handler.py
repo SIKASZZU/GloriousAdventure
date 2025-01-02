@@ -1,9 +1,6 @@
 import pygame
-from variables import UniversalVariables
 import items
-from loot import Loot
 from menu import PauseMenu
-from components import Player
 
 
 def update_object_dimensions(self):
@@ -43,13 +40,13 @@ class Event_handler:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.camera.click_position = event.pos
-                self.click_x, self.click_y = self.camera.left_click_on_screen(self.camera.click_position)
+                self.camera.click_x, self.camera.click_y = self.camera.left_click_on_screen(self.camera.click_position)
 
             if event.button == 3:
                 # TODO vaadata kuhu clickib ja selle järgi edasi minna, callida midagi
 
-                self.right_click_position = event.pos
-                self.loot.loot_update(self.camera.right_click_on_screen(self.right_click_position))
+                self.camera.right_click_position = event.pos
+                self.loot.loot_update(self.camera.right_click_on_screen())
 
             if self.variables.debug_mode:
                 if event.button == 4:  # Scroll +

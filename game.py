@@ -44,6 +44,9 @@ jurigged.watch()  # hot reload
 
 class Game:
     def __init__(self):
+
+        # TODO: Booli vms teha, mis jägib evente nt click vms ja kui bool muutub trues ss updateb mappi aka render()
+
         self.game_menu_state = "main"
         self.pause_menu_state = "main"
 
@@ -151,8 +154,8 @@ class Game:
     # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
 
     def initialize_event_handler(self):
-        self.event_handler = Event_handler(self.camera, self.vision, self.inv, \
-            self.player, self.terrain_data, self.loot, self.menu_states_tuple, self.variables)
+        self.event_handler = Event_handler(self.camera, self.vision, self.inv, self.player, self.terrain_data,
+                                           self.loot, self.menu_states_tuple, self.variables)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -171,7 +174,8 @@ class Game:
     def initialize_attack(self):
         self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity, self.variables)
         self.attack_object = AttackObject(self.terrain_data, self.inv, self.variables, self.object_management)
-        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management, self.variables)
+        self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update,
+                             self.object_management, self.variables)
 
     def initialize_audio(self):
         self.player_audio = Player_audio(self.terrain_data, self.player, self.py_mixer, self.variables)
@@ -194,15 +198,16 @@ class Game:
         self.player_effect = PlayerEffect(self.player, self.variables)
 
     def initialize_collisions(self):
-        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, \
-                                     self.hud, self.render, self.variables)
+        self.collisions = Collisions(self.player, self.player_update, self.terrain_data, self.hud, self.render,
+                                     self.variables)
 
     def initialize_loot(self):
-        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, \
-                         self.fading_text, self.object_management, self.variables)
+        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, self.fading_text,
+                         self.object_management, self.variables)
 
     def initialize_building(self):
-        self.building = Building(self.variables, self.camera)
+        self.building = Building(self.variables, self.camera, self.terrain_data, self.player_audio,
+                                 self.object_management)
 
     def initialize_inventory(self):
         self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text, self.variables)
@@ -218,17 +223,18 @@ class Game:
         self.maze_changes = MazeChanges(self.essentials.day_night_text, self.variables)
 
     def initialize_entity(self):
-        self.entity = Entity(self.terrain_data, self.camera, self.player_update, \
-            self.essentials, self.player, self.player_effect, self.inv, self.image_loader, self.object_management, self.variables)
+        self.entity = Entity(self.terrain_data, self.camera, self.player_update, self.essentials, self.player,
+                             self.player_effect, self.inv, self.image_loader, self.object_management, self.variables)
 
     def initialize_item_func(self):
-        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, \
-            self.player_audio, self.player_update, self.camera, self.inv, self.fading_text, self.object_management, self.variables)
+        self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio,
+                                           self.player_update, self.camera, self.inv, self.fading_text,
+                                           self.object_management, self.variables)
 
     def initialize_interactions(self):
-        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, \
-            self.terrain_data, self.camera, self.inv, self.essentials, self.map_data, \
-            self.fading_text, self.maze_addition, self.object_management, self.variables)
+        self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data,
+                                       self.camera, self.inv, self.essentials, self.map_data, self.fading_text,
+                                       self.maze_addition, self.object_management, self.variables)
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management, self.variables)
@@ -243,8 +249,8 @@ class Game:
         self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render, self.variables)
 
     def initialize_render(self):
-        self.render = RenderPictures(self.player_update, self.image_loader, self.camera, \
-                                     self.terrain_data, self.click_tuple, self.tile_set, self.variables)
+        self.render = RenderPictures(self.player_update, self.image_loader, self.camera, self.terrain_data,
+                                     self.click_tuple, self.tile_set, self.variables)
 
     def initialize_object_creation(self):
         self.object_creation = ObjectCreation(self.render, self.image_loader, self.terrain_data, self.variables)
@@ -256,11 +262,12 @@ class Game:
         self.tile_set = TileSet(self.image_loader, self.terrain_data)
 
     def initialize_maze_addition(self):
-        self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, \
-            self.terrain_data, self.inv, self.camera, self.object_management, self.variables)
+        self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, self.terrain_data, self.inv,
+                                                  self.camera, self.object_management, self.variables)
 
     def initialize_object_management(self):
-        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data, self.variables)
+        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data,
+                                                  self.variables)
 
     def initialize_variables(self):
         self.variables = UniversalVariables()
@@ -289,12 +296,13 @@ class Game:
             self.drop.display_all_floating_pouch_hitboxes()
 
     def check_for_update(self):
-
-        def hash_matrix(matrix):  return hashlib.md5(str(matrix).encode()).hexdigest()
+        def hash_matrix(matrix):
+            return hashlib.md5(str(matrix).encode()).hexdigest()
 
         if hash_matrix(self.terrain_data) != hash_matrix(self.old_terrain_data):
             self.variables.update_view = True
             self.old_terrain_data = [row[:] for row in self.terrain_data]
+            # self.variables.buffer_collision = []
 
     def call_technical(self):
         self.player_update.update_player(self.player)  # Update player position and attributes
@@ -302,8 +310,8 @@ class Game:
 
         self.object_creation.creating_lists()  # CREATE SOME FUCKING BITCHES FUCKING COLLISION BOX LIST AND OBJCET LIST
 
-        self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER Cadwasdwa
-        self.interaction.objects()  # CHECK TERRAIN AND WATER Cadwasdwa
+        self.collisions.collison_terrain_types()  # CHECK TERRAIN AND WATER
+        self.interaction.objects()  # CHECK TERRAIN AND WATER
         self.maze_changes.change_maze()
 
         self.entity.update()
@@ -314,6 +322,7 @@ class Game:
 
     def call_visuals(self):
         self.check_for_update()
+
         self.render.map_render()
         self.variables.screen.blit(self.variables.buffer_collision, (0, 0))
 
@@ -348,7 +357,6 @@ class Game:
         self.hud.update()
 
         self.inv.render_equipped_slot(self.variables.current_equipped_item)  # Equipped item slot
-
         # self.building.update()
 
     def check_keys(self):
@@ -416,12 +424,12 @@ class Game:
 
         # Vaatab kas mäng on tööle pandud või mitte
         if self.menu.game_state:
-            self.menu.main_menu(self)
+            self.menu.main_menu()
             return True
 
         # Vaatab kas mäng on pausi peale pandud või mitte
         if self.pmenu.game_paused:
-            self.pmenu.settings_menu(self)
+            self.pmenu.settings_menu()
             return True
 
         return False

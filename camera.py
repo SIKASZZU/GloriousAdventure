@@ -98,12 +98,10 @@ class Camera:
             except:  self.fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
         return self.click_x, self.click_y
 
-    def right_click_on_screen(self, right_click_position):
+    def right_click_on_screen(self):
 
-        if not right_click_position:
+        if not self.right_click_position:
             return None, None
-
-        self.right_click_position = right_click_position
 
         self.right_click_window_x = self.right_click_position[0] - self.player_window_x
         self.right_click_window_y = self.right_click_position[1] - self.player_window_y

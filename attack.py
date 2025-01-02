@@ -1,6 +1,5 @@
 import pygame
 
-from variables import UniversalVariables
 from items import search_item_from_items, ObjectItem, find_item_by_id
 import random
 
@@ -38,7 +37,7 @@ class Attack:
 
         else:
             
-            entity_click = self.camera.right_click_on_screen(self.camera.click_position)  # x, y (Coords)
+            entity_click = self.camera.right_click_on_screen()  # x, y (Coords)
             object_click = self.camera.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
             if not entity_click and not object_click:
                 return False

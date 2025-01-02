@@ -64,8 +64,8 @@ class UniversalVariables():
         # ******************** Settings ******************** #
 
         # Windowi suurus x, y
-        self.screen_x: int = 1366  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
-        self.screen_y: int = 768
+        self.screen_x: int = 1600  # 1024 × 576 | 1152 × 648 | 1280 × 720 (HD) | 1366 × 768 | 1600 × 900 | 1920 × 1080 (full HD) | 2560 × 1440 | 3840 × 2160 (4K UHD)
+        self.screen_y: int = 900
 
         # Mängu max tick rate
 
@@ -101,12 +101,12 @@ class UniversalVariables():
             # Mängu max tick rate
             self.FPS: int = 200
 
-            self.block_size: int = self.screen_x // jagatis
-            self.player_range: int = self.block_size * 15
+            self.block_size: float = self.screen_x // jagatis
+            self.player_range: float = self.block_size * 15
 
             self.entity_speed: float = 0.05  # entity kiirus grid size'ina
 
-            self.cooking_range:int = 5  # Grid
+            self.cooking_range: float = 5  # Grid
 
 
         else:
@@ -115,13 +115,13 @@ class UniversalVariables():
             self.game_minute_lenght = 75
 
             # Mängu heli tugevus
-            self.sound_volume: int = 0.1
+            self.sound_volume: float = 0.1
 
             # Mängu max tick rate
             self.FPS: int = 60
 
-            self.block_size: int = self.screen_x // jagatis
-            self.player_range: int = self.block_size * 1.5
+            self.block_size: float = self.screen_x // jagatis
+            self.player_range: float = self.block_size * 1.5
 
             self.entity_speed: float = 0.03  # entity kiirus grid size'ina
 
@@ -145,10 +145,10 @@ class UniversalVariables():
         self.interaction_delay_max = self.interaction_delay
 
 
-        self.player_height_factor  = 0.45
-        self.player_width_factor   = 0.45
-        self.player_height: int = self.block_size * self.player_height_factor
-        self.player_width:  int = self.block_size * self.player_width_factor
+        self.player_height_factor = 0.45
+        self.player_width_factor = 0.45
+        self.player_height: float = self.block_size * self.player_height_factor
+        self.player_width:  float = self.block_size * self.player_width_factor
 
         self.player_hitbox_offset_x: float = 0.29 * self.player_width
         self.player_hitbox_offset_y: float = 0.22 * self.player_height

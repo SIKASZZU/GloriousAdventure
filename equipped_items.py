@@ -80,8 +80,8 @@ class ItemFunctionality:
         """ Vaatab pathi yhe random ukseni ning selle jargi returnib. """
 
         # FIND GRID
-        if self.variables.geiger_chosen_grid == None:
-            find_number_in_list_of_lists(self.terrain_data)
+        if not self.variables.geiger_chosen_grid:
+            find_number_in_list_of_lists(self, self.terrain_data)
 
         if self.variables.geiger_chosen_grid == None:
             return

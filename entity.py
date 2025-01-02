@@ -358,7 +358,7 @@ class Entity:
     def loot(self):
         """ Loot geiger from ghost! Nothing else atm. """
 
-        def collect_geiger(click=False, press=False):
+        def collect_geiger(click=None, press=None):
             for entity_name, entity_info in self.dead_entity_list.items():
                 if_geiger = entity_info[2]
                 if not if_geiger:
@@ -378,7 +378,7 @@ class Entity:
                         continue  # GOOD
                             
                 self.dead_entity_list[entity_name] = (entity_info[0], entity_info[1], False)
-                self.object_management.add_object_from_inv(self, "Geiger", 1)
+                self.object_management.add_object_from_inv("Geiger", 1)
 
         # spacebar
         keys = pygame.key.get_pressed()  # Jälgib keyboard inputte

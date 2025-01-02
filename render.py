@@ -172,7 +172,7 @@ class RenderPictures:
         # Input
         # Playeri asukoht muutus
 
-        if self.variables.last_input != 'None' or attacked_detected or self.variables.update_view or self.right_click_position or self.click_position:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
+        if self.variables.last_input != 'None' or attacked_detected or self.variables.update_view or self.camera.right_click_position or self.camera.click_position:  # liikumine, attackimine on toimunud ehk tuleb updateida terraininviewi..
             self.variables.update_view = False
             self.find_terrain_in_view()
 
@@ -206,7 +206,7 @@ class RenderPictures:
                     image_name, object_id, surrounding_values = farming(self, x, y, grid)  # See on farming failist
 
                 ### FIXME: STRING, Tileset on broken ???
-                if image_name == None:  image_name = next((item.name for item in items_list if object_id == item.id), None)
+                if not image_name:  image_name = next((item.name for item in items_list if object_id == item.id), None)
                 if image_name:
                     if object_id in many_choices:
                         surroundings = self.tile_set.check_surroundings(y, x, surrounding_values)
