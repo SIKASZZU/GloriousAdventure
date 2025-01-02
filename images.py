@@ -11,8 +11,9 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class ImageLoader:
-    def __init__(self):
-            
+    def __init__(self, variables) -> None:
+        self.variables = variables
+
         self.loaded_item_images: Dict[str, pygame.Surface] = {}
         self.loaded_sprite_images: Dict[str, pygame.Surface] = {}
 

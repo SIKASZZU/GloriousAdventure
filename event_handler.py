@@ -22,30 +22,14 @@ def update_object_dimensions(self):
 
 class Event_handler:
     def __init__(
-            self, click_tuple, camera, vision, inv, player, camera_click_tuple, 
+            self, camera, vision, inv, player,
             terrain_data, loot, menu_states_tuples, variables
             ) -> None:
-        
-        self.click_position = click_tuple[0]
-        self.click_window_x = click_tuple[1]
-        self.click_window_y = click_tuple[2]
-
-        self.right_click_position = click_tuple[3]
-        self.right_click_window_x = click_tuple[4]
-        self.right_click_window_y = click_tuple[5]
 
         self.camera = camera
         self.vision = vision
         self.inv = inv
         self.player = player
-
-        self.camera_rect = camera_click_tuple[0]
-
-        self.player_window_x = camera_click_tuple[1]
-        self.player_window_y = camera_click_tuple[2]
-
-        self.click_x = camera_click_tuple[3]
-        self.click_y = camera_click_tuple[4]
 
         self.terrain_data = terrain_data
         self.loot = loot

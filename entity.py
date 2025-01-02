@@ -45,7 +45,7 @@ class Entity:
         """ Spawns enemies based on certain conditions. """
 
         if not self.spawned_entity_dict and self.essentials.day_night_text == 'Night':
-            entity_spawnpoint_list = UniversalFunctions.find_spawnpoints_in_map_data(self.terrain_data)
+            entity_spawnpoint_list = UniversalFunctions.find_spawnpoints_in_map_data(self, self.terrain_data)
 
             # Player grid calculation
             player_x_row = int(self.variables.player_x // self.variables.block_size)

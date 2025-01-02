@@ -151,8 +151,8 @@ class Game:
     # aga kui sa paned lic self siis ta vaatab seda classi, kus sa parasjagu oled.
 
     def initialize_event_handler(self):
-        self.event_handler = Event_handler(self.click_tuple, self.camera, self.vision, self.inv, \
-            self.player, self.camera_click_tuple, self.terrain_data, self.loot, self.menu_states_tuple, self.variables)
+        self.event_handler = Event_handler(self.camera, self.vision, self.inv, \
+            self.player, self.terrain_data, self.loot, self.menu_states_tuple, self.variables)
 
     def initialize_map(self):
         # FIXME: Playerit ei liiguta, aga collision v ghost liigutab siis ei update pilte ära ja on veits fucked up
@@ -169,8 +169,8 @@ class Game:
         #            self.terrain_data[i - 1][j] = 98
 
     def initialize_attack(self):
-        self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity)  # + self.entity
-        self.attack_object = AttackObject(self.terrain_data, self.inv, self.variables)
+        self.attack_entity = AttackEntity(self.inv, self.player_update, self.entity, self.variables)
+        self.attack_object = AttackObject(self.terrain_data, self.inv, self.variables, self.object_management)
         self.attack = Attack(self.camera, self.attack_entity, self.attack_object, self.player_update, self.object_management, self.variables)
 
     def initialize_audio(self):
@@ -199,10 +199,10 @@ class Game:
 
     def initialize_loot(self):
         self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, \
-                         self.fading_text, self.object_management)
+                         self.fading_text, self.object_management, self.variables)
 
     def initialize_building(self):
-        self.building = Building()
+        self.building = Building(self.variables, self.camera)
 
     def initialize_inventory(self):
         self.inv = Inventory(self.camera, self.player_update, self.image_loader, self.fading_text, self.variables)
@@ -237,7 +237,7 @@ class Game:
         self.hud = HUD_class(self.player, self.image_loader, self.variables)
 
     def initialize_image_loader(self):
-        self.image_loader = ImageLoader()
+        self.image_loader = ImageLoader(self.variables)
 
     def initialize_final_maze(self):
         self.final_maze = Final_Maze(self.terrain_data, self.tile_sounds, self.render, self.variables)
@@ -257,10 +257,10 @@ class Game:
 
     def initialize_maze_addition(self):
         self.maze_addition = AddingMazeAtPosition(self.fading_text, self.map_data, \
-            self.terrain_data, self.inv, self.camera, self.object_management)
+            self.terrain_data, self.inv, self.camera, self.object_management, self.variables)
 
     def initialize_object_management(self):
-        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data, UniversalVariables)
+        self.object_management = ObjectManagement(self.inv, self.fading_text, self.player_audio, self.terrain_data, self.variables)
 
     def initialize_variables(self):
         self.variables = UniversalVariables()

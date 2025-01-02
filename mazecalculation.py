@@ -16,7 +16,8 @@ def find_number_in_radius(list_of_lists, number, player_row, player_col, radius=
 
 
 class AddingMazeAtPosition:
-    def __init__(self, fading_text, map_data, terrain_data, inv, camera, o_management):
+    def __init__(self, fading_text, map_data, terrain_data, inv, camera, o_management, variables):
+        self.variables = variables
         self.fading_text = fading_text
         self.map_data = map_data
         self.terrain_data = terrain_data

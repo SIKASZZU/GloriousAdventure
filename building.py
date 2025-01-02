@@ -1,11 +1,13 @@
-from variables import UniversalVariables
 from objects import ObjectManagement
 from audio import Player_audio
-from camera import Camera
 from items import items_list, ObjectItem
 
 
 class Building:
+    def __init__(self, variables, camera):
+        self.variables = variables
+        self.camera = camera
+
     def is_valid_item(self) -> tuple:
         """
         Vaatab kas equipped item on 'Placeable' või ei. Kui on siis otsib selle ID.

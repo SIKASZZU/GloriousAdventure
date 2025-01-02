@@ -57,13 +57,13 @@ class Camera:
         self.player_window_x = player_rect.left - self.camera_rect.left + self.camera_borders['left'] - self.variables.player_hitbox_offset_x
         self.player_window_y = player_rect.top - self.camera_rect.top + self.camera_borders['top'] - self.variables.player_hitbox_offset_y
 
-    @staticmethod
-    def is_click_within_player_range(click_window_x, click_window_y) -> bool:
+
+    def is_click_within_player_range(self, click_window_x, click_window_y) -> bool:
         player_range = self.variables.player_range or 0
         return abs(click_window_x) < player_range and abs(click_window_y) < player_range
 
-    @staticmethod
-    def click_on_screen_to_grid(click_x: float, click_y: float) -> tuple[None, None] | tuple[float, float]:
+
+    def click_on_screen_to_grid(self, click_x: float, click_y: float) -> tuple[None, None] | tuple[float, float]:
         if not click_x or not click_y:
             self.variables.print_debug_text('click_y or click_x ---> is invalid')
             return None, None

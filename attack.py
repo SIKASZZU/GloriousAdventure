@@ -63,10 +63,11 @@ class Attack:
 
 
 class AttackEntity:
-    def __init__(self, inv, player_update, entity):
+    def __init__(self, inv, player_update, entity, variables):
         self.inv = inv
         self.player_update = player_update
-        self.entity = entity 
+        self.entity = entity
+        self.variables = variables
         
         self.player_attack_rect = pygame.Rect
 
@@ -217,10 +218,11 @@ class AttackEntity:
 
 
 class AttackObject:
-    def __init__(self, terrain_data, inv, variables):
+    def __init__(self, terrain_data, inv, variables, obm):
         self.terrain_data = terrain_data
         self.inv = inv
         self.variables = variables
+        self.object_management = obm
 
         self.default_color = 255, 120, 20, 150
         self.click_color = 255, 0, 0, 255

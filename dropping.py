@@ -65,8 +65,7 @@ class Drop:
         # Use `add_item_to_existing_position` instead of directly setting dropped_items
         self.add_item_to_existing_position(position, item, quantity)
 
-    @staticmethod
-    def add_item_to_existing_position(position: tuple, item: str, quantity: int) -> None:
+    def add_item_to_existing_position(self, position: tuple, item: str, quantity: int) -> None:
         # Initialize the position with an empty dict if not already present
         if position not in self.variables.dropped_items:
             self.variables.dropped_items[position] = {}
@@ -232,6 +231,9 @@ class Drop:
 
     def display_floating_pouch(self, position: tuple[int, int]) -> None:
         """Displays the floating pouch at the specified position."""
+
+        ### TODO: Resizeida vaja!! Kui block_size muutub siis pouch jääb samaks mis enne :(
+
         if position not in self.floating_angles:
             self.floating_angles[position] = 0
 
