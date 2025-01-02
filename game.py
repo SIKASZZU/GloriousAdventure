@@ -348,8 +348,6 @@ class Game:
         self.item_func.update()
 
     def call_visuals(self):
-        self.check_for_update()
-
         self.render.map_render()
         self.variables.screen.blit(self.variables.buffer_collision, (0, 0))
 
@@ -386,6 +384,7 @@ class Game:
         self.inv.render_equipped_slot(self.variables.current_equipped_item)  # Equipped item slot
         # self.building.update()
 
+        self.check_for_update()  # Callida viimase asjana, muidu ei update map'pi ära
     def check_keys(self):
         self.event_handler.check_pressed_keys()  # Check pressed keys
 
