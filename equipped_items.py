@@ -1,6 +1,5 @@
 import random
 
-from variables import GameConfig
 from items import search_item_from_items, ConsumableItem
 
 
@@ -33,7 +32,7 @@ def find_number_in_list_of_lists(self, list_of_lists):
 
     # FIXME: Otsib doore, mida pole olemas veel
 
-    chosen_id = random.choice([door_id for door_id in GameConfig.CLOSED_DOOR_IDS.value if door_id != 977])
+    chosen_id = random.choice([door_id for door_id in self.CLOSED_DOOR_IDS.value if door_id != 977])
     print('chosen id', chosen_id)
     for row_index, sublist in enumerate(list_of_lists):
         for col_index, element in enumerate(sublist):
@@ -51,7 +50,7 @@ def find_number_in_list_of_lists(self, list_of_lists):
 
 
 class ItemFunctionality:
-    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management, variables):
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management, variables, CLOSED_DOOR_IDS):
         self.terrain_data = td
         self.entity = entity
         self.player = player
@@ -62,6 +61,7 @@ class ItemFunctionality:
         self.fading_text = fading_text
         self.object_management = o_management
         self.variables = variables
+        self.CLOSED_DOOR_IDS = CLOSED_DOOR_IDS
 
         self.last_strength_read = str
         self.maze_counter       = 0

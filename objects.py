@@ -3,16 +3,16 @@ import numpy as np
 
 from items import *
 from cooking import Cooking
-from variables import UniversalVariables, GameConfig
 
 class ObjectManagement:
 
-    def __init__(self, inv, fading_text, player_audio, terrain_data, universal):
+    def __init__(self, inv, fading_text, player_audio, terrain_data, universal, COOKING_STATIONS):
         self.inv = inv
         self.fading_text = fading_text
         self.player_audio = player_audio
         self.terrain_data = terrain_data
         self.variables = universal
+        self.COOKING_STATIONS = COOKING_STATIONS
 
     def remove_object_at_position(self, terrain_x: int, terrain_y: int, object_id: int = None) -> None:
         """ Items cannot be picked up until they are added to the minerals list """
@@ -42,7 +42,7 @@ class ObjectManagement:
             return False
 
 
-        if object_id in GameConfig.COOKING_STATIONS.value:
+        if object_id in self.COOKING_STATIONS.value:
 
             for key, station in Cooking.stations.items():
                 raw_item, _ = station["station_raw_item"]

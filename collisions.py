@@ -1,17 +1,17 @@
 import pygame
 
-from variables import UniversalVariables, GameConfig
 
 
 class Collisions:
 
-    def __init__(self, player, player_update, terrain_data, hud, render, variables):
+    def __init__(self, player, player_update, terrain_data, hud, render, variables, COLLISION_ITEMS):
         self.player = player
         self.player_update = player_update
         self.terrain_data = terrain_data
         self.hud = hud
         self.render = render
         self.variables = variables
+        self.COLLISION_ITEMS = COLLISION_ITEMS
 
     # FIXME: terve player collision wallide ja asjadega tuleb ära fixida
         # see voiks olla smoothim.
@@ -65,7 +65,8 @@ class Collisions:
                     continue
 
                 try:
-                    if self.terrain_data[row][col] in GameConfig.COLLISION_ITEMS.value:
+                    if self.terrain_data[row][col] in self.COLLISION_ITEMS.value:
+                        print('COLLL')
                         self.player_hit_collision(terrain_rect)
 
                     else:
