@@ -6,7 +6,9 @@ from farmables import farming
 
 
 class RenderPictures:
-    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set, variables, GROUND_IMAGE, MAZE_GROUND_IMAGE, COLLISION_ITEMS, FARMLAND_IMAGE, OBJECT_RENDER_ORDER):
+    def __init__(self, player_update, image_loader, camera, terrain_data, click_tuple, tile_set, variables,
+                 GROUND_IMAGE, MAZE_GROUND_IMAGE, COLLISION_ITEMS, FARMLAND_IMAGE, OBJECT_RENDER_ORDER,
+                 WHEAT_STAGES, CARROT_STAGES, CORN_STAGES, POTATO_STAGES, FARMABLES):
         self.player_update = player_update
         self.image_loader = image_loader
         self.camera = camera
@@ -27,6 +29,11 @@ class RenderPictures:
         self.COLLISION_ITEMS = COLLISION_ITEMS
         self.FARMLAND_IMAGE = FARMLAND_IMAGE
         self.OBJECT_RENDER_ORDER = OBJECT_RENDER_ORDER
+        self.WHEAT_STAGES = WHEAT_STAGES
+        self.CARROT_STAGES = CARROT_STAGES
+        self.CORN_STAGES = CORN_STAGES
+        self.POTATO_STAGES = POTATO_STAGES
+        self.FARMABLES = FARMABLES
 
         self.render_range: int = 0
         self.terrain_in_view: dict = {}
