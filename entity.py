@@ -248,6 +248,7 @@ class Entity:
 
         if self.variables.player_sprinting: detect_range = 25 * self.variables.block_size
         elif self.variables.player_sneaking:  detect_range = 5 * self.variables.block_size
+        elif self.variables.player_standing:  detect_range = 3 * self.variables.block_size
         else: detect_range = 10 * self.variables.block_size
 
         self.entity_in_range = set()
