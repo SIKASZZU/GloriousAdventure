@@ -112,8 +112,8 @@ class Game:
         self.initialize_attack()
         self.initialize_item_func()
         self.initialize_maze_addition()
-        self.initialize_interactions()
         self.initialize_loot()
+        self.initialize_interactions()
         self.initialize_event_handler()
 
         self.initialize_menus()
@@ -202,8 +202,8 @@ class Game:
                                      self.variables, self.COLLISION_ITEMS)
 
     def initialize_loot(self):
-        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.click_tuple, self.fading_text,
-                         self.object_management, self.variables)
+        self.loot = Loot(self.camera, self.inv, self.terrain_data, self.fading_text,
+                         self.object_management, self.variables, self.player_update, self.screen)
 
     def initialize_building(self):
         self.building = Building(self.variables, self.camera, self.terrain_data, self.player_audio,
@@ -234,7 +234,8 @@ class Game:
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data,
                                        self.camera, self.inv, self.essentials, self.map_data, self.fading_text,
-                                       self.maze_addition, self.object_management, self.variables, self.CLOSED_DOOR_IDS)
+                                       self.maze_addition, self.object_management, self.variables, self.CLOSED_DOOR_IDS,
+                                       self.loot)
 
     def initialize_drop(self):
         self.drop = Drop(self.player_update, self.inv, self.image_loader, self.object_management, self.variables)

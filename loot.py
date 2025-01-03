@@ -1,36 +1,47 @@
 from random import shuffle, choice, randint  # Randomized loot barrelitest
-
-from variables import UniversalVariables
+import pygame
 
 class Loot:
-    def __init__(self, camera, inv, terrain_data, click_tuple, fading_text, o_management, variables):
+    def __init__(self, camera, inv, terrain_data, fading_text, o_management, variables, player_update, screen):
         self.camera = camera
         self.inv = inv
         self.terrain_data = terrain_data
         self.fading_text = fading_text
         self.object_management = o_management
         self.variables = variables
+        self.screen = screen
 
-        self.click_position = click_tuple[0]
-        self.click_window_x = click_tuple[1]
-        self.click_window_y = click_tuple[2]
-
-        self.right_click_position = click_tuple[3]
-        self.right_click_window_x = click_tuple[4]
-        self.right_click_window_y = click_tuple[5]
+        self.player_update = player_update
 
         self.obtained_loot_list = []
 
-    def toggle_loot_barrel(self, right_click_position, player_pressed_pick_up=False):
-
+    def toggle_loot_barrel(self, right_click_position=None, player_pressed_pick_up=None):
+        barrel_x = barrel_y = None
         count = randint(1, 3)
         inv_count = len(self.variables.loot)
+
+
         if player_pressed_pick_up:
-            barrel_x, barrel_y = self.variables.player_x, self.variables.player_y
-        else:
-            if not right_click_position:
-                return
-            barrel_x, barrel_y = right_click_position
+            for item in self.variables.object_list:
+                if item[5] in [1001]:  # Barrel
+                    x = item[0] - self.variables.offset_x
+                    y = item[1] - self.variables.offset_y
+                    barrel_rect = pygame.Rect(x, y, item[2], item[3])
+
+                    intersection = self.player_update.player_rect.clip(barrel_rect)
+                    if intersection.width > 0 and intersection.height > 0:
+                        barrel_x, barrel_y = x, y
+                        break
+
+        if right_click_position:
+            for item in self.variables.object_list:
+                if item[5] in [1001]:  # Barrel
+                    x = item[0] - self.variables.offset_x
+                    y = item[1] - self.variables.offset_y
+                    barrel_rect = pygame.Rect(x, y, item[2], item[3])
+                    if barrel_rect.collidepoint(right_click_position):
+                        barrel_x, barrel_y = x, y
+                        break
 
         if not barrel_x or not barrel_y:
             return
@@ -41,9 +52,11 @@ class Loot:
 
             barrel_x = int(barrel_x // self.variables.block_size)
             barrel_y = int(barrel_y // self.variables.block_size)
-            if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
 
-                if self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots >= len(self.inv.inventory) + inv_count or self.terrain_data[barrel_y][ barrel_x] == 1001 and self.inv.total_slots >= len(self.inv.inventory) + count:
+            if 0 <= barrel_x < len(self.terrain_data[0]) and 0 <= barrel_y < len(self.terrain_data):
+                if self.terrain_data[barrel_y][barrel_x] == 1001 and self.inv.total_slots >= len(
+                        self.inv.inventory) + inv_count or self.terrain_data[barrel_y][
+                    barrel_x] == 1001 and self.inv.total_slots >= len(self.inv.inventory) + count:
                     self.terrain_data[barrel_y][barrel_x] = 1002
                     self.gather_loot(count)
                     # Player_audio.opening_a_barrel_audio(self)
@@ -80,12 +93,9 @@ class Loot:
             # TODO: ObjectManagement -> self.object_management.add_object_from_inv(obtained_loot, obtained_count)
             self.object_management.add_object_from_inv(obtained_loot, obtained_count)
 
-    def loot_update(self, right_click_pos, player_pressed_pick_up=False):
-        right_click_x, right_click_y = right_click_pos
-        if right_click_x is None or right_click_y is None and player_pressed_pick_up == False:
-            return
+    def loot_update(self, right_click_pos=None, player_pressed_pick_up=None):
+        if right_click_pos is not None:
+            self.toggle_loot_barrel(right_click_position=right_click_pos)
 
-        right_click_position = right_click_x, right_click_y
-
-        self.toggle_loot_barrel(right_click_position, player_pressed_pick_up)
-        # self.camera.reset_clicks()
+        elif player_pressed_pick_up:
+            self.toggle_loot_barrel(player_pressed_pick_up=player_pressed_pick_up)

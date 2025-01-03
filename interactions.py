@@ -6,7 +6,7 @@ from functions import UniversalFunctions
 
 class Interaction:
     def __init__(self, pupdate, paudio, tile_sounds, td, camera, 
-                inv, essentials, map_data, fading_text, maze_addition, o_management, variables, CLOSED_DOOR_IDS):
+                inv, essentials, map_data, fading_text, maze_addition, o_management, variables, CLOSED_DOOR_IDS, loot):
         self.player_update = pupdate
         self.player_audio = paudio
         self.tile_sounds = tile_sounds
@@ -20,6 +20,7 @@ class Interaction:
         self.object_management = o_management
         self.variables = variables
         self.CLOSED_DOOR_IDS = CLOSED_DOOR_IDS
+        self.loot = loot
 
         self.keylock: int = 0
         self.first_time_collision = False  # et blitiks screenile, et spacebariga saab yles v6tta
@@ -38,8 +39,7 @@ class Interaction:
 
             if keys[pygame.K_SPACE]:
                 if object_id == 1001:  # panin selle if statementi, kuigi see ei muuda mdiagi. id 1001 ei ole m6jutatud removeobjectatposition functioonist.
-                    # Loot.loot_update(self, True)
-                    ...
+                    self.loot.loot_update(player_pressed_pick_up=True)
                 else:
                     self.object_management.remove_object_at_position( terrain_x, terrain_y, object_id)
 
