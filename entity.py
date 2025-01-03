@@ -389,7 +389,7 @@ class Entity:
             collect_geiger(press=(x, y))
 
         # click
-        if self.camera.click_position:
+        if self.camera.right_click_position:
             collect_geiger(click=self.camera.click_position)
 
     def update(self):

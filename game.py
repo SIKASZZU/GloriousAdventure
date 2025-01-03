@@ -19,6 +19,7 @@ from entity import Entity
 from equipped_items import ItemFunctionality
 from event_handler import Event_handler
 from final_maze import Final_Maze
+from functions import UniversalFunctions
 from HUD import HUD_class
 from interactions import Interaction
 from images import ImageLoader
@@ -86,6 +87,7 @@ class Game:
         self.initialize_hud() # enne collisoni ja playerit
         # self.initialize_building()
         self.initialize_essentials()
+        self.initialize_functions()
         self.initialize_camera()
         
         self.initialize_inventory()
@@ -134,7 +136,7 @@ class Game:
         self.py_mixer = pygame.mixer.init()
 
     def initialize_camera(self):
-        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update, self.fading_text, self.variables)
+        self.camera = Camera(self.screen, self.click_tuple, self.terrain_data, self.player_update, self.fading_text, self.variables, self.functions)
 
         self.camera_rect = self.camera.camera_rect
         self.player_window_x = self.camera.player_window_x
@@ -229,7 +231,7 @@ class Game:
     def initialize_item_func(self):
         self.item_func = ItemFunctionality(self.terrain_data, self.entity, self.player, self.player_audio,
                                            self.player_update, self.camera, self.inv, self.fading_text,
-                                           self.object_management, self.variables, self.CLOSED_DOOR_IDS)
+                                           self.object_management, self.variables, self.CLOSED_DOOR_IDS, self.functions)
 
     def initialize_interactions(self):
         self.interaction = Interaction(self.player_update, self.player_audio, self.tile_sounds, self.terrain_data,
@@ -304,6 +306,8 @@ class Game:
         self.menu = Menu(self.variables)
         self.pmenu = PauseMenu(self.variables)
 
+    def initialize_functions(self):
+        self.functions = UniversalFunctions(self.terrain_data, self.variables)
 
 
     def event_game_state(self, event):

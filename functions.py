@@ -2,7 +2,11 @@ import random
 
 
 class UniversalFunctions:
-    def find_number_in_list_of_lists(list_of_lists, number, random_indexes=False):
+    def __init__(self, terrain_data, variables):
+        self.terrain_data = terrain_data
+        self.variables = variables
+
+    def find_number_in_list_of_lists(self, list_of_lists, number, random_indexes=False):
         " Arg random on selleks, kui tahta listist leida suvalisi number indexeid. "
 
         if random_indexes == False:
@@ -35,13 +39,13 @@ class UniversalFunctions:
 
     def gray_yellow(self, color):
         if color == 'gray':
-            x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 550)
+            x, y = self.find_number_in_list_of_lists(self.terrain_data, 550)
             if x != None:
                 self.terrain_data[x][y] = 500
                 # Camera.reset_clicks(self)
 
         if color == 'yellow':
-            x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 500)
+            x, y = self.find_number_in_list_of_lists(self.terrain_data, 500)
             self.terrain_data[x][y] = 550
             # Camera.reset_clicks(self)
 
@@ -49,16 +53,16 @@ class UniversalFunctions:
     def yellow_green(self, color):
         if color == 'yellow':
             for i in range(8):
-                x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 555)
+                x, y = self.find_number_in_list_of_lists(self.terrain_data, 555)
                 self.terrain_data[x][y] = 550
                 # Camera.reset_clicks(self)
 
-            UniversalFunctions.gray_yellow(self, 'gray')
+            self.gray_yellow(self, 'gray')
 
 
         elif color == 'green':
             for i in range(8):
-                x, y = UniversalFunctions.find_number_in_list_of_lists(self.terrain_data, 550)
+                x, y = self.find_number_in_list_of_lists(self.terrain_data, 550)
 
                 self.terrain_data[x][y] = 555
                 # Camera.reset_clicks(self)

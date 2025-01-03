@@ -1,7 +1,8 @@
 import pygame
+from functions import UniversalFunctions
 
 class Camera:
-    def __init__(self, screen, click_tuple, terrain_data, player_update, fading_text, variables):
+    def __init__(self, screen, click_tuple, terrain_data, player_update, fading_text, variables, functions):
         self.click_position = click_tuple[0]
         self.click_window_x = click_tuple[1]
         self.click_window_y = click_tuple[2]
@@ -14,6 +15,7 @@ class Camera:
         self.player_update = player_update
         self.fading_text = fading_text
         self.variables = variables
+        self.functions = functions
 
         self.screen = screen
         self.camera_borders = {'left': 450, 'right': 450, 'top': 274, 'bottom': 326}
@@ -65,7 +67,7 @@ class Camera:
 
     def click_on_screen_to_grid(self, click_x: float, click_y: float) -> tuple[None, None] | tuple[float, float]:
         if not click_x or not click_y:
-            self.variables.print_debug_text('click_y or click_x ---> is invalid')
+            self.functions.print_debug_text('click_y or click_x ---> is invalid')
             return None, None
 
         return click_y // self.variables.block_size, click_x // self.variables.block_size
@@ -78,7 +80,7 @@ class Camera:
 
 
         if not self.click_position or len(self.click_position) != 2 or None in self.click_position or not self.player_window_x or not self.player_window_y:
-            self.variables.print_debug_text(f'Invalid click position or player window coordinates. {self.click_position}')
+            self.functions.print_debug_text(f'Invalid click position or player window coordinates. {self.click_position}')
             return None, None
 
         self.click_window_x = self.click_position[0] - self.player_window_x
@@ -94,7 +96,7 @@ class Camera:
 
         if self.variables.debug_mode:
             grid_click = self.click_on_screen_to_grid(self.click_x, self.click_y)
-            try:  self.variables.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
+            try:  self.functions.print_debug_text(f"Click Terrain Value = {self.terrain_data[grid_click[0]][grid_click[1]]} <- Camera.left_click_screen()")
             except:  self.fading_text.re_display_fading_text(f"Clicked item: {grid_click}", debug=True)
         return self.click_x, self.click_y
 

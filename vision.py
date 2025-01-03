@@ -90,6 +90,20 @@ class Vision:
             elif attack_key_tuple[3] == True:  self.variables.last_input = 'd'
             else:                            self.variables.last_input = 'w'
 
+        if self.variables.attack_key_clicked[0] ==  True:
+            direction = self.variables.attack_key_clicked[1]
+            direction_to_input = {'above': 'w',
+                                'above right': 'wd',
+                                'above left': 'wa',
+                                'below': 's',
+                                'below left': 'sa',
+                                'below right': 'sd',
+                                'left': 'a',
+                                'right': 'd'}
+
+            self.variables.last_input = direction_to_input[direction]
+            self.variables.attack_key_clicked = (False, 'None')  # reset
+
         if len(self.variables.last_input) >= 3 and self.main_global == None:
             main_angles = range(0, 360 + self.vision_step)
             opposite_angles = range(0, 0)

@@ -16,18 +16,60 @@ class Attack:
         self.last_attack_cooldown_max = 100
         self.last_attack_cooldown = self.last_attack_cooldown_max
 
+    # Determine relative position
+    def determine_click_location_to_player(self, click_x, click_y, player_x, player_y):
+
+        player_x += self.player_update.player_rect[2] // 2
+        player_y += self.player_update.player_rect[3] // 2
+
+        addetive = 80
+        if click_y < player_y:
+            if player_x-addetive < click_x < player_x+addetive:
+                return 'above'     
+            if click_x > player_x:
+                return 'above right'
+        
+        if click_x > player_x:
+            if player_y-addetive < click_y < player_y+addetive:
+                return 'right'
+        
+        if click_y > player_y:
+            if player_x-addetive < click_x < player_x+addetive:
+                return 'below'
+            if click_x > player_x:
+                return 'below right'
+        
+        if click_x < player_x:
+            if player_y-addetive < click_y < player_y+addetive:
+                return 'left'
+            if click_y > player_y:
+                return 'below left'
+            if click_y < player_y:
+                return 'above left'
+            
+        return 'None'
+            
     def update(self):
 
         ### FIXME: Miks on cooldown kui ta ei attacki mitte midagi naq?? peale igat clicki tleb cooldown nahuii????????
         self.attack_object.update_timers()
         self.attack_object.draw_hover_rect()
 
-        entity_pressed = self.variables.attack_key_pressed
+        entity_click = self.camera.left_click_on_screen(self.camera.click_position)  # x, y (Coords)
+        object_click = self.camera.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
 
+        if entity_click and None not in entity_click:  
+            dir = self.determine_click_location_to_player(
+                entity_click[0], entity_click[1], int(self.variables.player_x), int(self.variables.player_y)
+                )
+            self.variables.attack_key_clicked = (True, dir)
+
+        entity_pressed = self.variables.attack_key_pressed
         if self.last_attack_cooldown < self.last_attack_cooldown_max:
             self.last_attack_cooldown += 1
             entity_pressed = self.variables.attack_key_pressed = (
             False, (False, False, False, False))  # reseti uuesti, sest muidu atk 2x
+            self.variables.attack_key_pressed = (False, 'None')
 
             self.display_attack_cd_timer()
 
@@ -36,9 +78,6 @@ class Attack:
             entity_pressed = self.variables.attack_key_pressed = (False, (False, False, False, False))
 
         else:
-            
-            entity_click = self.camera.right_click_on_screen()  # x, y (Coords)
-            object_click = self.camera.click_position  # x, y (Coords)  -> Tuleb EventHandlerist
             if not entity_click and not object_click:
                 return False
 

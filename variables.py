@@ -175,6 +175,7 @@ class UniversalVariables():
         self.player_standing  = False
 
         self.attack_key_pressed = (False, (False, False, False, False))  # [0] bool TRUE if pressed, [1] tuple, and which arrow key is pressed: up, down, left, right
+        self.attack_key_clicked = (False, 'None')
         self.allow_movement     = True
         self.render_after       = bool  # Vajalik teadmiseks kas player renderida enne v6i p2rast objekte
 

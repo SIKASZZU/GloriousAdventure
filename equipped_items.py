@@ -50,7 +50,7 @@ def find_number_in_list_of_lists(self, list_of_lists):
 
 
 class ItemFunctionality:
-    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management, variables, CLOSED_DOOR_IDS):
+    def __init__(self, td, entity, player, paudio, pupdate, cam, inv, fading_text, o_management, variables, CLOSED_DOOR_IDS, functions):
         self.terrain_data = td
         self.entity = entity
         self.player = player
@@ -62,6 +62,7 @@ class ItemFunctionality:
         self.object_management = o_management
         self.variables = variables
         self.CLOSED_DOOR_IDS = CLOSED_DOOR_IDS
+        self.functions = functions
 
         self.last_strength_read = str
         self.maze_counter       = 0
@@ -121,20 +122,20 @@ class ItemFunctionality:
 
             # peamine heli pathi pikkuse tottu
             if not strength:
-                self.variables.print_debug_text('None')
+                self.functions.print_debug_text('None')
                 self.strength_counter = 500
                 ... # Ootab 5 sekki - teeb resa vms
 
             if strength == 'low':
-                self.variables.print_debug_text('low')
+                self.functions.print_debug_text('low')
                 ... # audio
                 
             elif strength == 'medium':
-                self.variables.print_debug_text('low')
+                self.functions.print_debug_text('low')
                 ... # audio
 
             elif strength == 'high':
-                self.variables.print_debug_text('low')
+                self.functions.print_debug_text('low')
                 ... # audio
 
             # heli, mis on alati
