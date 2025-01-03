@@ -68,7 +68,6 @@ class Collisions:
 
                 try:
                     if self.terrain_data[row][col] in self.COLLISION_ITEMS.value:
-                        print('COLLL')
                         self.player_hit_collision(terrain_rect)
 
                     else:

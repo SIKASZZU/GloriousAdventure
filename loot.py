@@ -99,3 +99,4 @@ class Loot:
 
         elif player_pressed_pick_up:
             self.toggle_loot_barrel(player_pressed_pick_up=player_pressed_pick_up)
+

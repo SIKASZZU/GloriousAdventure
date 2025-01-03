@@ -43,8 +43,6 @@ class Event_handler:
                 self.camera.click_x, self.camera.click_y = self.camera.left_click_on_screen(self.camera.click_position)
 
             if event.button == 3:
-                # TODO vaadata kuhu clickib ja selle järgi edasi minna, callida midagi
-
                 self.camera.right_click_position = event.pos
                 self.loot.loot_update(right_click_pos=self.camera.right_click_on_screen())
 
